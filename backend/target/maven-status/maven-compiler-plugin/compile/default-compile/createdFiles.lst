@@ -1,0 +1,9 @@
+it/unical/controller/EventController.class
+it/unical/repository/EventRepository.class
+it/unical/service/EventService.class
+it/unical/Main.class
+it/unical/model/User.class
+it/unical/controller/UserController.class
+it/unical/repository/UserRepository.class
+it/unical/model/Event.class
+it/unical/service/UserService.class
