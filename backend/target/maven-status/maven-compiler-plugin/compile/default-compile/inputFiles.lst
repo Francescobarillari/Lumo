@@ -1,9 +1,10 @@
-/Users/francescobarillari/Desktop/Fra/Uni/wa/lumo/backend/src/main/java/it/unical/Main.java
-/Users/francescobarillari/Desktop/Fra/Uni/wa/lumo/backend/src/main/java/it/unical/controller/EventController.java
-/Users/francescobarillari/Desktop/Fra/Uni/wa/lumo/backend/src/main/java/it/unical/controller/UserController.java
-/Users/francescobarillari/Desktop/Fra/Uni/wa/lumo/backend/src/main/java/it/unical/model/Event.java
-/Users/francescobarillari/Desktop/Fra/Uni/wa/lumo/backend/src/main/java/it/unical/model/User.java
-/Users/francescobarillari/Desktop/Fra/Uni/wa/lumo/backend/src/main/java/it/unical/repository/EventRepository.java
-/Users/francescobarillari/Desktop/Fra/Uni/wa/lumo/backend/src/main/java/it/unical/repository/UserRepository.java
-/Users/francescobarillari/Desktop/Fra/Uni/wa/lumo/backend/src/main/java/it/unical/service/EventService.java
-/Users/francescobarillari/Desktop/Fra/Uni/wa/lumo/backend/src/main/java/it/unical/service/UserService.java
+C:\Users\Mattia UNI\Documents\GitHub\Lumo\backend\src\main\java\it\unical\config\WebConfig.java
+C:\Users\Mattia UNI\Documents\GitHub\Lumo\backend\src\main\java\it\unical\controller\EventController.java
+C:\Users\Mattia UNI\Documents\GitHub\Lumo\backend\src\main\java\it\unical\controller\UserController.java
+C:\Users\Mattia UNI\Documents\GitHub\Lumo\backend\src\main\java\it\unical\Main.java
+C:\Users\Mattia UNI\Documents\GitHub\Lumo\backend\src\main\java\it\unical\model\Event.java
+C:\Users\Mattia UNI\Documents\GitHub\Lumo\backend\src\main\java\it\unical\model\User.java
+C:\Users\Mattia UNI\Documents\GitHub\Lumo\backend\src\main\java\it\unical\repository\EventRepository.java
+C:\Users\Mattia UNI\Documents\GitHub\Lumo\backend\src\main\java\it\unical\repository\UserRepository.java
+C:\Users\Mattia UNI\Documents\GitHub\Lumo\backend\src\main\java\it\unical\service\EventService.java
+C:\Users\Mattia UNI\Documents\GitHub\Lumo\backend\src\main\java\it\unical\service\UserService.java
