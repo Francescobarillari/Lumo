@@ -15,7 +15,8 @@ userMarkerEl.style.boxShadow = '0 0 3px rgba(0,0,0,0.3)';
 @Component({
   selector: 'MapView',
   template: `<div id="map" class="map-container"></div>`,
-  styles: `.map-container {
+  styles: `
+  .map-container {
     width: 100%;
     height: 100vh;
   }`,

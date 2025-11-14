@@ -1,6 +1,66 @@
-@import 'mapbox-gl/dist/mapbox-gl.css';
+@import url('https://fonts.googleapis.com/css2?family=Stack+Sans+Headline:wght@200..700&display=swap');
+@import url('mapbox-gl/dist/mapbox-gl.css');
+
+/* Reset CSS */
 *{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
+
+:root {
+    /* Colori */
+    --color-accent: #FCC324;
+    --color-white: #FFFFFF;
+    --color-gray: #242424;
+    --color-light-gray: #5D5D5D;
+    --color-black: #212121;
+    --color-error: #E53935;
+
+    /* Font e Pesi */
+    --font-stack-headline: 'Stack Sans Headline', Arial, sans-serif;
+    --font-weight-regular: 400; 
+    --font-weight-semibold: 600; 
+    --font-weight-bold: 700; 
+}
+
+/*stili di base per il body*/
+
+body {
+    background-color: var(--color-black);
+    color: var(--color-white);
+    font-family: var(--font-stack-headline);
+    margin: 0;
+    padding: 0;
+}
+
+/* titoli */
+h1 {
+    font-size: 36px;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-accent);
+    line-height: 1.2;
+    text-shadow: 0 0 5px var(--color-accent);
+}
+
+/* paragrafi */
+p,
+span,
+div,
+label {
+    font-size: 16px;
+    font-weight: var(--font-weight-regular);
+    color: var(--color-white);
+    line-height: 1.5;
+}
+
+/*testi cliccabili*/
+.click-text {
+    font-size: 16px;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-accent);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+/* bottoni */

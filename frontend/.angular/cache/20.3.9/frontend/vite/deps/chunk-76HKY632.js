@@ -38,14 +38,14 @@ import {
   ɵɵdefineInjector,
   ɵɵdefineNgModule,
   ɵɵinject
-} from "./chunk-XP3QHBV7.js";
+} from "./chunk-S7UPTYQL.js";
 import {
   __async,
   __objRest,
   __spreadValues
 } from "./chunk-3OV72XIM.js";
 
-// node_modules/@angular/common/fesm2022/xhr.mjs
+// ../node_modules/@angular/common/fesm2022/xhr.mjs
 function parseCookieValue(cookieStr, name) {
   name = encodeURIComponent(name);
   for (const cookie of cookieStr.split(";")) {
@@ -60,7 +60,7 @@ function parseCookieValue(cookieStr, name) {
 var XhrFactory = class {
 };
 
-// node_modules/@angular/common/fesm2022/module.mjs
+// ../node_modules/@angular/common/fesm2022/module.mjs
 var HttpHandler = class {
 };
 var HttpBackend = class {
@@ -2462,7 +2462,7 @@ var HttpClientJsonpModule = class _HttpClientJsonpModule {
   }], null, null);
 })();
 
-// node_modules/@angular/common/fesm2022/http.mjs
+// ../node_modules/@angular/common/fesm2022/http.mjs
 var httpResource = (() => {
   const jsonFn = makeHttpResourceFn("json");
   jsonFn.arrayBuffer = makeHttpResourceFn("arraybuffer");
@@ -2797,4 +2797,4 @@ export {
    * License: MIT
    *)
 */
-//# sourceMappingURL=chunk-KCNNVHVB.js.map
+//# sourceMappingURL=chunk-76HKY632.js.map

@@ -2,7 +2,7 @@ import {
   XhrFactory,
   parseCookieValue,
   withHttpTransferCache
-} from "./chunk-KCNNVHVB.js";
+} from "./chunk-76HKY632.js";
 import {
   APP_ID,
   ApplicationModule,
@@ -101,14 +101,14 @@ import {
   ɵɵinject,
   ɵɵinjectAttribute,
   ɵɵstyleProp
-} from "./chunk-XP3QHBV7.js";
+} from "./chunk-S7UPTYQL.js";
 import {
   __async,
   __spreadProps,
   __spreadValues
 } from "./chunk-3OV72XIM.js";
 
-// node_modules/@angular/common/fesm2022/location.mjs
+// ../node_modules/@angular/common/fesm2022/location.mjs
 var _DOM = null;
 function getDOM() {
   return _DOM;
@@ -595,7 +595,7 @@ function _stripOrigin(baseHref) {
   return baseHref;
 }
 
-// node_modules/@angular/common/fesm2022/common_module.mjs
+// ../node_modules/@angular/common/fesm2022/common_module.mjs
 var HashLocationStrategy = class _HashLocationStrategy extends LocationStrategy {
   _platformLocation;
   _baseHref = "";
@@ -3701,7 +3701,7 @@ var CommonModule = class _CommonModule {
   }], null, null);
 })();
 
-// node_modules/@angular/common/fesm2022/platform_navigation.mjs
+// ../node_modules/@angular/common/fesm2022/platform_navigation.mjs
 var PlatformNavigation = class _PlatformNavigation {
   static ɵfac = function PlatformNavigation_Factory(__ngFactoryType__) {
     return new (__ngFactoryType__ || _PlatformNavigation)();
@@ -3722,7 +3722,7 @@ var PlatformNavigation = class _PlatformNavigation {
   }], null, null);
 })();
 
-// node_modules/@angular/common/fesm2022/common.mjs
+// ../node_modules/@angular/common/fesm2022/common.mjs
 var PLATFORM_BROWSER_ID = "browser";
 var VERSION = new Version("20.3.10");
 var ViewportScroller = class _ViewportScroller {
@@ -5022,7 +5022,7 @@ function booleanOrUrlAttribute(value) {
   return booleanAttribute(value);
 }
 
-// node_modules/@angular/platform-browser/fesm2022/dom_renderer.mjs
+// ../node_modules/@angular/platform-browser/fesm2022/dom_renderer.mjs
 var EventManagerPlugin = class {
   _doc;
   // TODO: remove (has some usage in G3)
@@ -5769,7 +5769,7 @@ var EmulatedEncapsulationDomRenderer2 = class extends NoneEncapsulationDomRender
   }
 };
 
-// node_modules/@angular/platform-browser/fesm2022/browser.mjs
+// ../node_modules/@angular/platform-browser/fesm2022/browser.mjs
 var BrowserDomAdapter = class _BrowserDomAdapter extends DomAdapter {
   supportsDOMEvents = true;
   static makeCurrent() {
@@ -6184,7 +6184,7 @@ var BrowserModule = class _BrowserModule {
   }], () => [], null);
 })();
 
-// node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs
+// ../node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs
 var Meta = class _Meta {
   _doc;
   _dom;
@@ -6996,4 +6996,4 @@ export {
    * License: MIT
    *)
 */
-//# sourceMappingURL=chunk-I4O2PJAU.js.map
+//# sourceMappingURL=chunk-CCRER76P.js.map
