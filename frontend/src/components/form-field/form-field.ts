@@ -8,5 +8,5 @@ import { Component, input } from '@angular/core';
 })
 export class FormField {
   title = input('template'); //sarebbe il placeholder, di default è 'template'
-  type = input('text');  //tipo di dato dentro il campo, di default è 'text'
+  type = input('text');  //tipo di dato dentro
 }

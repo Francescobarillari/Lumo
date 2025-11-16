@@ -33,7 +33,10 @@ export class MapView implements AfterViewInit, OnDestroy {
         container: 'map',
         style: 'mapbox://styles/fnsbrl/cmhxy97pz004e01qx08c0gc44',
         center: [12.4964, 41.9028],
-        zoom: 13,
+        zoom: 18,
+        pitch: 60,   
+        bearing: -20,    
+        antialias: true, 
     });
 
     //modifiche alle gesture con il trackpad per la mappa

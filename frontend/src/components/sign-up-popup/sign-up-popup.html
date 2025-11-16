@@ -1,0 +1,47 @@
+<div class="backdrop" (click)="closePopup()" [class.mobile]="responsive.screen() === 'mobile'" 
+  [class.tablet]="responsive.screen() === 'tablet'" 
+  [class.desktop]="responsive.screen() === 'desktop'"></div>
+
+<div class="popup-container" [class.mobile]="responsive.screen() === 'mobile'" 
+  [class.tablet]="responsive.screen() === 'tablet'" 
+  [class.desktop]="responsive.screen() === 'desktop'">
+  <div class="popup-content">
+    <CircleIcon 
+      class="close" 
+      [path]="'assets/icon/close.svg'" 
+      (click)="closePopup()" 
+    />
+
+    <div class="header">
+      <h1>Join LUMO</h1>
+      <p>start to join events</p>
+    </div>
+
+    <form class="form">
+      <FormField [type]="'text'" [title]="'Full name'"></FormField>
+      <mat-form-field appearance="fill" class="custom-date-field">
+          <input matInput [matDatepicker]="picker" placeholder="Birthday">
+          
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          
+          <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+      <FormField [type]="'text'" [title]="'Email'"></FormField>
+      <FormField [type]="'password'" [title]="'Password'"></FormField>
+      <a class="button">Sign Up</a>
+    </form>
+
+    <div class="other-sign-up-methods">
+      <p>___________ or sign in with ___________</p>
+
+      <a class="button generic">
+        <img class="google-logo" src="assets/img/google-logo.webp" height="20" />
+      </a>
+    </div>
+
+    <p>
+      Don’t have an account?
+      <span class="click-text">Sign In</span>
+    </p>
+  </div>
+</div>

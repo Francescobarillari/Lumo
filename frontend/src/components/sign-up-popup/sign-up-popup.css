@@ -1,0 +1,129 @@
+.backdrop{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 900;
+}
+
+.popup-container.desktop {
+  position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 950;
+}
+
+.popup-container.desktop .popup-content {
+  position: relative;
+    align-items: center;
+    width: 30%;
+    height: auto;
+    background-color: var(--color-black);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 0 20px var(--color-accent, #FCC324); 
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.popup-container.tablet {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 950;
+}
+ .popup-container.tablet .popup-content{
+    position: relative;
+    align-items: center;
+    width: 40%;
+    height: auto;
+    background-color: var(--color-black);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 0 10px var(--color-accent, #FCC324); 
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+ }
+.popup-container.tablet .close{
+  position: absolute;
+    top: 20px;
+    right: 20px;
+}
+.backdrop.mobile{
+  display: none;
+} 
+
+.popup-container.mobile{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+}
+.popup-container.mobile .popup-content{
+  position: fixed;
+    background-color: var(--color-black);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  padding: 1.5rem;
+  height: 100%;
+    width: 100%;
+    border-radius: 0;
+  overflow-y: auto;
+  gap: 24px;
+}
+
+.popup-container.mobile .close{
+  position: absolute;
+    top: 20px;
+    right: 20px;
+}
+.form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+}
+.form *{
+    width: 100%;
+}
+
+.close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.header {
+  text-align: center;
+}
+
+.google-logo {
+  height: 20px;
+}
+
+.other-sign-up-methods {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.other-sign-up-methods > * {
+    width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+
+

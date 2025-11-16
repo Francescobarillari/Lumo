@@ -6,20 +6,21 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: var(--font-stack-headline);
 }
 
 :root {
     /* Colori */
     --color-accent: #FCC324;
     --color-white: #FFFFFF;
-    --color-gray: #242424;
-    --color-light-gray: #5D5D5D;
-    --color-black: #212121;
+    --color-gray: #1a1a1a;
+    --color-light-gray: #6a6a6a;
+    --color-black: #121212;
     --color-error: #E53935;
 
     /* Font e Pesi */
     --font-stack-headline: 'Stack Sans Headline', Arial, sans-serif;
-    --font-weight-regular: 400; 
+    --font-weight-light: 200; 
     --font-weight-semibold: 600; 
     --font-weight-bold: 700; 
 }
@@ -27,11 +28,7 @@
 /*stili di base per il body*/
 
 body {
-    background-color: var(--color-black);
     color: var(--color-white);
-    font-family: var(--font-stack-headline);
-    margin: 0;
-    padding: 0;
 }
 
 /* titoli */
@@ -49,7 +46,7 @@ span,
 div,
 label {
     font-size: 16px;
-    font-weight: var(--font-weight-regular);
+    font-weight: var(--font-weight-light);
     color: var(--color-white);
     line-height: 1.5;
 }
@@ -64,3 +61,147 @@ label {
 }
 
 /* bottoni */
+
+a.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: fit-content;
+    width: 100%;
+    height: 50px;
+    padding: 0 16px;
+    background-color: var(--color-accent); 
+    border: none; 
+    border-radius: 16px ;
+    box-shadow: 0 0 5px var(--color-accent, #FCC324); 
+    color: var(--color-white, #FFFFFF);
+    font-size: 16px; 
+    font-weight: var(--font-weight-semibold, 600);
+    font-family: var(--font-stack-headline, 'Stack Sans Headline'), Arial, sans-serif;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+a.button.generic{
+    background-color: var(--color-white); 
+}
+
+.mat-datepicker-content {
+    position: relative !important;
+    margin: 5px 0 0 0 !important;
+    right: 5px !important;
+    background-color: var(--color-gray) !important; 
+    border-radius: 16px !important;
+    box-shadow: 0 4px 15px var(--color-black) !important;
+    padding: 0px 5px 20px 5px !important;
+}
+
+.mat-calendar-body {
+    background-color: var(--color-gray) !important; 
+}
+
+.mat-calendar-body-selected {
+    background-color: var(--color-accent) !important; 
+    color: var(--color-black) !important;
+}
+
+
+.mat-calendar-body-cell-content {
+    background-color: transparent !important;
+}
+
+.mat-calendar-table-header,
+.mat-calendar-table-header th,
+.mat-calendar-body-label, 
+.mat-calendar-period-switch,
+.mat-calendar-arrow { 
+    color: var(--color-light-gray) !important;
+}
+
+
+.mat-calendar-body-cell-content {
+    color: var(--color-white) !important;
+}
+
+.custom-date-field .mat-form-field-flex {
+    min-width: 300px !important;
+    max-width: 100% !important;
+    height: 50px !important;
+    background-color: var(--color-gray) !important;
+    border-radius: 16px !important;
+    border: none !important;
+    padding: 0 16px !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.custom-date-field .mat-form-field-underline {
+    display: none !important;
+}
+
+.custom-date-field .mat-input-element {
+    color: var(--color-white) !important;
+    font-size: 16px !important;
+}
+
+.custom-date-field .mat-input-element::placeholder {
+    color: var(--color-light-gray) !important;
+}
+.custom-date-field .mat-input-element:focus {
+    outline: none !important;
+}
+
+.custom-date-field .mat-form-field-label {
+    color: var(--color-light-gray) !important;
+}
+
+.custom-date-field .mat-icon-button {
+    color: var(--color-light-gray) !important;
+    margin-right: -8px !important;
+}
+
+.mat-calendar-body-selected {
+    background-color: var(--color-accent) !important;
+    color: var(--color-black) !important;
+    border-radius: 12px !important;
+}
+.mat-mdc-form-field-subscript-wrapper{
+    display: none !important;
+}
+.mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-line-ripple::before {
+    display: none !important;
+}
+
+.mat-mdc-form-field-flex {
+    padding-left: 16px !important;
+    border-radius: 16px !important;
+    background-color: var(--color-gray) !important;
+    display: inline-flex;
+    align-items: center;
+    height: 50px !important;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.mdc-text-field{
+    padding-left: 0 !important;
+    width: 100%;
+} 
+.mdc-text-field--no-label:not(.mdc-text-field--textarea) .mat-mdc-form-field-input-control.mdc-text-field__input::placeholder{
+    color: var(--color-light-gray) !important;
+}
+.mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-text-field__input {
+    color: var(--color-white) !important;
+    font-size: 16px !important;
+}
+.mat-datepicker-content {
+    box-shadow: none !important;
+}
+*:active, *:focus {
+    outline: none !important;
+}
+.mdc-text-field--outlined .mat-mdc-form-field-infix, .mdc-text-field--no-label .mat-mdc-form-field-infix {
+    height: 50px !important;
+    padding-top: 15px !important;
+    padding-bottom: 0 !important; 
+}

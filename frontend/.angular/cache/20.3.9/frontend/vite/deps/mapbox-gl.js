@@ -3,9 +3,9 @@ import {
   __objRest
 } from "./chunk-3OV72XIM.js";
 
-// ../node_modules/mapbox-gl/dist/mapbox-gl.js
+// ../../node_modules/mapbox-gl/dist/mapbox-gl.js
 var require_mapbox_gl = __commonJS({
-  "../node_modules/mapbox-gl/dist/mapbox-gl.js"(exports, module) {
+  "../../node_modules/mapbox-gl/dist/mapbox-gl.js"(exports, module) {
     (function(global, factory) {
       typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, global.mapboxgl = factory());
     })(exports, (function() {

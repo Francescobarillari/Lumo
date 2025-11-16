@@ -1,9 +1,9 @@
 <div class="home-container">
-
   <div class="top-bar">
-    <button routerLink="/sign-up" class="btn primary">Sign Up</button>
+    <a class="button" (click)="openSignUp()">Sign Up</a>
+    <a class="button">Sign In</a>
   </div>
-
+  @if (showSignUp) {<SignUpPopup (close)="closeSignUp()" />}
   <MapView></MapView>
 </div>
 
