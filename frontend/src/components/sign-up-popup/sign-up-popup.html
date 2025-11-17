@@ -14,21 +14,26 @@
 
     <div class="header">
       <h1>Join LUMO</h1>
-      <p>start to join events</p>
+      @if(errors['name']) { <p class="error">{{ errors['name'] }}</p> }
+      @else if(errors['birthdate']) { <p class="error">{{ errors['birthdate'] }}</p> }
+      @else if(errors['email']) { <p class="error">{{ errors['email'] }}</p> }
+      @else if(errors['password']) { <p class="error">{{ errors['password'] }}</p> }
+      @else {<p>start to join events</p>}
     </div>
 
     <form class="form">
-      <FormField [type]="'text'" [title]="'Full name'"></FormField>
-      <mat-form-field appearance="fill" class="custom-date-field">
+      <FormField [error]="hasError('name')" [control]="form.get('name')!" [type]="'text'" placeholder="Full name"></FormField>
+      <FormField [error]="hasError('birthdate')" [control]="form.get('birthdate')!" [type]="'date'" placeholder="Birthday"></FormField>
+      <!--<mat-form-field appearance="fill" class="custom-date-field">
           <input matInput [matDatepicker]="picker" placeholder="Birthday">
           
           <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
           
           <mat-datepicker #picker></mat-datepicker>
-      </mat-form-field>
-      <FormField [type]="'text'" [title]="'Email'"></FormField>
-      <FormField [type]="'password'" [title]="'Password'"></FormField>
-      <a class="button">Sign Up</a>
+      </mat-form-field>-->
+      <FormField [error]="hasError('email')" [control]="form.get('email')!" [type]="'text'" placeholder="Email"></FormField>
+      <FormField [error]="hasError('password')" [control]="form.get('password')!" [type]="'password'" placeholder="Password"></FormField>
+      <a class="button" (click)="onSubmit()">Sign Up</a>
     </form>
 
     <div class="other-sign-up-methods">
@@ -40,8 +45,8 @@
     </div>
 
     <p>
-      Don’t have an account?
-      <span class="click-text">Sign In</span>
+      Already have an account?
+      <span class="click-text" (click)="goToSignIn()">Sign In</span>
     </p>
   </div>
 </div>

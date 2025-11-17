@@ -93,9 +93,9 @@
     gap: 24px;
 }
 .form *{
+  text-align: right;
     width: 100%;
 }
-
 .close {
   position: absolute;
   top: 20px;
@@ -131,4 +131,6 @@
 .error{
     color: var(--color-error);
 }
+
+
 

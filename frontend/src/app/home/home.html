@@ -1,9 +1,10 @@
 <div class="home-container">
   <div class="top-bar">
     <a class="button" (click)="openSignUp()">Sign Up</a>
-    <a class="button">Sign In</a>
+    <a class="button" (click)="openSignIn()">Sign In</a>
   </div>
-  @if (showSignUp) {<SignUpPopup (close)="closeSignUp()" />}
+  @if (showSignUp) {<SignUpPopup (switchToSignIn)="switchToSignIn()" (close)="closeSignUp()" />}
+  @if (showSignIn) {<SignInPopup (switchToSignUp)="switchToSignUp()"  (close)="closeSignIn()" />}
   <MapView></MapView>
 </div>
 

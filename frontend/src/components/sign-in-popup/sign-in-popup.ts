@@ -1,46 +1,42 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { ResponsiveService } from '../../services/responsive-service';
 import { CircleIcon } from '../circle-icon/circle-icon';
-import { FormField } from '../../components/form-field/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
+import { FormField } from '../form-field/form-field';
+import { emailFormatValidator, strongPasswordValidator } from '../../validators/validators';
 import { FormBuilder } from '@angular/forms';
-import { onlyLettersValidator, adultValidator, emailFormatValidator, strongPasswordValidator } from '../../validators/validators';
-
 @Component({
-  selector: 'SignUpPopup',
+  selector: 'SignInPopup',
   standalone: true,
-  imports: [CircleIcon, FormField, MatInputModule, MatDatepickerModule, MatNativeDateModule],
-  templateUrl: './sign-up-popup.html',
-  styleUrls: ['./sign-up-popup.css'],  
+  imports: [CircleIcon, FormField],
+  templateUrl: './sign-in-popup.html',
+  styleUrls: ['./sign-in-popup.css'],  
 })
-export class SignUpPopup {
+export class SignInPopup {
   @Output() close = new EventEmitter<void>();
-  @Output() switchToSignIn = new EventEmitter<void>();
+  @Output() switchToSignUp = new EventEmitter<void>();
+
   form: any;
 
   errors: { [key: string]: string } = {};
 
   constructor(private fb: FormBuilder, public responsive: ResponsiveService) {
     this.form = this.fb.group({
-      name: ['', [onlyLettersValidator]],
-      birthdate: ['', [adultValidator]],
       email: ['', [emailFormatValidator]],
       password: ['', [strongPasswordValidator]]
     });
   };
 
+  closePopup() {
+    this.close.emit();
+  }
+  goToSignUp() {
+    this.switchToSignUp.emit();
+  }
+
   onSubmit() {
     this.errors = {};
 
     const controls = this.form.controls;
-
-    const nameErr = onlyLettersValidator(controls['name']);
-    if (nameErr) this.errors['name'] = 'Il nome deve contenere solo lettere.';
-
-    const birthErr = adultValidator(controls['birthdate']);
-    if (birthErr) this.errors['birthdate'] = 'Devi essere maggiore di 18 anni.';
 
     const emailErr = emailFormatValidator(controls['email']);
     if (emailErr) this.errors['email'] = 'Email non valida.';
@@ -59,12 +55,6 @@ export class SignUpPopup {
     return !!this.errors[field];
   }
 
-  closePopup() {
-    this.close.emit();
-  }
-  goToSignIn() {
-    this.switchToSignIn.emit();
-  } 
   getFieldError(field: string): boolean {
     const ctrl = this.form.get(field);
     return !!(ctrl?.invalid && ctrl?.touched);

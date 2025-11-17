@@ -5,16 +5,16 @@ import {
   isFakeMousedownFromScreenReader,
   isFakeTouchstartFromScreenReader,
   normalizePassiveListenerOptions
-} from "./chunk-YWRPPGUO.js";
+} from "./chunk-SAIRRIL5.js";
 import {
   _CdkPrivateStyleLoader
-} from "./chunk-AIZ6CTIS.js";
+} from "./chunk-6FKXYHC6.js";
 import {
   coerceElement
-} from "./chunk-SQRT62VQ.js";
+} from "./chunk-QKOCNIL3.js";
 import {
   Platform
-} from "./chunk-EGF4ZUYI.js";
+} from "./chunk-S2ISCMM4.js";
 import {
   ChangeDetectionStrategy,
   Component,
@@ -39,12 +39,12 @@ import {
   ɵɵdefineInjectable,
   ɵɵdefineInjector,
   ɵɵdefineNgModule
-} from "./chunk-EIUTJ7JI.js";
+} from "./chunk-RFAIOGJM.js";
 import {
   __spreadValues
 } from "./chunk-3OV72XIM.js";
 
-// ../../node_modules/@angular/material/fesm2022/date-formats.mjs
+// node_modules/@angular/material/fesm2022/date-formats.mjs
 var MAT_DATE_LOCALE = new InjectionToken("MAT_DATE_LOCALE", {
   providedIn: "root",
   factory: MAT_DATE_LOCALE_FACTORY
@@ -218,7 +218,7 @@ var DateAdapter = class {
 };
 var MAT_DATE_FORMATS = new InjectionToken("mat-date-formats");
 
-// ../../node_modules/@angular/material/fesm2022/structural-styles.mjs
+// node_modules/@angular/material/fesm2022/structural-styles.mjs
 var _StructuralStylesLoader = class __StructuralStylesLoader {
   static ɵfac = function _StructuralStylesLoader_Factory(__ngFactoryType__) {
     return new (__ngFactoryType__ || __StructuralStylesLoader)();
@@ -248,7 +248,7 @@ var _StructuralStylesLoader = class __StructuralStylesLoader {
   }], null, null);
 })();
 
-// ../../node_modules/@angular/material/fesm2022/ripple.mjs
+// node_modules/@angular/material/fesm2022/ripple.mjs
 var RippleState;
 (function(RippleState2) {
   RippleState2[RippleState2["FADING_IN"] = 0] = "FADING_IN";
@@ -822,7 +822,31 @@ var MatRipple = class _MatRipple {
   });
 })();
 
-// ../../node_modules/@angular/material/fesm2022/ripple-loader.mjs
+// node_modules/@angular/material/fesm2022/ripple-module.mjs
+var MatRippleModule = class _MatRippleModule {
+  static ɵfac = function MatRippleModule_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _MatRippleModule)();
+  };
+  static ɵmod = ɵɵdefineNgModule({
+    type: _MatRippleModule,
+    imports: [MatCommonModule, MatRipple],
+    exports: [MatRipple, MatCommonModule]
+  });
+  static ɵinj = ɵɵdefineInjector({
+    imports: [MatCommonModule, MatCommonModule]
+  });
+};
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(MatRippleModule, [{
+    type: NgModule,
+    args: [{
+      imports: [MatCommonModule, MatRipple],
+      exports: [MatRipple, MatCommonModule]
+    }]
+  }], null, null);
+})();
+
+// node_modules/@angular/material/fesm2022/ripple-loader.mjs
 var eventListenerOptions = {
   capture: true
 };
@@ -959,30 +983,6 @@ var MatRippleLoader = class _MatRippleLoader {
   }], () => [], null);
 })();
 
-// ../../node_modules/@angular/material/fesm2022/ripple-module.mjs
-var MatRippleModule = class _MatRippleModule {
-  static ɵfac = function MatRippleModule_Factory(__ngFactoryType__) {
-    return new (__ngFactoryType__ || _MatRippleModule)();
-  };
-  static ɵmod = ɵɵdefineNgModule({
-    type: _MatRippleModule,
-    imports: [MatCommonModule, MatRipple],
-    exports: [MatRipple, MatCommonModule]
-  });
-  static ɵinj = ɵɵdefineInjector({
-    imports: [MatCommonModule, MatCommonModule]
-  });
-};
-(() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(MatRippleModule, [{
-    type: NgModule,
-    args: [{
-      imports: [MatCommonModule, MatRipple],
-      exports: [MatRipple, MatCommonModule]
-    }]
-  }], null, null);
-})();
-
 export {
   MAT_DATE_LOCALE,
   MAT_DATE_LOCALE_FACTORY,
@@ -995,7 +995,7 @@ export {
   RippleRenderer,
   MAT_RIPPLE_GLOBAL_OPTIONS,
   MatRipple,
-  MatRippleLoader,
-  MatRippleModule
+  MatRippleModule,
+  MatRippleLoader
 };
-//# sourceMappingURL=chunk-R6CXSP2P.js.map
+//# sourceMappingURL=chunk-6J2CM3TH.js.map

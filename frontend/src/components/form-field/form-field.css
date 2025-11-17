@@ -18,3 +18,9 @@
 .form-field:focus{
     outline: none;
 }
+.error{
+    border: 1px solid var(--color-error);
+}
+input[type="date"] {
+    color: var(--color-light-gray);
+}
