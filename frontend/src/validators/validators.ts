@@ -7,22 +7,17 @@ export function onlyLettersValidator(control: AbstractControl): ValidationErrors
 }
 
 // Data valida + maggiore di 18
-export function adultValidator(control: AbstractControl): ValidationErrors | null {
-  const value = control.value;
-  if (!value) return { invalidDate: true };
+export function adultValidator(control: AbstractControl) {
+  const value = control.value; // stringa "YYYY-MM-DD"
+  if (!value) return { adult: true };
 
-  const date = new Date(value);
-  if (isNaN(date.getTime())) return { invalidDate: true };
-
+  const birthDate = new Date(value);
   const today = new Date();
-  const age = today.getFullYear() - date.getFullYear();
-  const isAdult =
-    age > 18 || (age === 18 &&
-      (today.getMonth() > date.getMonth() ||
-        (today.getMonth() === date.getMonth() && today.getDate() >= date.getDate())));
-
-  return isAdult ? null : { notAdult: true };
+  const age = today.getFullYear() - birthDate.getFullYear();
+  if (age < 18) return { adult: true };
+  return null;
 }
+
 
 // Email
 export function emailFormatValidator(control: AbstractControl): ValidationErrors | null {

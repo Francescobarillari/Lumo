@@ -13,9 +13,10 @@ public class WebConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/**")
-                        .allowedOrigins("http://localhost:4200")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
+                registry.addMapping("/**")            // tutte le rotte
+                        .allowedOrigins("http://localhost:4200") // Angular
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowCredentials(true);
             }
         };
     }

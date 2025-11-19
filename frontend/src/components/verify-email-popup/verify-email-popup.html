@@ -1,0 +1,17 @@
+<div class="backdrop" [class.mobile]="responsive.screen() === 'mobile'" 
+  [class.tablet]="responsive.screen() === 'tablet'" 
+  [class.desktop]="responsive.screen() === 'desktop'"></div>
+
+<div class="popup-container" [class.mobile]="responsive.screen() === 'mobile'" 
+  [class.tablet]="responsive.screen() === 'tablet'" 
+  [class.desktop]="responsive.screen() === 'desktop'">
+    <div class="popup-content">
+      <div class="header">
+        <h1>Verify your email</h1>
+        @if (verified) {<p class="success">Sei stato registrato con sucesso</p>}
+        @else {<p>Check your email and click the button</p>}
+      </div>
+      <a class="button" (click)="resend()">Reinvia email di verifica</a>
+    </div>
+</div>
+

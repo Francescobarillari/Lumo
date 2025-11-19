@@ -2,40 +2,46 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { ResponsiveService } from '../../services/responsive-service';
 import { CircleIcon } from '../circle-icon/circle-icon';
 import { FormField } from '../../components/form-field/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
 import { FormBuilder } from '@angular/forms';
 import { onlyLettersValidator, adultValidator, emailFormatValidator, strongPasswordValidator } from '../../validators/validators';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'SignUpPopup',
   standalone: true,
-  imports: [CircleIcon, FormField, MatInputModule, MatDatepickerModule, MatNativeDateModule],
+  imports: [CircleIcon, FormField],
   templateUrl: './sign-up-popup.html',
   styleUrls: ['./sign-up-popup.css'],  
 })
 export class SignUpPopup {
   @Output() close = new EventEmitter<void>();
   @Output() switchToSignIn = new EventEmitter<void>();
+  @Output() signUpSuccess = new EventEmitter<{ email: string; token: string }>();
+
   form: any;
-
   errors: { [key: string]: string } = {};
+  generalError: string | null = null;
 
-  constructor(private fb: FormBuilder, public responsive: ResponsiveService) {
+  constructor(
+    private fb: FormBuilder,
+    private auth: AuthService,
+    public responsive: ResponsiveService
+  ) {
     this.form = this.fb.group({
       name: ['', [onlyLettersValidator]],
       birthdate: ['', [adultValidator]],
       email: ['', [emailFormatValidator]],
       password: ['', [strongPasswordValidator]]
     });
-  };
+  }
 
   onSubmit() {
     this.errors = {};
+    this.generalError = null;
 
     const controls = this.form.controls;
 
+    // Validazioni frontend
     const nameErr = onlyLettersValidator(controls['name']);
     if (nameErr) this.errors['name'] = 'Il nome deve contenere solo lettere.';
 
@@ -46,13 +52,66 @@ export class SignUpPopup {
     if (emailErr) this.errors['email'] = 'Email non valida.';
 
     const passwordErr = strongPasswordValidator(controls['password']);
-    if (passwordErr) this.errors['password'] =
-      'La password deve avere almeno 8 caratteri, una maiuscola, un numero e un simbolo.';
-
-    if (Object.keys(this.errors).length === 0) {
-      console.log("Form valido:", this.form.value);
-      // qui puoi chiamare il backend
+    if (passwordErr) {
+      this.errors['password'] = 'La password deve avere almeno 8 caratteri, una maiuscola, un numero e un simbolo.';
     }
+
+    if (Object.keys(this.errors).length > 0) return;
+
+    // Payload
+    const payload = {
+      name: this.form.value.name,
+      birthdate: this.form.value.birthdate,
+      email: this.form.value.email,
+      password: this.form.value.password
+    };
+
+    this.auth.signUp(payload).subscribe({
+      next: (res) => {
+        this.errors = {};   
+        this.generalError = null;
+        console.log("Registrazione OK", res);
+
+      
+        this.signUpSuccess.emit({
+          email: this.form.value.email, 
+          token: res?.token || ''   
+        });
+      },
+
+      error: (err) => {
+        this.errors = {};
+        this.generalError = null;
+
+        if (err && typeof err === 'object' && 'error' in err) {
+          const body = err.error;
+
+          if (body && typeof body === 'object') {
+            if (body.data && typeof body.data === 'object') {
+              this.errors = body.data;
+              return;
+            }
+            if (body.error && typeof body.error === 'string') {
+              this.generalError = body.error;
+              return;
+            }
+          }
+
+          if (typeof err.error === 'string') {
+            this.generalError = err.error;
+            return;
+          }
+        }
+
+        if (typeof err === 'string') {
+          this.generalError = err;
+          return;
+        }
+
+        this.generalError = 'Errore inatteso.';
+        console.warn('Unhandled error shape', err);
+      }
+    });
   }
 
   hasError(field: string): boolean {
@@ -62,11 +121,8 @@ export class SignUpPopup {
   closePopup() {
     this.close.emit();
   }
+
   goToSignIn() {
     this.switchToSignIn.emit();
-  } 
-  getFieldError(field: string): boolean {
-    const ctrl = this.form.get(field);
-    return !!(ctrl?.invalid && ctrl?.touched);
   }
 }

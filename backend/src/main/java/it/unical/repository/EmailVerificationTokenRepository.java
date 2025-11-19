@@ -1,4 +1,10 @@
 package it.unical.repository;
 
-public class EmailVerificationTokenRepository {
+import it.unical.model.EmailVerificationToken;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface EmailVerificationTokenRepository
+        extends JpaRepository<EmailVerificationToken, Long> {
+
+    EmailVerificationToken findByToken(String token);
 }

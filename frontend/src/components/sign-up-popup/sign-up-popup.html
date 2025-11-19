@@ -24,13 +24,6 @@
     <form class="form">
       <FormField [error]="hasError('name')" [control]="form.get('name')!" [type]="'text'" placeholder="Full name"></FormField>
       <FormField [error]="hasError('birthdate')" [control]="form.get('birthdate')!" [type]="'date'" placeholder="Birthday"></FormField>
-      <!--<mat-form-field appearance="fill" class="custom-date-field">
-          <input matInput [matDatepicker]="picker" placeholder="Birthday">
-          
-          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-          
-          <mat-datepicker #picker></mat-datepicker>
-      </mat-form-field>-->
       <FormField [error]="hasError('email')" [control]="form.get('email')!" [type]="'text'" placeholder="Email"></FormField>
       <FormField [error]="hasError('password')" [control]="form.get('password')!" [type]="'password'" placeholder="Password"></FormField>
       <a class="button" (click)="onSubmit()">Sign Up</a>
