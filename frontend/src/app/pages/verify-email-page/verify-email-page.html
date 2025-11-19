@@ -1,0 +1,11 @@
+<div class="container">
+    <div class="verify-container">
+        <div class="header">
+            <h1>Email Verification</h1>
+            <p>{{ message }}</p>
+        </div>
+        
+        @if(!verified){<a class="button" (click)="verifyEmail()">Verifica Email</a>}
+        @else{<a class="button" [routerLink]="['/']"> Torna alla Home</a>}
+    </div>
+</div>

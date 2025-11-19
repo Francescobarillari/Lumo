@@ -1,0 +1,87 @@
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { AuthService } from '../../../services/auth.service';
+import { MapView } from '../../../components/map-view/map-view';
+import { SignUpPopup } from '../../../components/sign-up-popup/sign-up-popup';
+import { SignInPopup } from '../../../components/sign-in-popup/sign-in-popup';
+import { VerifyEmailPopup } from '../../../components/verify-email-popup/verify-email-popup';
+
+@Component({
+  selector: 'Home',
+  standalone: true,
+  imports: [MapView, SignUpPopup, SignInPopup, VerifyEmailPopup],
+  templateUrl: './home.html',
+  styleUrl: './home.css',
+})
+export class Home implements OnInit {
+
+  showSignUp = false;
+  showSignIn = false;
+  showVerifyPopup = false;
+
+  recentEmail = '';
+  recentToken = '';
+
+  emailVerified = false;
+
+  constructor(
+    private route: ActivatedRoute,
+    private authService: AuthService
+  ) {}
+
+  ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      const token = params['token'];
+      const email = params['email'];
+
+      if (token) {
+        this.recentToken = token;
+        this.recentEmail = email || '';
+
+        this.openVerifyPopup();
+
+        this.authService.verifyEmail(token).subscribe({
+          next: () => this.emailVerified = true,
+          error: () => this.emailVerified = false
+        });
+      }
+    });
+  }
+
+  
+  openVerifyPopup(email?: string, token?: string) {
+  if (email !== undefined) this.recentEmail = email;
+  if (token !== undefined) this.recentToken = token;
+
+  this.closeAll();
+  this.showVerifyPopup = true;
+}
+
+  resendEmail() {
+    this.authService.resendEmail(this.recentToken).subscribe();
+  }
+
+  openSignUp() {
+    this.closeAll();
+    this.showSignUp = true;
+  }
+
+  openSignIn() {
+    this.closeAll();
+    this.showSignIn = true;
+  }
+
+  closeAll() {
+    this.showSignUp = false;
+    this.showSignIn = false;
+    this.showVerifyPopup = false;
+  }
+
+  switchToSignUp() {
+    this.openSignUp();
+  }
+
+  switchToSignIn() {
+    this.openSignIn();
+  }
+}

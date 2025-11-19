@@ -1,0 +1,33 @@
+<div class="home-container">
+  <div class="top-bar">
+    <a class="button" (click)="openSignUp()">Sign Up</a>
+    <a class="button" (click)="openSignIn()">Sign In</a>
+  </div>
+
+  @if (showSignUp) {
+    <SignUpPopup 
+        (switchToSignIn)="switchToSignIn()" 
+        (close)="closeAll()" 
+        (signUpSuccess)="openVerifyPopup($event.email, $event.token)"
+    />
+  }
+
+  @if (showVerifyPopup) {
+    <VerifyEmailPopup
+        [email]="recentEmail"
+        [token]="recentToken"
+        [verified]="emailVerified"
+        (close)="closeAll()"
+        (resendVerification)="resendEmail()"
+    />
+  }
+
+  @if (showSignIn) {
+    <SignInPopup 
+        (switchToSignUp)="switchToSignUp()"  
+        (close)="closeAll()" 
+    />
+  }
+
+  <MapView></MapView>
+</div>
