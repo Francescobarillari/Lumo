@@ -74,4 +74,4 @@ __screenshots__/
 # 💻 Sistema Operativo (Mac e Windows)
 # ----------------------------------------------------
 .DS_Store
-Thumbs.db
+Thumbs.db**/target/
