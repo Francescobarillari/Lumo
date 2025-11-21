@@ -64,7 +64,7 @@ npm-debug.log
 yarn-error.log
 testem.log
 .sass-cache/
-/.angular/cache
+.angular/
 /connect.lock
 /libpeerconnection.log
 __screenshots__/
