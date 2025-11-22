@@ -1,6 +1,7 @@
 package it.unical.controller;
 
 import it.unical.api.ApiResponse;
+import it.unical.dto.SignInRequest;
 import it.unical.dto.SignUpRequest;
 import it.unical.service.AuthService;
 import jakarta.validation.Valid;
@@ -23,6 +24,10 @@ public class AuthController {
         return ResponseEntity.ok(ApiResponse.ok());
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse> login(@Valid @RequestBody SignInRequest request) {
+        return ResponseEntity.ok(ApiResponse.ok(authService.login(request)));
+    }
+
 
 }
-

@@ -18,6 +18,7 @@ export class Home implements OnInit {
   showSignUp = false;
   showSignIn = false;
   showVerifyPopup = false;
+  loggedUser: { id: string; name: string; email: string } | null = null;
 
   recentEmail = '';
   recentToken = '';
@@ -83,5 +84,10 @@ export class Home implements OnInit {
 
   switchToSignIn() {
     this.openSignIn();
+  }
+
+  onSignInSuccess(user: { id: string; name: string; email: string }) {
+    this.loggedUser = user;
+    this.closeAll();
   }
 }

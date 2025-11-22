@@ -4,6 +4,10 @@
     <a class="button" (click)="openSignIn()">Sign In</a>
   </div>
 
+  @if (loggedUser) {
+    <h1 class="welcome">Benvenuto, {{ loggedUser.name }}!</h1>
+  }
+
   @if (showSignUp) {
     <SignUpPopup 
         (switchToSignIn)="switchToSignIn()" 
@@ -25,7 +29,8 @@
   @if (showSignIn) {
     <SignInPopup 
         (switchToSignUp)="switchToSignUp()"  
-        (close)="closeAll()" 
+        (close)="closeAll()"
+        (signInSuccess)="onSignInSuccess($event)" 
     />
   }
 

@@ -14,7 +14,8 @@
 
     <div class="header">
       <h1>Welcome back!</h1>
-      @if(errors['email']) { <p class="error">{{ errors['email'] }}</p> }
+      @if(generalError) { <p class="error">{{ generalError }}</p> }
+      @else if(errors['email']) { <p class="error">{{ errors['email'] }}</p> }
       @else if(errors['password']) { <p class="error">{{ errors['password'] }}</p> }
       @else{<p>Sign in in LUMO</p>}
       
