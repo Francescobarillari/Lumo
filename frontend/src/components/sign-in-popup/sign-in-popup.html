@@ -28,13 +28,13 @@
   
       <span class="click-text">Forgot password?</span>
       </p>
-      <a class="button" (click)="onSubmit()">Sign In</a>
+      <button type="button" class="button" (click)="onSubmit()">Sign In</button>
     </form>
 
     <div class="other-sign-up-methods">
       <p>___________ or sign in with ___________</p>
 
-      <a class="button generic">
+      <a class="button generic" (click)="signInWithGoogle()">
         <img class="google-logo" src="assets/img/google-logo.webp" height="20" />
       </a>
     </div>

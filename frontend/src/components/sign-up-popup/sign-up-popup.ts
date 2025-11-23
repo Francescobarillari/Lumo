@@ -5,6 +5,7 @@ import { FormField } from '../../components/form-field/form-field';
 import { FormBuilder } from '@angular/forms';
 import { onlyLettersValidator, adultValidator, emailFormatValidator, strongPasswordValidator } from '../../validators/validators';
 import { AuthService } from '../../services/auth.service';
+import { GoogleIdentityService } from '../../services/google-identity.service';
 
 @Component({
   selector: 'SignUpPopup',
@@ -25,6 +26,7 @@ export class SignUpPopup {
   constructor(
     private fb: FormBuilder,
     private auth: AuthService,
+    private googleIdentity: GoogleIdentityService,
     public responsive: ResponsiveService
   ) {
     this.form = this.fb.group({
@@ -124,5 +126,34 @@ export class SignUpPopup {
 
   goToSignIn() {
     this.switchToSignIn.emit();
+  }
+
+  async signUpWithGoogle() {
+    this.errors = {};
+    this.generalError = null;
+
+    try {
+      const idToken = await this.googleIdentity.getIdToken();
+      this.auth.loginWithGoogle({ idToken }).subscribe({
+        next: () => {
+          // Con Google consideriamo l'utente già autenticato.
+          this.closePopup();
+        },
+        error: (err) => {
+          const body = err?.error;
+          if (body?.data && typeof body.data === 'object') {
+            this.errors = body.data;
+            return;
+          }
+          if (typeof body?.error === 'string') {
+            this.generalError = body.error;
+            return;
+          }
+          this.generalError = 'Accesso Google non riuscito.';
+        }
+      });
+    } catch (e: any) {
+      this.generalError = e?.message || 'Accesso Google annullato.';
+    }
   }
 }

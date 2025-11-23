@@ -63,7 +63,8 @@ label {
 
 /* bottoni */
 
-a.button {
+a.button,
+button.button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -83,7 +84,8 @@ a.button {
     cursor: pointer;
 }
 
-a.button.generic{
+a.button.generic,
+button.button.generic{
     background-color: var(--color-white); 
 }
 

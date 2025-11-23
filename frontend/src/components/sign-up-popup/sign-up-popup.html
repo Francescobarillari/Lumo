@@ -26,13 +26,13 @@
       <FormField [error]="hasError('birthdate')" [control]="form.get('birthdate')!" [type]="'date'" placeholder="Birthday"></FormField>
       <FormField [error]="hasError('email')" [control]="form.get('email')!" [type]="'text'" placeholder="Email"></FormField>
       <FormField [error]="hasError('password')" [control]="form.get('password')!" [type]="'password'" placeholder="Password"></FormField>
-      <a class="button" (click)="onSubmit()">Sign Up</a>
+      <button type="button" class="button" (click)="onSubmit()">Sign Up</button>
     </form>
 
     <div class="other-sign-up-methods">
       <p>___________ or sign in with ___________</p>
 
-      <a class="button generic">
+      <a class="button generic" (click)="signUpWithGoogle()">
         <img class="google-logo" src="assets/img/google-logo.webp" height="20" />
       </a>
     </div>
