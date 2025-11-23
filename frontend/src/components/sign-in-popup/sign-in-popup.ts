@@ -113,8 +113,8 @@ export class SignInPopup {
     this.generalError = null;
 
     try {
-      const idToken = await this.googleIdentity.getIdToken();
-      this.auth.loginWithGoogle({ idToken }).subscribe({
+      const code = await this.googleIdentity.getAuthCode();
+      this.auth.loginWithGoogleCode({ code }).subscribe({
         next: (res) => {
           this.signInSuccess.emit({
             id: res?.data?.id || '',
@@ -137,16 +137,14 @@ export class SignInPopup {
         }
       });
     } catch (e: any) {
-      this.generalError = e?.message || 'Accesso Google annullato.';
+      if (e?.code === 'google_cancelled') {
+        return; // utente ha chiuso/soppresso il prompt: nessun errore, può riprovare
+      }
+      this.generalError = e?.message || 'Accesso Google non riuscito.';
     }
   }
 
   hasError(field: string): boolean {
     return !!this.errors[field];
-  }
-
-  getFieldError(field: string): boolean {
-    const ctrl = this.form.get(field);
-    return !!(ctrl?.invalid && ctrl?.touched);
   }
 }

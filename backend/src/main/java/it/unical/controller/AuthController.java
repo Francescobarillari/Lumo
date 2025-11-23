@@ -4,6 +4,7 @@ import it.unical.api.ApiResponse;
 import it.unical.dto.SignInRequest;
 import it.unical.dto.SignUpRequest;
 import it.unical.dto.GoogleLoginRequest;
+import it.unical.dto.GoogleCodeLoginRequest;
 import it.unical.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,11 @@ public class AuthController {
     @PostMapping("/login/google")
     public ResponseEntity<ApiResponse> loginWithGoogle(@Valid @RequestBody GoogleLoginRequest request) {
         return ResponseEntity.ok(ApiResponse.ok(authService.loginWithGoogle(request)));
+    }
+
+    @PostMapping("/login/google/code")
+    public ResponseEntity<ApiResponse> loginWithGoogleCode(@Valid @RequestBody GoogleCodeLoginRequest request) {
+        return ResponseEntity.ok(ApiResponse.ok(authService.loginWithGoogleCode(request)));
     }
 
 

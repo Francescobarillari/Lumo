@@ -28,6 +28,13 @@ export class AuthService {
     );
   }
 
+  loginWithGoogleCode(payload: { code: string }): Observable<ApiResponse<{ id: string; name: string; email: string }>> {
+    return this.http.post<ApiResponse<{ id: string; name: string; email: string }>>(
+      `${this.baseUrl}/login/google/code`,
+      payload
+    );
+  }
+
   verifyEmail(token: string): Observable<ApiResponse<any>> {
     return this.http.get<ApiResponse<any>>(`${this.baseUrl}/verify?token=${token}`);
   }

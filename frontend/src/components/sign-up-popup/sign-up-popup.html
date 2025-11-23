@@ -14,7 +14,8 @@
 
     <div class="header">
       <h1>Join LUMO</h1>
-      @if(errors['name']) { <p class="error">{{ errors['name'] }}</p> }
+      @if(generalError) { <p class="error">{{ generalError }}</p> }
+      @else if(errors['name']) { <p class="error">{{ errors['name'] }}</p> }
       @else if(errors['birthdate']) { <p class="error">{{ errors['birthdate'] }}</p> }
       @else if(errors['email']) { <p class="error">{{ errors['email'] }}</p> }
       @else if(errors['password']) { <p class="error">{{ errors['password'] }}</p> }
@@ -30,7 +31,7 @@
     </form>
 
     <div class="other-sign-up-methods">
-      <p>___________ or sign in with ___________</p>
+      <p>___________ or sign up with ___________</p>
 
       <a class="button generic" (click)="signUpWithGoogle()">
         <img class="google-logo" src="assets/img/google-logo.webp" height="20" />

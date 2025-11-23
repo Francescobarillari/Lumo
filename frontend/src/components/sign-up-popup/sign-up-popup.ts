@@ -18,6 +18,7 @@ export class SignUpPopup {
   @Output() close = new EventEmitter<void>();
   @Output() switchToSignIn = new EventEmitter<void>();
   @Output() signUpSuccess = new EventEmitter<{ email: string; token: string }>();
+  @Output() signInSuccess = new EventEmitter<{ id: string; name: string; email: string }>();
 
   form: any;
   errors: { [key: string]: string } = {};
@@ -72,9 +73,6 @@ export class SignUpPopup {
       next: (res) => {
         this.errors = {};   
         this.generalError = null;
-        console.log("Registrazione OK", res);
-
-      
         this.signUpSuccess.emit({
           email: this.form.value.email, 
           token: res?.token || ''   
@@ -133,10 +131,15 @@ export class SignUpPopup {
     this.generalError = null;
 
     try {
-      const idToken = await this.googleIdentity.getIdToken();
-      this.auth.loginWithGoogle({ idToken }).subscribe({
-        next: () => {
-          // Con Google consideriamo l'utente già autenticato.
+      const code = await this.googleIdentity.getAuthCode();
+      this.auth.loginWithGoogleCode({ code }).subscribe({
+        next: (res) => {
+          // Consideriamo l'utente autenticato con Google.
+          this.signInSuccess.emit({
+            id: res?.data?.id || '',
+            name: res?.data?.name || '',
+            email: res?.data?.email || ''
+          });
           this.closePopup();
         },
         error: (err) => {
@@ -153,7 +156,10 @@ export class SignUpPopup {
         }
       });
     } catch (e: any) {
-      this.generalError = e?.message || 'Accesso Google annullato.';
+      if (e?.code === 'google_cancelled') {
+        return; // utente ha chiuso/soppresso il prompt: nessun errore, può riprovare
+      }
+      this.generalError = e?.message || 'Accesso Google non riuscito.';
     }
   }
 }

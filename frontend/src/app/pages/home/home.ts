@@ -87,7 +87,11 @@ export class Home implements OnInit {
   }
 
   onSignInSuccess(user: { id: string; name: string; email: string }) {
-    this.loggedUser = user;
+    this.loggedUser = {
+      id: user?.id || '',
+      name: user?.name || user?.email || 'Utente',
+      email: user?.email || ''
+    };
     this.closeAll();
   }
 }

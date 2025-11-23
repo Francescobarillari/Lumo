@@ -3,6 +3,7 @@ package it.unical.service;
 import it.unical.dto.SignInRequest;
 import it.unical.dto.SignUpRequest;
 import it.unical.dto.GoogleLoginRequest;
+import it.unical.dto.GoogleCodeLoginRequest;
 import it.unical.exception.FieldException;
 import it.unical.model.User;
 import it.unical.repository.UserRepository;
@@ -11,9 +12,15 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Service
 public class AuthService {
@@ -22,15 +29,24 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final EmailVerificationService emailVerificationService;
     private final GoogleIdTokenVerifier googleIdTokenVerifier;
+    private final String googleClientId;
+    private final String googleClientSecret;
+    private final String googleRedirectUri;
 
     public AuthService(UserRepository userRepo,
                        PasswordEncoder passwordEncoder,
                        EmailVerificationService emailVerificationService,
-                       GoogleIdTokenVerifier googleIdTokenVerifier) {
+                       GoogleIdTokenVerifier googleIdTokenVerifier,
+                       @Value("${app.google.client-id}") String googleClientId,
+                       @Value("${app.google.client-secret}") String googleClientSecret,
+                       @Value("${app.google.redirect-uri}") String googleRedirectUri) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
         this.emailVerificationService = emailVerificationService;
         this.googleIdTokenVerifier = googleIdTokenVerifier;
+        this.googleClientId = googleClientId;
+        this.googleClientSecret = googleClientSecret;
+        this.googleRedirectUri = googleRedirectUri;
     }
 
     public void register(SignUpRequest request) {
@@ -52,6 +68,100 @@ public class AuthService {
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
             throw new FieldException("password", "Email o password errati");
+        }
+
+        Map<String, String> data = new HashMap<>();
+        data.put("id", String.valueOf(user.getId()));
+        data.put("name", user.getName());
+        data.put("email", user.getEmail());
+
+        return data;
+    }
+
+    public Map<String, String> loginWithGoogleCode(GoogleCodeLoginRequest request) {
+        if (googleClientSecret == null || googleClientSecret.isBlank()) {
+            throw new FieldException("google", "Configura GOOGLE_CLIENT_SECRET sul backend");
+        }
+
+        String idTokenString = exchangeCodeForIdToken(request.getCode());
+        return handleGoogleIdToken(idTokenString);
+    }
+
+    private String exchangeCodeForIdToken(String code) {
+        String tokenEndpoint = "https://oauth2.googleapis.com/token";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        String body = "code=" + urlEncode(code) +
+                "&client_id=" + urlEncode(googleClientId) +
+                "&client_secret=" + urlEncode(googleClientSecret) +
+                "&redirect_uri=" + urlEncode(googleRedirectUri) +
+                "&grant_type=authorization_code";
+
+        HttpEntity<String> entity = new HttpEntity<>(body, headers);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Map> response;
+
+        try {
+            response = restTemplate.exchange(tokenEndpoint, HttpMethod.POST, entity, Map.class);
+        } catch (RestClientException e) {
+            throw new FieldException("google", "Impossibile scambiare il codice Google");
+        }
+
+        if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+            throw new FieldException("google", "Impossibile scambiare il codice Google");
+        }
+
+        Object idToken = response.getBody().get("id_token");
+        if (idToken == null) {
+            throw new FieldException("google", "Token Google non presente nella risposta");
+        }
+        return idToken.toString();
+    }
+
+    private String urlEncode(String value) {
+        return URLEncoder.encode(value, StandardCharsets.UTF_8);
+    }
+
+    private Map<String, String> handleGoogleIdToken(String idTokenString) {
+        GoogleIdToken idToken;
+        try {
+            idToken = googleIdTokenVerifier.verify(idTokenString);
+        } catch (Exception e) {
+            throw new FieldException("google", "Token Google non valido");
+        }
+
+        if (idToken == null) {
+            throw new FieldException("google", "Token Google non valido");
+        }
+
+        Payload payload = idToken.getPayload();
+        String email = payload.getEmail();
+        Boolean emailVerified = (Boolean) payload.getOrDefault("email_verified", Boolean.FALSE);
+        String nameFromGoogle = (String) payload.getOrDefault("name",
+                (String) payload.getOrDefault("given_name", null));
+
+        if (email == null || !emailVerified) {
+            throw new FieldException("google", "Email Google non verificata o mancante");
+        }
+
+        String fallbackName = nameFromGoogle != null && !nameFromGoogle.isBlank()
+                ? nameFromGoogle
+                : email.split("@")[0];
+
+        User user = userRepo.findByEmail(email).orElseGet(() -> {
+            User u = new User();
+            u.setEmail(email);
+            u.setName(fallbackName);
+            u.setPasswordHash(""); // accesso tramite Google, nessuna password locale
+            return userRepo.save(u);
+        });
+
+        // Se l'utente esiste ma non ha nome, aggiorniamolo con il nome di Google
+        if ((user.getName() == null || user.getName().isBlank()) && fallbackName != null) {
+            user.setName(fallbackName);
+            userRepo.save(user);
         }
 
         Map<String, String> data = new HashMap<>();
