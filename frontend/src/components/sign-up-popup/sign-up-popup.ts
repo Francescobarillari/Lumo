@@ -131,8 +131,8 @@ export class SignUpPopup {
     this.generalError = null;
 
     try {
-      const idToken = await this.googleIdentity.getIdToken();
-      this.auth.loginWithGoogle({ idToken }).subscribe({
+      const code = await this.googleIdentity.getAuthCode();
+      this.auth.loginWithGoogleCode({ code }).subscribe({
         next: (res) => {
           // Consideriamo l'utente autenticato con Google.
           this.signInSuccess.emit({
