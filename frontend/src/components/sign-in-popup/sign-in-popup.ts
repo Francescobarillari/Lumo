@@ -113,8 +113,8 @@ export class SignInPopup {
     this.generalError = null;
 
     try {
-      const code = await this.googleIdentity.getAuthCode();
-      this.auth.loginWithGoogleCode({ code }).subscribe({
+      const idToken = await this.googleIdentity.getIdToken();
+      this.auth.loginWithGoogle({ idToken }).subscribe({
         next: (res) => {
           this.signInSuccess.emit({
             id: res?.data?.id || '',
