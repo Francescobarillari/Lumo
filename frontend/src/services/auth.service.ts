@@ -9,9 +9,9 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  signUp(payload: { name: string; birthdate: string; email: string; password: string }): Observable<any> {
+  signUp(payload: { name: string; birthdate: string; email: string; password: string }): Observable<ApiResponse<{ token: string }>> {
     console.log('Payload inviato:', payload);
-    return this.http.post(`${this.baseUrl}/signup`, payload);
+    return this.http.post<ApiResponse<{ token: string }>>(`${this.baseUrl}/signup`, payload);
   }
 
   login(payload: { email: string; password: string }): Observable<ApiResponse<{ id: string; name: string; email: string }>> {
@@ -39,8 +39,8 @@ export class AuthService {
     return this.http.get<ApiResponse<any>>(`${this.baseUrl}/verify?token=${token}`);
   }
 
-  resendEmail(oldToken: string): Observable<ApiResponse<any>> {
-    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/resend-token`, { oldToken });
+  resendEmail(payload: { oldToken?: string; email?: string }): Observable<ApiResponse<{ token: string }>> {
+    return this.http.post<ApiResponse<{ token: string }>>(`${this.baseUrl}/resend-token`, payload);
   }
 
 }

@@ -49,11 +49,11 @@ public class AuthService {
         this.googleRedirectUri = googleRedirectUri;
     }
 
-    public void register(SignUpRequest request) {
+    public String register(SignUpRequest request) {
         if (userRepo.existsByEmail(request.getEmail())) {
             throw new FieldException("email", "Email già usata");
         }
-        emailVerificationService.createPendingRegistration(
+        return emailVerificationService.createPendingRegistration(
             request.getName(),
             request.getEmail(),
             request.getBirthdate(),

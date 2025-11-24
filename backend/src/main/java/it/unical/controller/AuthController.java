@@ -10,6 +10,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -22,8 +24,8 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse> signUp(@Valid @RequestBody SignUpRequest request) {
-        authService.register(request);
-        return ResponseEntity.ok(ApiResponse.ok());
+        String token = authService.register(request);
+        return ResponseEntity.ok(ApiResponse.ok(Map.of("token", token)));
     }
 
     @PostMapping("/login")

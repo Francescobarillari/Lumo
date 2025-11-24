@@ -38,7 +38,7 @@ public class EmailVerificationService {
         this.frontendVerifyBaseUrl = env.getProperty("app.frontend.verify-url", "http://localhost:4200/verify-email");
     }
 
-    public void createPendingRegistration(String name, String email, String birthdate, String rawPassword) {
+    public String createPendingRegistration(String name, String email, String birthdate, String rawPassword) {
         if (userRepo.existsByEmail(email)) {
             throw new FieldException("email", "Email già usata");
         }
@@ -57,6 +57,7 @@ public class EmailVerificationService {
         verificationRepo.save(v);
 
         sendVerificationEmail(v);
+        return v.getToken();
     }
 
     private void sendVerificationEmail(EmailVerification v) {
@@ -75,6 +76,34 @@ public class EmailVerificationService {
         msg.setText(text);
         System.out.println("Invio mail a: " + v.getEmail() + " link: " + link);
         mailSender.send(msg);
+    }
+
+    public String resendVerification(String oldToken, String email) {
+        EmailVerification v = null;
+
+        if (oldToken != null && !oldToken.isBlank()) {
+            v = verificationRepo.findByToken(oldToken).orElse(null);
+        }
+
+        if (v == null && email != null && !email.isBlank()) {
+            v = verificationRepo.findByEmailAndUsedFalse(email).orElse(null);
+        }
+
+        if (v == null) {
+            throw new RuntimeException("Registrazione non trovata o già verificata");
+        }
+
+        if (v.isUsed() || userRepo.existsByEmail(v.getEmail())) {
+            throw new RuntimeException("Email già verificata");
+        }
+
+        v.setToken(UUID.randomUUID().toString());
+        v.setExpiresAt(LocalDateTime.now().plusHours(TOKEN_TTL_HOURS));
+        v.setUsed(false);
+        verificationRepo.save(v);
+
+        sendVerificationEmail(v);
+        return v.getToken();
     }
 
     public void verifyTokenAndCreateUser(String token) {

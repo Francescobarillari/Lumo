@@ -73,9 +73,15 @@ export class SignUpPopup {
       next: (res) => {
         this.errors = {};   
         this.generalError = null;
+
+        if (!res?.success) {
+          this.generalError = res?.error || 'Registrazione non riuscita.';
+          return;
+        }
+
         this.signUpSuccess.emit({
           email: this.form.value.email, 
-          token: res?.token || ''   
+          token: res?.data?.token || ''   
         });
       },
 

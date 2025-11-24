@@ -51,15 +51,29 @@ export class Home implements OnInit {
 
   
   openVerifyPopup(email?: string, token?: string) {
-  if (email !== undefined) this.recentEmail = email;
-  if (token !== undefined) this.recentToken = token;
+    if (email !== undefined) this.recentEmail = email;
+    if (token !== undefined) this.recentToken = token;
 
-  this.closeAll();
-  this.showVerifyPopup = true;
-}
+    this.closeAll();
+    this.showVerifyPopup = true;
+  }
 
   resendEmail() {
-    this.authService.resendEmail(this.recentToken).subscribe();
+    if (!this.recentToken && !this.recentEmail) {
+      return;
+    }
+
+    this.authService.resendEmail({ oldToken: this.recentToken, email: this.recentEmail }).subscribe({
+      next: (res) => {
+        if (res?.data?.token) {
+          this.recentToken = res.data.token;
+        }
+        this.emailVerified = false;
+      },
+      error: (err) => {
+        console.error('Errore nel reinvio della mail di verifica', err);
+      }
+    });
   }
 
   openSignUp() {
