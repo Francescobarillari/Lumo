@@ -1,0 +1,94 @@
+.sidebar-container {
+    width: 320px;
+    height: 95vh;
+    background-color: #1a1a1a;
+    /* Very dark grey, almost black */
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    border-radius: 16px;
+    box-shadow: 4px 0 12px rgba(0, 0, 0, 0.3);
+    color: white;
+    font-family: 'Roboto', sans-serif;
+    /* Custom Scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: #444444 transparent;
+    overflow-y: auto;
+    /* Ensure it sits on top of map */
+    position: absolute;
+    top: 2.5vh;
+    left: 20px;
+    z-index: 1000;
+}
+
+.sidebar-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar-container::-webkit-scrollbar-thumb {
+    background-color: #444444;
+    border-radius: 20px;
+}
+
+.logo {
+    color: #fbbc04;
+    /* Yellow/Orange */
+    font-size: 24px;
+    font-weight: 900;
+    margin: 0;
+    letter-spacing: 1px;
+    text-shadow: none;
+}
+
+.search-container {
+    position: relative;
+    width: 100%;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 40px 12px 16px;
+    background-color: #2c2c2c;
+    border: none;
+    border-radius: 8px;
+    color: #aaaaaa;
+    font-size: 14px;
+    outline: none;
+    box-sizing: border-box;
+    /* Ensure padding doesn't affect width */
+}
+
+.search-input::placeholder {
+    color: #666666;
+}
+
+.search-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666666;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+.section-title {
+    color: #fbbc04;
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0 0 16px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.events-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}

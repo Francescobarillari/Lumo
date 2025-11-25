@@ -1,0 +1,21 @@
+<div class="sidebar-container">
+    <div class="header">
+        <h1 class="logo">LUMO</h1>
+    </div>
+
+    <div class="search-container">
+        <input type="text" placeholder="Search city, events or user" class="search-input">
+        <mat-icon class="search-icon">search</mat-icon>
+    </div>
+
+    <div class="events-section">
+        <h2 class="section-title">FOUND EVENTS</h2>
+
+        <div class="events-list">
+            @for (event of events; track $index) {
+            <app-event-card [title]="event.title" [location]="event.location" [dateTime]="event.dateTime">
+            </app-event-card>
+            }
+        </div>
+    </div>
+</div>
