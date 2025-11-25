@@ -3,6 +3,9 @@
         <h3 class="title">{{ title() }}</h3>
         <p class="location">{{ location() }}</p>
         <p class="date-time">{{ dateTime() }}</p>
+        @if (distance()) {
+          <p class="distance">{{ distance() }}</p>
+        }
     </div>
     <div class="actions-section">
         <div class="icon-circle" (click)="focusLocation.emit()">

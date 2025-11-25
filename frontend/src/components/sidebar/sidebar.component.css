@@ -1,8 +1,8 @@
 .sidebar-container {
     width: 320px;
+    max-width: 90vw;
     height: 95vh;
     background-color: #1a1a1a;
-    /* Very dark grey, almost black */
     padding: 24px;
     display: flex;
     flex-direction: column;
@@ -11,15 +11,25 @@
     box-shadow: 4px 0 12px rgba(0, 0, 0, 0.3);
     color: white;
     font-family: 'Roboto', sans-serif;
-    /* Custom Scrollbar */
     scrollbar-width: thin;
     scrollbar-color: #444444 transparent;
     overflow-y: auto;
-    /* Ensure it sits on top of map */
     position: absolute;
     top: 2.5vh;
-    left: 20px;
+    left: 12px;
     z-index: 1000;
+    transition: transform 0.2s ease, width 0.2s ease, padding 0.2s ease;
+}
+
+.sidebar-container.collapsed {
+    transform: none;
+    width: 140px;
+    max-width: 45vw;
+    height: auto;
+    padding: 12px;
+    gap: 8px;
+    overflow: hidden;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.25);
 }
 
 .sidebar-container::-webkit-scrollbar {
@@ -91,4 +101,50 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
+}
+
+.collapse-toggle {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: #2c2c2c;
+    color: #f5f5f5;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    z-index: 1010;
+}
+
+.collapse-toggle:hover {
+    background: #3a3a3a;
+}
+
+.collapse-toggle:active {
+    transform: scale(0.96);
+}
+
+.sidebar-container.collapsed .collapse-toggle {
+    right: 8px;
+    top: 8px;
+}
+
+@media (max-width: 768px) {
+    .sidebar-container {
+        width: 280px;
+        max-width: 80vw;
+        left: 8px;
+        top: 12px;
+        height: 88vh;
+    }
+
+    .sidebar-container.collapsed {
+        width: 130px;
+        max-width: 50vw;
+        height: auto;
+    }
 }

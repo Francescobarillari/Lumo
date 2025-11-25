@@ -12,6 +12,7 @@ export class EventCardComponent {
     title = input.required<string>();
     location = input.required<string>();
     dateTime = input.required<string>();
+    distance = input<string>();
 
     @Output() focusLocation = new EventEmitter<void>();
 }

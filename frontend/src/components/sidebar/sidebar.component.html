@@ -1,14 +1,18 @@
-<div class="sidebar-container">
+<div class="sidebar-container" [class.collapsed]="collapsed">
+    <button class="collapse-toggle" (click)="toggle()">
+        <mat-icon>{{ collapsed ? 'chevron_right' : 'chevron_left' }}</mat-icon>
+    </button>
+
     <div class="header">
         <h1 class="logo">LUMO</h1>
     </div>
 
-    <div class="search-container">
+    <div class="search-container" *ngIf="!collapsed">
         <input type="text" placeholder="Search city, events or user" class="search-input">
         <mat-icon class="search-icon">search</mat-icon>
     </div>
 
-    <div class="events-section">
+    <div class="events-section" *ngIf="!collapsed">
         <h2 class="section-title">FOUND EVENTS</h2>
 
         <div class="events-list">
@@ -17,6 +21,7 @@
                 [title]="event.title"
                 [location]="event.city"
                 [dateTime]="formatDateTime(event)"
+                [distance]="formatDistance(event.distanceKm)"
                 (focusLocation)="goToEvent(event)"
             />
             }

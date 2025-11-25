@@ -10,4 +10,5 @@ export interface Event {
   createdAt: string;
   latitude: number;
   longitude: number;
+  distanceKm?: number;
 }

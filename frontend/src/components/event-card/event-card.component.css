@@ -39,6 +39,12 @@
     color: #888888;
 }
 
+.distance {
+    margin: 0;
+    font-size: 10px;
+    color: #aaaaaa;
+}
+
 .actions-section {
     display: flex;
     gap: 8px;
