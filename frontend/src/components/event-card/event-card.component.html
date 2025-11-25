@@ -5,7 +5,7 @@
         <p class="date-time">{{ dateTime() }}</p>
     </div>
     <div class="actions-section">
-        <div class="icon-circle">
+        <div class="icon-circle" (click)="focusLocation.emit()">
             <mat-icon>place</mat-icon>
         </div>
         <div class="icon-circle">

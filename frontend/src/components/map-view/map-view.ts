@@ -1,6 +1,8 @@
 import { Component, AfterViewInit, OnDestroy } from '@angular/core';
 import { Environment } from '../../environment/environment';
 import * as mapboxgl from 'mapbox-gl';
+import { EventService } from '../../services/event.service';
+import { Event } from '../../models/event';
 
 // crea l'elemento HTML per il marker della posizione utente
 const userMarkerEl = document.createElement('div');
@@ -17,7 +19,7 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 @Component({
   selector: 'MapView',
   template: `
-    <app-sidebar></app-sidebar>
+    <app-sidebar [events]="events" (focusEvent)="flyToEvent($event)"></app-sidebar>
     <div id="map" class="map-container"></div>
   `,
   styles: `
@@ -32,6 +34,10 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 // classe del componente MapView
 export class MapView implements AfterViewInit, OnDestroy {
   private map!: mapboxgl.Map;
+  private eventMarkers = new Map<number, mapboxgl.Marker>();
+  events: Event[] = [];
+
+  constructor(private eventService: EventService) {}
 
   ngAfterViewInit(): void {
     this.map = new mapboxgl.Map({
@@ -78,10 +84,74 @@ export class MapView implements AfterViewInit, OnDestroy {
         { enableHighAccuracy: true }
       );
     }
+
+    this.loadEvents();
   }
 
   ngOnDestroy(): void {
     if (this.map) this.map.remove();
+    this.eventMarkers.forEach((marker) => marker.remove());
+  }
+
+  private loadEvents() {
+    this.eventService.getEvents().subscribe({
+      next: (events) => {
+        this.events = events;
+        this.placeEventMarkers();
+      },
+      error: (err) => {
+        console.error('Errore nel recupero degli eventi', err);
+      }
+    });
+  }
+
+  private placeEventMarkers() {
+    this.eventMarkers.forEach((marker) => marker.remove());
+    this.eventMarkers.clear();
+
+    this.events.forEach((event) => {
+      if (event.latitude == null || event.longitude == null) return;
+
+      const marker = new mapboxgl.Marker({ color: '#fbbc04' })
+        .setLngLat([event.longitude, event.latitude])
+        .setPopup(
+          new mapboxgl.Popup({ offset: 25 }).setHTML(
+            `<strong>${event.title}</strong><br>${event.city || ''}<br>${this.formatDateTime(event)}`
+          )
+        )
+        .addTo(this.map);
+
+      if (typeof event.id === 'number') {
+        this.eventMarkers.set(event.id, marker);
+      }
+    });
+  }
+
+  flyToEvent(event: Event) {
+    if (!this.map || event.longitude == null || event.latitude == null) return;
+
+    this.map.flyTo({
+      center: [event.longitude, event.latitude],
+      zoom: 15,
+      essential: true
+    });
+
+    if (typeof event.id === 'number') {
+      const marker = this.eventMarkers.get(event.id);
+      marker?.togglePopup();
+    }
+  }
+
+  private formatDateTime(event: Event): string {
+    const date = event.date ? new Date(`${event.date}T00:00:00`) : null;
+    const start = event.startTime ? event.startTime.slice(0, 5) : '';
+    const end = event.endTime ? event.endTime.slice(0, 5) : '';
+
+    const datePart = date
+      ? date.toLocaleDateString('it-IT', { day: '2-digit', month: 'short' })
+      : '';
+    const timePart = start && end ? `${start} - ${end}` : start || end;
+
+    return [datePart, timePart].filter(Boolean).join(' | ');
   }
 }
-

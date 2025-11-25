@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, EventEmitter, Input, Output, input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
@@ -12,4 +12,6 @@ export class EventCardComponent {
     title = input.required<string>();
     location = input.required<string>();
     dateTime = input.required<string>();
+
+    @Output() focusLocation = new EventEmitter<void>();
 }

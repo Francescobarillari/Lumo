@@ -23,7 +23,7 @@ public class EventService {
 
     // ✅ Restituisce tutti gli eventi
     public List<Event> getAllEvents() {
-        return eventRepository.findAll();
+        return eventRepository.findAllByOrderByDateAscStartTimeAsc();
     }
 
     // ✅ Trova un evento per ID
