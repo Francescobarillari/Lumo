@@ -11,7 +11,7 @@ import { GoogleIdentityService } from '../../services/google-identity.service';
   standalone: true,
   imports: [CircleIcon, FormField],
   templateUrl: './sign-in-popup.html',
-  styleUrls: ['./sign-in-popup.css'],  
+  styleUrls: ['./sign-in-popup.css'],
 })
 export class SignInPopup {
   @Output() close = new EventEmitter<void>();
@@ -113,8 +113,8 @@ export class SignInPopup {
     this.generalError = null;
 
     try {
-      const idToken = await this.googleIdentity.getIdToken();
-      this.auth.loginWithGoogle({ idToken }).subscribe({
+      const code = await this.googleIdentity.getAuthCode();
+      this.auth.loginWithGoogleCode({ code }).subscribe({
         next: (res) => {
           this.signInSuccess.emit({
             id: res?.data?.id || '',
