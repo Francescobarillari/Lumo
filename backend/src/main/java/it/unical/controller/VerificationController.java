@@ -22,8 +22,12 @@ public class VerificationController {
     @GetMapping("/verify")
     public ResponseEntity<ApiResponse> verifyEmail(@RequestParam("token") String token) {
         try {
-            emailVerificationService.verifyTokenAndCreateUser(token);
-            return ResponseEntity.ok(ApiResponse.ok(null));
+            var user = emailVerificationService.verifyTokenAndCreateUser(token);
+            Map<String, String> data = Map.of(
+                    "id", String.valueOf(user.getId()),
+                    "name", user.getName(),
+                    "email", user.getEmail());
+            return ResponseEntity.ok(ApiResponse.ok(data));
         } catch (RuntimeException ex) {
             return ResponseEntity.badRequest().body(ApiResponse.fail(ex.getMessage()));
         }
@@ -34,8 +38,7 @@ public class VerificationController {
         try {
             String newToken = emailVerificationService.resendVerification(
                     request != null ? request.getOldToken() : null,
-                    request != null ? request.getEmail() : null
-            );
+                    request != null ? request.getEmail() : null);
             return ResponseEntity.ok(ApiResponse.ok(Map.of("token", newToken)));
         } catch (RuntimeException ex) {
             return ResponseEntity.badRequest().body(ApiResponse.fail(ex.getMessage()));

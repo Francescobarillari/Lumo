@@ -19,7 +19,7 @@ export class VerifyEmailPage implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private authService: AuthService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
@@ -31,9 +31,17 @@ export class VerifyEmailPage implements OnInit {
     if (!this.token) return;
 
     this.authService.verifyEmail(this.token).subscribe({
-      next: () => {
+      next: (res) => {
         this.verified = true;
-        this.message = 'Ti sei registrato con successo!';
+        this.message = 'Ti sei registrato con successo! Accesso in corso...';
+
+        if (res.data) {
+          localStorage.setItem('user', JSON.stringify(res.data));
+        }
+
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 1500);
       },
       error: (err) => {
         this.verified = false;

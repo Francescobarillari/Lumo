@@ -7,7 +7,7 @@ import { ApiResponse } from '../models/api-response';
 export class AuthService {
   private baseUrl = 'http://localhost:8080/api/auth';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   signUp(payload: { name: string; birthdate: string; email: string; password: string }): Observable<ApiResponse<{ token: string }>> {
     console.log('Payload inviato:', payload);
@@ -35,8 +35,8 @@ export class AuthService {
     );
   }
 
-  verifyEmail(token: string): Observable<ApiResponse<any>> {
-    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/verify?token=${token}`);
+  verifyEmail(token: string): Observable<ApiResponse<{ id: string; name: string; email: string }>> {
+    return this.http.get<ApiResponse<{ id: string; name: string; email: string }>>(`${this.baseUrl}/verify?token=${token}`);
   }
 
   resendEmail(payload: { oldToken?: string; email?: string }): Observable<ApiResponse<{ token: string }>> {

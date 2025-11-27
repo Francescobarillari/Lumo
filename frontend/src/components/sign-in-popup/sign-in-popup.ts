@@ -71,6 +71,11 @@ export class SignInPopup {
           name: res?.data?.name || '',
           email: res?.data?.email || payload.email
         });
+        localStorage.setItem('user', JSON.stringify({
+          id: res?.data?.id || '',
+          name: res?.data?.name || '',
+          email: res?.data?.email || payload.email
+        }));
         this.closePopup();
       },
       error: (err) => {
@@ -121,6 +126,7 @@ export class SignInPopup {
             name: res?.data?.name || '',
             email: res?.data?.email || ''
           });
+          localStorage.setItem('user', JSON.stringify(res.data));
           this.closePopup();
         },
         error: (err) => {

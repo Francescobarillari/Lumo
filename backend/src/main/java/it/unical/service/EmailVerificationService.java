@@ -29,8 +29,7 @@ public class EmailVerificationService {
             UserRepository userRepo,
             JavaMailSender mailSender,
             PasswordEncoder passwordEncoder,
-            org.springframework.core.env.Environment env
-    ) {
+            org.springframework.core.env.Environment env) {
         this.verificationRepo = verificationRepo;
         this.userRepo = userRepo;
         this.mailSender = mailSender;
@@ -106,26 +105,29 @@ public class EmailVerificationService {
         return v.getToken();
     }
 
-    public void verifyTokenAndCreateUser(String token) {
+    public User verifyTokenAndCreateUser(String token) {
         EmailVerification v = verificationRepo.findByToken(token)
                 .orElseThrow(() -> new RuntimeException("Token non valido"));
 
-        if (v.isUsed()) throw new RuntimeException("Token già usato");
-        if (v.getExpiresAt().isBefore(LocalDateTime.now())) throw new RuntimeException("Token scaduto");
+        if (v.isUsed())
+            throw new RuntimeException("Token già usato");
+        if (v.getExpiresAt().isBefore(LocalDateTime.now()))
+            throw new RuntimeException("Token scaduto");
 
         if (userRepo.existsByEmail(v.getEmail())) {
             throw new RuntimeException("Email già usata");
         }
-
 
         User user = new User();
         user.setName(v.getName());
         user.setEmail(v.getEmail());
         user.setBirthdate(v.getBirthdate());
         user.setPasswordHash(v.getPasswordHash());
-        userRepo.save(user);
+        user = userRepo.save(user);
 
         v.setUsed(true);
         verificationRepo.save(v);
+
+        return user;
     }
 }

@@ -28,9 +28,19 @@ export class Home implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private authService: AuthService
-  ) {}
+  ) { }
 
   ngOnInit() {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      try {
+        this.loggedUser = JSON.parse(storedUser);
+      } catch (e) {
+        console.error('Errore parsing utente locale', e);
+        localStorage.removeItem('user');
+      }
+    }
+
     this.route.queryParams.subscribe(params => {
       const token = params['token'];
       const email = params['email'];
@@ -42,14 +52,18 @@ export class Home implements OnInit {
         this.openVerifyPopup();
 
         this.authService.verifyEmail(token).subscribe({
-          next: () => this.emailVerified = true,
+          next: (res) => {
+            this.emailVerified = true;
+            // Se la verifica ha successo qui (popup), potremmo anche loggare l'utente
+            // ma per ora manteniamo il comportamento del popup
+          },
           error: () => this.emailVerified = false
         });
       }
     });
   }
 
-  
+
   openVerifyPopup(email?: string, token?: string) {
     if (email !== undefined) this.recentEmail = email;
     if (token !== undefined) this.recentToken = token;
@@ -106,6 +120,12 @@ export class Home implements OnInit {
       name: user?.name || user?.email || 'Utente',
       email: user?.email || ''
     };
+    localStorage.setItem('user', JSON.stringify(this.loggedUser));
     this.closeAll();
+  }
+
+  logout() {
+    this.loggedUser = null;
+    localStorage.removeItem('user');
   }
 }
