@@ -6,7 +6,14 @@
   </div>
   } @else {
   <div class="user-bar">
-    <span class="welcome-text">Ciao, <span class="user-name">{{ loggedUser.name || loggedUser.email }}</span></span>
+    <div class="profile-image-container" (click)="fileInput.click()">
+      @if (loggedUser.profileImage) {
+      <img [src]="loggedUser.profileImage" alt="Profile" class="profile-image">
+      } @else {
+      <div class="profile-placeholder">{{ getInitials(loggedUser.name || loggedUser.email) }}</div>
+      }
+      <input #fileInput type="file" (change)="onFileSelected($event)" style="display: none" accept="image/*">
+    </div>
     <div class="divider"></div>
     <a class="logout-link" (click)="logout()">Logout</a>
   </div>

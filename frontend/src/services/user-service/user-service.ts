@@ -9,6 +9,7 @@ export interface User {
   id: number;
   name: string;
   email: string;
+  profileImage?: string;
 }
 
 @Component({
@@ -21,7 +22,7 @@ export interface User {
 export class UserService {
   private apiUrl = 'http://localhost:8080/api/users';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
 
   @Injectable({

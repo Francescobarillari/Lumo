@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../../services/auth.service';
 import { MapView } from '../../../components/map-view/map-view';
 import { SignUpPopup } from '../../../components/sign-up-popup/sign-up-popup';
@@ -18,7 +19,7 @@ export class Home implements OnInit {
   showSignUp = false;
   showSignIn = false;
   showVerifyPopup = false;
-  loggedUser: { id: string; name: string; email: string } | null = null;
+  loggedUser: { id: string; name: string; email: string; profileImage?: string } | null = null;
 
   recentEmail = '';
   recentToken = '';
@@ -27,7 +28,8 @@ export class Home implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private authService: AuthService
+    private authService: AuthService,
+    private http: HttpClient
   ) { }
 
   ngOnInit() {
@@ -114,11 +116,13 @@ export class Home implements OnInit {
     this.openSignIn();
   }
 
-  onSignInSuccess(user: { id: string; name: string; email: string }) {
+  onSignInSuccess(user: { id: string; name: string; email: string; profileImage?: string }) {
+    console.log('User received on sign in:', user);
     this.loggedUser = {
       id: user?.id || '',
       name: user?.name || user?.email || 'Utente',
-      email: user?.email || ''
+      email: user?.email || '',
+      profileImage: (user as any).profileImage
     };
     localStorage.setItem('user', JSON.stringify(this.loggedUser));
     this.closeAll();
@@ -127,5 +131,28 @@ export class Home implements OnInit {
   logout() {
     this.loggedUser = null;
     localStorage.removeItem('user');
+  }
+
+  onFileSelected(event: any) {
+    const file: File = event.target.files[0];
+    if (file && this.loggedUser) {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      this.http.post<any>(`http://localhost:8080/api/users/${this.loggedUser.id}/image`, formData).subscribe({
+        next: (res) => {
+          if (this.loggedUser) {
+            this.loggedUser.profileImage = res.imageUrl;
+            localStorage.setItem('user', JSON.stringify(this.loggedUser));
+          }
+        },
+        error: (err) => console.error('Error uploading image', err)
+      });
+    }
+  }
+
+  getInitials(name: string): string {
+    if (!name) return '';
+    return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
   }
 }

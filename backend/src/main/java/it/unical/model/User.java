@@ -1,4 +1,5 @@
 package it.unical.model;
+
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -20,6 +21,11 @@ public class User {
     private String passwordHash;
 
     private String birthdate;
+
+    private String profileImage;
+
+    @Lob
+    private byte[] profileImageData;
 
     public Long getId() {
         return id;
@@ -56,8 +62,25 @@ public class User {
     public String getBirthdate() {
         return birthdate;
     }
+
     public void setBirthdate(String birthdate) {
         this.birthdate = birthdate;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
+    public byte[] getProfileImageData() {
+        return profileImageData;
+    }
+
+    public void setProfileImageData(byte[] profileImageData) {
+        this.profileImageData = profileImageData;
     }
 
 }

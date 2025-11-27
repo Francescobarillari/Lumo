@@ -17,12 +17,14 @@ import org.springframework.http.*;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.Map;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 @Service
+@Transactional
 public class AuthService {
 
     private final UserRepository userRepo;
@@ -57,7 +59,6 @@ public class AuthService {
                 request.getName(),
                 request.getEmail(),
                 request.getBirthdate(),
-
                 request.getPassword());
     }
 
@@ -73,6 +74,12 @@ public class AuthService {
         data.put("id", String.valueOf(user.getId()));
         data.put("name", user.getName());
         data.put("email", user.getEmail());
+
+        String profileImageUrl = user.getProfileImage();
+        if (profileImageUrl == null && user.getProfileImageData() != null) {
+            profileImageUrl = "http://localhost:8080/api/users/" + user.getId() + "/image";
+        }
+        data.put("profileImage", profileImageUrl);
 
         return data;
     }
@@ -137,6 +144,25 @@ public class AuthService {
             throw new FieldException("google", "Token Google non valido");
         }
 
+        return processGoogleLogin(idToken);
+    }
+
+    public Map<String, String> loginWithGoogle(GoogleLoginRequest request) {
+        GoogleIdToken idToken;
+        try {
+            idToken = googleIdTokenVerifier.verify(request.getIdToken());
+        } catch (Exception e) {
+            throw new FieldException("google", "Token Google non valido");
+        }
+
+        if (idToken == null) {
+            throw new FieldException("google", "Token Google non valido");
+        }
+
+        return processGoogleLogin(idToken);
+    }
+
+    private Map<String, String> processGoogleLogin(GoogleIdToken idToken) {
         Payload payload = idToken.getPayload();
         String email = payload.getEmail();
         Boolean emailVerified = (Boolean) payload.getOrDefault("email_verified", Boolean.FALSE);
@@ -156,7 +182,26 @@ public class AuthService {
             u.setEmail(email);
             u.setName(fallbackName);
             u.setPasswordHash(""); // accesso tramite Google, nessuna password locale
-            return userRepo.save(u);
+
+            String googleImgUrl = (String) payload.get("picture");
+            if (googleImgUrl != null) {
+                try {
+                    byte[] imageBytes = new RestTemplate().getForObject(googleImgUrl, byte[].class);
+                    byte[] resizedBytes = it.unical.utils.ImageUtility.resizeImage(imageBytes, 128, 128);
+                    u.setProfileImageData(resizedBytes);
+                } catch (Exception e) {
+                    System.err.println("Impossibile scaricare immagine Google: " + e.getMessage());
+                }
+            }
+
+            u = userRepo.save(u);
+
+            if (u.getProfileImageData() != null) {
+                u.setProfileImage("http://localhost:8080/api/users/" + u.getId() + "/image");
+                userRepo.save(u);
+            }
+
+            return u;
         });
 
         // Se l'utente esiste ma non ha nome, aggiorniamolo con il nome di Google
@@ -165,46 +210,35 @@ public class AuthService {
             userRepo.save(user);
         }
 
+        // Se l'utente non ha immagine profilo (o dati), proviamo a prenderla da Google
+        if (user.getProfileImageData() == null) {
+            String googleImgUrl = (String) payload.get("picture");
+            if (googleImgUrl != null) {
+                try {
+                    byte[] imageBytes = new RestTemplate().getForObject(googleImgUrl, byte[].class);
+                    byte[] resizedBytes = it.unical.utils.ImageUtility.resizeImage(imageBytes, 128, 128);
+                    user.setProfileImageData(resizedBytes);
+                    user.setProfileImage("http://localhost:8080/api/users/" + user.getId() + "/image");
+                    userRepo.save(user);
+                } catch (Exception e) {
+                    System.err.println("Impossibile scaricare immagine Google per utente esistente: " + e.getMessage());
+                }
+            }
+        }
+
         Map<String, String> data = new HashMap<>();
         data.put("id", String.valueOf(user.getId()));
         data.put("name", user.getName());
         data.put("email", user.getEmail());
 
-        return data;
-    }
-
-    public Map<String, String> loginWithGoogle(GoogleLoginRequest request) {
-        GoogleIdToken idToken;
-        try {
-            idToken = googleIdTokenVerifier.verify(request.getIdToken());
-        } catch (Exception e) {
-            throw new FieldException("google", "Token Google non valido");
+        String profileImageUrl = user.getProfileImage();
+        if (profileImageUrl == null && user.getProfileImageData() != null) {
+            profileImageUrl = "http://localhost:8080/api/users/" + user.getId() + "/image";
+            // Opzionale: aggiorniamo anche il DB per il futuro
+            user.setProfileImage(profileImageUrl);
+            userRepo.save(user);
         }
-
-        if (idToken == null) {
-            throw new FieldException("google", "Token Google non valido");
-        }
-
-        Payload payload = idToken.getPayload();
-        String email = payload.getEmail();
-        Boolean emailVerified = (Boolean) payload.getOrDefault("email_verified", Boolean.FALSE);
-
-        if (email == null || !emailVerified) {
-            throw new FieldException("google", "Email Google non verificata o mancante");
-        }
-
-        User user = userRepo.findByEmail(email).orElseGet(() -> {
-            User u = new User();
-            u.setEmail(email);
-            u.setName((String) payload.getOrDefault("name", (String) payload.get("given_name")));
-            u.setPasswordHash(""); // accesso tramite Google, nessuna password locale
-            return userRepo.save(u);
-        });
-
-        Map<String, String> data = new HashMap<>();
-        data.put("id", String.valueOf(user.getId()));
-        data.put("name", user.getName());
-        data.put("email", user.getEmail());
+        data.put("profileImage", profileImageUrl);
 
         return data;
     }

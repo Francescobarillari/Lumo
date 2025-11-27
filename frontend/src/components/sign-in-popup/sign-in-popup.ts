@@ -16,7 +16,7 @@ import { GoogleIdentityService } from '../../services/google-identity.service';
 export class SignInPopup {
   @Output() close = new EventEmitter<void>();
   @Output() switchToSignUp = new EventEmitter<void>();
-  @Output() signInSuccess = new EventEmitter<{ id: string; name: string; email: string }>();
+  @Output() signInSuccess = new EventEmitter<{ id: string; name: string; email: string; profileImage?: string }>();
 
   form: any;
 
@@ -69,12 +69,14 @@ export class SignInPopup {
         this.signInSuccess.emit({
           id: res?.data?.id || '',
           name: res?.data?.name || '',
-          email: res?.data?.email || payload.email
+          email: res?.data?.email || payload.email,
+          profileImage: res?.data?.profileImage
         });
         localStorage.setItem('user', JSON.stringify({
           id: res?.data?.id || '',
           name: res?.data?.name || '',
-          email: res?.data?.email || payload.email
+          email: res?.data?.email || payload.email,
+          profileImage: res?.data?.profileImage
         }));
         this.closePopup();
       },
@@ -124,7 +126,8 @@ export class SignInPopup {
           this.signInSuccess.emit({
             id: res?.data?.id || '',
             name: res?.data?.name || '',
-            email: res?.data?.email || ''
+            email: res?.data?.email || '',
+            profileImage: res?.data?.profileImage
           });
           localStorage.setItem('user', JSON.stringify(res.data));
           this.closePopup();

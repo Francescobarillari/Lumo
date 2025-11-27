@@ -14,29 +14,29 @@ export class AuthService {
     return this.http.post<ApiResponse<{ token: string }>>(`${this.baseUrl}/signup`, payload);
   }
 
-  login(payload: { email: string; password: string }): Observable<ApiResponse<{ id: string; name: string; email: string }>> {
-    return this.http.post<ApiResponse<{ id: string; name: string; email: string }>>(
+  login(payload: { email: string; password: string }): Observable<ApiResponse<{ id: string; name: string; email: string; profileImage?: string }>> {
+    return this.http.post<ApiResponse<{ id: string; name: string; email: string; profileImage?: string }>>(
       `${this.baseUrl}/login`,
       payload
     );
   }
 
-  loginWithGoogle(payload: { idToken: string }): Observable<ApiResponse<{ id: string; name: string; email: string }>> {
-    return this.http.post<ApiResponse<{ id: string; name: string; email: string }>>(
+  loginWithGoogle(payload: { idToken: string }): Observable<ApiResponse<{ id: string; name: string; email: string; profileImage?: string }>> {
+    return this.http.post<ApiResponse<{ id: string; name: string; email: string; profileImage?: string }>>(
       `${this.baseUrl}/login/google`,
       payload
     );
   }
 
-  loginWithGoogleCode(payload: { code: string }): Observable<ApiResponse<{ id: string; name: string; email: string }>> {
-    return this.http.post<ApiResponse<{ id: string; name: string; email: string }>>(
+  loginWithGoogleCode(payload: { code: string }): Observable<ApiResponse<{ id: string; name: string; email: string; profileImage?: string }>> {
+    return this.http.post<ApiResponse<{ id: string; name: string; email: string; profileImage?: string }>>(
       `${this.baseUrl}/login/google/code`,
       payload
     );
   }
 
-  verifyEmail(token: string): Observable<ApiResponse<{ id: string; name: string; email: string }>> {
-    return this.http.get<ApiResponse<{ id: string; name: string; email: string }>>(`${this.baseUrl}/verify?token=${token}`);
+  verifyEmail(token: string): Observable<ApiResponse<{ id: string; name: string; email: string; profileImage?: string }>> {
+    return this.http.get<ApiResponse<{ id: string; name: string; email: string; profileImage?: string }>>(`${this.baseUrl}/verify?token=${token}`);
   }
 
   resendEmail(payload: { oldToken?: string; email?: string }): Observable<ApiResponse<{ token: string }>> {
