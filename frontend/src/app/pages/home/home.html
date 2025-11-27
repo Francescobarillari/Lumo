@@ -1,38 +1,29 @@
 <div class="home-container">
+  @if (!loggedUser) {
   <div class="top-bar">
     <a class="button" (click)="openSignUp()">Sign Up</a>
     <a class="button" (click)="openSignIn()">Sign In</a>
   </div>
-
-  @if (loggedUser) {
-    <h1 class="welcome">Benvenuto, {{ loggedUser.name || loggedUser.email }}!</h1>
+  } @else {
+  <div class="user-bar">
+    <span class="welcome-text">Ciao, <span class="user-name">{{ loggedUser.name || loggedUser.email }}</span></span>
+    <div class="divider"></div>
+    <a class="logout-link" (click)="logout()">Logout</a>
+  </div>
   }
 
   @if (showSignUp) {
-    <SignUpPopup 
-        (switchToSignIn)="switchToSignIn()" 
-        (close)="closeAll()" 
-        (signUpSuccess)="openVerifyPopup($event.email, $event.token)"
-        (signInSuccess)="onSignInSuccess($event)"
-    />
+  <SignUpPopup (switchToSignIn)="switchToSignIn()" (close)="closeAll()"
+    (signUpSuccess)="openVerifyPopup($event.email, $event.token)" (signInSuccess)="onSignInSuccess($event)" />
   }
 
   @if (showVerifyPopup) {
-    <VerifyEmailPopup
-        [email]="recentEmail"
-        [token]="recentToken"
-        [verified]="emailVerified"
-        (close)="closeAll()"
-        (resendVerification)="resendEmail()"
-    />
+  <VerifyEmailPopup [email]="recentEmail" [token]="recentToken" [verified]="emailVerified" (close)="closeAll()"
+    (resendVerification)="resendEmail()" />
   }
 
   @if (showSignIn) {
-    <SignInPopup 
-        (switchToSignUp)="switchToSignUp()"  
-        (close)="closeAll()"
-        (signInSuccess)="onSignInSuccess($event)" 
-    />
+  <SignInPopup (switchToSignUp)="switchToSignUp()" (close)="closeAll()" (signInSuccess)="onSignInSuccess($event)" />
   }
 
   <MapView></MapView>

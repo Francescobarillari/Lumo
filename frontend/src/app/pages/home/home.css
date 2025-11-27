@@ -1,10 +1,62 @@
-.top-bar{
+.top-bar {
   display: flex;
   flex-direction: row;
   position: absolute;
   top: 20px;
   right: 20px;
-  display: flex;
   gap: 10px;
   z-index: 10;
+}
+
+.user-bar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  gap: 15px;
+  z-index: 10;
+  background-color: var(--color-gray, #1a1a1a);
+  padding: 8px 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  border: 1px solid #2c2c2c;
+  transition: all 0.3s ease;
+}
+
+.user-bar:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  border-color: var(--color-accent, #FCC324);
+}
+
+.welcome-text {
+  font-size: 14px;
+  color: var(--color-white, #FFFFFF);
+  font-weight: 300;
+}
+
+.user-name {
+  font-weight: 600;
+  color: var(--color-accent, #FCC324);
+  margin-left: 4px;
+}
+
+.divider {
+  width: 1px;
+  height: 20px;
+  background-color: #444;
+}
+
+.logout-link {
+  color: var(--color-light-gray, #6a6a6a);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.logout-link:hover {
+  color: var(--color-error, #E53935);
 }
