@@ -17,13 +17,8 @@
 
         <div class="events-list">
             @for (event of events; track $index) {
-            <app-event-card
-                [title]="event.title"
-                [location]="event.city"
-                [dateTime]="formatDateTime(event)"
-                [distance]="formatDistance(event.distanceKm)"
-                (focusLocation)="goToEvent(event)"
-            />
+            <app-event-card [title]="event.title" [location]="event.city" [dateTime]="formatDateTime(event)"
+                [distance]="formatDistance(event.distanceKm)" (focusLocation)="goToEvent(event)" />
             }
         </div>
     </div>

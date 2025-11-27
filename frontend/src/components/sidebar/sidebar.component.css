@@ -1,9 +1,9 @@
 .sidebar-container {
-    width: 320px;
+    width: 360px;
     max-width: 90vw;
     height: 95vh;
     background-color: #1a1a1a;
-    padding: 24px;
+    padding: 24px 0;
     display: flex;
     flex-direction: column;
     gap: 24px;
@@ -11,9 +11,6 @@
     box-shadow: 4px 0 12px rgba(0, 0, 0, 0.3);
     color: white;
     font-family: 'Roboto', sans-serif;
-    scrollbar-width: thin;
-    scrollbar-color: #444444 transparent;
-    overflow-y: auto;
     position: absolute;
     top: 2.5vh;
     left: 12px;
@@ -32,17 +29,29 @@
     box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.25);
 }
 
-.sidebar-container::-webkit-scrollbar {
+/* Scrollbar styles moved to events-section, but keeping global selector if needed or targeting specific class */
+.events-section::-webkit-scrollbar {
     width: 6px;
 }
 
-.sidebar-container::-webkit-scrollbar-track {
+.events-section::-webkit-scrollbar-track {
     background: transparent;
 }
 
-.sidebar-container::-webkit-scrollbar-thumb {
+.events-section::-webkit-scrollbar-thumb {
     background-color: #444444;
     border-radius: 20px;
+}
+
+/* Ensure children have spacing since container padding-x is 0 */
+.header,
+.search-container {
+    margin: 0 24px;
+}
+
+.sidebar-container.collapsed .header {
+    margin: 0;
+    /* Reset margin in collapsed mode */
 }
 
 .logo {
@@ -57,7 +66,6 @@
 
 .search-container {
     position: relative;
-    width: 100%;
 }
 
 .search-input {
@@ -97,10 +105,22 @@
     letter-spacing: 0.5px;
 }
 
+.events-section {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+    padding: 0 24px 24px 24px;
+    /* Bottom padding included here */
+    scrollbar-width: thin;
+    scrollbar-color: #444444 transparent;
+}
+
 .events-list {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 12px;
 }
 
 .collapse-toggle {
