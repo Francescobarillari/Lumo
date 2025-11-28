@@ -142,7 +142,8 @@ export class Home implements OnInit {
       this.http.post<any>(`http://localhost:8080/api/users/${this.loggedUser.id}/image`, formData).subscribe({
         next: (res) => {
           if (this.loggedUser) {
-            this.loggedUser.profileImage = res.imageUrl;
+            // Aggiungiamo un timestamp per evitare il caching del browser
+            this.loggedUser.profileImage = res.imageUrl + '?t=' + new Date().getTime();
             localStorage.setItem('user', JSON.stringify(this.loggedUser));
           }
         },

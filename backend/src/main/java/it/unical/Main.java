@@ -18,15 +18,15 @@ public class Main {
     @Bean
     CommandLineRunner init(UserRepository userRepository) {
         return args -> {
-            User user = new User();
-            user.setName("fra");
-            user.setEmail("fra@example.com");
-            userRepository.save(user);
+            if (userRepository.findByEmail("fra@example.com").isEmpty()) {
+                User user = new User();
+                user.setName("fra");
+                user.setEmail("fra@example.com");
+                userRepository.save(user);
+            }
 
-            userRepository.findAll().forEach(u ->
-                    System.out.println("User: " + u.getName() + ", Email: " + u.getEmail())
-            );
+            userRepository.findAll()
+                    .forEach(u -> System.out.println("User: " + u.getName() + ", Email: " + u.getEmail()));
         };
     }
 }
-
