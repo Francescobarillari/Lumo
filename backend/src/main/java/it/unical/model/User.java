@@ -24,7 +24,6 @@ public class User {
 
     private String profileImage;
 
-    @Lob
     private byte[] profileImageData;
 
     public Long getId() {
