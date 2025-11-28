@@ -6,16 +6,20 @@
   </div>
   } @else {
   <div class="user-bar">
-    <div class="profile-image-container" (click)="fileInput.click()">
+    <div class="profile-image-container" (click)="toggleUserMenu()">
       @if (loggedUser.profileImage) {
       <img [src]="loggedUser.profileImage" alt="Profile" class="profile-image">
       } @else {
       <div class="profile-placeholder">{{ getInitials(loggedUser.name || loggedUser.email) }}</div>
       }
-      <input #fileInput type="file" (change)="onFileSelected($event)" style="display: none" accept="image/*">
     </div>
-    <div class="divider"></div>
-    <a class="logout-link" (click)="logout()">Logout</a>
+
+    <!-- Hidden input for file selection triggered by menu -->
+    <input id="hiddenFileInput" type="file" (change)="onFileSelected($event)" style="display: none" accept="image/*">
+
+    @if (showUserMenu) {
+    <UserMenu (close)="showUserMenu = false" (action)="onMenuAction($event)"></UserMenu>
+    }
   </div>
   }
 
@@ -34,4 +38,10 @@
   }
 
   <MapView></MapView>
+
+  @if (showCropPopup && selectedImageFile) {
+  <CropImagePopup [imageFile]="selectedImageFile" (close)="showCropPopup = false"
+    (imageCropped)="onImageCropped($event)">
+  </CropImagePopup>
+  }
 </div>

@@ -7,10 +7,13 @@ import { SignUpPopup } from '../../../components/sign-up-popup/sign-up-popup';
 import { SignInPopup } from '../../../components/sign-in-popup/sign-in-popup';
 import { VerifyEmailPopup } from '../../../components/verify-email-popup/verify-email-popup';
 
+import { UserMenu } from '../../components/user-menu/user-menu';
+import { CropImagePopup } from '../../components/crop-image-popup/crop-image-popup';
+
 @Component({
   selector: 'Home',
   standalone: true,
-  imports: [MapView, SignUpPopup, SignInPopup, VerifyEmailPopup],
+  imports: [MapView, SignUpPopup, SignInPopup, VerifyEmailPopup, UserMenu, CropImagePopup],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
@@ -19,6 +22,12 @@ export class Home implements OnInit {
   showSignUp = false;
   showSignIn = false;
   showVerifyPopup = false;
+
+  // New states
+  showUserMenu = false;
+  showCropPopup = false;
+  selectedImageFile: File | null = null;
+
   loggedUser: { id: string; name: string; email: string; profileImage?: string } | null = null;
 
   recentEmail = '';
@@ -56,8 +65,6 @@ export class Home implements OnInit {
         this.authService.verifyEmail(token).subscribe({
           next: (res) => {
             this.emailVerified = true;
-            // Se la verifica ha successo qui (popup), potremmo anche loggare l'utente
-            // ma per ora manteniamo il comportamento del popup
           },
           error: () => this.emailVerified = false
         });
@@ -106,6 +113,8 @@ export class Home implements OnInit {
     this.showSignUp = false;
     this.showSignIn = false;
     this.showVerifyPopup = false;
+    this.showUserMenu = false;
+    this.showCropPopup = false;
   }
 
   switchToSignUp() {
@@ -131,13 +140,48 @@ export class Home implements OnInit {
   logout() {
     this.loggedUser = null;
     localStorage.removeItem('user');
+    this.closeAll();
   }
 
+  // Menu Actions
+  toggleUserMenu() {
+    this.showUserMenu = !this.showUserMenu;
+  }
+
+  onMenuAction(action: string) {
+    console.log('Menu action:', action);
+    if (action === 'logout') {
+      this.logout();
+    } else if (action === 'change-photo') {
+      // Trigger file input programmatically
+      const fileInput = document.getElementById('hiddenFileInput') as HTMLInputElement;
+      if (fileInput) {
+        fileInput.click();
+      }
+    } else if (action === 'account') {
+      // TODO: Navigate to account page
+      console.log('Navigate to Account');
+    } else if (action === 'events') {
+      // TODO: Navigate to events page
+      console.log('Navigate to Events');
+    }
+  }
+
+  // File Selection & Cropping
   onFileSelected(event: any) {
     const file: File = event.target.files[0];
-    if (file && this.loggedUser) {
+    if (file) {
+      this.selectedImageFile = file;
+      this.showCropPopup = true;
+      // Reset input value so same file can be selected again if needed
+      event.target.value = '';
+    }
+  }
+
+  onImageCropped(blob: Blob) {
+    if (this.loggedUser) {
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append('file', blob, 'profile.jpg');
 
       this.http.post<any>(`http://localhost:8080/api/users/${this.loggedUser.id}/image`, formData).subscribe({
         next: (res) => {
@@ -145,6 +189,7 @@ export class Home implements OnInit {
             // Aggiungiamo un timestamp per evitare il caching del browser
             this.loggedUser.profileImage = res.imageUrl + '?t=' + new Date().getTime();
             localStorage.setItem('user', JSON.stringify(this.loggedUser));
+            this.closeAll();
           }
         },
         error: (err) => console.error('Error uploading image', err)

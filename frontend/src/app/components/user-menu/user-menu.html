@@ -1,0 +1,17 @@
+<div class="menu-backdrop" (click)="close.emit()"></div>
+<div class="menu-container">
+  <div class="menu-item" (click)="onAction('account')">
+    <i class="icon">👤</i> Account
+  </div>
+  <div class="menu-item" (click)="onAction('events')">
+    <i class="icon">📅</i> Eventi
+  </div>
+  <div class="menu-divider"></div>
+  <div class="menu-item" (click)="onAction('change-photo')">
+    <i class="icon">📷</i> Cambia Foto
+  </div>
+  <div class="menu-divider"></div>
+  <div class="menu-item logout" (click)="onAction('logout')">
+    <i class="icon">🚪</i> Logout
+  </div>
+</div>
