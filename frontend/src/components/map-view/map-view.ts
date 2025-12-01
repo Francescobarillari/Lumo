@@ -45,16 +45,17 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
     height: 48px;
     border-radius: 50%;
     border: none;
-    background: #ffffff;
+    background: #1a1a1a;
     box-shadow: 0 2px 8px rgba(0,0,0,0.25);
     display: grid;
     place-items: center;
     cursor: pointer;
-    transition: box-shadow 0.2s ease, transform 0.1s ease;
+    transition: box-shadow 0.2s ease, transform 0.1s ease, background-color 0.2s;
     z-index: 1100;
   }
 
   .locate-btn:hover {
+    background: #333;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
   }
 
@@ -63,7 +64,7 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
   }
 
   .locate-btn mat-icon {
-    color: #1a1a1a;
+    color: #ffffff;
   }
 
   :host ::ng-deep .mapboxgl-popup.event-popup .mapboxgl-popup-content {
@@ -94,7 +95,7 @@ export class MapView implements AfterViewInit, OnDestroy {
   private userCoords: [number, number] | null = null;
   sidebarCollapsed = false;
 
-  constructor(private eventService: EventService) {}
+  constructor(private eventService: EventService) { }
 
   ngAfterViewInit(): void {
     this.map = new mapboxgl.Map({
