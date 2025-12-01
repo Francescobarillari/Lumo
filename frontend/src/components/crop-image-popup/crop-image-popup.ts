@@ -118,6 +118,16 @@ export class CropImagePopup implements AfterViewInit {
         this.draw();
     }
 
+    zoomIn() {
+        this.scale = Math.min(this.scale + 0.1, 5);
+        this.draw();
+    }
+
+    zoomOut() {
+        this.scale = Math.max(this.scale - 0.1, 0.1);
+        this.draw();
+    }
+
     crop() {
         // Create a temporary canvas for the final output
         const outputCanvas = document.createElement('canvas');
