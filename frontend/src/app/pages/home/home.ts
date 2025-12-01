@@ -7,13 +7,13 @@ import { SignUpPopup } from '../../../components/sign-up-popup/sign-up-popup';
 import { SignInPopup } from '../../../components/sign-in-popup/sign-in-popup';
 import { VerifyEmailPopup } from '../../../components/verify-email-popup/verify-email-popup';
 
-import { UserMenu } from '../../components/user-menu/user-menu';
-import { CropImagePopup } from '../../components/crop-image-popup/crop-image-popup';
+import { ActionBarComponent } from '../../../components/action-bar/action-bar';
+import { CropImagePopup } from '../../../components/crop-image-popup/crop-image-popup';
 
 @Component({
   selector: 'Home',
   standalone: true,
-  imports: [MapView, SignUpPopup, SignInPopup, VerifyEmailPopup, UserMenu, CropImagePopup],
+  imports: [MapView, SignUpPopup, SignInPopup, VerifyEmailPopup, ActionBarComponent, CropImagePopup],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
@@ -24,7 +24,6 @@ export class Home implements OnInit {
   showVerifyPopup = false;
 
   // New states
-  showUserMenu = false;
   showCropPopup = false;
   selectedImageFile: File | null = null;
 
@@ -113,7 +112,6 @@ export class Home implements OnInit {
     this.showSignUp = false;
     this.showSignIn = false;
     this.showVerifyPopup = false;
-    this.showUserMenu = false;
     this.showCropPopup = false;
   }
 
@@ -144,10 +142,6 @@ export class Home implements OnInit {
   }
 
   // Menu Actions
-  toggleUserMenu() {
-    this.showUserMenu = !this.showUserMenu;
-  }
-
   onMenuAction(action: string) {
     console.log('Menu action:', action);
     if (action === 'logout') {
@@ -164,6 +158,8 @@ export class Home implements OnInit {
     } else if (action === 'events') {
       // TODO: Navigate to events page
       console.log('Navigate to Events');
+    } else if (action === 'add-event') {
+      console.log('Add Event clicked');
     }
   }
 
@@ -195,10 +191,5 @@ export class Home implements OnInit {
         error: (err) => console.error('Error uploading image', err)
       });
     }
-  }
-
-  getInitials(name: string): string {
-    if (!name) return '';
-    return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
   }
 }

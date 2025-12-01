@@ -1,0 +1,14 @@
+<div class="action-bar">
+    <button class="add-event-btn" (click)="onAddEvent()">Add Event</button>
+    <div class="profile-trigger" (click)="toggleUserMenu()">
+        @if (loggedUser?.profileImage) {
+        <img [src]="loggedUser?.profileImage" alt="Profile" class="profile-image">
+        } @else {
+        <div class="profile-placeholder">{{ getInitials(loggedUser?.name || loggedUser?.email || '') }}</div>
+        }
+    </div>
+
+    @if (showUserMenu) {
+    <UserMenu (close)="showUserMenu = false" (action)="onMenuAction($event)"></UserMenu>
+    }
+</div>
