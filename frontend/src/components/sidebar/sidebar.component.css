@@ -9,6 +9,7 @@
     gap: 24px;
     border-radius: 16px;
     box-shadow: 4px 0 12px rgba(0, 0, 0, 0.3);
+    border: 2px solid var(--color-light-gray);
     color: white;
     font-family: 'Roboto', sans-serif;
     position: absolute;
@@ -44,14 +45,18 @@
 }
 
 /* Ensure children have spacing since container padding-x is 0 */
-.header,
-.search-container {
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     margin: 0 24px;
 }
 
 .sidebar-container.collapsed .header {
     margin: 0;
-    /* Reset margin in collapsed mode */
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 0;
 }
 
 .logo {
@@ -60,12 +65,14 @@
     font-size: 24px;
     font-weight: 900;
     margin: 0;
+    padding: 0;
     letter-spacing: 1px;
     text-shadow: none;
 }
 
 .search-container {
     position: relative;
+    margin: 0 24px;
 }
 
 .search-input {
@@ -124,9 +131,6 @@
 }
 
 .collapse-toggle {
-    position: absolute;
-    top: 12px;
-    right: 12px;
     width: 36px;
     height: 36px;
     border-radius: 50%;
@@ -146,11 +150,6 @@
 
 .collapse-toggle:active {
     transform: scale(0.96);
-}
-
-.sidebar-container.collapsed .collapse-toggle {
-    right: 8px;
-    top: 8px;
 }
 
 @media (max-width: 768px) {

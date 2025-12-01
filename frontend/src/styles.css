@@ -2,7 +2,7 @@
 @import url('mapbox-gl/dist/mapbox-gl.css');
 
 /* Reset CSS */
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -20,9 +20,9 @@
 
     /* Font e Pesi */
     --font-stack-headline: 'Stack Sans Headline', Arial, sans-serif;
-    --font-weight-light: 200; 
-    --font-weight-semibold: 600; 
-    --font-weight-bold: 700; 
+    --font-weight-light: 200;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
 }
 
 /*stili di base per il body*/
@@ -72,39 +72,46 @@ button.button {
     width: 100%;
     height: 50px;
     padding: 0 16px;
-    background-color: var(--color-accent); 
-    border: none; 
-    border-radius: 16px ;
-    box-shadow: 0 0 5px var(--color-accent, #FCC324); 
+    background-color: var(--color-accent);
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 0 5px var(--color-accent, #FCC324);
     color: var(--color-white, #FFFFFF);
-    font-size: 16px; 
+    font-size: 16px;
     font-weight: var(--font-weight-semibold, 600);
     font-family: var(--font-stack-headline, 'Stack Sans Headline'), Arial, sans-serif;
     text-decoration: none;
     cursor: pointer;
+    transition: transform 0.1s ease, filter 0.2s;
+}
+
+a.button:hover,
+button.button:hover {
+    filter: brightness(1.1);
+    transform: scale(1.02);
 }
 
 a.button.generic,
-button.button.generic{
-    background-color: var(--color-white); 
+button.button.generic {
+    background-color: var(--color-white);
 }
 
 .mat-datepicker-content {
     position: relative !important;
     margin: 5px 0 0 0 !important;
     right: 5px !important;
-    background-color: var(--color-gray) !important; 
+    background-color: var(--color-gray) !important;
     border-radius: 16px !important;
     box-shadow: 0 4px 15px var(--color-black) !important;
     padding: 0px 5px 20px 5px !important;
 }
 
 .mat-calendar-body {
-    background-color: var(--color-gray) !important; 
+    background-color: var(--color-gray) !important;
 }
 
 .mat-calendar-body-selected {
-    background-color: var(--color-accent) !important; 
+    background-color: var(--color-accent) !important;
     color: var(--color-black) !important;
 }
 
@@ -115,9 +122,9 @@ button.button.generic{
 
 .mat-calendar-table-header,
 .mat-calendar-table-header th,
-.mat-calendar-body-label, 
+.mat-calendar-body-label,
 .mat-calendar-period-switch,
-.mat-calendar-arrow { 
+.mat-calendar-arrow {
     color: var(--color-light-gray) !important;
 }
 
@@ -150,6 +157,7 @@ button.button.generic{
 .custom-date-field .mat-input-element::placeholder {
     color: var(--color-light-gray) !important;
 }
+
 .custom-date-field .mat-input-element:focus {
     outline: none !important;
 }
@@ -168,9 +176,11 @@ button.button.generic{
     color: var(--color-black) !important;
     border-radius: 12px !important;
 }
-.mat-mdc-form-field-subscript-wrapper{
+
+.mat-mdc-form-field-subscript-wrapper {
     display: none !important;
 }
+
 .mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-line-ripple::before {
     display: none !important;
 }
@@ -187,25 +197,32 @@ button.button.generic{
     width: 100%;
 }
 
-.mdc-text-field{
+.mdc-text-field {
     padding-left: 0 !important;
     width: 100%;
-} 
-.mdc-text-field--no-label:not(.mdc-text-field--textarea) .mat-mdc-form-field-input-control.mdc-text-field__input::placeholder{
+}
+
+.mdc-text-field--no-label:not(.mdc-text-field--textarea) .mat-mdc-form-field-input-control.mdc-text-field__input::placeholder {
     color: var(--color-light-gray) !important;
 }
+
 .mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-text-field__input {
     color: var(--color-white) !important;
     font-size: 16px !important;
 }
+
 .mat-datepicker-content {
     box-shadow: none !important;
 }
-*:active, *:focus {
+
+*:active,
+*:focus {
     outline: none !important;
 }
-.mdc-text-field--outlined .mat-mdc-form-field-infix, .mdc-text-field--no-label .mat-mdc-form-field-infix {
+
+.mdc-text-field--outlined .mat-mdc-form-field-infix,
+.mdc-text-field--no-label .mat-mdc-form-field-infix {
     padding-top: 12px !important;
     height: 50px !important;
-    padding-bottom: 0 !important; 
+    padding-bottom: 0 !important;
 }
