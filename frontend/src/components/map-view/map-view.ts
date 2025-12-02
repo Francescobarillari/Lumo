@@ -45,7 +45,7 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
     height: 48px;
     border-radius: 50%;
     border: none;
-    background: #1a1a1a;
+    background: var(--color-gray);
     box-shadow: 0 2px 8px rgba(0,0,0,0.25);
     display: grid;
     place-items: center;
@@ -64,11 +64,11 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
   }
 
   .locate-btn mat-icon {
-    color: #ffffff;
+    color: var(--color-white);
   }
 
   :host ::ng-deep .mapboxgl-popup.event-popup .mapboxgl-popup-content {
-    background: #1a1a1a;
+    background: var(--color-gray);
     color: #f5f5f5;
     border: 1px solid #2c2c2c;
     box-shadow: 0 4px 12px rgba(0,0,0,0.35);
@@ -80,7 +80,7 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
   }
 
   :host ::ng-deep .mapboxgl-popup.event-popup .mapboxgl-popup-tip {
-    border-top-color: #1a1a1a;
+    border-top-color: var(--color-gray);
   }
   `,
   standalone: true,

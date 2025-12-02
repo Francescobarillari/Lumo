@@ -6,11 +6,11 @@
   right: 20px;
   gap: 8px;
   z-index: 1000;
-  background: #1e1e1e;
+  background: var(--color-gray);
   padding: 8px;
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   box-sizing: border-box;
-  border: 2px solid var(--color-light-gray);
+  border: 1px solid var(--color-light-gray);
   align-items: center;
 }

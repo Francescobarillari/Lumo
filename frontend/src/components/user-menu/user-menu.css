@@ -2,29 +2,18 @@
   display: contents;
 }
 
-.menu-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 998;
-  cursor: default;
-}
-
 .menu-container {
   position: absolute;
   top: calc(100% + 10px);
   right: 0;
   width: 100%;
-  background: #1e1e1e;
+  background: var(--color-gray);
   border-radius: 16px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
   z-index: 999;
   animation: menuFadeIn 0.2s ease-out;
   transform-origin: top right;
   overflow: hidden;
-  padding: 0;
 }
 
 @keyframes menuFadeIn {
@@ -43,8 +32,7 @@
   display: flex;
   align-items: center;
   padding: 16px 20px;
-  color: #a0a0a0;
-  font-family: 'Inter', sans-serif;
+  color: var(--color-light-gray);
   font-size: 15px;
   font-weight: 400;
   cursor: pointer;
@@ -58,7 +46,7 @@
 
 .menu-item:hover {
   background: rgba(255, 255, 255, 0.05);
-  color: #fff;
+  color: var(--color-white);
 }
 
 .menu-item .icon {
@@ -68,10 +56,10 @@
 }
 
 .menu-item.logout {
-  color: #ff6b6b;
+  color: var(--color-error);
 }
 
 .menu-item.logout:hover {
   background: rgba(255, 107, 107, 0.1);
-  color: #ff8787;
+  color: var(--color-error);
 }

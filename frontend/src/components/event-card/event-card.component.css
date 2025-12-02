@@ -7,8 +7,7 @@
     border-radius: 12px;
     padding: 12px 16px;
     margin-bottom: 12px;
-    color: white;
-    font-family: 'Roboto', sans-serif;
+    color: var(--color-white);
     /* Assuming Roboto or similar */
 }
 
@@ -22,7 +21,7 @@
     margin: 0;
     font-size: 14px;
     font-weight: 500;
-    color: #ffffff;
+    color: var(--color-white);
 }
 
 .location {

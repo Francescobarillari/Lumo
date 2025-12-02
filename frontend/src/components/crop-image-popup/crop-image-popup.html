@@ -2,7 +2,7 @@
     <div class="crop-container">
         <div class="crop-header">
             <h3>Ritaglia Immagine</h3>
-            <button class="close-btn" (click)="close.emit()">×</button>
+            <CircleIcon (click)="close.emit()" [path]="'assets/icon/close.svg'"></CircleIcon>
         </div>
 
         <div class="canvas-wrapper">
@@ -20,8 +20,8 @@
         </div>
 
         <div class="actions">
-            <button class="btn-cancel" (click)="close.emit()">Annulla</button>
-            <button class="btn-confirm" (click)="crop()">Salva Foto</button>
+            <button class="btn-cancel button" (click)="close.emit()">Annulla</button>
+            <button class="button" (click)="crop()">Salva Foto</button>
         </div>
     </div>
 </div>

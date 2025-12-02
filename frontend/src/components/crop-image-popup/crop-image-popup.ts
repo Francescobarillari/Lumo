@@ -1,10 +1,11 @@
 import { Component, EventEmitter, Input, Output, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { CircleIcon } from '../circle-icon/circle-icon';
 
 @Component({
     selector: 'CropImagePopup',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, CircleIcon],
     templateUrl: './crop-image-popup.html',
     styleUrl: './crop-image-popup.css'
 })
