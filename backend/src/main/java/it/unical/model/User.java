@@ -9,6 +9,9 @@ import java.time.format.DateTimeFormatter;
 @Table(name = "users")
 public class User {
 
+    @Column(name = "is_admin")
+    private Boolean isAdmin = false;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -104,6 +107,14 @@ public class User {
 
     public void setSavedEvents(java.util.Set<Event> savedEvents) {
         this.savedEvents = savedEvents;
+    }
+
+    public Boolean getIsAdmin() {
+        return isAdmin != null ? isAdmin : false;
+    }
+
+    public void setIsAdmin(Boolean admin) {
+        isAdmin = admin;
     }
 
 }

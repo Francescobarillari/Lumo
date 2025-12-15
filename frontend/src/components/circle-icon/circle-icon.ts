@@ -8,7 +8,7 @@ import { ResponsiveService } from '../../services/responsive-service';
   styleUrl: './circle-icon.css',
 })
 export class CircleIcon {
-  constructor(public responsive: ResponsiveService) {}
+  constructor(public responsive: ResponsiveService) { }
 
   path = input(''); // percorso di default dell'icona
   iconAlt = input('icon'); // alt di default per l'icona

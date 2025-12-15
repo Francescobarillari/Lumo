@@ -80,6 +80,7 @@ public class AuthService {
             profileImageUrl = "http://localhost:8080/api/users/" + user.getId() + "/image";
         }
         data.put("profileImage", profileImageUrl);
+        data.put("isAdmin", String.valueOf(user.getIsAdmin()));
 
         return data;
     }
@@ -239,6 +240,7 @@ public class AuthService {
             userRepo.save(user);
         }
         data.put("profileImage", profileImageUrl);
+        data.put("isAdmin", String.valueOf(user.getIsAdmin()));
 
         return data;
     }

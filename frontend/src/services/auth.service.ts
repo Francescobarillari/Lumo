@@ -14,22 +14,22 @@ export class AuthService {
     return this.http.post<ApiResponse<{ token: string }>>(`${this.baseUrl}/signup`, payload);
   }
 
-  login(payload: { email: string; password: string }): Observable<ApiResponse<{ id: string; name: string; email: string; profileImage?: string }>> {
-    return this.http.post<ApiResponse<{ id: string; name: string; email: string; profileImage?: string }>>(
+  login(payload: { email: string; password: string }): Observable<ApiResponse<{ id: string; name: string; email: string; profileImage?: string; isAdmin?: string }>> {
+    return this.http.post<ApiResponse<{ id: string; name: string; email: string; profileImage?: string; isAdmin?: string }>>(
       `${this.baseUrl}/login`,
       payload
     );
   }
 
-  loginWithGoogle(payload: { idToken: string }): Observable<ApiResponse<{ id: string; name: string; email: string; profileImage?: string }>> {
-    return this.http.post<ApiResponse<{ id: string; name: string; email: string; profileImage?: string }>>(
+  loginWithGoogle(payload: { idToken: string }): Observable<ApiResponse<{ id: string; name: string; email: string; profileImage?: string; isAdmin?: string }>> {
+    return this.http.post<ApiResponse<{ id: string; name: string; email: string; profileImage?: string; isAdmin?: string }>>(
       `${this.baseUrl}/login/google`,
       payload
     );
   }
 
-  loginWithGoogleCode(payload: { code: string }): Observable<ApiResponse<{ id: string; name: string; email: string; profileImage?: string }>> {
-    return this.http.post<ApiResponse<{ id: string; name: string; email: string; profileImage?: string }>>(
+  loginWithGoogleCode(payload: { code: string }): Observable<ApiResponse<{ id: string; name: string; email: string; profileImage?: string; isAdmin?: string }>> {
+    return this.http.post<ApiResponse<{ id: string; name: string; email: string; profileImage?: string; isAdmin?: string }>>(
       `${this.baseUrl}/login/google/code`,
       payload
     );

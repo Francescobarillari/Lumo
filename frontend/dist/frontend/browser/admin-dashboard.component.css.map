@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/components/admin-dashboard/admin-dashboard.component.css"],
+  "sourcesContent": [".admin-container {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    justify-content: center;\n    height: 100vh;\n    background-color: var(--color-dark-gray);\n    color: var(--color-white);\n    font-family: var(--font-family-main);\n}\n\nh1 {\n    font-size: 32px;\n    margin-bottom: 16px;\n}\n\np {\n    font-size: 18px;\n    color: #ccc;\n    margin-bottom: 40px;\n}\n\n.btn-logout {\n    background-color: var(--color-error);\n    color: white;\n    border: none;\n    padding: 12px 24px;\n    border-radius: 8px;\n    font-size: 16px;\n    font-weight: bold;\n    cursor: pointer;\n    transition: opacity 0.2s;\n}\n\n.btn-logout:hover {\n    opacity: 0.8;\n}"],
+  "mappings": ";AAAA,CAAC;AACG,WAAS;AACT,kBAAgB;AAChB,eAAa;AACb,mBAAiB;AACjB,UAAQ;AACR,oBAAkB,IAAI;AACtB,SAAO,IAAI;AACX,eAAa,IAAI;AACrB;AAEA;AACI,aAAW;AACX,iBAAe;AACnB;AAEA;AACI,aAAW;AACX,SAAO;AACP,iBAAe;AACnB;AAEA,CAAC;AACG,oBAAkB,IAAI;AACtB,SAAO;AACP,UAAQ;AACR,WAAS,KAAK;AACd,iBAAe;AACf,aAAW;AACX,eAAa;AACb,UAAQ;AACR,cAAY,QAAQ;AACxB;AAEA,CAZC,UAYU;AACP,WAAS;AACb;",
+  "names": []
+}

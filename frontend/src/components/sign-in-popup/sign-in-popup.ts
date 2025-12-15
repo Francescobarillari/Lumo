@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
+import { Router } from '@angular/router';
 import { ResponsiveService } from '../../services/responsive-service';
 import { CircleIcon } from '../circle-icon/circle-icon';
 import { FormField } from '../form-field/form-field';
@@ -27,6 +28,7 @@ export class SignInPopup {
     private fb: FormBuilder,
     private auth: AuthService,
     private googleIdentity: GoogleIdentityService,
+    private router: Router,
     public responsive: ResponsiveService
   ) {
     this.form = this.fb.group({
@@ -76,8 +78,14 @@ export class SignInPopup {
           id: res?.data?.id || '',
           name: res?.data?.name || '',
           email: res?.data?.email || payload.email,
-          profileImage: res?.data?.profileImage
+          profileImage: res?.data?.profileImage,
+          isAdmin: res?.data?.isAdmin
         }));
+
+        if (res?.data?.isAdmin === 'true') {
+          this.router.navigate(['/admin']);
+        }
+
         this.closePopup();
       },
       error: (err) => {
@@ -130,6 +138,11 @@ export class SignInPopup {
             profileImage: res?.data?.profileImage
           });
           localStorage.setItem('user', JSON.stringify(res.data));
+
+          if (res?.data?.isAdmin === 'true') {
+            this.router.navigate(['/admin']);
+          }
+
           this.closePopup();
         },
         error: (err) => {
