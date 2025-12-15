@@ -6,7 +6,7 @@
   right: 20px;
   gap: 8px;
   z-index: 1000;
-  background: var(--color-gray);
+  background: var(--color-dark-gray);
   padding: 8px;
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);

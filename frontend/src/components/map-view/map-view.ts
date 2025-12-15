@@ -1,9 +1,11 @@
-import { Component, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, AfterViewInit, ElementRef, ViewChild, Output, EventEmitter, Input, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { Environment } from '../../environment/environment';
 import * as mapboxgl from 'mapbox-gl';
 import { EventService } from '../../services/event.service';
 import { Event } from '../../models/event';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { SidebarComponent } from '../sidebar/sidebar.component';
 
 // crea l'elemento HTML per il marker della posizione utente
 const userMarkerEl = document.createElement('div');
@@ -14,22 +16,21 @@ userMarkerEl.style.border = '3px solid white';
 userMarkerEl.style.borderRadius = '50%';
 userMarkerEl.style.boxShadow = '0 0 3px rgba(0,0,0,0.3)';
 
-import { SidebarComponent } from '../sidebar/sidebar.component';
-
-// componente per la visualizzazione della mappa
 @Component({
-  selector: 'MapView',
+  selector: 'map-view',
   template: `
-    <app-sidebar
-      [events]="events"
-      [collapsed]="sidebarCollapsed"
-      (focusEvent)="flyToEvent($event)"
-      (toggleSidebar)="toggleSidebar()"
-    ></app-sidebar>
-    <div id="map" class="map-container"></div>
-    <button class="locate-btn" (click)="flyToUser()">
-      <mat-icon>my_location</mat-icon>
-    </button>
+  <app-sidebar
+    [events]="events"
+    [collapsed]="sidebarCollapsed"
+    [userId]="userId"
+    (focusEvent)="flyToEvent($event)"
+    (toggleSidebar)="toggleSidebar()"
+    (toggleFavorite)="onToggleFavorite($event)">
+  </app-sidebar>
+  <div id="map" class="map-container"></div>
+  <button class="locate-btn" (click)="flyToUser()">
+    <mat-icon>my_location</mat-icon>
+  </button>
   `,
   styles: `
   .map-container {
@@ -45,8 +46,8 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
     height: 48px;
     border-radius: 50%;
     border: none;
-    background: var(--color-gray);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    background: var(--color-dark-gray);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
     display: grid;
     place-items: center;
     cursor: pointer;
@@ -56,7 +57,7 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 
   .locate-btn:hover {
     background: #333;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   }
 
   .locate-btn:active {
@@ -68,10 +69,10 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
   }
 
   :host ::ng-deep .mapboxgl-popup.event-popup .mapboxgl-popup-content {
-    background: var(--color-gray);
+    background: var(--color-dark-gray);
     color: #f5f5f5;
-    border: 1px solid #2c2c2c;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+    border: 1px solid var(--color-gray);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
     border-radius: 10px;
   }
 
@@ -80,25 +81,43 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
   }
 
   :host ::ng-deep .mapboxgl-popup.event-popup .mapboxgl-popup-tip {
-    border-top-color: var(--color-gray);
+    border-top-color: var(--color-dark-gray);
   }
   `,
   standalone: true,
-  imports: [SidebarComponent, MatIconModule]
+  imports: [SidebarComponent, MatIconModule, MatSnackBarModule],
 })
+export class MapView implements AfterViewInit, OnDestroy, OnChanges {
+  @Input() userId: string | null = null;
+  @Output() eventSelected = new EventEmitter<Event>();
+  @Output() mapInteract = new EventEmitter<void>();
 
-// classe del componente MapView
-export class MapView implements AfterViewInit, OnDestroy {
-  private map!: mapboxgl.Map;
+  private mapInstance!: mapboxgl.Map;
   private eventMarkers = new Map<number, mapboxgl.Marker>();
   events: Event[] = [];
   private userCoords: [number, number] | null = null;
   sidebarCollapsed = false;
 
-  constructor(private eventService: EventService) { }
+  constructor(private eventService: EventService, private snackBar: MatSnackBar) { }
+
+  get map(): mapboxgl.Map {
+    return this.mapInstance;
+  }
+
+  getEventScreenPosition(event: Event): { x: number, y: number } | null {
+    if (!event.latitude || !event.longitude || !this.mapInstance) return null;
+    const point = this.mapInstance.project([event.longitude, event.latitude]);
+    return { x: point.x, y: point.y };
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['userId'] && !changes['userId'].isFirstChange()) {
+      this.loadEvents();
+    }
+  }
 
   ngAfterViewInit(): void {
-    this.map = new mapboxgl.Map({
+    this.mapInstance = new mapboxgl.Map({
       accessToken: Environment.mapboxToken,
       container: 'map',
       style: 'mapbox://styles/fnsbrl/cmhxy97pz004e01qx08c0gc44',
@@ -109,16 +128,23 @@ export class MapView implements AfterViewInit, OnDestroy {
       antialias: true,
     });
 
-    //modifiche alle gesture con il trackpad per la mappa
-    this.map.dragPan.enable();
+    this.mapInstance.dragPan.enable();
+    this.mapInstance.touchZoomRotate.enable({ around: 'center' });
+    this.mapInstance.touchZoomRotate.disableRotation();
+    this.mapInstance.touchZoomRotate.enable();
 
-    this.map.touchZoomRotate.enable({ around: 'center' });
+    // Listen for interactions to verify close popups only on USER interaction
+    this.mapInstance.on('move', (e) => {
+      if (e.originalEvent) { // Check if movement was caused by user (mouse/touch)
+        this.mapInteract.emit();
+      }
+    });
+    this.mapInstance.on('click', (e) => {
+      if (e.originalEvent) {
+        this.mapInteract.emit();
+      }
+    });
 
-    this.map.touchZoomRotate.disableRotation();
-
-    this.map.touchZoomRotate.enable();
-
-    // Richiedi la posizione dell'utente
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -126,11 +152,8 @@ export class MapView implements AfterViewInit, OnDestroy {
             position.coords.longitude,
             position.coords.latitude
           ];
+          this.mapInstance.setCenter(this.userCoords);
 
-          // centra la mappa sulla posizione dell'utente
-          this.map.setCenter(this.userCoords);
-
-          // aggiungi marker sulla posizione dell'utente
           new mapboxgl.Marker({ element: userMarkerEl })
             .setLngLat(this.userCoords)
             .addTo(this.map);
@@ -138,7 +161,6 @@ export class MapView implements AfterViewInit, OnDestroy {
           this.updateDistancesAndSort();
           this.placeEventMarkers();
         },
-        //nel caso di errore nella geolocalizzazione
         (error) => {
           console.warn('Geolocation error:', error);
         },
@@ -150,12 +172,12 @@ export class MapView implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.map) this.map.remove();
+    if (this.map) this.mapInstance.remove();
     this.eventMarkers.forEach((marker) => marker.remove());
   }
 
   private loadEvents() {
-    this.eventService.getEvents().subscribe({
+    this.eventService.getEvents(this.userId || undefined).subscribe({
       next: (events) => {
         this.events = events;
         this.updateDistancesAndSort();
@@ -174,14 +196,23 @@ export class MapView implements AfterViewInit, OnDestroy {
     this.events.forEach((event) => {
       if (event.latitude == null || event.longitude == null) return;
 
-      const marker = new mapboxgl.Marker({ color: '#fbbc04' })
+      const markerEl = document.createElement('div');
+      markerEl.style.width = '30px';
+      markerEl.style.height = '30px';
+      markerEl.style.backgroundColor = '#FCC324';
+      markerEl.style.borderRadius = '50%';
+      markerEl.style.cursor = 'pointer';
+      markerEl.style.border = '3px solid white';
+      markerEl.style.boxShadow = '0 3px 10px rgba(252, 195, 36, 0.6), 0 0 20px rgba(252, 195, 36, 0.3)';
+
+      const marker = new mapboxgl.Marker({ element: markerEl })
         .setLngLat([event.longitude, event.latitude])
-        .setPopup(
-          new mapboxgl.Popup({ offset: 25, className: 'event-popup' }).setHTML(
-            `<strong>${event.title}</strong><br>${event.city || ''}<br>${this.formatDateTime(event)}${this.buildDistanceRow(event)}`
-          )
-        )
         .addTo(this.map);
+
+      markerEl.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.flyToEvent(event);
+      });
 
       if (typeof event.id === 'number') {
         this.eventMarkers.set(event.id, marker);
@@ -192,37 +223,21 @@ export class MapView implements AfterViewInit, OnDestroy {
   flyToEvent(event: Event) {
     if (!this.map || event.longitude == null || event.latitude == null) return;
 
-    this.map.flyTo({
+    this.mapInstance.flyTo({
       center: [event.longitude, event.latitude],
-      zoom: 15,
+      zoom: 18,
       essential: true,
-      duration: 800 // render the fly-to quicker
+      duration: 1000
     });
 
-    if (typeof event.id === 'number') {
-      const marker = this.eventMarkers.get(event.id);
-      marker?.togglePopup();
-    }
-  }
-
-  private formatDateTime(event: Event): string {
-    const date = event.date ? new Date(`${event.date}T00:00:00`) : null;
-    const start = event.startTime ? event.startTime.slice(0, 5) : '';
-    const end = event.endTime ? event.endTime.slice(0, 5) : '';
-
-    const datePart = date
-      ? date.toLocaleDateString('it-IT', { day: '2-digit', month: 'short' })
-      : '';
-    const timePart = start && end ? `${start} - ${end}` : start || end;
-
-    return [datePart, timePart].filter(Boolean).join(' | ');
+    this.eventSelected.emit(event);
   }
 
   flyToUser() {
     if (!this.map) return;
 
     if (this.userCoords) {
-      this.map.flyTo({
+      this.mapInstance.flyTo({
         center: this.userCoords,
         zoom: 16,
         essential: true,
@@ -240,7 +255,7 @@ export class MapView implements AfterViewInit, OnDestroy {
             position.coords.longitude,
             position.coords.latitude
           ];
-          this.map.flyTo({
+          this.mapInstance.flyTo({
             center: this.userCoords,
             zoom: 16,
             essential: true,
@@ -293,12 +308,40 @@ export class MapView implements AfterViewInit, OnDestroy {
     return `${distanceKm.toFixed(1)} km`;
   }
 
-  private buildDistanceRow(event: Event): string {
-    const distance = this.formatDistance(event.distanceKm);
-    return distance ? `<br><em>${distance}</em>` : '';
-  }
-
   toggleSidebar() {
     this.sidebarCollapsed = !this.sidebarCollapsed;
+  }
+
+  @Output() requestLogin = new EventEmitter<void>();
+
+  onToggleFavorite(event: Event) {
+    if (!this.userId) {
+      const snackBarRef = this.snackBar.open('Per salvare gli eventi devi effettuare l\'accesso.', 'ACCEDI', {
+        duration: 5000,
+        horizontalPosition: 'center',
+        verticalPosition: 'bottom',
+        panelClass: ['login-snackbar']
+      });
+
+      snackBarRef.onAction().subscribe(() => {
+        this.requestLogin.emit();
+      });
+      return;
+    }
+
+    if (!event.id) return;
+
+    this.eventService.toggleSavedEvent(this.userId, event.id).subscribe({
+      next: (res) => {
+        // Aggiorna lo stato locale dell'evento
+        event.isSaved = res.isSaved;
+
+        // Forza l'aggiornamento della Sidebar (che usa OnChanges) ricreando l'array
+        this.events = [...this.events];
+
+        // Se necessario, aggiorniamo anche i marker o altro (ma i marker non cambiano per 'saved')
+      },
+      error: (err) => console.error('Errore nel toggle preferito', err)
+    });
   }
 }

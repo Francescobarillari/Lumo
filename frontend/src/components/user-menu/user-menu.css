@@ -7,7 +7,7 @@
   top: calc(100% + 10px);
   right: 0;
   width: 100%;
-  background: var(--color-gray);
+  background: var(--color-dark-gray);
   border-radius: 16px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
   z-index: 999;

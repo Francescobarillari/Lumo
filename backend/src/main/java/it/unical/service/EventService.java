@@ -9,11 +9,17 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.transaction.annotation.Transactional;
+
 @Service
+@Transactional
 public class EventService {
 
     @Autowired
     private EventRepository eventRepository;
+
+    @Autowired
+    private it.unical.repository.UserRepository userRepository;
 
     // ✅ Crea un nuovo evento
     public Event createEvent(Event event) {
@@ -21,9 +27,26 @@ public class EventService {
         return eventRepository.save(event);
     }
 
-    // ✅ Restituisce tutti gli eventi
-    public List<Event> getAllEvents() {
-        return eventRepository.findAllByOrderByDateAscStartTimeAsc();
+    // ✅ Restituisce tutti gli eventi (con status per userId opzionale)
+    public List<Event> getAllEvents(Long userId) {
+        List<Event> events = eventRepository.findAllByOrderByDateAscStartTimeAsc();
+
+        if (userId != null) {
+            Optional<it.unical.model.User> userOpt = userRepository.findById(userId);
+            if (userOpt.isPresent()) {
+                it.unical.model.User user = userOpt.get();
+                for (Event event : events) {
+                    if (user.getParticipatingEvents().stream().anyMatch(e -> e.getId().equals(event.getId()))) {
+                        event.setIsParticipating(true);
+                    }
+                    if (user.getSavedEvents().stream().anyMatch(e -> e.getId().equals(event.getId()))) {
+                        event.setIsSaved(true);
+                    }
+                }
+            }
+        }
+
+        return events;
     }
 
     // ✅ Trova un evento per ID

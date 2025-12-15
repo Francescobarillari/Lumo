@@ -20,9 +20,9 @@
     align-items: center;
     width: 30%;
     height: auto;
-    background-color: var(--color-black);
+    background-color: var(--color-dark-gray);
     border-radius: 20px;
-    padding: 40px;
+    padding: 40px 5%;
     border: 2px solid var(--color-gray);
     display: flex;
     flex-direction: column;
@@ -87,6 +87,7 @@
     right: 20px;
 }
 .form{
+  width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -112,6 +113,7 @@
 }
 
 .other-sign-up-methods {
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;

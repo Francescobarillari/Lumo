@@ -2,7 +2,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #2c2c2c;
+    background-color: var(--color-gray);
     /* Dark grey background */
     border-radius: 12px;
     padding: 12px 16px;
@@ -74,5 +74,10 @@
     font-size: 18px;
     width: 18px;
     height: 18px;
-    color: #aaaaaa;
+    color: var(--color-light-gray);
+    transition: color 0.2s ease;
+}
+
+.icon-circle mat-icon.saved {
+    color: #fbbc04;
 }

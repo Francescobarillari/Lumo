@@ -1,1 +1,7 @@
-<input [class.error]="error" class="form-field" [type]="type" [formControl]="control" [placeholder]="placeholder" />
+<div class="input-wrapper" [ngClass]="customClass" [class.error]="error">
+    @if (type === 'textarea') {
+    <textarea [formControl]="control!" [placeholder]="placeholder" class="input-field"></textarea>
+    } @else {
+    <input [formControl]="control!" [type]="type" [placeholder]="placeholder" class="input-field" />
+    }
+</div>

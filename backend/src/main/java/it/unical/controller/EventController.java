@@ -18,8 +18,8 @@ public class EventController {
     }
 
     @GetMapping
-    public List<Event> getAllEvents() {
-        return eventService.getAllEvents();
+    public List<Event> getAllEvents(@RequestParam(required = false) Long userId) {
+        return eventService.getAllEvents(userId);
     }
 
     @GetMapping("/{id}")

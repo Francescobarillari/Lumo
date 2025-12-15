@@ -1,0 +1,144 @@
+.backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(5px);
+    z-index: 1500;
+}
+
+.popup-container.desktop {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1550;
+}
+
+.popup-container.desktop .popup-content {
+    position: relative;
+    align-items: center;
+    width: 45%;
+    max-height: 95vh;
+    background-color: var(--color-dark-gray);
+    border-radius: 20px;
+    padding: 32px;
+    border: 2px solid var(--color-light-gray);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow: visible;
+}
+
+.close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+}
+
+.header {
+    text-align: center;
+    width: 100%;
+}
+
+.header h1 {
+    padding-bottom: 0;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+}
+
+.form>* {
+    width: 100%;
+}
+
+.two-column {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    width: 100%;
+}
+
+.three-column {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    width: 100%;
+}
+
+.tall-field {
+    min-height: 80px;
+}
+
+.tall-field>* {
+    height: 100%;
+}
+
+.description-row {
+    width: 100%;
+    min-height: 80px;
+}
+
+.description-row>* {
+    height: 100%;
+}
+
+.time-section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.section-label {
+    font-size: 14px;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-light-gray);
+    margin: 0;
+}
+
+.time-inputs {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+
+.time-inputs>* {
+    flex: 1;
+}
+
+.time-separator {
+    font-size: 18px;
+    color: var(--color-light-gray);
+    padding: 0 4px;
+}
+
+.location-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+.location-btn {
+    background-color: var(--color-gray);
+    width: 100%;
+}
+
+.location-btn:hover {
+    filter: brightness(1.2);
+}
+
+.error {
+    color: var(--color-error);
+    font-size: 14px;
+    margin: 0;
+}

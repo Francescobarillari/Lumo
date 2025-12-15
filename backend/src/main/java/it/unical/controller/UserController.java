@@ -18,9 +18,11 @@ import java.util.Map;
 public class UserController {
 
     private final UserRepository userRepo;
+    private final it.unical.service.UserService userService;
 
-    public UserController(UserRepository userRepo) {
+    public UserController(UserRepository userRepo, it.unical.service.UserService userService) {
         this.userRepo = userRepo;
+        this.userService = userService;
     }
 
     @PostMapping("/{id}/image")
@@ -61,5 +63,18 @@ public class UserController {
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_JPEG)
                 .body(imageData);
+    }
+
+    @PostMapping("/{userId}/saved-events/{eventId}")
+    public ResponseEntity<Map<String, Boolean>> toggleSavedEvent(
+            @PathVariable Long userId,
+            @PathVariable Long eventId) {
+
+        boolean isSaved = userService.toggleSavedEvent(userId, eventId);
+
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("isSaved", isSaved);
+
+        return ResponseEntity.ok(response);
     }
 }

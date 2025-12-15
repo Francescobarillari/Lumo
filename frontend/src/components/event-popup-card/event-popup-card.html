@@ -1,0 +1,31 @@
+<div class="card-container">
+    <div class="card-content">
+        <h1 class="title">{{ event.title }}</h1>
+        <p class="day-time">{{ formatDateTime() }}</p>
+        <p class="description">{{ event.description }}</p>
+
+        <div class="info-section">
+            <p class="info-item">👥 {{ event.nPartecipants || 'Non specificato' }} partecipanti</p>
+            <p class="info-item">💰 {{ formatCost() }}</p>
+        </div>
+
+        <div class="eventer-section">
+            <div class="eventer-info">
+                @if (organizerImage) {
+                <img [src]="organizerImage" alt="Organizer" class="organizer-avatar">
+                } @else {
+                <div class="organizer-avatar placeholder">{{ getInitials(organizerName) }}</div>
+                }
+                <div class="eventer-text">
+                    <span class="eventer-label">Eventer</span>
+                    <span class="eventer-name">{{ organizerName }}</span>
+                </div>
+            </div>
+            <div class="favorite-btn" (click)="toggleFavorite.emit(); $event.stopPropagation()">
+                <mat-icon [class.saved]="event.isSaved">{{ event.isSaved ? 'favorite' : 'favorite_border' }}</mat-icon>
+            </div>
+        </div>
+
+        <button class="button partecipa-btn" (click)="onParticipate()">Richiedi partecipazione</button>
+    </div>
+</div>

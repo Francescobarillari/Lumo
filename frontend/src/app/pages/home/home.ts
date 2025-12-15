@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../../services/auth.service';
@@ -9,15 +9,21 @@ import { VerifyEmailPopup } from '../../../components/verify-email-popup/verify-
 
 import { ActionBarComponent } from '../../../components/action-bar/action-bar';
 import { CropImagePopup } from '../../../components/crop-image-popup/crop-image-popup';
+import { CreateEventPopup } from '../../../components/create-event-popup/create-event-popup';
+import { EventPopupCard } from '../../../components/event-popup-card/event-popup-card';
+import { MapLocationSelector } from '../../../components/map-location-selector/map-location-selector';
+import { Event } from '../../../models/event';
 
 @Component({
   selector: 'Home',
   standalone: true,
-  imports: [MapView, SignUpPopup, SignInPopup, VerifyEmailPopup, ActionBarComponent, CropImagePopup],
+  imports: [MapView, SignUpPopup, SignInPopup, VerifyEmailPopup, ActionBarComponent, CropImagePopup, CreateEventPopup, EventPopupCard, MapLocationSelector],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
 export class Home implements OnInit {
+
+  @ViewChild(MapView) mapView!: MapView;
 
   showSignUp = false;
   showSignIn = false;
@@ -26,6 +32,12 @@ export class Home implements OnInit {
   // New states
   showCropPopup = false;
   selectedImageFile: File | null = null;
+
+  // Event popup states
+  showCreateEventPopup = false;
+  showLocationSelector = false;
+  selectedEvent: Event | null = null;
+  eventScreenPosition: { x: number, y: number } | null = null;
 
   loggedUser: { id: string; name: string; email: string; profileImage?: string } | null = null;
 
@@ -113,6 +125,98 @@ export class Home implements OnInit {
     this.showSignIn = false;
     this.showVerifyPopup = false;
     this.showCropPopup = false;
+    this.showCreateEventPopup = false;
+    this.showLocationSelector = false;
+    this.selectedEvent = null;
+  }
+
+  openEventPopup(event: Event) {
+    // Close any previously open event card
+    this.selectedEvent = event;
+
+    // Initial position
+    this.updateCardPosition();
+
+    // Listen to map move events to update position
+    if (this.mapView && this.mapView.map) {
+      this.mapView.map.off('move', this.updateCardPosition.bind(this)); // Prevent duplicate listeners
+      this.mapView.map.on('move', this.updateCardPosition.bind(this));
+
+      // Listen to map click to close popup (if clicking on map background)
+      this.mapView.map.off('click', this.onMapClick.bind(this));
+      this.mapView.map.on('click', this.onMapClick.bind(this));
+    }
+
+    // Add global document click listener for UI elements (Sidebar, etc)
+    // Use setTimeout to avoid catching the current click event that opened the popup (though marker stopPropagation handles it, this is safer)
+    setTimeout(() => {
+      document.addEventListener('click', this.onDocumentClick);
+    }, 0);
+  }
+
+  updateCardPosition() {
+    if (this.selectedEvent && this.mapView) {
+      this.eventScreenPosition = this.mapView.getEventScreenPosition(this.selectedEvent);
+    }
+  }
+
+  onMapClick(e: any) {
+    // If we click on the map but NOT on a marker (which stops propagation usually, but we check just in case)
+    // Actually MapView handles marker clicks. If this fires, it means we clicked the map background.
+    if (e.defaultPrevented) return; // If marker click handled it
+    this.closeEventPopup();
+  }
+
+  // Handle document clicks (outside map)
+  onDocumentClick = (event: MouseEvent) => {
+    // We can just close it, because:
+    // 1. Clicks on the card are stopped by stopPropagation in EventPopupCard
+    // 2. Clicks on markers are stopped by stopPropagation in MapView
+    // 3. Clicks on Map container might be handled here OR by onMapClick. 
+    //    If map click bubbles to document, this handles it. If map swallows it, onMapClick handles it.
+    this.closeEventPopup();
+  }
+
+  closeEventPopup() {
+    this.selectedEvent = null;
+    this.eventScreenPosition = null;
+
+    // Clean up listeners
+    if (this.mapView && this.mapView.map) {
+      this.mapView.map.off('move', this.updateCardPosition.bind(this));
+      this.mapView.map.off('click', this.onMapClick.bind(this));
+    }
+
+    document.removeEventListener('click', this.onDocumentClick);
+  }
+
+  onParticipate(event: Event) {
+    // TODO: Implement participation logic
+    console.log('Participating in event:', event);
+    alert(`Partecipazione all'evento "${event.title}" confermata!`);
+    alert(`Partecipazione all'evento "${event.title}" confermata!`);
+    this.closeEventPopup();
+  }
+
+  onToggleFavorite() {
+    if (this.selectedEvent && this.mapView) {
+      // Delegate to MapView which holds the list and logic
+      this.mapView.onToggleFavorite(this.selectedEvent);
+    }
+  }
+
+  // Handle location selector workflow
+  createEventPopupRef: any = null;
+
+  openLocationSelector() {
+    this.showLocationSelector = true;
+  }
+
+  onLocationSelected(location: { lat: number, lng: number }) {
+    if (this.createEventPopupRef) {
+      this.createEventPopupRef.setLocation(location.lat, location.lng);
+    }
+    this.showLocationSelector = false;
   }
 
   switchToSignUp() {
@@ -160,6 +264,7 @@ export class Home implements OnInit {
       console.log('Navigate to Events');
     } else if (action === 'add-event') {
       console.log('Add Event clicked');
+      this.showCreateEventPopup = true;
     }
   }
 

@@ -1,15 +1,17 @@
 import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'FormField',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './form-field.html',
   styleUrl: './form-field.css',
 })
 export class FormField {
-  @Input() placeholder = 'template'; //sarebbe il placeholder, di default è 'template'
-  @Input() type = 'text';  //tipo di dato dentro
-  @Input() control!: FormControl; //validazione associata
-  @Input() error: boolean = false; //se c'è un errore di validazione
+  @Input() control: FormControl | null = null;
+  @Input() type: string = 'text';
+  @Input() placeholder: string = '';
+  @Input() error: boolean = false;
+  @Input() customClass: string = ''; // For custom styling
 }

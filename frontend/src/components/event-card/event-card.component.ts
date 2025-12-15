@@ -13,6 +13,9 @@ export class EventCardComponent {
     location = input.required<string>();
     dateTime = input.required<string>();
     distance = input<string>();
+    id = input.required<number>();
+    isSaved = input<boolean>(false);
 
     @Output() focusLocation = new EventEmitter<void>();
+    @Output() toggleFavorite = new EventEmitter<void>();
 }

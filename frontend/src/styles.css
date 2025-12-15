@@ -9,13 +9,33 @@
     font-family: var(--font-stack-headline);
 }
 
+/* Custom SnackBar Styles */
+.login-snackbar {
+    --mdc-snackbar-container-color: #333333;
+    --mdc-snackbar-supporting-text-color: #ffffff;
+    --mat-snack-bar-button-color: #fbbc04;
+    /* Accent color */
+}
+
+.login-snackbar .mdc-snackbar__label {
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.login-snackbar .mat-mdc-snack-bar-action {
+    font-weight: 700;
+    text-decoration: underline;
+    /* Mimic "click-text" class user requested */
+}
+
 :root {
     /* Colori */
     --color-accent: #FCC324;
     --color-white: #FFFFFF;
-    --color-gray: #1a1a1a;
+    --color-dark-gray: #1a1a1a;
+    --color-gray: #2c2c2c;
+    --color-bit-gray: #444444;
     --color-light-gray: #6a6a6a;
-    --color-black: #121212;
     --color-error: #E53935;
 
     /* Font e Pesi */
@@ -37,7 +57,6 @@ h1 {
     font-weight: var(--font-weight-bold);
     color: var(--color-accent);
     line-height: 1.2;
-    text-shadow: 0 0 5px var(--color-accent);
     padding-bottom: 12px;
 }
 

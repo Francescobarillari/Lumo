@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { EventCardComponent } from '../event-card/event-card.component';
@@ -11,11 +11,90 @@ import { Event } from '../../models/event';
     templateUrl: './sidebar.component.html',
     styleUrl: './sidebar.component.css'
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnChanges {
     @Input() events: Event[] = [];
     @Output() focusEvent = new EventEmitter<Event>();
     @Input() collapsed = false;
+    @Input() userId: string | null = null;
     @Output() toggleSidebar = new EventEmitter<void>();
+    @Output() toggleFavorite = new EventEmitter<Event>();
+
+    followUpEvents: Event[] = [];
+    savedEvents: Event[] = [];
+    discoverEvents: Event[] = [];
+    foundEvents: Event[] = [];
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes['events'] || changes['userId']) {
+            this.categorizeEvents();
+        }
+    }
+
+    private categorizeEvents() {
+        console.log('Sidebar received events:', this.events);
+
+        // Reset all arrays
+        this.followUpEvents = [];
+        this.savedEvents = [];
+        this.discoverEvents = [];
+        this.foundEvents = [];
+
+        // Guest Mode
+        if (!this.userId) {
+            this.foundEvents = [...this.events];
+            return;
+        }
+
+        // Logged In Logic
+        const now = new Date();
+        now.setHours(0, 0, 0, 0); // Normalize today
+
+        const threeDaysFromNow = new Date(now);
+        threeDaysFromNow.setDate(now.getDate() + 3);
+
+        this.events.forEach(event => {
+            let isFollowUp = false;
+            let isSaved = false;
+            // Participating flag IS critical now
+            const isParticipating = event.isParticipating || false;
+
+            // Check Follow Up: Participating AND starts within 3 days
+            // Ensure consistent date parsing (local midnight)
+            const eventDate = event.date ? new Date(`${event.date}T00:00:00`) : null;
+
+            if (isParticipating && eventDate) {
+                // Check if date is in the future (or today) AND before 3 days from now
+                if (eventDate <= threeDaysFromNow && eventDate >= now) {
+                    isFollowUp = true;
+                }
+            }
+
+            // Check Saved: Only if NOT participating
+            // "Se partecipi, automaticamente non puoi metterlo nei preferiti"
+            if (event.isSaved && !isParticipating) {
+                isSaved = true;
+            }
+
+            // Categorize
+            if (isFollowUp) {
+                this.followUpEvents.push(event);
+            }
+
+            if (isSaved) {
+                this.savedEvents.push(event);
+            }
+
+            // Discover: Not Participating AND Not Saved
+            if (!isParticipating && !isSaved) {
+                this.discoverEvents.push(event);
+            }
+        });
+        console.log('Categorized:', {
+            followUp: this.followUpEvents,
+            saved: this.savedEvents,
+            discover: this.discoverEvents
+        });
+    }
 
     formatDateTime(event: Event): string {
         const date = event.date ? new Date(`${event.date}T00:00:00`) : null;

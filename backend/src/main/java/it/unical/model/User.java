@@ -26,6 +26,14 @@ public class User {
 
     private byte[] profileImageData;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_participations", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "event_id"))
+    private java.util.Set<Event> participatingEvents = new java.util.HashSet<>();
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_saved", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "event_id"))
+    private java.util.Set<Event> savedEvents = new java.util.HashSet<>();
+
     public Long getId() {
         return id;
     }
@@ -80,6 +88,22 @@ public class User {
 
     public void setProfileImageData(byte[] profileImageData) {
         this.profileImageData = profileImageData;
+    }
+
+    public java.util.Set<Event> getParticipatingEvents() {
+        return participatingEvents;
+    }
+
+    public void setParticipatingEvents(java.util.Set<Event> participatingEvents) {
+        this.participatingEvents = participatingEvents;
+    }
+
+    public java.util.Set<Event> getSavedEvents() {
+        return savedEvents;
+    }
+
+    public void setSavedEvents(java.util.Set<Event> savedEvents) {
+        this.savedEvents = savedEvents;
     }
 
 }

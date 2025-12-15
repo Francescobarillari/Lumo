@@ -7,10 +7,18 @@ import { Event } from '../models/event';
 export class EventService {
   private baseUrl = 'http://localhost:8080/api/events';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  getEvents(): Observable<Event[]> {
-    return this.http.get<Event[]>(this.baseUrl);
+  getEvents(userId?: string): Observable<Event[]> {
+    let url = this.baseUrl;
+    if (userId && userId !== 'undefined' && userId !== 'null' && !isNaN(Number(userId))) {
+      url += `?userId=${userId}`;
+    }
+    return this.http.get<Event[]>(url);
+  }
+
+  toggleSavedEvent(userId: string, eventId: number): Observable<{ isSaved: boolean }> {
+    return this.http.post<{ isSaved: boolean }>(`http://localhost:8080/api/users/${userId}/saved-events/${eventId}`, {});
   }
 
   // Utility per futuro: ottenere singolo evento

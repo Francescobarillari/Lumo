@@ -1,0 +1,168 @@
+.card-container {
+    position: absolute;
+    z-index: 900;
+    /* Below sidebar (1000) */
+    pointer-events: none;
+}
+
+.card-content {
+    position: relative;
+    width: 350px;
+    /* Fixed width to prevent shrinking */
+    /* max-width removed */
+    background: var(--color-dark-gray);
+    border-radius: 20px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    pointer-events: all;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--color-light-gray);
+    white-space: normal;
+    /* Ensure text wraps */
+}
+
+.title {
+    font-size: 28px;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-accent);
+    line-height: 1.2;
+    margin: 0;
+    padding: 0;
+}
+
+.day-time {
+    font-size: 14px;
+    font-weight: var(--font-weight-light);
+    color: var(--color-light-gray);
+    margin: 0;
+}
+
+.description {
+    font-size: 15px;
+    font-weight: var(--font-weight-light);
+    color: var(--color-white);
+    line-height: 1.5;
+    margin: 0;
+}
+
+.info-section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 4px 0;
+}
+
+.info-item {
+    font-size: 14px;
+    font-weight: var(--font-weight-light);
+    color: var(--color-white);
+    margin: 0;
+}
+
+.eventer-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.eventer-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.organizer-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.organizer-avatar.placeholder {
+    background: var(--color-gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-white);
+}
+
+.eventer-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.eventer-label {
+    font-size: 11px;
+    font-weight: var(--font-weight-light);
+    color: var(--color-light-gray);
+}
+
+.eventer-name {
+    font-size: 14px;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-white);
+}
+
+.action-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #444444;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #aaaaaa;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.action-btn:hover {
+    background: #555555;
+    transform: scale(1.05);
+}
+
+.action-btn:active {
+    transform: scale(0.95);
+}
+
+.action-btn mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+.favorite-btn mat-icon {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    color: #e91e63;
+    /* Default red for placeholder? Or gray? Original was #aaaaaa or #e91e63 based on my previous edit */
+    /* Let's keep consistent: Gray by default, Red if saved */
+    color: var(--color-light-gray);
+    transition: color 0.2s;
+}
+
+.favorite-btn mat-icon.saved {
+    color: #fbbc04;
+}
+
+.favorite-btn:hover mat-icon {
+    color: var(--color-white);
+}
+
+.favorite-btn:hover mat-icon.saved {
+    color: #ffd54f;
+    /* Lighter yellow for hover state */
+}
+
+.partecipa-btn {
+    width: 100%;
+    margin-top: 8px;
+}

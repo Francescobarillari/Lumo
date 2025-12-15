@@ -1,0 +1,13 @@
+<div class="backdrop" (click)="onClose()"></div>
+
+<div class="selector-container">
+    <div class="instruction-text">
+        📍 Seleziona una posizione per il tuo evento
+    </div>
+
+    <div id="location-map" class="map"></div>
+
+    <button class="button confirm-btn" (click)="onConfirm()" [disabled]="!selectedCoords">
+        Conferma Posizione
+    </button>
+</div>

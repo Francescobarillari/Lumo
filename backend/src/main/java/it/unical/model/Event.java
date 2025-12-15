@@ -23,9 +23,20 @@ public class Event {
     private LocalDateTime createdAt;
     private Double latitude;
     private Double longitude;
+    private Double costPerPerson;
 
-    public Event() {}
-    public Event(Long id, String title, String description, int nPartecipants, String city, LocalDate date, LocalTime startTime, LocalTime endTime, LocalDateTime createdAt, Double latitude, Double longitude) {
+    @Transient
+    private boolean isParticipating;
+
+    @Transient
+    private boolean isSaved;
+
+    public Event() {
+    }
+
+    public Event(Long id, String title, String description, int nPartecipants, String city, LocalDate date,
+            LocalTime startTime, LocalTime endTime, LocalDateTime createdAt, Double latitude, Double longitude,
+            Double costPerPerson) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -37,6 +48,7 @@ public class Event {
         this.createdAt = createdAt;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.costPerPerson = costPerPerson;
     }
 
     public Long getId() {
@@ -125,5 +137,29 @@ public class Event {
 
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
+    }
+
+    public Double getCostPerPerson() {
+        return costPerPerson;
+    }
+
+    public void setCostPerPerson(Double costPerPerson) {
+        this.costPerPerson = costPerPerson;
+    }
+
+    public boolean getIsParticipating() {
+        return isParticipating;
+    }
+
+    public void setIsParticipating(boolean participating) {
+        isParticipating = participating;
+    }
+
+    public boolean getIsSaved() {
+        return isSaved;
+    }
+
+    public void setIsSaved(boolean saved) {
+        isSaved = saved;
     }
 }

@@ -25,11 +25,31 @@
   <SignInPopup (switchToSignUp)="switchToSignUp()" (close)="closeAll()" (signInSuccess)="onSignInSuccess($event)" />
   }
 
-  <MapView></MapView>
+  <map-view [userId]="loggedUser ? loggedUser.id || '' : null" (eventSelected)="openEventPopup($event)"
+    (mapInteract)="closeEventPopup()" (requestLogin)="openSignIn()">
+  </map-view>
 
   @if (showCropPopup && selectedImageFile) {
   <CropImagePopup [imageFile]="selectedImageFile" (close)="showCropPopup = false"
     (imageCropped)="onImageCropped($event)">
   </CropImagePopup>
+  }
+
+  @if (showCreateEventPopup) {
+  <create-event-popup #createEventPopup [style.display]="showLocationSelector ? 'none' : 'block'"
+    (close)="showCreateEventPopup = false" (eventCreated)="closeAll()"
+    (openLocationSelector)="createEventPopupRef = createEventPopup; openLocationSelector()">
+  </create-event-popup>
+  }
+
+  @if (showLocationSelector) {
+  <map-location-selector (locationSelected)="onLocationSelected($event)" (close)="showLocationSelector = false">
+  </map-location-selector>
+  }
+
+  @if (selectedEvent) {
+  <event-popup-card [event]="selectedEvent" [eventPosition]="eventScreenPosition || undefined"
+    (close)="closeEventPopup()" (participate)="onParticipate($event)" (toggleFavorite)="onToggleFavorite()"
+    [organizerName]="'Lumo Event'" />
   }
 </div>

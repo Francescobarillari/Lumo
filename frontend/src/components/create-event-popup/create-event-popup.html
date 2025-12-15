@@ -1,0 +1,48 @@
+<div class="backdrop" (click)="onClose()"></div>
+
+<div class="popup-container desktop">
+    <div class="popup-content">
+        <CircleIcon class="close" [path]="'assets/icon/close.svg'" (click)="onClose()" />
+
+        <div class="header">
+            <h1>Crea Evento</h1>
+            @if(generalError) {
+            <p class="error">{{ generalError }}</p>
+            }
+        </div>
+
+        <form class="form">
+            <div class="two-column">
+                <FormField [error]="hasError('title')" [control]="$any(form.get('title'))" [type]="'text'"
+                    placeholder="Titolo" />
+                <FormField [error]="hasError('city')" [control]="$any(form.get('city'))" [type]="'text'"
+                    placeholder="Città" />
+            </div>
+
+            <FormField [error]="hasError('description')" [control]="$any(form.get('description'))" [type]="'textarea'"
+                placeholder="Descrizione" customClass="tall-field" />
+
+            <div class="three-column">
+                <FormField [error]="hasError('date')" [control]="$any(form.get('date'))" [type]="'date'"
+                    placeholder="Data" />
+                <FormField [error]="hasError('startTime')" [control]="$any(form.get('startTime'))" [type]="'time'"
+                    placeholder="Inizio" />
+                <FormField [error]="hasError('endTime')" [control]="$any(form.get('endTime'))" [type]="'time'"
+                    placeholder="Fine" />
+            </div>
+
+            <div class="two-column">
+                <FormField [error]="hasError('nPartecipants')" [control]="$any(form.get('nPartecipants'))"
+                    [type]="'number'" placeholder="N. Partecipanti" />
+                <FormField [error]="hasError('costPerPerson')" [control]="$any(form.get('costPerPerson'))"
+                    [type]="'number'" placeholder="Costo (€)" />
+            </div>
+
+            <button type="button" class="button location-btn" (click)="selectLocationOnMap()">
+                📍 {{ locationText }}
+            </button>
+
+            <button type="button" class="button" (click)="onSubmit()">Crea Evento</button>
+        </form>
+    </div>
+</div>

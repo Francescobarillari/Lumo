@@ -4,15 +4,15 @@
         <p class="location">{{ location() }}</p>
         <p class="date-time">{{ dateTime() }}</p>
         @if (distance()) {
-          <p class="distance">{{ distance() }}</p>
+        <p class="distance">{{ distance() }}</p>
         }
     </div>
     <div class="actions-section">
-        <div class="icon-circle" (click)="focusLocation.emit()">
+        <div class="icon-circle" (click)="focusLocation.emit(); $event.stopPropagation()">
             <mat-icon>place</mat-icon>
         </div>
-        <div class="icon-circle">
-            <mat-icon>favorite</mat-icon>
+        <div class="icon-circle" (click)="toggleFavorite.emit(); $event.stopPropagation()">
+            <mat-icon [class.saved]="isSaved()">{{ isSaved() ? 'favorite' : 'favorite_border' }}</mat-icon>
         </div>
     </div>
 </div>

@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/pages/home/home.css"],
+  "sourcesContent": [".top-bar {\n  display: flex;\n  flex-direction: row;\n  position: absolute;\n  top: 20px;\n  right: 20px;\n  gap: 8px;\n  z-index: 1000;\n  background: var(--color-dark-gray);\n  padding: 8px;\n  border-radius: 16px;\n  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);\n  box-sizing: border-box;\n  border: 1px solid var(--color-light-gray);\n  align-items: center;\n}"],
+  "mappings": ";AAAA,CAAC;AACC,WAAS;AACT,kBAAgB;AAChB,YAAU;AACV,OAAK;AACL,SAAO;AACP,OAAK;AACL,WAAS;AACT,cAAY,IAAI;AAChB,WAAS;AACT,iBAAe;AACf,cAAY,EAAE,IAAI,KAAK,KAAK,CAAC,EAAE,CAAC,EAAE,CAAC,EAAE;AACrC,cAAY;AACZ,UAAQ,IAAI,MAAM,IAAI;AACtB,eAAa;AACf;",
+  "names": []
+}

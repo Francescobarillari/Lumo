@@ -5,22 +5,66 @@
     min-height: 50px;
     max-width: 500px;
     padding: 0 16px;
-    border-radius: 16px; 
+    border-radius: 16px;
     background-color: var(--color-gray);
     border: none;
     color: var(--color-white);
     font-size: 16px;
 }
-.form-field::placeholder{
+
+.form-field::placeholder {
     color: var(--color-light-gray);
     font-weight: var(--font-weight-light);
 }
-.form-field:focus{
+
+.form-field:focus {
     outline: none;
 }
-.error{
-    border: 1px solid var(--color-error);
-}
+
+
 input[type="date"] {
     color: var(--color-light-gray);
+}
+
+.input-wrapper {
+    width: 100%;
+    position: relative;
+}
+
+.input-wrapper.tall-field {
+    height: 80px;
+}
+
+.input-wrapper.tall-field .input-field {
+    height: 100%;
+    resize: none;
+    padding-top: 12px;
+}
+
+.input-field {
+    width: 100%;
+    height: 50px;
+    padding: 0 16px;
+    background-color: var(--color-gray);
+    border: 2px solid var(--color-gray);
+    border-radius: 16px;
+    color: var(--color-white);
+    font-size: 16px;
+    font-family: inherit;
+    /* Ensure textarea inherits font */
+    font-weight: var(--font-weight-light);
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.input-field:focus {
+    border-color: var(--color-accent);
+}
+
+.input-field::placeholder {
+    color: var(--color-light-gray);
+}
+
+.input-wrapper.error .input-field {
+    border-color: var(--color-error);
 }

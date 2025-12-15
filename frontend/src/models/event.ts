@@ -11,4 +11,7 @@ export interface Event {
   latitude: number;
   longitude: number;
   distanceKm?: number;
+  costPerPerson?: number;
+  isParticipating?: boolean;
+  isSaved?: boolean;
 }
