@@ -25,7 +25,8 @@ userMarkerEl.style.boxShadow = '0 0 3px rgba(0,0,0,0.3)';
     [userId]="userId"
     (focusEvent)="flyToEvent($event)"
     (toggleSidebar)="toggleSidebar()"
-    (toggleFavorite)="onToggleFavorite($event)">
+    (toggleFavorite)="onToggleFavorite($event)"
+    (foundLocation)="flyToLocation($event)">
   </app-sidebar>
   <div id="map" class="map-container"></div>
   <button class="locate-btn" (click)="flyToUser()">
@@ -231,6 +232,16 @@ export class MapView implements AfterViewInit, OnDestroy, OnChanges {
     });
 
     this.eventSelected.emit(event);
+  }
+
+  flyToLocation(coords: { lat: number, lng: number }) {
+    if (!this.map) return;
+    this.mapInstance.flyTo({
+      center: [coords.lng, coords.lat],
+      zoom: 17,
+      essential: true,
+      duration: 1500
+    });
   }
 
   flyToUser() {

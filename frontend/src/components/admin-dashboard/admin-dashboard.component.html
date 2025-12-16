@@ -1,6 +1,65 @@
 <div class="admin-container">
-    <h1>Admin Dashboard</h1>
-    <p>Benvenuto nell'area amministrativa.</p>
+    <div class="header">
+        <h1>Admin Dashboard</h1>
+        <button class="btn-logout" (click)="signOut()">
+            <mat-icon>logout</mat-icon> Logout
+        </button>
+    </div>
 
-    <button class="btn-logout" (click)="signOut()">Logout</button>
+    <div class="content">
+        <h2>Utenti & Richieste</h2>
+        <div class="user-list">
+            @for (user of users; track user.id) {
+            <div class="user-card">
+                <div class="user-info">
+                    <img [src]="user.profileImage || 'assets/img/default-avatar.png'" class="avatar">
+                    <div class="details">
+                        <span class="name">{{ user.name }}</span>
+                        <span class="email">{{ user.email }}</span>
+                        @if(user.isAdmin) { <span class="badge-admin">Admin</span> }
+                    </div>
+                </div>
+
+                @if (user.pendingEvents && user.pendingEvents.length > 0) {
+                <div class="pending-section">
+                    <h3>Richieste Eventi ({{ user.pendingEvents.length }})</h3>
+                    @for (ev of user.pendingEvents; track ev.id) {
+                    <div class="event-request">
+                        <div class="ev-header">
+                            <div class="ev-info">
+                                <span class="ev-title">{{ ev.title }}</span>
+                                <span class="ev-date">{{ ev.date }} - {{ ev.city }}</span>
+                            </div>
+                            <div class="ev-actions">
+                                <button class="btn-details" (click)="toggleDetails(ev.id)">
+                                    <mat-icon>{{ expandedEventId === ev.id ? 'expand_less' : 'expand_more' }}</mat-icon>
+                                    Info
+                                </button>
+                                <button class="btn-approve" (click)="approveEvent(ev)">
+                                    <mat-icon>check</mat-icon>
+                                </button>
+                                <button class="btn-reject" (click)="rejectEvent(ev)">
+                                    <mat-icon>close</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+
+                        @if (expandedEventId === ev.id) {
+                        <div class="ev-details">
+                            <p><strong>Descrizione:</strong> {{ ev.description }}</p>
+                            <p><strong>Orario:</strong> {{ ev.startTime }} - {{ ev.endTime }}</p>
+                            <p><strong>Partecipanti previsti:</strong> {{ ev.nPartecipants }}</p>
+                            <p><strong>Costo:</strong> {{ ev.costPerPerson ? '€' + ev.costPerPerson : 'Gratis' }}</p>
+                        </div>
+                        }
+                    </div>
+                    }
+                </div>
+                } @else {
+                <p class="no-requests">Nessuna richiesta pendente.</p>
+                }
+            </div>
+            }
+        </div>
+    </div>
 </div>

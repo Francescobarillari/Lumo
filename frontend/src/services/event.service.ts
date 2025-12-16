@@ -25,4 +25,9 @@ export class EventService {
   getEvent(id: number): Observable<Event> {
     return this.http.get<Event>(`${this.baseUrl}/${id}`);
   }
+
+  // ✅ Ricerca eventi
+  searchEvents(query: string): Observable<Event[]> {
+    return this.http.get<Event[]>(`${this.baseUrl}/search?q=${query}`);
+  }
 }

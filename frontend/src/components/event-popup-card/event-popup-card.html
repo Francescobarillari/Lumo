@@ -21,8 +21,8 @@
                     <span class="eventer-name">{{ organizerName }}</span>
                 </div>
             </div>
-            <div class="favorite-btn" (click)="toggleFavorite.emit(); $event.stopPropagation()">
-                <mat-icon [class.saved]="event.isSaved">{{ event.isSaved ? 'favorite' : 'favorite_border' }}</mat-icon>
+            <div class="icon-circle" (click)="toggleFavorite.emit(); $event.stopPropagation()">
+                <mat-icon [class.saved]="isSaved()">{{ isSaved() ? 'favorite' : 'favorite_border' }}</mat-icon>
             </div>
         </div>
 

@@ -1,13 +1,16 @@
 import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { EventCardComponent } from '../event-card/event-card.component';
 import { Event } from '../../models/event';
+import { EventService } from '../../services/event.service';
+import { MapboxService } from '../../services/mapbox.service';
 
 @Component({
     selector: 'app-sidebar',
     standalone: true,
-    imports: [CommonModule, MatIconModule, EventCardComponent],
+    imports: [CommonModule, FormsModule, MatIconModule, EventCardComponent], // Added FormsModule
     templateUrl: './sidebar.component.html',
     styleUrl: './sidebar.component.css'
 })
@@ -18,6 +21,14 @@ export class SidebarComponent implements OnChanges {
     @Input() userId: string | null = null;
     @Output() toggleSidebar = new EventEmitter<void>();
     @Output() toggleFavorite = new EventEmitter<Event>();
+    @Output() foundLocation = new EventEmitter<{ lat: number, lng: number }>(); // New output
+
+    searchQuery: string = '';
+    searchResults: Event[] = [];
+    cityResult: { name: string, center: [number, number] } | null = null;
+    isSearching: boolean = false;
+
+    constructor(private eventService: EventService, private mapboxService: MapboxService) { }
 
     followUpEvents: Event[] = [];
     savedEvents: Event[] = [];
@@ -121,5 +132,46 @@ export class SidebarComponent implements OnChanges {
 
     toggle() {
         this.toggleSidebar.emit();
+    }
+
+
+    onSearch() {
+        if (!this.searchQuery || this.searchQuery.trim() === '') {
+            this.clearSearch();
+            return;
+        }
+
+        this.isSearching = true;
+
+        // 1. Search Events (Backend)
+        this.eventService.searchEvents(this.searchQuery).subscribe(results => {
+            this.searchResults = results;
+        });
+
+        // 2. Search City (Mapbox)
+        this.mapboxService.searchCity(this.searchQuery).subscribe(feature => {
+            if (feature) {
+                this.cityResult = {
+                    name: feature.place_name,
+                    center: feature.center // [lng, lat]
+                };
+            } else {
+                this.cityResult = null;
+            }
+        });
+    }
+
+    selectCity() {
+        if (this.cityResult) {
+            const [lng, lat] = this.cityResult.center;
+            this.foundLocation.emit({ lat, lng });
+        }
+    }
+
+    clearSearch() {
+        this.searchQuery = '';
+        this.isSearching = false;
+        this.searchResults = [];
+        this.cityResult = null;
     }
 }

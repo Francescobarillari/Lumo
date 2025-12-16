@@ -92,7 +92,10 @@ export class CreateEventPopup {
             longitude: this.longitude
         };
 
-        this.http.post('http://localhost:8080/api/events', eventData).subscribe({
+        const userJson = localStorage.getItem('user');
+        const userId = userJson ? JSON.parse(userJson).id : null;
+
+        this.http.post(`http://localhost:8080/api/events?userId=${userId}`, eventData).subscribe({
             next: (response) => {
                 this.eventCreated.emit(response);
                 this.onClose();

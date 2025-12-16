@@ -25,6 +25,9 @@ public class Event {
     private Double longitude;
     private Double costPerPerson;
 
+    @Column(columnDefinition = "boolean default false")
+    private Boolean isApproved = false;
+
     @Transient
     private boolean isParticipating;
 
@@ -145,6 +148,14 @@ public class Event {
 
     public void setCostPerPerson(Double costPerPerson) {
         this.costPerPerson = costPerPerson;
+    }
+
+    public Boolean getIsApproved() {
+        return isApproved != null ? isApproved : false;
+    }
+
+    public void setIsApproved(Boolean approved) {
+        isApproved = approved;
     }
 
     public boolean getIsParticipating() {

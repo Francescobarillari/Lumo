@@ -109,57 +109,36 @@
     color: var(--color-white);
 }
 
-.action-btn {
-    width: 40px;
-    height: 40px;
+.icon-circle {
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
-    background: #444444;
-    border: none;
+    background-color: #444444;
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     cursor: pointer;
-    color: #aaaaaa;
-    transition: background 0.2s, transform 0.1s;
+    transition: background-color 0.2s;
 }
 
-.action-btn:hover {
-    background: #555555;
-    transform: scale(1.05);
+.icon-circle:hover {
+    background-color: #555555;
 }
 
-.action-btn:active {
-    transform: scale(0.95);
+.icon-circle:active {
+    transform: scale(0.9);
 }
 
-.action-btn mat-icon {
-    font-size: 20px;
-    width: 20px;
-    height: 20px;
-}
-
-.favorite-btn mat-icon {
-    font-size: 24px;
-    width: 24px;
-    height: 24px;
-    color: #e91e63;
-    /* Default red for placeholder? Or gray? Original was #aaaaaa or #e91e63 based on my previous edit */
-    /* Let's keep consistent: Gray by default, Red if saved */
+.icon-circle mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
     color: var(--color-light-gray);
-    transition: color 0.2s;
+    transition: color 0.2s ease;
 }
 
-.favorite-btn mat-icon.saved {
+.icon-circle mat-icon.saved {
     color: #fbbc04;
-}
-
-.favorite-btn:hover mat-icon {
-    color: var(--color-white);
-}
-
-.favorite-btn:hover mat-icon.saved {
-    color: #ffd54f;
-    /* Lighter yellow for hover state */
 }
 
 .partecipa-btn {

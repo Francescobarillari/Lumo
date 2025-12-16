@@ -22,14 +22,19 @@ public class EventController {
         return eventService.getAllEvents(userId);
     }
 
+    @GetMapping("/search")
+    public List<Event> searchEvents(@RequestParam String q) {
+        return eventService.searchEvents(q);
+    }
+
     @GetMapping("/{id}")
     public Optional<Event> getEventById(@PathVariable Long id) {
         return eventService.getEventById(id);
     }
 
     @PostMapping
-    public Event createEvent(@RequestBody Event event) {
-        return eventService.createEvent(event);
+    public Event createEvent(@RequestBody Event event, @RequestParam(required = false) Long userId) {
+        return eventService.createEvent(event, userId);
     }
 
     @DeleteMapping("/{id}")

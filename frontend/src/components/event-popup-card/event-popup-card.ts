@@ -82,4 +82,8 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
         if (!name) return 'OR';
         return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
     }
+
+    isSaved(): boolean | undefined {
+        return this.event.isSaved;
+    }
 }
