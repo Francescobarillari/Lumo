@@ -4,12 +4,12 @@ import it.unical.repository.EventRepository;
 import it.unical.model.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import it.unical.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
@@ -19,7 +19,10 @@ public class EventService {
     private EventRepository eventRepository;
 
     @Autowired
-    private it.unical.repository.UserRepository userRepository;
+    private NotificationService notificationService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     // ✅ Crea un nuovo evento (In attesa di approvazione)
     public Event createEvent(Event event, Long userId) {
@@ -40,28 +43,10 @@ public class EventService {
     public List<Event> getAllEvents(Long userId) {
         List<Event> events = eventRepository.findByIsApprovedTrueOrderByDateAscStartTimeAsc();
 
-        // 🚨 Filtro: Rimuovi eventi creati dall'utente stesso (se regola "creator !=
-        // owner")
-        // Nota: Event entity deve avere campo creator? Controlla Event.java.
-        // Se non c'è relazione diretta "creator", uso una logica alternativa o
-        // controllo participants?
-        // Solitamente "Partecipazione" include il creatore.
-        // Se l'utente vuole nasconderli dalla mappa pubblica, ok.
-
         if (userId != null) {
             Optional<it.unical.model.User> userOpt = userRepository.findById(userId);
             if (userOpt.isPresent()) {
                 it.unical.model.User user = userOpt.get();
-
-                // Rimuovi eventi dove l'utente è tra i partecipanti CON ruolo creatore?
-                // Al momento non ho ruolo distinto.
-                // Assumo che se l'utente chiede "creator non sia proprietario", intenda che non
-                // devo vedere i miei eventi nella lista pubblica.
-                // Ma come distinguo i miei eventi se non ho il campo "creatorId" in Event?
-                // Controllo se l'utente è "User Organizer"?
-                // Event.java non sembra avere `creator`.
-                // Controllerò Event.java ...
-
                 for (Event event : events) {
                     if (user.getParticipatingEvents().stream().anyMatch(e -> e.getId().equals(event.getId()))) {
                         event.setIsParticipating(true);
@@ -72,7 +57,6 @@ public class EventService {
                 }
             }
         }
-
         return events;
     }
 
@@ -86,11 +70,39 @@ public class EventService {
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Evento non trovato con ID: " + id));
         event.setIsApproved(true);
-        return eventRepository.save(event);
+        Event saved = eventRepository.save(event);
+
+        // Notify Creator
+        if (event.getParticipants() != null && !event.getParticipants().isEmpty()) {
+            it.unical.model.User creator = event.getParticipants().iterator().next();
+            notificationService.createNotification(creator.getId(),
+                    "Evento Approvato",
+                    "Il tuo evento '" + event.getTitle() + "' è stato approvato ed è ora visibile!",
+                    "APPROVED");
+        }
+        return saved;
     }
 
-    // ✅ Rifiuta evento (Elimina)
-    public void rejectEvent(Long id) {
+    // ✅ Rifiuta evento (Elimina) con motivazione opzionale
+    public void rejectEvent(Long id, String reason) {
+        Optional<Event> eventOpt = eventRepository.findById(id);
+        if (eventOpt.isPresent()) {
+            Event event = eventOpt.get();
+            // Notify Creator BEFORE reject
+            if (event.getParticipants() != null && !event.getParticipants().isEmpty()) {
+                it.unical.model.User creator = event.getParticipants().iterator().next();
+
+                String message = "Il tuo evento '" + event.getTitle() + "' è stato rifiutato.";
+                if (reason != null && !reason.trim().isEmpty()) {
+                    message += " Motivazione: " + reason;
+                }
+
+                notificationService.createNotification(creator.getId(),
+                        "Evento Rifiutato",
+                        message,
+                        "REJECTED");
+            }
+        }
         deleteEvent(id);
     }
 
@@ -113,15 +125,31 @@ public class EventService {
         }).orElseThrow(() -> new RuntimeException("Evento non trovato con ID: " + id));
     }
 
-    // ✅ Elimina un evento
+    // ✅ Elimina un evento (Risolve FK Constraint)
     public void deleteEvent(long id) {
-        if (!eventRepository.existsById(id)) {
+        Optional<Event> eventOpt = eventRepository.findById(id);
+        if (eventOpt.isPresent()) {
+            Event event = eventOpt.get();
+
+            // Remove event from all participants
+            if (event.getParticipants() != null) {
+                for (it.unical.model.User user : event.getParticipants()) {
+                    user.getParticipatingEvents().remove(event);
+                    userRepository.save(user); // Update user side
+                }
+                event.getParticipants().clear();
+            }
+
+            // Remove event from all saved users (if needed)
+            // Assuming similar relationship for favorites/saved
+
+            eventRepository.deleteById(id);
+        } else {
             throw new RuntimeException("Evento non trovato con ID: " + id);
         }
-        eventRepository.deleteById(id);
     }
 
-    // ✅ Cerca eventi (Titolo, Città, Nome Creator/Partecipante)
+    // ✅ Cerca eventi
     public List<Event> searchEvents(String query) {
         return eventRepository.searchEvents(query);
     }

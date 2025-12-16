@@ -91,6 +91,44 @@
     color: #666666;
 }
 
+.tabs-header {
+    display: flex;
+    gap: 8px;
+    /* Spacing between pills */
+    border-bottom: none;
+    /* Remove line */
+    /* margin-bottom removed as requested */
+    padding-bottom: 8px;
+    overflow-x: auto;
+    /* Allow scroll if many tabs */
+}
+
+.tab-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    padding: 8px 16px;
+    color: var(--color-white);
+    font-weight: 500;
+    font-size: 13px;
+    cursor: pointer;
+    border-radius: 20px;
+    /* Pill shape */
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.tab-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.tab-btn.active {
+    background: #fbbc04;
+    /* Accent Color */
+    color: var(--color-white);
+    /* White text as requested */
+    font-weight: 600;
+}
+
 .search-icon {
     position: absolute;
     right: 12px;

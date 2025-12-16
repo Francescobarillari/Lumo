@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -48,6 +49,20 @@ public class UserController {
         } catch (IOException e) {
             throw new RuntimeException("Could not store file", e);
         }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        User user = userService.getUserById(id);
+        if (user != null) {
+            return ResponseEntity.ok(user);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/search")
+    public List<User> searchUsers(@RequestParam String q) {
+        return userService.searchUsers(q);
     }
 
     @GetMapping("/{id}/image")

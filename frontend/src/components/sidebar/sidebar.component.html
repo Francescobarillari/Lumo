@@ -21,23 +21,20 @@
 
         @if (isSearching) {
 
-        @if (cityResult) {
-        <div class="events-section">
-            <h2 class="section-title">LOCATIONS</h2>
-            <div class="location-item clickable" (click)="selectCity()">
-                <div class="icon-circle small">
-                    <mat-icon>location_on</mat-icon>
-                </div>
-                <div class="loc-info">
-                    <span class="loc-name">{{ cityResult.name }}</span>
-                </div>
-            </div>
+        <div class="tabs-header">
+            <button class="tab-btn" [class.active]="activeTab === 'events'" (click)="setActiveTab('events')">
+                EVENTI
+            </button>
+            <button class="tab-btn" [class.active]="activeTab === 'places'" (click)="setActiveTab('places')">
+                LOCALITÀ
+            </button>
+            <button class="tab-btn" [class.active]="activeTab === 'creators'" (click)="setActiveTab('creators')">
+                EVENTER
+            </button>
         </div>
-        }
 
-        @if (searchResults.length > 0) {
+        @if (activeTab === 'events') {
         <div class="events-section">
-            <h2 class="section-title">EVENTS</h2>
             <div class="events-list">
                 @for (event of searchResults; track $index) {
                 <app-event-card [title]="event.title" [location]="event.city" [dateTime]="formatDateTime(event)"
@@ -45,11 +42,55 @@
                     (focusLocation)="goToEvent(event)" (toggleFavorite)="toggleFavorite.emit(event)" />
                 }
             </div>
+            @if (searchResults.length === 0) {
+            <div class="empty-state">Nessun evento trovato.</div>
+            }
         </div>
         }
 
-        @if (!cityResult && searchResults.length === 0) {
-        <div class="empty-state">Nessun risultato trovato per "{{ searchQuery }}".</div>
+        @if (activeTab === 'places') {
+        <div class="events-section">
+            <div class="events-list">
+                @for (city of cityResults; track $index) {
+                <div class="location-item clickable" (click)="selectCity(city)">
+                    <div class="icon-circle small">
+                        <mat-icon>location_on</mat-icon>
+                    </div>
+                    <div class="loc-info">
+                        <span class="loc-name">{{ city.name }}</span>
+                    </div>
+                </div>
+                }
+            </div>
+            @if (cityResults.length === 0) {
+            <div class="empty-state">Nessuna località trovata.</div>
+            }
+        </div>
+        }
+
+        @if (activeTab === 'creators') {
+        <div class="events-section">
+            <div class="events-list">
+                @for (user of userResults; track $index) {
+                <div class="location-item clickable">
+                    <div class="icon-circle small"
+                        [style.background-image]="user.profileImage ? 'url(' + user.profileImage + ')' : ''"
+                        [style.background-size]="'cover'">
+                        @if (!user.profileImage) {
+                        <mat-icon>person</mat-icon>
+                        }
+                    </div>
+                    <div class="loc-info">
+                        <span class="loc-name">{{ user.name }}</span>
+                        <span class="loc-details" style="font-size: 12px; opacity: 0.7;">{{ user.email }}</span>
+                    </div>
+                </div>
+                }
+            </div>
+            @if (userResults.length === 0) {
+            <div class="empty-state">Nessun eventer trovato.</div>
+            }
+        </div>
         }
 
         } @else {

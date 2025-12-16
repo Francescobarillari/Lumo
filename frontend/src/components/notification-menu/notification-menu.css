@@ -1,0 +1,143 @@
+.notif-container {
+    background: #1e1e1e;
+    width: 320px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    max-height: 400px;
+    /* Limit height roughly for 3 items expanded or more collapsed */
+    color: white;
+    font-family: 'Inter', sans-serif;
+}
+
+.notif-header {
+    padding: 12px 16px;
+    background: #2a2a2a;
+    font-weight: 600;
+    border-bottom: 1px solid #333;
+}
+
+.notif-list {
+    overflow-y: auto;
+    max-height: 300px;
+    /* Specific scrollable area */
+}
+
+/* Scrollbar Customization */
+.notif-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.notif-list::-webkit-scrollbar-track {
+    background: #1e1e1e;
+}
+
+.notif-list::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 3px;
+}
+
+.notif-list::-webkit-scrollbar-thumb:hover {
+    background: #666;
+}
+
+
+.notif-item {
+    display: flex;
+    padding: 12px;
+    border-bottom: 1px solid #333;
+    transition: background 0.2s;
+    align-items: flex-start;
+    gap: 12px;
+    position: relative;
+}
+
+.notif-item:last-child {
+    border-bottom: none;
+}
+
+.notif-item:hover {
+    background: #252525;
+}
+
+.notif-item.unread {
+    background: rgba(255, 255, 255, 0.05);
+    /* Slight highlight for unread */
+}
+
+.icon-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+}
+
+.content-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    /* Enable truncation inside flex */
+}
+
+.notif-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 4px;
+}
+
+.notif-title {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.notif-time {
+    font-size: 10px;
+    opacity: 0.5;
+    margin-left: 8px;
+    white-space: nowrap;
+}
+
+.notif-msg {
+    font-size: 13px;
+    opacity: 0.8;
+    line-height: 1.4;
+
+    /* Truncate to 3 lines by default */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: max-height 0.3s ease;
+}
+
+.notif-msg.expanded {
+    -webkit-line-clamp: unset;
+    /* Remove clamp */
+    overflow: visible;
+}
+
+.expand-btn {
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.expand-btn:hover {
+    opacity: 1;
+}
+
+.empty-state {
+    padding: 24px;
+    text-align: center;
+    opacity: 0.5;
+    font-style: italic;
+    font-size: 13px;
+}

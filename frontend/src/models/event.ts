@@ -14,5 +14,7 @@ export interface Event {
   costPerPerson?: number;
   isParticipating?: boolean;
   isSaved?: boolean;
+  organizerName?: string;
+  organizerImage?: string;
   isApproved?: boolean;
 }

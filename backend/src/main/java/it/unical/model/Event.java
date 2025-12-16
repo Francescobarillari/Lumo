@@ -34,6 +34,10 @@ public class Event {
     @Transient
     private boolean isSaved;
 
+    @ManyToMany(mappedBy = "participatingEvents")
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private java.util.Set<User> participants = new java.util.HashSet<>();
+
     public Event() {
     }
 
@@ -171,6 +175,30 @@ public class Event {
     }
 
     public void setIsSaved(boolean saved) {
-        isSaved = saved;
+        this.isSaved = saved;
+    }
+
+    public java.util.Set<User> getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(java.util.Set<User> participants) {
+        this.participants = participants;
+    }
+
+    // Questi metodi verranno serializzati nel JSON come "organizerName" e
+    // "organizerImage"
+    public String getOrganizerName() {
+        if (participants != null && !participants.isEmpty()) {
+            return participants.iterator().next().getName();
+        }
+        return "Lumo Eventer";
+    }
+
+    public String getOrganizerImage() {
+        if (participants != null && !participants.isEmpty()) {
+            return participants.iterator().next().getProfileImage();
+        }
+        return null;
     }
 }

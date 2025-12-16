@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/pages/verify-email-page/verify-email-page.css"],
-  "sourcesContent": [".container {\n    background-color: var(--color-dark-gray);\n    width: 100%;\n    height: 100vh;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n}\n\n.container .verify-container {\n    text-align: center;\n    position: relative;\n    align-items: center;\n    width: 30%;\n    height: auto;\n    background-color: var(--color-gray);\n    border-radius: 20px;\n    padding: 40px;\n    border: 2px solid var(--color-dark-gray);\n    display: flex;\n    flex-direction: column;\n    gap: 24px;\n}"],
-  "mappings": ";AAAA,CAAC;AACG,oBAAkB,IAAI;AACtB,SAAO;AACP,UAAQ;AACR,WAAS;AACT,mBAAiB;AACjB,eAAa;AACjB;AAEA,CATC,UASU,CAAC;AACR,cAAY;AACZ,YAAU;AACV,eAAa;AACb,SAAO;AACP,UAAQ;AACR,oBAAkB,IAAI;AACtB,iBAAe;AACf,WAAS;AACT,UAAQ,IAAI,MAAM,IAAI;AACtB,WAAS;AACT,kBAAgB;AAChB,OAAK;AACT;",
-  "names": []
-}

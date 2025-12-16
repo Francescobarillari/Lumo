@@ -6,6 +6,8 @@ import { EventCardComponent } from '../event-card/event-card.component';
 import { Event } from '../../models/event';
 import { EventService } from '../../services/event.service';
 import { MapboxService } from '../../services/mapbox.service';
+import { UserService } from '../../services/user-service/user-service';
+import { User } from '../../models/user';
 
 @Component({
     selector: 'app-sidebar',
@@ -25,10 +27,16 @@ export class SidebarComponent implements OnChanges {
 
     searchQuery: string = '';
     searchResults: Event[] = [];
-    cityResult: { name: string, center: [number, number] } | null = null;
+    cityResults: { name: string, center: [number, number] }[] = [];
+    userResults: User[] = [];
+    activeTab: 'events' | 'places' | 'creators' = 'events';
     isSearching: boolean = false;
 
-    constructor(private eventService: EventService, private mapboxService: MapboxService) { }
+    constructor(
+        private eventService: EventService,
+        private mapboxService: MapboxService,
+        private userService: UserService
+    ) { }
 
     followUpEvents: Event[] = [];
     savedEvents: Event[] = [];
@@ -149,21 +157,26 @@ export class SidebarComponent implements OnChanges {
         });
 
         // 2. Search City (Mapbox)
-        this.mapboxService.searchCity(this.searchQuery).subscribe(feature => {
-            if (feature) {
-                this.cityResult = {
-                    name: feature.place_name,
-                    center: feature.center // [lng, lat]
-                };
-            } else {
-                this.cityResult = null;
-            }
+        this.mapboxService.searchCity(this.searchQuery).subscribe(features => {
+            this.cityResults = features.map(f => ({
+                name: f.place_name,
+                center: f.center
+            }));
+        });
+
+        // 3. Search Users (Backend)
+        this.userService.searchUsers(this.searchQuery).subscribe(users => {
+            this.userResults = users;
         });
     }
 
-    selectCity() {
-        if (this.cityResult) {
-            const [lng, lat] = this.cityResult.center;
+    setActiveTab(tab: 'events' | 'places' | 'creators') {
+        this.activeTab = tab;
+    }
+
+    selectCity(city: { name: string, center: [number, number] }) {
+        if (city) {
+            const [lng, lat] = city.center;
             this.foundLocation.emit({ lat, lng });
         }
     }
@@ -172,6 +185,8 @@ export class SidebarComponent implements OnChanges {
         this.searchQuery = '';
         this.isSearching = false;
         this.searchResults = [];
-        this.cityResult = null;
+        this.cityResults = [];
+        this.userResults = [];
+        this.activeTab = 'events';
     }
 }

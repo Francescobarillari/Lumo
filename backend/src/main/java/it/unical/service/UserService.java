@@ -13,9 +13,13 @@ public class UserService {
 
     private final it.unical.repository.EventRepository eventRepository;
 
-    public UserService(UserRepository userRepository, it.unical.repository.EventRepository eventRepository) {
+    private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
+
+    public UserService(UserRepository userRepository, it.unical.repository.EventRepository eventRepository,
+            org.springframework.security.crypto.password.PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<User> getAllUsers() {
@@ -26,8 +30,13 @@ public class UserService {
         return userRepository.findById(id).orElse(null);
     }
 
-    public User createUser(User user) {
+    public User registerUser(User user) {
+        user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
         return userRepository.save(user);
+    }
+
+    public List<User> searchUsers(String query) {
+        return userRepository.findByNameContainingIgnoreCase(query);
     }
 
     public void deleteUser(Long id) {

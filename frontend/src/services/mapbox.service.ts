@@ -12,21 +12,21 @@ export class MapboxService {
 
     constructor(private http: HttpClient) { }
 
-    searchCity(query: string): Observable<any> {
+    searchCity(query: string): Observable<any[]> {
         const url = `${this.apiUrl}/${encodeURIComponent(query)}.json`;
         const params = {
             access_token: Environment.mapboxToken,
             types: 'place,locality', // Restrict to cities/localities
-            limit: '1',
+            limit: '5', // Increase limit as requested
             language: 'it'
         };
 
         return this.http.get(url, { params }).pipe(
             map((response: any) => {
                 if (response.features && response.features.length > 0) {
-                    return response.features[0];
+                    return response.features;
                 }
-                return null;
+                return [];
             })
         );
     }

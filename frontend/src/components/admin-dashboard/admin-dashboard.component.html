@@ -30,7 +30,9 @@
                                 <span class="ev-title">{{ ev.title }}</span>
                                 <span class="ev-date">{{ ev.date }} - {{ ev.city }}</span>
                             </div>
+
                             <div class="ev-actions">
+                                @if (!eventsCurrentlyRejecting.includes(ev.id)) {
                                 <button class="btn-details" (click)="toggleDetails(ev.id)">
                                     <mat-icon>{{ expandedEventId === ev.id ? 'expand_less' : 'expand_more' }}</mat-icon>
                                     Info
@@ -41,8 +43,24 @@
                                 <button class="btn-reject" (click)="rejectEvent(ev)">
                                     <mat-icon>close</mat-icon>
                                 </button>
+                                } @else {
+                                <div class="inline-reject-form">
+                                    <input #reasonInput type="text" placeholder="Motivazione..."
+                                        class="inline-reason-input" autoFocus
+                                        (keyup.enter)="confirmReject(ev, reasonInput.value)">
+                                    <button class="btn-approve" (click)="confirmReject(ev, reasonInput.value)"
+                                        title="Conferma Rifiuto">
+                                        <mat-icon>check</mat-icon>
+                                    </button>
+                                    <button class="btn-reject" (click)="cancelReject(ev.id)" title="Annulla">
+                                        <mat-icon>close</mat-icon>
+                                    </button>
+                                </div>
+                                }
                             </div>
                         </div>
+
+                        <!-- Removed Old Inline Form Block -->
 
                         @if (expandedEventId === ev.id) {
                         <div class="ev-details">

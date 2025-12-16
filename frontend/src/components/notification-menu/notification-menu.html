@@ -1,0 +1,29 @@
+<div class="notif-container">
+    <div class="notif-list">
+        @if (notifications.length === 0) {
+        <div class="empty-state">Nessuna notifica</div>
+        } @else {
+        @for (n of notifications; track n.id) {
+        <div class="notif-item" [class.unread]="!n.isRead">
+            <div class="icon-section">
+                <mat-icon [style.color]="getIconColor(n.type)">{{ getIcon(n.type) }}</mat-icon>
+            </div>
+            <div class="content-section">
+                <div class="notif-top">
+                    <span class="notif-title">{{ n.title }}</span>
+                    <span class="notif-time">{{ n.createdAt | date:'short' }}</span>
+                </div>
+                <div class="notif-msg" [class.expanded]="expandedId === n.id">
+                    {{ n.message }}
+                </div>
+            </div>
+            @if (n.message.length > 100) {
+            <div class="expand-btn" (click)="toggleExpand(n.id, $event)">
+                <mat-icon>{{ expandedId === n.id ? 'expand_less' : 'expand_more' }}</mat-icon>
+            </div>
+            }
+        </div>
+        }
+        }
+    </div>
+</div>

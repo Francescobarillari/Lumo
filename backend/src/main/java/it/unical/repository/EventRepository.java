@@ -16,13 +16,10 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     List<Event> findByIsApprovedFalseOrderByDateAscStartTimeAsc();
 
-    @Query(value = "SELECT DISTINCT e.* FROM event e " +
-            "LEFT JOIN user_participations up ON e.id = up.event_id " +
-            "LEFT JOIN users u ON up.user_id = u.id " +
+    @Query("SELECT e FROM Event e " +
+            "LEFT JOIN e.participants p " +
             "WHERE (LOWER(e.title) LIKE LOWER(CONCAT('%', :query, '%')) " +
-            "OR LOWER(e.city) LIKE LOWER(CONCAT('%', :query, '%')) " +
-            "OR LOWER(u.name) LIKE LOWER(CONCAT('%', :query, '%'))) " +
-            "AND e.is_approved = true " +
-            "ORDER BY e.date ASC, e.start_time ASC", nativeQuery = true)
+            "OR LOWER(e.city) LIKE LOWER(CONCAT('%', :query, '%'))) " +
+            "AND e.isApproved = true")
     List<Event> searchEvents(@Param("query") String query);
 }
