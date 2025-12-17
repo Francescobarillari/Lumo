@@ -1,12 +1,15 @@
 import { Component, AfterViewInit, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
 import { Environment } from '../../environment/environment';
 import * as mapboxgl from 'mapbox-gl';
+import { MapboxService } from '../../services/mapbox.service';
 
 @Component({
     selector: 'map-location-selector',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, FormsModule, MatIconModule],
     templateUrl: './map-location-selector.html',
     styleUrl: './map-location-selector.css'
 })
@@ -18,13 +21,18 @@ export class MapLocationSelector implements AfterViewInit, OnDestroy {
     selectedMarker: mapboxgl.Marker | null = null;
     selectedCoords: [number, number] | null = null;
 
+    searchQuery: string = '';
+    cityResults: { name: string, center: [number, number] }[] = [];
+
+    constructor(private mapboxService: MapboxService) { }
+
     ngAfterViewInit(): void {
         this.map = new mapboxgl.Map({
             accessToken: Environment.mapboxToken,
             container: 'location-map',
             style: 'mapbox://styles/fnsbrl/cmhxy97pz004e01qx08c0gc44',
             center: [12.4964, 41.9028], // Rome as default
-            zoom: 16,
+            zoom: 12, // Zoomed out a bit
             pitch: 0,
             bearing: 0,
         });
@@ -38,22 +46,9 @@ export class MapLocationSelector implements AfterViewInit, OnDestroy {
                         position.coords.latitude
                     ];
 
-                    // Add user position marker
-                    const userMarkerEl = document.createElement('div');
-                    userMarkerEl.style.width = '20px';
-                    userMarkerEl.style.height = '20px';
-                    userMarkerEl.style.backgroundColor = '#4285F4';
-                    userMarkerEl.style.border = '3px solid white';
-                    userMarkerEl.style.borderRadius = '50%';
-                    userMarkerEl.style.boxShadow = '0 0 6px rgba(0,0,0,0.4)';
-
-                    new mapboxgl.Marker({ element: userMarkerEl })
-                        .setLngLat(coords)
-                        .addTo(this.map);
-
                     this.map.flyTo({
                         center: coords,
-                        zoom: 16,
+                        zoom: 17,
                         duration: 1000
                     });
                 },
@@ -84,6 +79,30 @@ export class MapLocationSelector implements AfterViewInit, OnDestroy {
                 .setLngLat(this.selectedCoords)
                 .addTo(this.map);
         });
+    }
+
+    onSearch() {
+        if (!this.searchQuery || this.searchQuery.trim() === '') {
+            this.cityResults = [];
+            return;
+        }
+
+        this.mapboxService.searchCity(this.searchQuery).subscribe(features => {
+            this.cityResults = features.map(f => ({
+                name: f.place_name,
+                center: f.center
+            }));
+        });
+    }
+
+    selectCity(city: { name: string, center: [number, number] }) {
+        this.map.flyTo({
+            center: city.center,
+            zoom: 16,
+            essential: true
+        });
+        this.searchQuery = ''; // Clear search after selection
+        this.cityResults = []; // Hide results
     }
 
     ngOnDestroy(): void {

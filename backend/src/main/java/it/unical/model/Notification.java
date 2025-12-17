@@ -18,7 +18,14 @@ public class Notification {
     @Column(length = 1000)
     private String message;
 
-    private String type; // 'INFO', 'SUCCESS', 'WARNING', 'ERROR' or 'APPROVED', 'REJECTED', 'FOLLOWUP'
+    private String type; // 'INFO', 'SUCCESS', 'WARNING', 'ERROR' or 'APPROVED', 'REJECTED', 'FOLLOWUP',
+                         // 'PARTICIPATION_REQUEST', 'PARTICIPATION_ACCEPTED', 'PARTICIPATION_REJECTED'
+
+    @Column(nullable = true)
+    private Long relatedEventId;
+
+    @Column(nullable = true)
+    private Long relatedUserId;
 
     private boolean isRead = false;
 
@@ -32,6 +39,17 @@ public class Notification {
         this.title = title;
         this.message = message;
         this.type = type;
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public Notification(Long userId, String title, String message, String type, Long relatedEventId,
+            Long relatedUserId) {
+        this.userId = userId;
+        this.title = title;
+        this.message = message;
+        this.type = type;
+        this.relatedEventId = relatedEventId;
+        this.relatedUserId = relatedUserId;
         this.createdAt = LocalDateTime.now();
     }
 
@@ -89,5 +107,21 @@ public class Notification {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Long getRelatedEventId() {
+        return relatedEventId;
+    }
+
+    public void setRelatedEventId(Long relatedEventId) {
+        this.relatedEventId = relatedEventId;
+    }
+
+    public Long getRelatedUserId() {
+        return relatedUserId;
+    }
+
+    public void setRelatedUserId(Long relatedUserId) {
+        this.relatedUserId = relatedUserId;
     }
 }

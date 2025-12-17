@@ -12,9 +12,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Service
+@Service("realNotificationService")
 @Transactional
-public class NotificationService {
+public class NotificationService implements INotificationService {
 
     @Autowired
     private NotificationRepository notificationRepo;
@@ -36,6 +36,12 @@ public class NotificationService {
         notificationRepo.save(n);
     }
 
+    public void createRichNotification(Long userId, String title, String message, String type, Long relatedEventId,
+            Long relatedUserId) {
+        Notification n = new Notification(userId, title, message, type, relatedEventId, relatedUserId);
+        notificationRepo.save(n);
+    }
+
     public void markAsRead(Long notificationId) {
         notificationRepo.findById(notificationId).ifPresent(n -> {
             n.setIsRead(true);
@@ -51,6 +57,13 @@ public class NotificationService {
                 notificationRepo.save(n);
             }
         }
+    }
+
+    public void updateType(Long notificationId, String newType) {
+        notificationRepo.findById(notificationId).ifPresent(n -> {
+            n.setType(newType);
+            notificationRepo.save(n);
+        });
     }
 
     // Check for events starting within 3 days that the user follows/participates in

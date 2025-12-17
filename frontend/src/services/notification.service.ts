@@ -4,9 +4,11 @@ export interface Notification {
     userId: number;
     title: string;
     message: string;
-    type: 'INFO' | 'SUCCESS' | 'WARNING' | 'ERROR' | 'APPROVED' | 'REJECTED' | 'FOLLOWUP';
+    type: 'INFO' | 'SUCCESS' | 'WARNING' | 'ERROR' | 'APPROVED' | 'REJECTED' | 'FOLLOWUP' | 'PARTICIPATION_REQUEST' | 'PARTICIPATION_ACCEPTED' | 'PARTICIPATION_REJECTED' | 'REQUEST_ACCEPTED' | 'REQUEST_REJECTED';
     isRead: boolean;
     createdAt: string;
+    relatedEventId?: number;
+    relatedUserId?: number;
 }
 
 import { Injectable } from '@angular/core';
@@ -31,5 +33,9 @@ export class NotificationService {
 
     markAllAsRead(userId: number | string): Observable<void> {
         return this.http.post<void>(`${this.apiUrl}/read-all?userId=${userId}`, {});
+    }
+
+    updateType(notificationId: number, newType: string): Observable<void> {
+        return this.http.post<void>(`${this.apiUrl}/${notificationId}/type?newType=${newType}`, {});
     }
 }

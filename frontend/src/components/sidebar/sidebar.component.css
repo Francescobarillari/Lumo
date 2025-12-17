@@ -15,18 +15,15 @@
     top: 2.5vh;
     left: 12px;
     z-index: 1000;
-    transition: transform 0.2s ease, width 0.2s ease, padding 0.2s ease;
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .sidebar-container.collapsed {
     transform: none;
-    width: 140px;
-    max-width: 45vw;
-    height: auto;
-    padding: 12px;
-    gap: 8px;
+    width: 60px;
+    /* Minimal width for collapsing */
     overflow: hidden;
-    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.25);
+    padding: 24px 0;
 }
 
 /* Scrollbar styles moved to events-section, but keeping global selector if needed or targeting specific class */
@@ -52,10 +49,12 @@
 }
 
 .sidebar-container.collapsed .header {
+    justify-content: center;
     margin: 0;
-    flex-direction: row;
-    justify-content: space-between;
-    gap: 0;
+}
+
+.sidebar-container.collapsed .logo {
+    display: none;
 }
 
 .logo {
@@ -212,19 +211,88 @@
     transform: scale(0.96);
 }
 
+/* MOBILE AND TABLET STYLES */
 @media (max-width: 768px) {
     .sidebar-container {
-        width: 280px;
-        max-width: 80vw;
-        left: 8px;
-        top: 12px;
-        height: 88vh;
+        position: fixed;
+        width: 85vw;
+        /* Drawer width */
+        max-width: 360px;
+        height: 100vh;
+        top: 0;
+        left: 0;
+        margin: 0;
+        border-radius: 0;
+        transform: translateX(0);
+        /* Default open state */
+        border: none;
+        border-right: 1px solid var(--color-bit-gray);
+        box-shadow: 4px 0 15px rgba(0, 0, 0, 0.5);
+        z-index: 1200;
+        /* Higher than actions but lower than popups/overlays */
     }
 
+    /* When collapsed on mobile, IT IS HIDDEN (Drawer closed) */
     .sidebar-container.collapsed {
-        width: 130px;
-        max-width: 50vw;
-        height: auto;
+        transform: translateX(-100%);
+        width: 85vw;
+        /* Maintain width for animation */
+        padding: 24px 0;
+        /* Keep padding consistent */
+    }
+
+    /* Toggle button needs to float when drawer is closed? 
+       Actually, usually there's a menu button in ActionBar to open it.
+       For now, we keep the internal toggle, but we might need an external trigger. 
+       Currently, the "toggle" button is INSIDE the sidebar.
+       If we hide the sidebar, we can't click it to open.
+       
+       FIX: We need the toggle button to be visible even when collapsed, 
+       OR rely on the user dragging/external button. 
+       
+       Let's stick to a "Mini Sidebar" on mobile that acts as the trigger,
+       OR better: keep it collapsed to a small pill or icon.
+    */
+
+    .sidebar-container.collapsed {
+        transform: translateX(calc(-100% + 50px));
+        /* Peak out a bit? Or use a dedicated button */
+        /* Let's try peering out just enough to see the arrow */
+        width: 85vw;
+        background: transparent;
+        box-shadow: none;
+        border: none;
+        pointer-events: none;
+        /* Let clicks pass through empty space */
+        overflow: visible;
+    }
+
+    .sidebar-container.collapsed .header {
+        position: absolute;
+        right: -50px;
+        /* Push button outside */
+        top: 20px;
+        pointer-events: auto;
+        background: var(--color-dark-gray);
+        border-radius: 0 24px 24px 0;
+        padding: 8px;
+        margin: 0;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Hide logo when collapsed on mobile to avoid weirdness */
+    .sidebar-container.collapsed .logo {
+        display: none;
+    }
+
+    .sidebar-container.collapsed .collapse-toggle {
+        width: 40px;
+        height: 40px;
+    }
+
+    /* When open, it's a solid drawer */
+    .sidebar-container {
+        background-color: var(--color-dark-gray);
     }
 }
 

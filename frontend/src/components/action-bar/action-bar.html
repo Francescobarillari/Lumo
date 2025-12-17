@@ -7,18 +7,20 @@
         <span class="unread-indicator"></span>
         }
         @if (showNotifications) {
-        <notification-menu [userId]="loggedUser?.id || 0" (click)="$event.stopPropagation()"></notification-menu>
+        <notification-menu [userId]="loggedUser?.id || 0" (click)="$event.stopPropagation()"
+            (close)="showNotifications = false"></notification-menu>
         }
     </div>
 
-    <div class="profile-trigger" (click)="toggleUserMenu()">
+    <div class="profile-trigger" (click)="toggleUserMenu($event)">
         @if (loggedUser?.profileImage) {
         <img [src]="loggedUser?.profileImage" alt="Profile" class="profile-image">
         } @else {
         <div class="profile-placeholder">{{ getInitials(loggedUser?.name || loggedUser?.email || '') }}</div>
         }
         @if (showUserMenu) {
-        <UserMenu (close)="showUserMenu = false" (action)="onMenuAction($event)"></UserMenu>
+        <UserMenu (click)="$event.stopPropagation()" (close)="showUserMenu = false" (action)="onMenuAction($event)">
+        </UserMenu>
         }
 
     </div>

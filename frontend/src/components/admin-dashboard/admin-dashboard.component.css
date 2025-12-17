@@ -18,10 +18,18 @@
     padding-bottom: 20px;
 }
 
+.header h1{
+    padding-bottom: 0;
+}
+
 .content {
     max-width: 800px;
     margin: 0 auto;
     width: 100%;
+}
+
+.content h2{
+    padding-bottom: 20px;
 }
 
 .user-list {

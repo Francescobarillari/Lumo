@@ -28,15 +28,27 @@ public class Event {
     @Column(columnDefinition = "boolean default false")
     private Boolean isApproved = false;
 
+    @ManyToOne
+    @JoinColumn(name = "creator_id")
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private User creator;
+
     @Transient
     private boolean isParticipating;
 
     @Transient
     private boolean isSaved;
 
+    @Transient
+    private String participationStatus = "NONE"; // NONE, PENDING, ACCEPTED
+
     @ManyToMany(mappedBy = "participatingEvents")
     @com.fasterxml.jackson.annotation.JsonIgnore
     private java.util.Set<User> participants = new java.util.HashSet<>();
+
+    @ManyToMany(mappedBy = "pendingEvents")
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private java.util.Set<User> pendingParticipants = new java.util.HashSet<>();
 
     public Event() {
     }
@@ -178,6 +190,14 @@ public class Event {
         this.isSaved = saved;
     }
 
+    public String getParticipationStatus() {
+        return participationStatus;
+    }
+
+    public void setParticipationStatus(String participationStatus) {
+        this.participationStatus = participationStatus;
+    }
+
     public java.util.Set<User> getParticipants() {
         return participants;
     }
@@ -186,9 +206,32 @@ public class Event {
         this.participants = participants;
     }
 
+    public java.util.Set<User> getPendingParticipants() {
+        return pendingParticipants;
+    }
+
+    public void setPendingParticipants(java.util.Set<User> pendingParticipants) {
+        this.pendingParticipants = pendingParticipants;
+    }
+
+    public User getCreator() {
+        return creator;
+    }
+
+    public void setCreator(User creator) {
+        this.creator = creator;
+    }
+
+    public Long getCreatorId() {
+        return creator != null ? creator.getId() : null;
+    }
+
     // Questi metodi verranno serializzati nel JSON come "organizerName" e
     // "organizerImage"
     public String getOrganizerName() {
+        if (creator != null) {
+            return creator.getName();
+        }
         if (participants != null && !participants.isEmpty()) {
             return participants.iterator().next().getName();
         }
@@ -196,9 +239,27 @@ public class Event {
     }
 
     public String getOrganizerImage() {
+        if (creator != null) {
+            return creator.getProfileImage();
+        }
         if (participants != null && !participants.isEmpty()) {
             return participants.iterator().next().getProfileImage();
         }
         return null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof Event))
+            return false;
+        Event event = (Event) o;
+        return id != null && id.equals(event.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return 31;
     }
 }

@@ -1,19 +1,21 @@
 package it.unical.controller;
 
 import it.unical.model.Event;
-import it.unical.service.EventService;
+import it.unical.service.IEventService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.ResponseEntity;
+
 @RestController
 @RequestMapping("/api/events")
 @CrossOrigin(origins = "http://localhost:4200")
 public class EventController {
-    private final EventService eventService;
+    private final IEventService eventService;
 
-    public EventController(EventService eventService) {
+    public EventController(IEventService eventService) {
         this.eventService = eventService;
     }
 
@@ -40,5 +42,23 @@ public class EventController {
     @DeleteMapping("/{id}")
     public void deleteEvent(@PathVariable Long id) {
         eventService.deleteEvent(id);
+    }
+
+    @PostMapping("/{id}/participation-request")
+    public ResponseEntity<Void> requestParticipation(@PathVariable Long id, @RequestParam Long userId) {
+        eventService.requestParticipation(userId, id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}/participants/{userId}/accept")
+    public ResponseEntity<Void> acceptParticipation(@PathVariable Long id, @PathVariable Long userId) {
+        eventService.acceptParticipation(userId, id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}/participants/{userId}/reject")
+    public ResponseEntity<Void> rejectParticipation(@PathVariable Long id, @PathVariable Long userId) {
+        eventService.rejectParticipation(userId, id);
+        return ResponseEntity.ok().build();
     }
 }

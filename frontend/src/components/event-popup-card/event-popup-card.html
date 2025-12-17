@@ -21,11 +21,19 @@
                     <span class="eventer-name">{{ organizerName }}</span>
                 </div>
             </div>
+            @if (!event.isParticipating) {
             <div class="icon-circle" (click)="toggleFavorite.emit(); $event.stopPropagation()">
                 <mat-icon [class.saved]="isSaved()">{{ isSaved() ? 'favorite' : 'favorite_border' }}</mat-icon>
             </div>
+            }
         </div>
 
+        @if (event.participationStatus === 'ACCEPTED') {
+        <button class="button partecipa-btn accepted" disabled>Sei dentro</button>
+        } @else if (event.participationStatus === 'PENDING') {
+        <button class="button partecipa-btn pending" disabled>In Attesa</button>
+        } @else {
         <button class="button partecipa-btn" (click)="onParticipate()">Richiedi partecipazione</button>
+        }
     </div>
 </div>

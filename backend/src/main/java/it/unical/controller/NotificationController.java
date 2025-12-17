@@ -14,7 +14,7 @@ import java.util.List;
 public class NotificationController {
 
     @Autowired
-    private NotificationService notificationService;
+    private it.unical.service.INotificationService notificationService;
 
     @GetMapping
     public List<Notification> getNotifications(@RequestParam Long userId) {
@@ -30,6 +30,12 @@ public class NotificationController {
     @PostMapping("/read-all")
     public ResponseEntity<Void> markAllAsRead(@RequestParam Long userId) {
         notificationService.markAllAsRead(userId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}/type")
+    public ResponseEntity<Void> updateType(@PathVariable Long id, @RequestParam String newType) {
+        notificationService.updateType(id, newType);
         return ResponseEntity.ok().build();
     }
 }

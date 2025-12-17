@@ -37,6 +37,10 @@ public class User {
     @JoinTable(name = "user_saved", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "event_id"))
     private java.util.Set<Event> savedEvents = new java.util.HashSet<>();
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_pending_participations", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "event_id"))
+    private java.util.Set<Event> pendingEvents = new java.util.HashSet<>();
+
     public Long getId() {
         return id;
     }
@@ -109,12 +113,35 @@ public class User {
         this.savedEvents = savedEvents;
     }
 
+    public java.util.Set<Event> getPendingEvents() {
+        return pendingEvents;
+    }
+
+    public void setPendingEvents(java.util.Set<Event> pendingEvents) {
+        this.pendingEvents = pendingEvents;
+    }
+
     public Boolean getIsAdmin() {
         return isAdmin != null ? isAdmin : false;
     }
 
     public void setIsAdmin(Boolean admin) {
         isAdmin = admin;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof User))
+            return false;
+        User user = (User) o;
+        return id != null && id.equals(user.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return 31;
     }
 
 }

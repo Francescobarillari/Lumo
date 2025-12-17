@@ -12,7 +12,8 @@ import { CropImagePopup } from '../../../components/crop-image-popup/crop-image-
 import { CreateEventPopup } from '../../../components/create-event-popup/create-event-popup';
 import { EventPopupCard } from '../../../components/event-popup-card/event-popup-card';
 import { MapLocationSelector } from '../../../components/map-location-selector/map-location-selector';
-import { Event } from '../../../models/event';
+import { Event as LumoEvent } from '../../../models/event';
+import { EventService } from '../../../services/event.service';
 
 @Component({
   selector: 'Home',
@@ -36,7 +37,7 @@ export class Home implements OnInit {
   // Event popup states
   showCreateEventPopup = false;
   showLocationSelector = false;
-  selectedEvent: Event | null = null;
+  selectedEvent: LumoEvent | null = null;
   eventScreenPosition: { x: number, y: number } | null = null;
 
   loggedUser: { id: string; name: string; email: string; profileImage?: string } | null = null;
@@ -49,7 +50,8 @@ export class Home implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private authService: AuthService,
-    private http: HttpClient
+    private http: HttpClient,
+    private eventService: EventService
   ) { }
 
   ngOnInit() {
@@ -130,7 +132,7 @@ export class Home implements OnInit {
     this.selectedEvent = null;
   }
 
-  openEventPopup(event: Event) {
+  openEventPopup(event: LumoEvent) {
     // Close any previously open event card
     this.selectedEvent = event;
 
@@ -152,6 +154,19 @@ export class Home implements OnInit {
     setTimeout(() => {
       document.addEventListener('click', this.onDocumentClick);
     }, 0);
+  }
+
+  onEventsUpdated(newEvents: LumoEvent[]) {
+    // If we have a selected event, try to find its updated version
+    if (this.selectedEvent) {
+      const updatedEvent = newEvents.find(e => e.id === this.selectedEvent!.id);
+      if (updatedEvent) {
+        // Prevent popup closure by only updating data, not reference if possible, 
+        // or just update reference. Since EventPopupCard uses OnChanges, reference update is safer.
+        // We preserve properties that might not be in the map list if needed, but MapView usually has full objects.
+        this.selectedEvent = updatedEvent;
+      }
+    }
   }
 
   updateCardPosition() {
@@ -190,12 +205,26 @@ export class Home implements OnInit {
     document.removeEventListener('click', this.onDocumentClick);
   }
 
-  onParticipate(event: Event) {
-    // TODO: Implement participation logic
-    console.log('Participating in event:', event);
-    alert(`Partecipazione all'evento "${event.title}" confermata!`);
-    alert(`Partecipazione all'evento "${event.title}" confermata!`);
-    this.closeEventPopup();
+  onParticipate(event: LumoEvent) {
+    console.log('onParticipate called for event:', event.id);
+    if (!this.loggedUser) {
+      console.log('User not logged in, opening sign in');
+      this.openSignIn(); // Prompt login if guest
+      return;
+    }
+
+    console.log('Sending request for user:', this.loggedUser.id, 'event:', event.id);
+    this.eventService.requestParticipation(event.id, this.loggedUser.id).subscribe({
+      next: () => {
+        console.log('Request success');
+        // Optimistic UI update
+        if (this.selectedEvent && this.selectedEvent.id === event.id) {
+          console.log('Updating local state to PENDING');
+          this.selectedEvent.participationStatus = 'PENDING';
+        }
+      },
+      error: (err) => console.error('Error requesting participation', err)
+    });
   }
 
   onToggleFavorite() {

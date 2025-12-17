@@ -6,6 +6,7 @@ import { Event } from '../../models/event';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { SidebarComponent } from '../sidebar/sidebar.component';
+import { interval, Subscription, switchMap } from 'rxjs';
 
 // crea l'elemento HTML per il marker della posizione utente
 const userMarkerEl = document.createElement('div');
@@ -92,12 +93,14 @@ export class MapView implements AfterViewInit, OnDestroy, OnChanges {
   @Input() userId: string | null = null;
   @Output() eventSelected = new EventEmitter<Event>();
   @Output() mapInteract = new EventEmitter<void>();
+  @Output() eventsUpdated = new EventEmitter<Event[]>(); // Emit when events list updates
 
   private mapInstance!: mapboxgl.Map;
   private eventMarkers = new Map<number, mapboxgl.Marker>();
   events: Event[] = [];
   private userCoords: [number, number] | null = null;
   sidebarCollapsed = false;
+  private pollSubscription: Subscription | null = null;
 
   constructor(private eventService: EventService, private snackBar: MatSnackBar) { }
 
@@ -114,6 +117,7 @@ export class MapView implements AfterViewInit, OnDestroy, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['userId'] && !changes['userId'].isFirstChange()) {
       this.loadEvents();
+      this.startPolling();
     }
   }
 
@@ -170,17 +174,69 @@ export class MapView implements AfterViewInit, OnDestroy, OnChanges {
     }
 
     this.loadEvents();
+    this.startPolling();
   }
 
   ngOnDestroy(): void {
     if (this.map) this.mapInstance.remove();
     this.eventMarkers.forEach((marker) => marker.remove());
+    this.stopPolling();
+  }
+
+  private startPolling() {
+    this.stopPolling(); // Clear existing
+    this.pollSubscription = interval(10000).pipe( // Poll every 10s
+      switchMap(() => this.eventService.getEvents(this.userId || undefined))
+    ).subscribe({
+      next: (events) => {
+        this.handleEventsUpdate(events);
+      },
+      error: (err) => console.error('Error polling events', err)
+    });
+  }
+
+  private stopPolling() {
+    if (this.pollSubscription) {
+      this.pollSubscription.unsubscribe();
+      this.pollSubscription = null;
+    }
+  }
+
+  private handleEventsUpdate(events: Event[]) {
+    let filteredEvents = events;
+    if (this.userId) {
+      const uid = Number(this.userId);
+      filteredEvents = events.filter(e => e.creatorId !== uid);
+    }
+
+    // Check for changes (lazy check by length or deep compare if needed)
+    // For now, update if length differs OR map markers check
+    // To properly support "status change" (e.g. participation), we should probably deep check or just update.
+    // Updating always might flicker but ensures data freshness.
+    // Let's implement a simple check: if JSON stringify is different.
+    const currentEventsJson = JSON.stringify(this.events.map(e => ({ id: e.id, status: e.participationStatus })));
+    const newEventsJson = JSON.stringify(filteredEvents.map(e => ({ id: e.id, status: e.participationStatus })));
+
+    // If we only care about participation status or new events:
+    if (this.events.length !== filteredEvents.length || currentEventsJson !== newEventsJson) {
+      this.events = filteredEvents;
+      this.updateDistancesAndSort();
+      this.placeEventMarkers();
+      this.eventsUpdated.emit(this.events); // Emit update
+    }
   }
 
   private loadEvents() {
     this.eventService.getEvents(this.userId || undefined).subscribe({
       next: (events) => {
-        this.events = events;
+        // Filter out events created by logged user
+        if (this.userId) {
+          const uid = Number(this.userId);
+          this.events = events.filter(e => e.creatorId !== uid);
+        } else {
+          this.events = events;
+        }
+
         this.updateDistancesAndSort();
         this.placeEventMarkers();
       },

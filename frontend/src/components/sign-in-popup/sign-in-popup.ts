@@ -7,10 +7,14 @@ import { emailFormatValidator, strongPasswordValidator } from '../../validators/
 import { FormBuilder } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { GoogleIdentityService } from '../../services/google-identity.service';
+import { MatIconModule } from '@angular/material/icon';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
+
 @Component({
   selector: 'SignInPopup',
   standalone: true,
-  imports: [CircleIcon, FormField],
+  imports: [CircleIcon, FormField, MatIconModule, CommonModule, ReactiveFormsModule],
   templateUrl: './sign-in-popup.html',
   styleUrls: ['./sign-in-popup.css'],
 })

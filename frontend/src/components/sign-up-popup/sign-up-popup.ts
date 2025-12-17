@@ -7,12 +7,16 @@ import { onlyLettersValidator, adultValidator, emailFormatValidator, strongPassw
 import { AuthService } from '../../services/auth.service';
 import { GoogleIdentityService } from '../../services/google-identity.service';
 
+import { MatIconModule } from '@angular/material/icon';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
+
 @Component({
   selector: 'SignUpPopup',
   standalone: true,
-  imports: [CircleIcon, FormField],
+  imports: [CircleIcon, FormField, MatIconModule, CommonModule, ReactiveFormsModule],
   templateUrl: './sign-up-popup.html',
-  styleUrls: ['./sign-up-popup.css'],  
+  styleUrls: ['./sign-up-popup.css'],
 })
 export class SignUpPopup {
   @Output() close = new EventEmitter<void>();
@@ -71,7 +75,7 @@ export class SignUpPopup {
 
     this.auth.signUp(payload).subscribe({
       next: (res) => {
-        this.errors = {};   
+        this.errors = {};
         this.generalError = null;
 
         if (!res?.success) {
@@ -80,8 +84,8 @@ export class SignUpPopup {
         }
 
         this.signUpSuccess.emit({
-          email: this.form.value.email, 
-          token: res?.data?.token || ''   
+          email: this.form.value.email,
+          token: res?.data?.token || ''
         });
       },
 

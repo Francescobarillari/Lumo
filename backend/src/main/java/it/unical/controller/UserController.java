@@ -18,11 +18,9 @@ import java.util.Map;
 @CrossOrigin(origins = "http://localhost:4200")
 public class UserController {
 
-    private final UserRepository userRepo;
-    private final it.unical.service.UserService userService;
+    private final it.unical.service.IUserService userService;
 
-    public UserController(UserRepository userRepo, it.unical.service.UserService userService) {
-        this.userRepo = userRepo;
+    public UserController(it.unical.service.IUserService userService) {
         this.userService = userService;
     }
 
@@ -30,17 +28,9 @@ public class UserController {
     @Transactional
     public ResponseEntity<Map<String, String>> uploadProfileImage(@PathVariable Long id,
             @RequestParam("file") MultipartFile file) {
-        User user = userRepo.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
-
         try {
             byte[] resizedImage = it.unical.utils.ImageUtility.resizeImage(file.getBytes(), 128, 128);
-            user.setProfileImageData(resizedImage);
-
-            // L'URL punta all'endpoint che serve l'immagine dal DB
-            String fileUrl = "http://localhost:8080/api/users/" + id + "/image";
-            user.setProfileImage(fileUrl);
-
-            userRepo.save(user);
+            String fileUrl = userService.updateProfileImage(id, resizedImage);
 
             Map<String, String> response = new HashMap<>();
             response.put("imageUrl", fileUrl);
@@ -68,9 +58,7 @@ public class UserController {
     @GetMapping("/{id}/image")
     @Transactional
     public ResponseEntity<byte[]> serveFile(@PathVariable Long id) {
-        User user = userRepo.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
-
-        byte[] imageData = user.getProfileImageData();
+        byte[] imageData = userService.getProfileImage(id);
         if (imageData == null || imageData.length == 0) {
             return ResponseEntity.notFound().build();
         }

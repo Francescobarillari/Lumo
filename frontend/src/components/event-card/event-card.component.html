@@ -11,8 +11,10 @@
         <div class="icon-circle" (click)="focusLocation.emit(); $event.stopPropagation()">
             <mat-icon>place</mat-icon>
         </div>
+        @if (!isParticipating()) {
         <div class="icon-circle" (click)="toggleFavorite.emit(); $event.stopPropagation()">
             <mat-icon [class.saved]="isSaved()">{{ isSaved() ? 'favorite' : 'favorite_border' }}</mat-icon>
         </div>
+        }
     </div>
 </div>

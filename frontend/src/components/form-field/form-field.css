@@ -4,8 +4,8 @@
     min-width: 300px;
     min-height: 50px;
     max-width: 500px;
-    padding: 0 16px;
-    border-radius: 16px;
+    padding: 0 var(--spacing-md);
+    border-radius: var(--radius-lg);
     background-color: var(--color-gray);
     border: none;
     color: var(--color-white);
@@ -44,10 +44,10 @@ input[type="date"] {
 .input-field {
     width: 100%;
     height: 50px;
-    padding: 0 16px;
+    padding: 0 var(--spacing-md);
     background-color: var(--color-gray);
     border: 2px solid var(--color-gray);
-    border-radius: 16px;
+    border-radius: var(--radius-lg);
     color: var(--color-white);
     font-size: 16px;
     font-family: inherit;

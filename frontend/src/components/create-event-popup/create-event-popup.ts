@@ -5,10 +5,12 @@ import { FormField } from '../form-field/form-field';
 import { CircleIcon } from '../circle-icon/circle-icon';
 import { HttpClient } from '@angular/common/http';
 
+import { MatIconModule } from '@angular/material/icon';
+
 @Component({
     selector: 'create-event-popup',
     standalone: true,
-    imports: [CommonModule, FormField, CircleIcon, ReactiveFormsModule],
+    imports: [CommonModule, FormField, CircleIcon, ReactiveFormsModule, MatIconModule],
     templateUrl: './create-event-popup.html',
     styleUrl: './create-event-popup.css'
 })

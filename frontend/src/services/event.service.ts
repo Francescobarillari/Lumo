@@ -27,7 +27,20 @@ export class EventService {
   }
 
   // ✅ Ricerca eventi
+  // ✅ Ricerca eventi
   searchEvents(query: string): Observable<Event[]> {
     return this.http.get<Event[]>(`${this.baseUrl}/search?q=${query}`);
+  }
+
+  requestParticipation(eventId: number, userId: string | number): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/${eventId}/participation-request?userId=${userId}`, {});
+  }
+
+  acceptParticipation(eventId: number, userId: string | number): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/${eventId}/participants/${userId}/accept`, {});
+  }
+
+  rejectParticipation(eventId: number, userId: string | number): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/${eventId}/participants/${userId}/reject`, {});
   }
 }

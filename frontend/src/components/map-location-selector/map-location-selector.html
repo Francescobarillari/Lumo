@@ -5,6 +5,27 @@
         📍 Seleziona una posizione per il tuo evento
     </div>
 
+    <div class="search-section">
+        <div class="search-bar">
+            <mat-icon>search</mat-icon>
+            <input type="text" placeholder="Cerca città o luogo..." [(ngModel)]="searchQuery" (input)="onSearch()">
+            @if (searchQuery) {
+            <mat-icon class="clear-icon" (click)="searchQuery = ''; cityResults = []">close</mat-icon>
+            }
+        </div>
+
+        @if (cityResults.length > 0) {
+        <div class="search-results">
+            @for (city of cityResults; track city.name) {
+            <div class="result-item" (click)="selectCity(city)">
+                <mat-icon>location_on</mat-icon>
+                <span>{{ city.name }}</span>
+            </div>
+            }
+        </div>
+        }
+    </div>
+
     <div id="location-map" class="map"></div>
 
     <button class="button confirm-btn" (click)="onConfirm()" [disabled]="!selectedCoords">

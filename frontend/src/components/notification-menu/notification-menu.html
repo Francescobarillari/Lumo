@@ -1,4 +1,7 @@
 <div class="notif-container">
+    <div class="notif-header mobile-header">
+        <mat-icon (click)="close.emit()">arrow_back</mat-icon> Notifiche
+    </div>
     <div class="notif-list">
         @if (notifications.length === 0) {
         <div class="empty-state">Nessuna notifica</div>
@@ -20,6 +23,29 @@
             @if (n.message.length > 100) {
             <div class="expand-btn" (click)="toggleExpand(n.id, $event)">
                 <mat-icon>{{ expandedId === n.id ? 'expand_less' : 'expand_more' }}</mat-icon>
+            </div>
+            }
+
+            @if (n.type === 'PARTICIPATION_REQUEST') {
+            <div class="action-buttons">
+                <div class="btn-approve" (click)="acceptRequest(n, $event)" title="Accetta">
+                    <mat-icon>check</mat-icon>
+                </div>
+                <div class="btn-reject" (click)="rejectRequest(n, $event)" title="Rifiuta">
+                    <mat-icon>close</mat-icon>
+                </div>
+            </div>
+            }
+
+            @if (n.type === 'REQUEST_ACCEPTED') {
+            <div class="status-msg success">
+                <mat-icon>check_circle</mat-icon> Accettata
+            </div>
+            }
+
+            @if (n.type === 'REQUEST_REJECTED') {
+            <div class="status-msg error">
+                <mat-icon>cancel</mat-icon> Rifiutata
             </div>
             }
         </div>

@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-public class UserService {
+@Service("realUserService")
+public class UserService implements IUserService {
     // hei hei
     private final UserRepository userRepository;
 
@@ -22,28 +22,34 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
+    @Override
     public User getUserById(Long id) {
         return userRepository.findById(id).orElse(null);
     }
 
+    @Override
     public User registerUser(User user) {
         user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
         return userRepository.save(user);
     }
 
+    @Override
     public List<User> searchUsers(String query) {
         return userRepository.findByNameContainingIgnoreCase(query);
     }
 
+    @Override
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
 
     // ✅ Aggiunge o Rimuove un evento dai preferiti (Saved Events)
+    @Override
     public boolean toggleSavedEvent(Long userId, Long eventId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Utente non trovato con ID: " + userId));
@@ -55,19 +61,29 @@ public class UserService {
         boolean isAlreadySaved = user.getSavedEvents().stream().anyMatch(e -> e.getId().equals(eventId));
 
         if (isAlreadySaved) {
-            // Rimuovi se c'è già (bisogna trovare l'istanza corretta nel set o usare equals
-            // su id)
-            // Stiamo usando Set<Event>, quindi remove(event) funziona se equals/hashCode
-            // sono su ID,
-            // ma per sicurezza rimuoviamo l'evento con lo stesso ID dal set.
             user.getSavedEvents().removeIf(e -> e.getId().equals(eventId));
             userRepository.save(user);
             return false;
         } else {
-            // Aggiungi se non c'è
             user.getSavedEvents().add(event);
             userRepository.save(user);
             return true;
         }
+    }
+
+    @Override
+    public String updateProfileImage(Long userId, byte[] imageData) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        user.setProfileImageData(imageData);
+        String fileUrl = "http://localhost:8080/api/users/" + userId + "/image";
+        user.setProfileImage(fileUrl);
+        userRepository.save(user);
+        return fileUrl;
+    }
+
+    @Override
+    public byte[] getProfileImage(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        return user.getProfileImageData();
     }
 }
