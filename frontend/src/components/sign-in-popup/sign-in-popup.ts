@@ -24,6 +24,7 @@ export class SignInPopup {
   @Output() signInSuccess = new EventEmitter<{ id: string; name: string; email: string; profileImage?: string }>();
 
   form: any;
+  passwordType = 'password';
 
   errors: { [key: string]: string } = {};
   generalError: string | null = null;

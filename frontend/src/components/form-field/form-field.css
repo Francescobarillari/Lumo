@@ -1,7 +1,7 @@
 .form-field {
     font: var(--font-stack-headline);
     display: block;
-    min-width: 300px;
+    min-width: 0;
     min-height: 50px;
     max-width: 500px;
     padding: 0 var(--spacing-md);

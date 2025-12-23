@@ -1,0 +1,27 @@
+<div class="backdrop" (click)="onClose()"></div>
+
+<div class="popup-container">
+    <div class="mobile-popup-container">
+        <div class="mobile-header">
+            <mat-icon (click)="onClose()">arrow_back</mat-icon>
+            <h1>{{ title }}</h1>
+        </div>
+
+        <div class="list-content">
+            <div class="events-list">
+                @for (event of events; track event.id) {
+                <app-event-card [title]="event.title" [location]="event.city" [dateTime]="formatDateTime(event)"
+                    [distance]="formatDistance(event.distanceKm)" [id]="event.id!" [isSaved]="!!event.isSaved"
+                    [isParticipating]="!!event.isParticipating" (focusLocation)="onFocusEvent(event)"
+                    (toggleFavorite)="toggleFavorite.emit(event)" />
+                }
+                @if (events.length === 0) {
+                <div class="empty-state">
+                    <mat-icon>event_busy</mat-icon>
+                    <p>Nessun evento in questa lista.</p>
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

@@ -16,17 +16,16 @@
 }
 
 .popup-container.desktop .popup-content {
+    padding: 0 30px 30px 30px;
     position: relative;
     align-items: center;
     width: 45%;
     max-height: 95vh;
     background-color: var(--color-dark-gray);
     border-radius: var(--radius-xl);
-    padding: var(--spacing-xl);
     border: 1px solid var(--color-light-gray);
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-md);
     overflow: visible;
 }
 
@@ -38,12 +37,9 @@
 }
 
 .header {
+    padding: 5%;
     text-align: center;
     width: 100%;
-}
-
-.header h1 {
-    padding-bottom: 0;
 }
 
 .form {
@@ -51,8 +47,8 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 14px;
-    /* Non-standard gap, keep or move to 16px? Keeping for layout density relative to fields */
+    gap: var(--spacing-md);
+    /* Uniform spacing */
     width: 100%;
 }
 
@@ -64,13 +60,12 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: var(--spacing-md);
-    /* 16px standard */
     width: 100%;
 }
 
 .three-column {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--spacing-md);
     width: 100%;
 }
@@ -145,18 +140,13 @@
     margin: 0;
 }
 
-/* Default: Hide mobile back arrow */
-.mobile-back {
+.mobile-back,
+.mobile-header {
     display: none;
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    color: var(--color-white);
-    cursor: pointer;
-    z-index: 10;
 }
 
-@media (max-width: 1024px) {
+
+@media (max-width: 767px) {
     .popup-container.desktop {
         width: 100vw;
         height: 100vh;
@@ -175,40 +165,51 @@
         max-height: none;
         border-radius: 0;
         border: none;
-        padding: var(--spacing-lg);
+        /* Mobile padding */
         justify-content: flex-start;
-        padding-top: 80px;
-        background-color: var(--color-black);
+        background-color: var(--color-dark-gray);
         overflow-y: auto;
     }
 
-    /* Stack grid columns on tablet/mobile */
-    .two-column,
+    /* Tablet: 3 columns for date/time section if needed */
     .three-column {
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacing-sm);
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        /* Tablet: 3 columns, minmax(0, 1fr) allows shrinking */
+        gap: var(--spacing-md);
     }
 
-    /* Ensure inputs are tall enough for touch */
+
     .form-field input,
     .form-field select,
     .form-field textarea {
-        min-height: 44px;
+        min-height: 50px;
+        font-size: 18px;
     }
 
-    /* Show back arrow if on smaller tablet, or just keep it for consistency */
+    .button {
+        height: 60px;
+        font-size: 16px;
+    }
+
+    .close,
+    .desktop-header,
     .mobile-back {
-        display: block;
-        /* Utilize mobile back for tablet too if fullscreen */
-    }
-
-    .close {
         display: none;
     }
 
+    .mobile-header {
+        display: flex;
+    }
+
     .form {
-        gap: var(--spacing-md);
-        padding-bottom: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: var(--spacing-lg);
+        padding: 0 10%;
+        height: 100%;
+
     }
 }

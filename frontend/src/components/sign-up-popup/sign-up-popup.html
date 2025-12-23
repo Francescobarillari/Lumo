@@ -3,43 +3,51 @@
 
 <div class="popup-container" [class.mobile]="responsive.screen() === 'mobile'"
   [class.tablet]="responsive.screen() === 'tablet'" [class.desktop]="responsive.screen() === 'desktop'">
-  <div class="popup-content">
-    <mat-icon class="mobile-back" (click)="closePopup()">arrow_back</mat-icon>
-    <CircleIcon class="close" [path]="'assets/icon/close.svg'" (click)="closePopup()" />
 
-    <div class="header">
-      <h1>Join LUMO</h1>
-      @if(generalError) { <p class="error">{{ generalError }}</p> }
-      @else if(errors['name']) { <p class="error">{{ errors['name'] }}</p> }
-      @else if(errors['birthdate']) { <p class="error">{{ errors['birthdate'] }}</p> }
-      @else if(errors['email']) { <p class="error">{{ errors['email'] }}</p> }
-      @else if(errors['password']) { <p class="error">{{ errors['password'] }}</p> }
-      @else {<p>start to join events</p>}
+  <div class="mobile-popup-container">
+    <div class="mobile-header">
+      <mat-icon (click)="closePopup()">arrow_back</mat-icon>
+      <h1>Registrati</h1>
     </div>
 
-    <form class="form">
-      <FormField [error]="hasError('name')" [control]="form.get('name')!" [type]="'text'" placeholder="Full name">
-      </FormField>
-      <FormField [error]="hasError('birthdate')" [control]="form.get('birthdate')!" [type]="'date'"
-        placeholder="Birthday"></FormField>
-      <FormField [error]="hasError('email')" [control]="form.get('email')!" [type]="'text'" placeholder="Email">
-      </FormField>
-      <FormField [error]="hasError('password')" [control]="form.get('password')!" [type]="'password'"
-        placeholder="Password"></FormField>
-      <button type="button" class="button" (click)="onSubmit()">Sign Up</button>
-    </form>
+    <div class="centered-content">
+      <div class="popup-content">
+        <CircleIcon class="close" [path]="'assets/icon/close.svg'" (click)="closePopup()" />
 
-    <div class="other-sign-up-methods">
-      <p>or sign up with</p>
+        <div class="header desktop-header">
+          <h1>Join LUMO</h1>
+          @if(generalError) { <p class="error">{{ generalError }}</p> }
+          @else if(errors['name']) { <p class="error">{{ errors['name'] }}</p> }
+          @else if(errors['birthdate']) { <p class="error">{{ errors['birthdate'] }}</p> }
+          @else if(errors['email']) { <p class="error">{{ errors['email'] }}</p> }
+          @else if(errors['password']) { <p class="error">{{ errors['password'] }}</p> }
+          @else {<p>start to join events</p>}
+        </div>
 
-      <a class="button generic" (click)="signUpWithGoogle()">
-        <img class="google-logo" src="assets/img/google-logo.webp" height="20" />
-      </a>
+        <form class="form">
+          <FormField [error]="hasError('name')" [control]="form.get('name')!" [type]="'text'" placeholder="Full name">
+          </FormField>
+          <FormField [error]="hasError('birthdate')" [control]="form.get('birthdate')!" [type]="'date'"
+            placeholder="Birthday"></FormField>
+          <FormField [error]="hasError('email')" [control]="form.get('email')!" [type]="'text'" placeholder="Email">
+          </FormField>
+          <FormField [error]="hasError('password')" [control]="form.get('password')!" [type]="'password'"
+            placeholder="Password"></FormField>
+          <button type="button" class="button" (click)="onSubmit()">Sign Up</button>
+        </form>
+
+        <div class="other-sign-up-methods">
+          <p>or sign up with</p>
+          <a class="button generic" (click)="signUpWithGoogle()">
+            <img class="google-logo" src="assets/img/google-logo.webp" height="20" />
+          </a>
+        </div>
+
+        <p>
+          Already have an account?
+          <span class="click-text" (click)="goToSignIn()">Sign In</span>
+        </p>
+      </div>
     </div>
-
-    <p>
-      Already have an account?
-      <span class="click-text" (click)="goToSignIn()">Sign In</span>
-    </p>
   </div>
 </div>

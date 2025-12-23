@@ -1,15 +1,28 @@
 <div class="menu-backdrop" (click)="close.emit()"></div>
 <div class="menu-container">
-  <div class="menu-item" (click)="onAction('account')">
-    <i class="icon">👤</i> Account
+  <div class="menu-header mobile-header">
+    <mat-icon (click)="close.emit()">arrow_back</mat-icon>
+    <h1>Menù</h1>
   </div>
-  <div class="menu-item" (click)="onAction('events')">
-    <i class="icon">📅</i> Eventi
+  <div class="menu-item-container">
+    <div class="menu-item" (click)="onAction('account')">
+      <i class="icon">👤</i> Account
+    </div>
+    <div class="menu-item" (click)="onAction('change-photo')">
+      <i class="icon">📷</i> Change photo
+    </div>
+    <div class="menu-item" (click)="onAction('crea-evento')">
+      <i class="icon">➕</i> My events
+    </div>
+    <div class="menu-item mobile-only" (click)="onAction('saved-events')">
+      <i class="icon">❤️</i> Saved events
+    </div>
+    <div class="menu-item mobile-only" (click)="onAction('participating-events')">
+      <i class="icon">✅</i> Participating events
+    </div>
+    <div class="menu-item logout" (click)="onAction('logout')">
+      <i class="icon">🚪</i> Logout
+    </div>
   </div>
-  <div class="menu-item" (click)="onAction('change-photo')">
-    <i class="icon">📷</i> Cambia Foto
-  </div>
-  <div class="menu-item logout" (click)="onAction('logout')">
-    <i class="icon">🚪</i> Logout
-  </div>
+
 </div>

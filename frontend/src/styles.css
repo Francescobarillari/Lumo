@@ -68,11 +68,14 @@
 
     /* Z-Index Layers */
     --z-base: 1;
-    --z-action-bar: 1000;
-    --z-dropdown: 1001;
-    --z-map-controls: 1100;
-    --z-backdrop: 9000;
-    --z-popup: 9050;
+    --z-map: 10;
+    --z-sidebar: 1000;
+    --z-action-bar: 2000;
+    --z-map-controls: 3000;
+    --z-dropdown: 4000;
+    --z-backdrop: 10000;
+    --z-popup: 10050;
+    --z-toast: 20000;
 
     /* Shadows */
     --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -147,6 +150,63 @@
 
 .hidden {
     display: none;
+}
+
+/* Mobile Header for Popups (Unification) */
+.mobile-header {
+    display: none;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    padding: 0 20px;
+    background-color: var(--color-dark-gray);
+    z-index: 1000;
+    min-height: 100px;
+}
+
+.mobile-header mat-icon {
+    position: absolute;
+    left: 20px;
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    color: var(--color-white);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mobile-header h1 {
+    margin: 0;
+    padding: 0;
+}
+
+/* Mobile Popup Layout Utilities */
+.mobile-popup-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100%;
+    background-color: var(--color-dark-gray);
+}
+
+.centered-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+    width: 100%;
+}
+
+@media (max-width: 767px) {
+    .mobile-header {
+        display: flex;
+    }
 }
 
 /*stili di base per il body*/

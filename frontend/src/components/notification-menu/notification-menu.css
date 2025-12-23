@@ -11,13 +11,6 @@
     font-family: var(--font-stack-headline);
 }
 
-.notif-header {
-    padding: var(--spacing-md);
-    background: var(--color-gray);
-    font-weight: var(--font-weight-semibold);
-    border-bottom: 1px solid var(--color-bit-gray);
-}
-
 .notif-list {
     overflow-y: auto;
     max-height: 300px;
@@ -209,20 +202,6 @@
     color: #f44336;
 }
 
-/* Mobile Header (Hidden on Desktop) */
-.mobile-header {
-    display: none;
-    align-items: center;
-    gap: var(--spacing-md);
-    font-size: 18px;
-    color: var(--color-white);
-    background-color: var(--color-black);
-    /* Distinct header */
-}
-
-.mobile-header mat-icon {
-    cursor: pointer;
-}
 
 @media (max-width: 768px) {
     .notif-container {
@@ -233,9 +212,9 @@
         height: 100vh;
         max-height: none;
         border-radius: 0;
-        z-index: 9999;
-        /* Higher than sidebar (usually 1000) and popups */
-        background-color: var(--color-black);
+        z-index: 100001;
+        /* Highest */
+        background-color: var(--color-dark-gray);
     }
 
     .notif-list {
@@ -244,8 +223,33 @@
         padding-bottom: 20px;
     }
 
-    .mobile-header {
-        display: flex;
-        padding: var(--spacing-md);
+
+    .notif-item {
+        padding: var(--spacing-lg);
+        /* Larger padding */
+    }
+
+    .notif-title {
+        font-size: 18px;
+        /* Larger text */
+    }
+
+    .notif-msg {
+        font-size: 16px;
+        /* Larger text */
+    }
+
+    .btn-approve,
+    .btn-reject {
+        width: 44px;
+        /* Larger tap targets */
+        height: 44px;
+    }
+
+    .btn-approve mat-icon,
+    .btn-reject mat-icon {
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
     }
 }

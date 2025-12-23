@@ -1,5 +1,6 @@
 /* Action Bar (Top Bubble) */
 .action-bar {
+    height: 72px;
     position: absolute;
     top: 20px;
     right: 20px;

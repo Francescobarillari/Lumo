@@ -3,42 +3,48 @@
 
 <div class="popup-container" [class.mobile]="responsive.screen() === 'mobile'"
   [class.tablet]="responsive.screen() === 'tablet'" [class.desktop]="responsive.screen() === 'desktop'">
-  <div class="popup-content">
-    <mat-icon class="mobile-back" (click)="closePopup()">arrow_back</mat-icon>
-    <CircleIcon class="close" [path]="'assets/icon/close.svg'" (click)="closePopup()" />
 
-    <div class="header">
-      <h1>Welcome back!</h1>
-      @if(generalError) { <p class="error">{{ generalError }}</p> }
-      @else if(errors['email']) { <p class="error">{{ errors['email'] }}</p> }
-      @else if(errors['password']) { <p class="error">{{ errors['password'] }}</p> }
-      @else{<p>Sign in in LUMO</p>}
-
+  <div class="mobile-popup-container">
+    <div class="mobile-header">
+      <mat-icon (click)="closePopup()">arrow_back</mat-icon>
+      <h1>Accedi</h1>
     </div>
 
-    <form class="form">
-      <FormField [error]="hasError('email')" [control]="form.get('email')!" placeholder="Email" [type]="'text'"
-        [title]="'Email'"></FormField>
-      <FormField [error]="hasError('password')" [control]="form.get('password')!" placeholder="Password"
-        [type]="'password'" [title]="'Password'"></FormField>
-      <p>
+    <div class="centered-content">
+      <div class="popup-content">
+        <CircleIcon class="close" [path]="'assets/icon/close.svg'" (click)="closePopup()" />
 
-        <span class="click-text">Forgot password?</span>
-      </p>
-      <button type="button" class="button" (click)="onSubmit()">Sign In</button>
-    </form>
+        <div class="header">
+          <h1>Welcome back!</h1>
+          @if(generalError) { <p class="error">{{ generalError }}</p> }
+          @else if(errors['email']) { <p class="error">{{ errors['email'] }}</p> }
+          @else if(errors['password']) { <p class="error">{{ errors['password'] }}</p> }
+          @else{<p>Sign in in LUMO</p>}
+        </div>
 
-    <div class="other-sign-up-methods">
-      <p>or sign in with</p>
+        <form class="form">
+          <FormField [error]="hasError('email')" [control]="form.get('email')!" placeholder="Email" [type]="'text'"
+            [title]="'Email'"></FormField>
+          <FormField [error]="hasError('password')" [control]="form.get('password')!" placeholder="Password"
+            [type]="passwordType" [title]="'Password'"></FormField>
+          <p>
+            <span class="click-text">Forgot password?</span>
+          </p>
+          <button type="button" class="button" (click)="onSubmit()">Sign In</button>
+        </form>
 
-      <a class="button generic" (click)="signInWithGoogle()">
-        <img class="google-logo" src="assets/img/google-logo.webp" height="20" />
-      </a>
+        <div class="other-sign-up-methods">
+          <p>or sign in with</p>
+          <a class="button generic" (click)="signInWithGoogle()">
+            <img class="google-logo" src="assets/img/google-logo.webp" height="20" />
+          </a>
+        </div>
+
+        <p>
+          Don’t have an account?
+          <span class="click-text" (click)="goToSignUp()">Sign Up</span>
+        </p>
+      </div>
     </div>
-
-    <p>
-      Don’t have an account?
-      <span class="click-text" (click)="goToSignUp()">Sign Up</span>
-    </p>
   </div>
 </div>

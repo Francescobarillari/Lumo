@@ -1,4 +1,5 @@
 import { Component, AfterViewInit, ElementRef, ViewChild, Output, EventEmitter, Input, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Environment } from '../../environment/environment';
 import * as mapboxgl from 'mapbox-gl';
 import { EventService } from '../../services/event.service';
@@ -7,6 +8,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { interval, Subscription, switchMap } from 'rxjs';
+import { MobileSearchComponent } from '../mobile-search/mobile-search.component';
+import { ManagedEventsPopup } from '../managed-events-popup/managed-events-popup.component';
 
 // crea l'elemento HTML per il marker della posizione utente
 const userMarkerEl = document.createElement('div');
@@ -29,7 +32,24 @@ userMarkerEl.style.boxShadow = '0 0 3px rgba(0,0,0,0.3)';
     (toggleFavorite)="onToggleFavorite($event)"
     (foundLocation)="flyToLocation($event)">
   </app-sidebar>
+
+  <app-mobile-search
+    (focusEvent)="flyToEvent($event)"
+    (foundLocation)="flyToLocation($event)"
+    (toggleFavorite)="onToggleFavorite($event)">
+  </app-mobile-search>
+
+  <app-managed-events-popup
+    *ngIf="managedPopupType"
+    [title]="managedPopupType === 'saved' ? 'Eventi Salvati' : 'Eventi a cui partecipi'"
+    [events]="getManagedEvents()"
+    (close)="managedPopupType = null"
+    (focusEvent)="flyToEvent($event)"
+    (toggleFavorite)="onToggleFavorite($event)">
+  </app-managed-events-popup>
+
   <div id="map" class="map-container"></div>
+  
   <button class="locate-btn" (click)="flyToUser()">
     <mat-icon>my_location</mat-icon>
   </button>
@@ -54,7 +74,6 @@ userMarkerEl.style.boxShadow = '0 0 3px rgba(0,0,0,0.3)';
     place-items: center;
     cursor: pointer;
     transition: box-shadow 0.2s ease, transform 0.1s ease, background-color 0.2s;
-    z-index: 1100;
   }
 
   .locate-btn:hover {
@@ -68,6 +87,16 @@ userMarkerEl.style.boxShadow = '0 0 3px rgba(0,0,0,0.3)';
 
   .locate-btn mat-icon {
     color: var(--color-white);
+  }
+
+  app-mobile-search {
+    display: none;
+  }
+
+  @media (max-width: 767px) {
+    app-mobile-search {
+      display: block;
+    }
   }
 
   :host ::ng-deep .mapboxgl-popup.event-popup .mapboxgl-popup-content {
@@ -87,7 +116,7 @@ userMarkerEl.style.boxShadow = '0 0 3px rgba(0,0,0,0.3)';
   }
   `,
   standalone: true,
-  imports: [SidebarComponent, MatIconModule, MatSnackBarModule],
+  imports: [SidebarComponent, MobileSearchComponent, ManagedEventsPopup, MatIconModule, MatSnackBarModule, CommonModule],
 })
 export class MapView implements AfterViewInit, OnDestroy, OnChanges {
   @Input() userId: string | null = null;
@@ -100,6 +129,7 @@ export class MapView implements AfterViewInit, OnDestroy, OnChanges {
   events: Event[] = [];
   private userCoords: [number, number] | null = null;
   sidebarCollapsed = false;
+  managedPopupType: 'saved' | 'participating' | null = null;
   private pollSubscription: Subscription | null = null;
 
   constructor(private eventService: EventService, private snackBar: MatSnackBar) { }
@@ -410,5 +440,14 @@ export class MapView implements AfterViewInit, OnDestroy, OnChanges {
       },
       error: (err) => console.error('Errore nel toggle preferito', err)
     });
+  }
+
+  getManagedEvents(): Event[] {
+    if (this.managedPopupType === 'saved') {
+      return this.events.filter(e => e.isSaved);
+    } else if (this.managedPopupType === 'participating') {
+      return this.events.filter(e => e.isParticipating);
+    }
+    return [];
   }
 }

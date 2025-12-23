@@ -2,10 +2,14 @@
 
 <div class="popup-container desktop">
     <div class="popup-content">
-        <mat-icon class="mobile-back" (click)="onClose()">arrow_back</mat-icon>
+        <div class="mobile-header">
+            <mat-icon (click)="onClose()">arrow_back</mat-icon>
+            <h1>Crea Evento</h1>
+        </div>
+
         <CircleIcon class="close" [path]="'assets/icon/close.svg'" (click)="onClose()" />
 
-        <div class="header">
+        <div class="header desktop-header">
             <h1>Crea Evento</h1>
             @if(generalError) {
             <p class="error">{{ generalError }}</p>

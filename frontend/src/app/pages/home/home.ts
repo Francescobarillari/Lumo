@@ -130,6 +130,7 @@ export class Home implements OnInit {
     this.showCreateEventPopup = false;
     this.showLocationSelector = false;
     this.selectedEvent = null;
+    if (this.mapView) this.mapView.managedPopupType = null;
   }
 
   openEventPopup(event: LumoEvent) {
@@ -289,11 +290,16 @@ export class Home implements OnInit {
       // TODO: Navigate to account page
       console.log('Navigate to Account');
     } else if (action === 'events') {
-      // TODO: Navigate to events page
       console.log('Navigate to Events');
-    } else if (action === 'add-event') {
-      console.log('Add Event clicked');
+    } else if (action === 'crea-evento' || action === 'add-event') {
+      console.log('Crea Evento clicked');
       this.showCreateEventPopup = true;
+    } else if (action === 'saved-events') {
+      console.log('Saved Events clicked');
+      if (this.mapView) this.mapView.managedPopupType = 'saved';
+    } else if (action === 'participating-events') {
+      console.log('Participating Events clicked');
+      if (this.mapView) this.mapView.managedPopupType = 'participating';
     }
   }
 

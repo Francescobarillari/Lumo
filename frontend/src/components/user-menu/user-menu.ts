@@ -1,10 +1,11 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
     selector: 'UserMenu',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, MatIconModule],
     templateUrl: './user-menu.html',
     styleUrl: './user-menu.css'
 })
