@@ -68,6 +68,16 @@ export class NotificationMenuComponent implements OnInit {
         }
     }
 
+    delete(event: Event, n: Notification) {
+        event.stopPropagation();
+        this.notifService.deleteNotification(n.id).subscribe({
+            next: () => {
+                this.notifications = this.notifications.filter(item => item.id !== n.id);
+            },
+            error: (err) => console.error('Error deleting notification', err)
+        });
+    }
+
     getIcon(type: string): string {
         switch (type) {
             case 'APPROVED': return 'check_circle';

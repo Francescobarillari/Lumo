@@ -38,4 +38,8 @@ export class NotificationService {
     updateType(notificationId: number, newType: string): Observable<void> {
         return this.http.post<void>(`${this.apiUrl}/${notificationId}/type?newType=${newType}`, {});
     }
+
+    deleteNotification(notificationId: number): Observable<void> {
+        return this.http.delete<void>(`${this.apiUrl}/${notificationId}`);
+    }
 }

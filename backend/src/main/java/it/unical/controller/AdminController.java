@@ -22,11 +22,6 @@ public class AdminController {
     @Autowired
     private EventService eventService;
 
-    @GetMapping("/events")
-    public List<Event> getAllEvents() {
-        return eventService.getAllEventsForAdmin();
-    }
-
     // View All Users with their pending events
     @GetMapping("/users")
     public ResponseEntity<List<Map<String, Object>>> getUsersWithPendingEvents() {

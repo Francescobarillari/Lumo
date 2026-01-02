@@ -28,13 +28,6 @@ public class EventService implements IEventService {
     public Event createEvent(Event event, Long userId) {
         event.setCreatedAt(LocalDateTime.now());
         event.setIsApproved(false); // Default pending
-
-        if (userId != null) {
-            userRepository.findById(userId).ifPresent(user -> {
-                event.setCreator(user);
-            });
-        }
-
         Event savedEvent = eventRepository.save(event);
 
         if (userId != null) {
@@ -76,28 +69,6 @@ public class EventService implements IEventService {
     // ✅ Restituisce eventi IN ATTESA (Per Admin)
     public List<Event> getPendingEvents() {
         return eventRepository.findByIsApprovedFalseOrderByDateAscStartTimeAsc();
-    }
-
-    @Override
-    public List<Event> getOrganizedEvents(Long userId) {
-        List<Event> events = eventRepository.findByCreator_Id(userId);
-        for (Event event : events) {
-            // Populate transient list for frontend
-            event.setPendingUsersList(new java.util.ArrayList<>(event.getPendingParticipants()));
-        }
-        return events;
-    }
-
-    @Override
-    public List<Event> getJoinedEvents(Long userId) {
-        return userRepository.findById(userId)
-                .map(user -> new java.util.ArrayList<>(user.getParticipatingEvents()))
-                .orElse(new java.util.ArrayList<>());
-    }
-
-    @Override
-    public List<Event> getAllEventsForAdmin() {
-        return eventRepository.findAllByOrderByDateAscStartTimeAsc();
     }
 
     // ✅ Approva evento

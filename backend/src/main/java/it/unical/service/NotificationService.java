@@ -66,6 +66,10 @@ public class NotificationService implements INotificationService {
         });
     }
 
+    public void deleteNotification(Long notificationId) {
+        notificationRepo.deleteById(notificationId);
+    }
+
     // Check for events starting within 3 days that the user follows/participates in
     private void checkAndCreateFollowUpNotifications(Long userId) {
         User user = userRepo.findById(userId).orElse(null);

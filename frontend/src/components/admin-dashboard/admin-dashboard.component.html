@@ -5,16 +5,13 @@
             <h2>LUMO <span>Admin</span></h2>
         </div>
         <nav>
-            <a href="javascript:void(0)" class="nav-item" [class.active]="currentView === 'dashboard'"
-                (click)="setView('dashboard')">
+            <a href="#" class="nav-item active">
                 <mat-icon>dashboard</mat-icon> Dashboard
             </a>
-            <a href="javascript:void(0)" class="nav-item" [class.active]="currentView === 'events'"
-                (click)="setView('events')">
+            <a href="#" class="nav-item">
                 <mat-icon>event</mat-icon> Eventi
             </a>
-            <a href="javascript:void(0)" class="nav-item" [class.active]="currentView === 'users'"
-                (click)="setView('users')">
+            <a href="#" class="nav-item">
                 <mat-icon>people</mat-icon> Utenti
             </a>
         </nav>
@@ -26,26 +23,19 @@
     <!-- Main Content -->
     <div class="main-content">
         <div class="header">
-            @if (currentView === 'dashboard') {
             <h1>Dashboard Overview</h1>
-            } @else if (currentView === 'events') {
-            <h1>Gestione Eventi</h1>
-            } @else if (currentView === 'users') {
-            <h1>Gestione Utenti</h1>
-            }
         </div>
 
-        @if (currentView === 'dashboard') {
         <!-- Stats Cards -->
         <div class="stats-grid">
-            <div class="stat-card" (click)="setView('users')">
+            <div class="stat-card">
                 <div class="stat-icon users-icon"><mat-icon>people</mat-icon></div>
                 <div class="stat-info">
                     <span class="stat-value">{{ totalUsers }}</span>
                     <span class="stat-label">Utenti Registrati</span>
                 </div>
             </div>
-            <div class="stat-card" (click)="setView('events')">
+            <div class="stat-card">
                 <div class="stat-icon events-icon"><mat-icon>event</mat-icon></div>
                 <div class="stat-info">
                     <span class="stat-value">{{ totalEvents }}</span>
@@ -68,7 +58,7 @@
             <div class="requests-section">
                 <div class="section-header">
                     <h3>Richieste Recenti</h3>
-                    <button class="btn-link" (click)="setView('events')">Vedi tutte</button>
+                    <button class="btn-link">Vedi tutte</button>
                 </div>
 
                 <div class="table-container">
@@ -82,7 +72,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @for (ev of recentRequests.slice(0, 5); track ev.id) {
+                            @for (ev of recentRequests; track ev.id) {
                             <tr>
                                 <td>
                                     <div class="ev-cell-title">
@@ -138,11 +128,11 @@
             <div class="actions-section">
                 <h3>Azioni Rapide</h3>
                 <div class="quick-actions">
-                    <button class="action-card" (click)="setView('events')">
+                    <button class="action-card">
                         <mat-icon class="action-icon">verified_user</mat-icon>
                         <span>Gestisci Eventi</span>
                     </button>
-                    <button class="action-card outline" (click)="setView('users')">
+                    <button class="action-card outline">
                         <mat-icon class="action-icon">search</mat-icon>
                         <span>Cerca Utenti</span>
                     </button>
@@ -150,128 +140,5 @@
             </div>
 
         </div>
-        }
-
-        @if (currentView === 'events') {
-        <div class="full-table-section">
-            <!-- Search for Events -->
-            <div class="search-container">
-                <input type="text" [(ngModel)]="searchTermEvents"
-                    placeholder="Cerca eventi per titolo, città o organizzatore..." class="search-input">
-            </div>
-
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>EVENTO</th>
-                            <th>ORGANIZZATORE</th>
-                            <th>STATO</th>
-                            <th>DATA</th>
-                            <th>AZIONI</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for (ev of filteredEvents; track ev.id) {
-                        <tr>
-                            <td>#{{ ev.id }}</td>
-                            <td>
-                                <div class="ev-cell-title">
-                                    <strong>{{ ev.title }}</strong>
-                                    <span class="ev-sub">{{ ev.city }}</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="ev-organizer">
-                                    <img [src]="ev.organizerImage || 'assets/img/default-avatar.png'"
-                                        class="table-avatar">
-                                    <span>{{ ev.organizerName || 'Unknown' }}</span>
-                                </div>
-                            </td>
-                            <td>
-                                @if(ev.isApproved) {
-                                <span class="status-badge approved">Approvato</span>
-                                } @else {
-                                <span class="status-badge pending">In Attesa</span>
-                                }
-                            </td>
-                            <td>{{ ev.date }}</td>
-                            <td>
-                                @if(!ev.isApproved) {
-                                <div class="action-buttons">
-                                    @if (!eventsCurrentlyRejecting.includes(ev.id)) {
-                                    <button class="btn-icon approve" (click)="approveEvent(ev)" title="Approva">
-                                        <mat-icon>check</mat-icon>
-                                    </button>
-                                    <button class="btn-icon reject" (click)="rejectEvent(ev)" title="Rifiuta">
-                                        <mat-icon>close</mat-icon>
-                                    </button>
-                                    } @else {
-                                    <div class="inline-reject">
-                                        <input #reasonInput type="text" placeholder="Motivo..." class="input-reason"
-                                            autoFocus (keyup.enter)="confirmReject(ev, reasonInput.value)">
-                                        <button class="btn-icon approve" (click)="confirmReject(ev, reasonInput.value)">
-                                            <mat-icon>check</mat-icon>
-                                        </button>
-                                        <button class="btn-icon reject" (click)="cancelReject(ev.id)">
-                                            <mat-icon>close</mat-icon>
-                                        </button>
-                                    </div>
-                                    }
-                                </div>
-                                }
-                            </td>
-                        </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        }
-
-        @if (currentView === 'users') {
-        <div class="full-table-section">
-            <!-- Search for Users -->
-            <div class="search-container">
-                <input type="text" [(ngModel)]="searchTermUsers" placeholder="Cerca utenti per nome o email..."
-                    class="search-input">
-            </div>
-
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>UTENTE</th>
-                            <th>EMAIL</th>
-                            <th>RUOLO</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for (u of filteredUsers; track u.id) {
-                        <tr>
-                            <td>#{{ u.id }}</td>
-                            <td>
-                                <div class="ev-organizer">
-                                    <img [src]="u.profileImage || 'assets/img/default-avatar.png'" class="table-avatar">
-                                    <span>{{ u.name }}</span>
-                                </div>
-                            </td>
-                            <td>{{ u.email }}</td>
-                            <td>
-                                @if(u.isAdmin) {
-                                <span class="status-badge admin">Admin</span>
-                                } @else {
-                                <span class="status-badge user">User</span>
-                                }
-                            </td>
-                        </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        }
     </div>
 </div>

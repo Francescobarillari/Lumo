@@ -16,4 +16,6 @@ public interface INotificationService {
     void markAllAsRead(Long userId);
 
     void updateType(Long notificationId, String newType);
+
+    void deleteNotification(Long notificationId);
 }

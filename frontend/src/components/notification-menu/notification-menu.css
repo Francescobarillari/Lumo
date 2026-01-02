@@ -134,6 +134,8 @@
     margin-left: auto;
     align-items: center;
     padding-left: var(--spacing-sm);
+    margin-top: 8px;
+    /* Added spacing from text */
 }
 
 .btn-approve,
@@ -186,6 +188,8 @@
     margin-left: auto;
     padding-left: var(--spacing-sm);
     white-space: nowrap;
+    margin-top: 5px;
+    /* Added spacing from text */
 }
 
 .status-msg mat-icon {

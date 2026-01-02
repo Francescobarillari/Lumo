@@ -1,6 +1,6 @@
 <div class="notif-container">
     <div class="notif-header mobile-header">
-        <mat-icon (click)="close.emit()">arrow_back</mat-icon> 
+        <mat-icon (click)="close.emit()">arrow_back</mat-icon>
         <h1>Notifiche</h1>
     </div>
     <div class="notif-list">
@@ -12,43 +12,46 @@
             <div class="icon-section">
                 <mat-icon [style.color]="getIconColor(n.type)">{{ getIcon(n.type) }}</mat-icon>
             </div>
+
             <div class="content-section">
                 <div class="notif-top">
                     <span class="notif-title">{{ n.title }}</span>
                     <span class="notif-time">{{ n.createdAt | date:'short' }}</span>
                 </div>
+
                 <div class="notif-msg" [class.expanded]="expandedId === n.id">
                     {{ n.message }}
                 </div>
-            </div>
-            @if (n.message.length > 100) {
-            <div class="expand-btn" (click)="toggleExpand(n.id, $event)">
-                <mat-icon>{{ expandedId === n.id ? 'expand_less' : 'expand_more' }}</mat-icon>
-            </div>
-            }
 
-            @if (n.type === 'PARTICIPATION_REQUEST') {
-            <div class="action-buttons">
-                <div class="btn-approve" (click)="acceptRequest(n, $event)" title="Accetta">
-                    <mat-icon>check</mat-icon>
+                @if (n.type === 'PARTICIPATION_REQUEST') {
+                <div class="action-buttons">
+                    <div class="btn-approve" (click)="acceptRequest(n, $event)" title="Accetta">
+                        <mat-icon>check</mat-icon>
+                    </div>
+                    <div class="btn-reject" (click)="rejectRequest(n, $event)" title="Rifiuta">
+                        <mat-icon>close</mat-icon>
+                    </div>
                 </div>
-                <div class="btn-reject" (click)="rejectRequest(n, $event)" title="Rifiuta">
-                    <mat-icon>close</mat-icon>
+                }
+
+                @if (n.type === 'REQUEST_ACCEPTED') {
+                <div class="status-msg success">
+                    <mat-icon>check_circle</mat-icon> Accettata
                 </div>
-            </div>
-            }
+                }
 
-            @if (n.type === 'REQUEST_ACCEPTED') {
-            <div class="status-msg success">
-                <mat-icon>check_circle</mat-icon> Accettata
-            </div>
-            }
+                @if (n.type === 'REQUEST_REJECTED') {
+                <div class="status-msg error">
+                    <mat-icon>cancel</mat-icon> Rifiutata
+                </div>
+                }
 
-            @if (n.type === 'REQUEST_REJECTED') {
-            <div class="status-msg error">
-                <mat-icon>cancel</mat-icon> Rifiutata
+                @if (n.message.length > 100) {
+                <div class="expand-btn" (click)="toggleExpand(n.id, $event)">
+                    <mat-icon>{{ expandedId === n.id ? 'expand_less' : 'expand_more' }}</mat-icon>
+                </div>
+                }
             </div>
-            }
         </div>
         }
         }
