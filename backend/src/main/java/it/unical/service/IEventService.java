@@ -11,6 +11,8 @@ public interface IEventService {
 
     List<Event> getPendingEvents();
 
+    List<Event> getAllEventsForAdmin();
+
     Event approveEvent(Long id);
 
     void rejectEvent(Long id, String reason);

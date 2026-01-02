@@ -71,6 +71,11 @@ public class EventService implements IEventService {
         return eventRepository.findByIsApprovedFalseOrderByDateAscStartTimeAsc();
     }
 
+    @Override
+    public List<Event> getAllEventsForAdmin() {
+        return eventRepository.findAllByOrderByDateAscStartTimeAsc();
+    }
+
     // ✅ Approva evento
     public Event approveEvent(Long id) {
         Event event = eventRepository.findById(id)

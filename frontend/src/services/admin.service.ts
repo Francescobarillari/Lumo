@@ -15,6 +15,10 @@ export class AdminService {
         return this.http.get<any[]>(`${this.baseUrl}/users`);
     }
 
+    getAllEvents(): Observable<Event[]> {
+        return this.http.get<Event[]>(`${this.baseUrl}/events`);
+    }
+
     approveEvent(id: number): Observable<Event> {
         return this.http.post<Event>(`${this.baseUrl}/events/${id}/approve`, {});
     }
