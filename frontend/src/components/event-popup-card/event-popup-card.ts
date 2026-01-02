@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Event } from '../../models/event';
 
 import { MatIconModule } from '@angular/material/icon';
+import { UserService } from '../../services/user-service/user-service';
 
 @Component({
     selector: 'event-popup-card',
@@ -16,11 +17,16 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
     @Input() organizerName: string = 'Event Organizer';
     @Input() organizerImage?: string;
     @Input() eventPosition?: { x: number, y: number }; // Screen coordinates for positioning
+    @Input() currentUserId: string | null = null;
+    @Input() creatorId?: number;
+
     @Output() close = new EventEmitter<void>();
     @Output() participate = new EventEmitter<Event>();
     @Output() toggleFavorite = new EventEmitter<void>();
 
-    constructor(private elementRef: ElementRef) { }
+    isFollowing = false;
+
+    constructor(private elementRef: ElementRef, private userService: UserService) { }
 
     ngAfterViewInit(): void {
         this.positionCard();
@@ -60,8 +66,8 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
 
     formatDateTime(): string {
         const date = this.event.date ? new Date(`${this.event.date}T00:00:00`) : null;
-        const start = this.event.startTime ? this.event.startTime.slice(0, 5) : '';
-        const end = this.event.endTime ? this.event.endTime.slice(0, 5) : '';
+        const start = this.event.startTime ? this.event.startTime.slice(0, 5) : null;
+        const end = this.event.endTime ? this.event.endTime.slice(0, 5) : null;
 
         const datePart = date
             ? date.toLocaleDateString('it-IT', { day: '2-digit', month: 'short' })
@@ -85,5 +91,27 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
 
     isSaved(): boolean | undefined {
         return this.event.isSaved;
+    }
+
+    followOrganizer() {
+        if (!this.currentUserId || !this.creatorId) return;
+
+        this.userService.followUser(this.currentUserId, this.creatorId.toString()).subscribe({
+            next: () => {
+                this.isFollowing = true;
+            },
+            error: (err) => console.error('Error following', err)
+        });
+    }
+
+    unfollowOrganizer() {
+        if (!this.currentUserId || !this.creatorId) return;
+
+        this.userService.unfollowUser(this.currentUserId, this.creatorId.toString()).subscribe({
+            next: () => {
+                this.isFollowing = false;
+            },
+            error: (err) => console.error('Error unfollowing', err)
+        });
     }
 }

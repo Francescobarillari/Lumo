@@ -9,6 +9,10 @@ public interface IEventService {
 
     List<Event> getAllEvents(Long userId);
 
+    List<Event> getOrganizedEvents(Long userId);
+
+    List<Event> getJoinedEvents(Long userId);
+
     List<Event> getPendingEvents();
 
     List<Event> getAllEventsForAdmin();

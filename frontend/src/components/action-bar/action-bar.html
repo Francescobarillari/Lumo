@@ -30,3 +30,8 @@
 @if (showMyEventsModal) {
 <app-my-events-modal [userId]="loggedUser?.id || 0" (close)="showMyEventsModal = false"></app-my-events-modal>
 }
+
+@if (showAccountModal) {
+<app-account-modal [user]="loggedUser" (close)="showAccountModal = false" (changePhoto)="onChangePhotoFromAccount()">
+</app-account-modal>
+}

@@ -26,4 +26,12 @@ export class UserService {
   toggleSavedEvent(userId: string, eventId: number): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/${userId}/saved-events/${eventId}`, {});
   }
+
+  followUser(followerId: string, followedId: string): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/${followerId}/follow/${followedId}`, {});
+  }
+
+  unfollowUser(followerId: string, followedId: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${followerId}/follow/${followedId}`);
+  }
 }

@@ -1,6 +1,14 @@
 <div class="card-container">
     <div class="card-content">
-        <h1 class="title">{{ event.title }}</h1>
+        <div class="header-row">
+            <h1 class="title">{{ event.title }}</h1>
+            @if (!event.isParticipating) {
+            <mat-icon class="favorite-icon" [class.saved]="isSaved()"
+                (click)="toggleFavorite.emit(); $event.stopPropagation()">
+                {{ isSaved() ? 'favorite' : 'favorite_border' }}
+            </mat-icon>
+            }
+        </div>
         <p class="day-time">{{ formatDateTime() }}</p>
         <p class="description">{{ event.description }}</p>
 
@@ -21,10 +29,16 @@
                     <span class="eventer-name">{{ organizerName }}</span>
                 </div>
             </div>
-            @if (!event.isParticipating) {
-            <div class="icon-circle" (click)="toggleFavorite.emit(); $event.stopPropagation()">
-                <mat-icon [class.saved]="isSaved()">{{ isSaved() ? 'favorite' : 'favorite_border' }}</mat-icon>
-            </div>
+
+            @if (currentUserId && creatorId) {
+            @if (currentUserId.toString() === creatorId.toString()) {
+            <span class="is-organizer-badge">Tu</span>
+            } @else {
+            <button class="icon-circle follow-btn-popup" [class.following]="isFollowing"
+                (click)="isFollowing ? unfollowOrganizer() : followOrganizer(); $event.stopPropagation()">
+                <mat-icon>{{ isFollowing ? 'check' : 'person_add' }}</mat-icon>
+            </button>
+            }
             }
         </div>
 

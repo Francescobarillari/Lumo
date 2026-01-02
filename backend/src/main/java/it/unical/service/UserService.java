@@ -86,4 +86,32 @@ public class UserService implements IUserService {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         return user.getProfileImageData();
     }
+
+    @Override
+    public void followUser(Long followerId, Long followedId) {
+        if (followerId.equals(followedId)) {
+            throw new RuntimeException("Non puoi seguire te stesso.");
+        }
+
+        User follower = userRepository.findById(followerId)
+                .orElseThrow(() -> new RuntimeException("Follower not found"));
+        User followed = userRepository.findById(followedId)
+                .orElseThrow(() -> new RuntimeException("User to follow not found"));
+
+        follower.getFollowing().add(followed);
+        userRepository.save(follower);
+    }
+
+    @Override
+    public void unfollowUser(Long followerId, Long followedId) {
+        User follower = userRepository.findById(followerId)
+                .orElseThrow(() -> new RuntimeException("Follower not found"));
+        User followed = userRepository.findById(followedId)
+                .orElseThrow(() -> new RuntimeException("User to unfollow not found"));
+
+        if (follower.getFollowing().contains(followed)) {
+            follower.getFollowing().remove(followed);
+            userRepository.save(follower);
+        }
+    }
 }

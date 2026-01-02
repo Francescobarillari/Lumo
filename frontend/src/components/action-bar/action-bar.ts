@@ -7,24 +7,29 @@ import { NotificationService } from '../../services/notification.service';
 import { interval, Subscription, switchMap } from 'rxjs';
 import { MyEventsModal } from '../my-events-modal/my-events-modal.component';
 
+import { AccountModalComponent } from '../account-modal/account-modal.component';
+
 @Component({
     selector: 'app-action-bar',
     standalone: true,
-    imports: [CommonModule, MatIconModule, UserMenu, NotificationMenuComponent, MyEventsModal],
+    imports: [CommonModule, MatIconModule, UserMenu, NotificationMenuComponent, MyEventsModal, AccountModalComponent],
     templateUrl: './action-bar.html',
     styleUrl: './action-bar.css'
 })
 export class ActionBarComponent implements OnInit, OnDestroy {
-    @Input() loggedUser: { id: string; name: string; email: string; profileImage?: string } | null = null;
+    @Input() loggedUser: { id: string; name: string; email: string; profileImage?: string; followersCount?: number; followingCount?: number } | null = null;
     @Output() action = new EventEmitter<string>();
 
     showUserMenu = false;
     showNotifications = false;
     showMyEventsModal = false;
+    showAccountModal = false;
     hasUnread = false;
     private pollSubscription: Subscription | null = null;
 
     constructor(private notificationService: NotificationService, private elementRef: ElementRef) { }
+
+    // ... (existing OnInit, OnDestroy, OnChanges, polling methods) ...
 
     ngOnInit() {
         // Poll for notifications every 5 seconds if user is logged in
@@ -119,10 +124,16 @@ export class ActionBarComponent implements OnInit, OnDestroy {
     onMenuAction(actionName: string) {
         if (actionName === 'my-events') {
             this.showMyEventsModal = true;
+        } else if (actionName === 'account') {
+            this.showAccountModal = true;
         } else {
             this.action.emit(actionName);
         }
         this.showUserMenu = false;
+    }
+
+    onChangePhotoFromAccount() {
+        this.action.emit('change-photo');
     }
 
     onAddEvent() {
@@ -134,3 +145,4 @@ export class ActionBarComponent implements OnInit, OnDestroy {
         return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
     }
 }
+

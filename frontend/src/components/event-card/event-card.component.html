@@ -18,3 +18,27 @@
         }
     </div>
 </div>
+
+@if (organizerName()) {
+<div class="organizer-info">
+    <div class="organizer-details">
+        <div class="organizer-img" [style.background-image]="organizerImage() ? 'url(' + organizerImage() + ')' : ''">
+            @if (!organizerImage()) {
+            <mat-icon>person</mat-icon>
+            }
+        </div>
+        <span class="organizer-name">{{ organizerName() }}</span>
+    </div>
+
+    @if (currentUserId() && creatorId()) {
+    @if (currentUserId()?.toString() === creatorId()?.toString()) {
+    <span class="is-organizer-badge">Tu sei l'organizzatore</span>
+    } @else {
+    <button class="follow-btn" [class.following]="isFollowing"
+        (click)="isFollowing ? unfollowOrganizer($event) : followOrganizer($event)">
+        {{ isFollowing ? 'Seguito' : 'Segui' }}
+    </button>
+    }
+    }
+</div>
+}

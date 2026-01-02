@@ -80,4 +80,20 @@ public class UserController {
 
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/{followerId}/follow/{followedId}")
+    public ResponseEntity<Void> followUser(
+            @PathVariable Long followerId,
+            @PathVariable Long followedId) {
+        userService.followUser(followerId, followedId);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{followerId}/follow/{followedId}")
+    public ResponseEntity<Void> unfollowUser(
+            @PathVariable Long followerId,
+            @PathVariable Long followedId) {
+        userService.unfollowUser(followerId, followedId);
+        return ResponseEntity.ok().build();
+    }
 }

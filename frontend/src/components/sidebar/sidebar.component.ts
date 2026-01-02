@@ -68,35 +68,29 @@ export class SidebarComponent implements OnChanges {
         const now = new Date();
         now.setHours(0, 0, 0, 0); // Normalize today
 
-        const threeDaysFromNow = new Date(now);
-        threeDaysFromNow.setDate(now.getDate() + 3);
+        // 1. Fetch Follow Up Events (Directly from backend to ensure we get everything, including own events)
+        this.eventService.getJoinedEvents(this.userId).subscribe({
+            next: (joined) => {
+                this.followUpEvents = joined;
 
+                // Sort by Date
+                this.followUpEvents.sort((a, b) => {
+                    const dateA = new Date(`${a.date}T${a.startTime || '00:00'}`);
+                    const dateB = new Date(`${b.date}T${b.startTime || '00:00'}`);
+                    return dateA.getTime() - dateB.getTime();
+                });
+            },
+            error: (err) => console.error('Error fetching follow up events', err)
+        });
+
+        // 2. Categorize Map Events for Saved and Discover
         this.events.forEach(event => {
-            let isFollowUp = false;
             let isSaved = false;
-            // Participating flag IS critical now
             const isParticipating = event.isParticipating || false;
 
-            // Check Follow Up: Participating AND starts within 3 days
-            // Ensure consistent date parsing (local midnight)
-            const eventDate = event.date ? new Date(`${event.date}T00:00:00`) : null;
-
-            if (isParticipating && eventDate) {
-                // Check if date is in the future (or today) AND before 3 days from now
-                if (eventDate <= threeDaysFromNow && eventDate >= now) {
-                    isFollowUp = true;
-                }
-            }
-
-            // Check Saved: Only if NOT participating
-            // "Se partecipi, automaticamente non puoi metterlo nei preferiti"
+            // Check Saved
             if (event.isSaved && !isParticipating) {
                 isSaved = true;
-            }
-
-            // Categorize
-            if (isFollowUp) {
-                this.followUpEvents.push(event);
             }
 
             if (isSaved) {
@@ -108,6 +102,7 @@ export class SidebarComponent implements OnChanges {
                 this.discoverEvents.push(event);
             }
         });
+
         console.log('Categorized:', {
             followUp: this.followUpEvents,
             saved: this.savedEvents,

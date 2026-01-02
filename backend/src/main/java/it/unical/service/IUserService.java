@@ -20,4 +20,8 @@ public interface IUserService {
     String updateProfileImage(Long userId, byte[] imageData);
 
     byte[] getProfileImage(Long userId);
+
+    void followUser(Long followerId, Long followedId);
+
+    void unfollowUser(Long followerId, Long followedId);
 }

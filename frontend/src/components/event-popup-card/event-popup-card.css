@@ -23,13 +23,33 @@
     /* Ensure text wraps */
 }
 
+
+.header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+}
+
 .title {
-    font-size: 28px;
-    font-weight: var(--font-weight-bold);
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
     color: var(--color-accent);
     line-height: 1.2;
-    margin: 0;
-    padding: 0;
+}
+
+.favorite-icon {
+    color: #666;
+    cursor: pointer;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+.favorite-icon.saved {
+    color: var(--color-accent);
+    /* Or red if preferred, using accent for consistency */
 }
 
 .day-time {
@@ -109,17 +129,42 @@
     color: var(--color-white);
 }
 
+
 .icon-circle {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
-    background-color: #444444;
+    background-color: #333;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.2s;
+    border: 1px solid #555;
 }
+
+.icon-circle:hover {
+    background-color: #444;
+    border-color: #777;
+}
+
+.follow-btn-popup {
+    background-color: #333;
+    /* Dark background */
+    color: #ccc;
+    border-color: #555;
+}
+
+.follow-btn-popup.following {
+    background-color: var(--color-accent);
+    color: black;
+    border-color: var(--color-accent);
+}
+
+.follow-btn-popup.following mat-icon {
+    color: black;
+}
+
 
 .icon-circle:hover {
     background-color: #555555;

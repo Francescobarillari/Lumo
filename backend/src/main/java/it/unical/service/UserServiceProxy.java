@@ -66,4 +66,16 @@ public class UserServiceProxy implements IUserService {
     public byte[] getProfileImage(Long userId) {
         return realService.getProfileImage(userId);
     }
+
+    @Override
+    public void followUser(Long followerId, Long followedId) {
+        System.out.println("[UserServiceProxy] User " + followerId + " following User " + followedId);
+        realService.followUser(followerId, followedId);
+    }
+
+    @Override
+    public void unfollowUser(Long followerId, Long followedId) {
+        System.out.println("[UserServiceProxy] User " + followerId + " unfollowing User " + followedId);
+        realService.unfollowUser(followerId, followedId);
+    }
 }

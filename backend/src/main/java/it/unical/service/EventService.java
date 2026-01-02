@@ -32,11 +32,30 @@ public class EventService implements IEventService {
 
         if (userId != null) {
             userRepository.findById(userId).ifPresent(user -> {
+                // Determine if we should add to participating?
+                // Usually creator is automatically participating?
+                // Let's assume creator IS participating.
                 user.getParticipatingEvents().add(savedEvent);
                 userRepository.save(user);
+
+                // IMPORTANT: Set relationship in Event side if bidirectional logical link
+                // needed immediately
+                // But JPA handles it via User side owning the relationship (mappedBy in Event)
             });
         }
         return savedEvent;
+    }
+
+    @Override
+    public List<Event> getOrganizedEvents(Long userId) {
+        return eventRepository.findByCreator_Id(userId);
+    }
+
+    @Override
+    public List<Event> getJoinedEvents(Long userId) {
+        return userRepository.findById(userId)
+                .map(user -> new java.util.ArrayList<>(user.getParticipatingEvents()))
+                .orElse(new java.util.ArrayList<>());
     }
 
     // ✅ Restituisce tutti gli eventi APPROVATI e NON CREATI dall'utente corrente

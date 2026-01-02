@@ -44,6 +44,15 @@ public class User {
     @com.fasterxml.jackson.annotation.JsonIgnore
     private java.util.Set<Event> pendingEvents = new java.util.HashSet<>();
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_follows", joinColumns = @JoinColumn(name = "follower_id"), inverseJoinColumns = @JoinColumn(name = "followed_id"))
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private java.util.Set<User> following = new java.util.HashSet<>();
+
+    @ManyToMany(mappedBy = "following", fetch = FetchType.EAGER)
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private java.util.Set<User> followers = new java.util.HashSet<>();
+
     public Long getId() {
         return id;
     }
@@ -140,6 +149,30 @@ public class User {
             return false;
         User user = (User) o;
         return id != null && id.equals(user.getId());
+    }
+
+    public java.util.Set<User> getFollowing() {
+        return following;
+    }
+
+    public void setFollowing(java.util.Set<User> following) {
+        this.following = following;
+    }
+
+    public java.util.Set<User> getFollowers() {
+        return followers;
+    }
+
+    public void setFollowers(java.util.Set<User> followers) {
+        this.followers = followers;
+    }
+
+    public int getFollowersCount() {
+        return followers.size();
+    }
+
+    public int getFollowingCount() {
+        return following.size();
     }
 
     @Override
