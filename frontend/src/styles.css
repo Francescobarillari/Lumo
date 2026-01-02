@@ -213,6 +213,13 @@
 
 body {
     color: var(--color-white);
+    background-color: var(--color-dark-gray);
+    margin: 0;
+    height: 100%;
+}
+
+html {
+    height: 100%;
 }
 
 /* titoli */

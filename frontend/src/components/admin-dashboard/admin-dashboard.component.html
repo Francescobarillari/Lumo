@@ -1,83 +1,143 @@
 <div class="admin-container">
-    <div class="header">
-        <h1>Admin Dashboard</h1>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <h2>LUMO <span>Admin</span></h2>
+        </div>
+        <nav>
+            <a href="#" class="nav-item active">
+                <mat-icon>dashboard</mat-icon> Dashboard
+            </a>
+            <a href="#" class="nav-item">
+                <mat-icon>event</mat-icon> Eventi
+            </a>
+            <a href="#" class="nav-item">
+                <mat-icon>people</mat-icon> Utenti
+            </a>
+        </nav>
         <button class="btn-logout" (click)="signOut()">
             <mat-icon>logout</mat-icon> Logout
         </button>
     </div>
 
-    <div class="content">
-        <h2>Utenti & Richieste</h2>
-        <div class="user-list">
-            @for (user of users; track user.id) {
-            <div class="user-card">
-                <div class="user-info">
-                    <img [src]="user.profileImage || 'assets/img/default-avatar.png'" class="avatar">
-                    <div class="details">
-                        <span class="name">{{ user.name }}</span>
-                        <span class="email">{{ user.email }}</span>
-                        @if(user.isAdmin) { <span class="badge-admin">Admin</span> }
-                    </div>
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h1>Dashboard Overview</h1>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon users-icon"><mat-icon>people</mat-icon></div>
+                <div class="stat-info">
+                    <span class="stat-value">{{ totalUsers }}</span>
+                    <span class="stat-label">Utenti Registrati</span>
                 </div>
-
-                @if (user.pendingEvents && user.pendingEvents.length > 0) {
-                <div class="pending-section">
-                    <h3>Richieste Eventi ({{ user.pendingEvents.length }})</h3>
-                    @for (ev of user.pendingEvents; track ev.id) {
-                    <div class="event-request">
-                        <div class="ev-header">
-                            <div class="ev-info">
-                                <span class="ev-title">{{ ev.title }}</span>
-                                <span class="ev-date">{{ ev.date }} - {{ ev.city }}</span>
-                            </div>
-
-                            <div class="ev-actions">
-                                @if (!eventsCurrentlyRejecting.includes(ev.id)) {
-                                <button class="btn-details" (click)="toggleDetails(ev.id)">
-                                    <mat-icon>{{ expandedEventId === ev.id ? 'expand_less' : 'expand_more' }}</mat-icon>
-                                    Info
-                                </button>
-                                <button class="btn-approve" (click)="approveEvent(ev)">
-                                    <mat-icon>check</mat-icon>
-                                </button>
-                                <button class="btn-reject" (click)="rejectEvent(ev)">
-                                    <mat-icon>close</mat-icon>
-                                </button>
-                                } @else {
-                                <div class="inline-reject-form">
-                                    <input #reasonInput type="text" placeholder="Motivazione..."
-                                        class="inline-reason-input" autoFocus
-                                        (keyup.enter)="confirmReject(ev, reasonInput.value)">
-                                    <button class="btn-approve" (click)="confirmReject(ev, reasonInput.value)"
-                                        title="Conferma Rifiuto">
-                                        <mat-icon>check</mat-icon>
-                                    </button>
-                                    <button class="btn-reject" (click)="cancelReject(ev.id)" title="Annulla">
-                                        <mat-icon>close</mat-icon>
-                                    </button>
-                                </div>
-                                }
-                            </div>
-                        </div>
-
-                        <!-- Removed Old Inline Form Block -->
-
-                        @if (expandedEventId === ev.id) {
-                        <div class="ev-details">
-                            <p><strong>Descrizione:</strong> {{ ev.description }}</p>
-                            <p><strong>Orario:</strong> {{ ev.startTime }} - {{ ev.endTime }}</p>
-                            <p><strong>Partecipanti previsti:</strong> {{ ev.nPartecipants }}</p>
-                            <p><strong>Costo:</strong> {{ ev.costPerPerson ? '€' + ev.costPerPerson : 'Gratis' }}</p>
-                        </div>
-                        }
-                    </div>
-                    }
-                </div>
-                } @else {
-                <p class="no-requests">Nessuna richiesta pendente.</p>
-                }
             </div>
-            }
+            <div class="stat-card">
+                <div class="stat-icon events-icon"><mat-icon>event</mat-icon></div>
+                <div class="stat-info">
+                    <span class="stat-value">{{ totalEvents }}</span>
+                    <span class="stat-label">Totale Eventi</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon pending-icon"><mat-icon>assignment</mat-icon></div>
+                <div class="stat-info">
+                    <span class="stat-value">{{ pendingEventsCount }}</span>
+                    <span class="stat-label">In Attesa di Approvazione</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Content Grid -->
+        <div class="dashboard-grid">
+            
+            <!-- Recent Requests Table -->
+            <div class="requests-section">
+                <div class="section-header">
+                    <h3>Richieste Recenti</h3>
+                    <button class="btn-link">Vedi tutte</button>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>EVENTO</th>
+                                <th>ORGANIZZATORE</th>
+                                <th>DATA</th>
+                                <th>AZIONI</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (ev of recentRequests; track ev.id) {
+                            <tr>
+                                <td>
+                                    <div class="ev-cell-title">
+                                        <strong>{{ ev.title }}</strong>
+                                        <span class="ev-sub">{{ ev.city }}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="ev-organizer">
+                                        <img [src]="ev.organizerImg || 'assets/img/default-avatar.png'" class="table-avatar">
+                                        <span>{{ ev.organizer }}</span>
+                                    </div>
+                                </td>
+                                <td>{{ ev.date }}</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        @if (!eventsCurrentlyRejecting.includes(ev.id)) {
+                                            <button class="btn-icon approve" (click)="approveEvent(ev)" title="Approva">
+                                                <mat-icon>check</mat-icon>
+                                            </button>
+                                            <button class="btn-icon reject" (click)="rejectEvent(ev)" title="Rifiuta">
+                                                <mat-icon>close</mat-icon>
+                                            </button>
+                                        } @else {
+                                            <div class="inline-reject">
+                                                <input #reasonInput type="text" placeholder="Motivo..." 
+                                                    class="input-reason" autoFocus 
+                                                    (keyup.enter)="confirmReject(ev, reasonInput.value)">
+                                                <button class="btn-icon approve" (click)="confirmReject(ev, reasonInput.value)">
+                                                    <mat-icon>check</mat-icon>
+                                                </button>
+                                                <button class="btn-icon reject" (click)="cancelReject(ev.id)">
+                                                    <mat-icon>close</mat-icon>
+                                                </button>
+                                            </div>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                            }
+                            @if (recentRequests.length === 0) {
+                                <tr>
+                                    <td colspan="4" class="no-data">Nessuna richiesta pendente.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="actions-section">
+                <h3>Azioni Rapide</h3>
+                <div class="quick-actions">
+                    <button class="action-card">
+                        <mat-icon class="action-icon">verified_user</mat-icon>
+                        <span>Gestisci Eventi</span>
+                    </button>
+                    <button class="action-card outline">
+                        <mat-icon class="action-icon">search</mat-icon>
+                        <span>Cerca Utenti</span>
+                    </button>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>

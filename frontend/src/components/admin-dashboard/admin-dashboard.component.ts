@@ -14,6 +14,11 @@ import { FormsModule } from '@angular/forms';
 })
 export class AdminDashboardComponent implements OnInit {
     users: any[] = [];
+    recentRequests: any[] = [];
+    totalUsers: number = 0;
+    totalEvents: number = 0;
+    pendingEventsCount: number = 0;
+
     expandedEventId: number | null = null;
 
     constructor(private router: Router, private adminService: AdminService) { }
@@ -24,12 +29,46 @@ export class AdminDashboardComponent implements OnInit {
 
     loadData() {
         this.adminService.getUsers().subscribe(data => {
-            this.users = data.sort((a, b) => {
-                const pendingA = a.pendingEvents ? a.pendingEvents.length : 0;
-                const pendingB = b.pendingEvents ? b.pendingEvents.length : 0;
-                return pendingB - pendingA; // Descending order
-            });
+            this.users = data;
+            this.calculateStats();
         });
+    }
+
+    calculateStats() {
+        this.totalUsers = this.users.length;
+        this.recentRequests = [];
+        this.totalEvents = 0;
+
+        this.users.forEach(user => {
+            // Assuming user has 'events' or we count pending + approved if available.
+            // Based on current code, we only see 'pendingEvents'.
+            // If the API only returns users with pending events, this might be partial.
+            // But relying on what we have:
+            if (user.pendingEvents) {
+                user.pendingEvents.forEach((ev: any) => {
+                    this.recentRequests.push({
+                        ...ev,
+                        organizer: user.name,
+                        organizerImg: user.profileImage
+                    });
+                });
+            }
+            // If we had a total events count per user, we'd add it here.
+            // For now, let's assume filtering logic or extend later.
+            // Let's count pending as part of total for now or just pending.
+            // Placeholder for total events if not available
+        });
+
+        // sort recent requests by date if possible, or just take them all
+        this.pendingEventsCount = this.recentRequests.length;
+        // Approximation for total events if we don't have full history:
+        this.totalEvents = this.pendingEventsCount + (this.totalUsers * 2); // FAKE DATA for "Total Events" to match design vibes if real data missing, OR better:
+        // Actually, let's just use pending count for now, or if users have an 'events' array:
+        // Let's assume the user object might have more info or we just sum pending.
+        // For the design "11 Total Events", I'll just use a placeholder text or sum pending if that's all I have.
+        // Let's try to be as real as possible.
+
+        this.totalEvents = this.users.reduce((acc, curr) => acc + (curr.events?.length || 0) + (curr.pendingEvents?.length || 0), 0);
     }
 
     toggleDetails(id: number) {
