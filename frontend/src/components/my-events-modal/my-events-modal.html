@@ -1,0 +1,88 @@
+<div class="backdrop" (click)="close.emit()"></div>
+
+<div class="modal-container">
+    <div class="modal-header">
+        <div class="tabs">
+            <button class="tab-btn" [class.active]="activeTab === 'ORGANIZED'" (click)="switchTab('ORGANIZED')">
+                My Events
+            </button>
+            <button class="tab-btn" [class.active]="activeTab === 'JOINED'" (click)="switchTab('JOINED')">
+                Joined Events
+            </button>
+        </div>
+        <button class="close-btn" (click)="close.emit()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+
+    <div class="modal-content">
+        @if (loading) {
+        <div class="loading-state">Loading...</div>
+        }
+
+        @if (!loading && activeTab === 'ORGANIZED') {
+        <div class="events-list">
+            @for (event of organizedEvents; track event.id) {
+            <div class="organized-event-item">
+                <div class="event-summary">
+                    <div class="event-info">
+                        <h3>{{ event.title }}</h3>
+                        <span class="event-date">{{ formatDateTime(event) }}</span>
+                        <span class="requests-badge" *ngIf="event.pendingUsersList?.length"
+                            (click)="toggleRequests(event.id)">
+                            {{ event.pendingUsersList?.length }} Richieste
+                        </span>
+                    </div>
+                    <div class="event-actions">
+                        <button class="icon-btn" (click)="toggleRequests(event.id)" title="Manage Requests">
+                            <mat-icon>group</mat-icon>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Requests Section -->
+                @if (expandedEventRequestsId === event.id && event.pendingUsersList?.length) {
+                <div class="requests-panel">
+                    <h4>Richieste di partecipazione</h4>
+                    @for (user of event.pendingUsersList; track user.id) {
+                    <div class="request-item">
+                        <div class="user-info">
+                            <img [src]="user.profileImage || 'assets/placeholder-user.png'" class="user-avatar">
+                            <span>{{ user.name }} {{ user.surname }}</span>
+                        </div>
+                        <div class="request-actions">
+                            <button class="accept-btn" (click)="acceptRequest(event, user)">Accetta</button>
+                            <button class="reject-btn" (click)="rejectRequest(event, user)">Rifiuta</button>
+                        </div>
+                    </div>
+                    }
+                </div>
+                }
+                @else if (expandedEventRequestsId === event.id && !event.pendingUsersList?.length) {
+                <div class="requests-panel">
+                    <p class="no-requests">Nessuna richiesta in attesa.</p>
+                </div>
+                }
+            </div>
+            }
+            @empty {
+            <div class="empty-state">No organized events found.</div>
+            }
+        </div>
+        }
+
+        @if (!loading && activeTab === 'JOINED') {
+        <div class="events-grid">
+            @for (event of joinedEvents; track event.id) {
+            <app-event-card [title]="event.title" [location]="event.city" [dateTime]="formatDateTime(event)"
+                [id]="event.id!" [isSaved]="!!event.isSaved" [isParticipating]="!!event.isParticipating"
+                [showDistance]="false">
+            </app-event-card>
+            }
+            @empty {
+            <div class="empty-state">You haven't joined any events yet.</div>
+            }
+        </div>
+        }
+    </div>
+</div>

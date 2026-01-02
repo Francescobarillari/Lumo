@@ -26,3 +26,7 @@
     </div>
 
 </div>
+
+@if (showMyEventsModal) {
+<app-my-events-modal [userId]="loggedUser?.id || 0" (close)="showMyEventsModal = false"></app-my-events-modal>
+}

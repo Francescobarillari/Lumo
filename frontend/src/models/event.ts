@@ -19,4 +19,5 @@ export interface Event {
   organizerImage?: string;
   isApproved?: boolean;
   creatorId?: number;
+  pendingUsersList?: import('./user').User[];
 }

@@ -34,6 +34,16 @@ public class EventController {
         return eventService.getEventById(id);
     }
 
+    @GetMapping("/organized")
+    public List<Event> getOrganizedEvents(@RequestParam Long userId) {
+        return eventService.getOrganizedEvents(userId);
+    }
+
+    @GetMapping("/joined")
+    public List<Event> getJoinedEvents(@RequestParam Long userId) {
+        return eventService.getJoinedEvents(userId);
+    }
+
     @PostMapping
     public Event createEvent(@RequestBody Event event, @RequestParam(required = false) Long userId) {
         return eventService.createEvent(event, userId);

@@ -16,6 +16,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     List<Event> findByIsApprovedFalseOrderByDateAscStartTimeAsc();
 
+    List<Event> findByCreator_Id(Long creatorId);
+
     @Query("SELECT e FROM Event e " +
             "LEFT JOIN e.participants p " +
             "WHERE (LOWER(e.title) LIKE LOWER(CONCAT('%', :query, '%')) " +

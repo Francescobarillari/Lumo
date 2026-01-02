@@ -17,6 +17,14 @@ export class EventService {
     return this.http.get<Event[]>(url);
   }
 
+  getOrganizedEvents(userId: string | number): Observable<Event[]> {
+    return this.http.get<Event[]>(`${this.baseUrl}/organized?userId=${userId}`);
+  }
+
+  getJoinedEvents(userId: string | number): Observable<Event[]> {
+    return this.http.get<Event[]>(`${this.baseUrl}/joined?userId=${userId}`);
+  }
+
   toggleSavedEvent(userId: string, eventId: number): Observable<{ isSaved: boolean }> {
     return this.http.post<{ isSaved: boolean }>(`http://localhost:8080/api/users/${userId}/saved-events/${eventId}`, {});
   }

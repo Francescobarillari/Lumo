@@ -4,12 +4,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { UserMenu } from '../user-menu/user-menu';
 import { NotificationMenuComponent } from '../notification-menu/notification-menu';
 import { NotificationService } from '../../services/notification.service';
-import { interval, Subscription, switchMap } from 'rxjs'; // Import RxJS
+import { interval, Subscription, switchMap } from 'rxjs';
+import { MyEventsModal } from '../my-events-modal/my-events-modal.component';
 
 @Component({
     selector: 'app-action-bar',
     standalone: true,
-    imports: [CommonModule, MatIconModule, UserMenu, NotificationMenuComponent],
+    imports: [CommonModule, MatIconModule, UserMenu, NotificationMenuComponent, MyEventsModal],
     templateUrl: './action-bar.html',
     styleUrl: './action-bar.css'
 })
@@ -19,6 +20,7 @@ export class ActionBarComponent implements OnInit, OnDestroy {
 
     showUserMenu = false;
     showNotifications = false;
+    showMyEventsModal = false;
     hasUnread = false;
     private pollSubscription: Subscription | null = null;
 
@@ -115,7 +117,11 @@ export class ActionBarComponent implements OnInit, OnDestroy {
     }
 
     onMenuAction(actionName: string) {
-        this.action.emit(actionName);
+        if (actionName === 'my-events') {
+            this.showMyEventsModal = true;
+        } else {
+            this.action.emit(actionName);
+        }
         this.showUserMenu = false;
     }
 

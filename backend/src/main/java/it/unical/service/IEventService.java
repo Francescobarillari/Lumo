@@ -11,6 +11,10 @@ public interface IEventService {
 
     List<Event> getPendingEvents();
 
+    List<Event> getOrganizedEvents(Long userId);
+
+    List<Event> getJoinedEvents(Long userId);
+
     Event approveEvent(Long id);
 
     void rejectEvent(Long id, String reason);

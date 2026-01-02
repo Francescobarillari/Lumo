@@ -42,6 +42,9 @@ public class Event {
     @Transient
     private String participationStatus = "NONE"; // NONE, PENDING, ACCEPTED
 
+    @Transient
+    private java.util.List<User> pendingUsersList;
+
     @ManyToMany(mappedBy = "participatingEvents")
     @com.fasterxml.jackson.annotation.JsonIgnore
     private java.util.Set<User> participants = new java.util.HashSet<>();
@@ -261,5 +264,13 @@ public class Event {
     @Override
     public int hashCode() {
         return 31;
+    }
+
+    public java.util.List<User> getPendingUsersList() {
+        return pendingUsersList;
+    }
+
+    public void setPendingUsersList(java.util.List<User> pendingUsersList) {
+        this.pendingUsersList = pendingUsersList;
     }
 }

@@ -16,6 +16,7 @@ export class EventCardComponent {
     id = input.required<number>();
     isSaved = input<boolean>(false);
     isParticipating = input<boolean>(false);
+    showDistance = input<boolean>(true);
 
     @Output() focusLocation = new EventEmitter<void>();
     @Output() toggleFavorite = new EventEmitter<void>();
