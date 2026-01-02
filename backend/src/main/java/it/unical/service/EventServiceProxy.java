@@ -51,6 +51,12 @@ public class EventServiceProxy implements IEventService {
     }
 
     @Override
+    public List<Event> getAllEventsForAdmin() {
+        System.out.println("[Proxy] Fetching ALL events for admin.");
+        return realService.getAllEventsForAdmin();
+    }
+
+    @Override
     public Event approveEvent(Long id) {
         System.out.println("[Proxy] Approving event ID: " + id);
         return realService.approveEvent(id);

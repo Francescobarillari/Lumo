@@ -410,3 +410,25 @@ tr:last-child td {
         width: 70px;
     }
 }
+
+/* Search Bar */
+.search-container {
+    margin-bottom: 20px;
+}
+
+.search-input {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px 15px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-bit-gray);
+    background-color: var(--color-gray);
+    color: var(--color-white);
+    font-family: var(--font-stack-headline);
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.search-input:focus {
+    border-color: var(--color-accent);
+}

@@ -95,6 +95,11 @@ public class EventService implements IEventService {
                 .orElse(new java.util.ArrayList<>());
     }
 
+    @Override
+    public List<Event> getAllEventsForAdmin() {
+        return eventRepository.findAllByOrderByDateAscStartTimeAsc();
+    }
+
     // ✅ Approva evento
     public Event approveEvent(Long id) {
         Event event = eventRepository.findById(id)
