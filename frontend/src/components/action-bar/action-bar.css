@@ -106,3 +106,16 @@ notification-menu {
     right: -70px;
     z-index: var(--z-dropdown);
 }
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+
+    /* Mobile styles for action-bar container only */
+    .action-bar {
+        top: auto;
+        bottom: 90px;
+        right: 20px;
+        padding: 8px;
+        height: 60px;
+    }
+}

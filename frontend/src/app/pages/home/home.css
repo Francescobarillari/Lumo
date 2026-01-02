@@ -14,3 +14,23 @@
   border: 1px solid var(--color-light-gray);
   align-items: center;
 }
+
+@media (max-width: 768px) {
+  .top-bar {
+    top: auto;
+    bottom: 30px;
+    /* Bottom aligned on mobile */
+    right: 50%;
+    transform: translateX(50%);
+    width: 90%;
+    justify-content: center;
+    background: rgba(26, 26, 26, 0.95);
+    backdrop-filter: blur(10px);
+  }
+
+  .top-bar .button {
+    flex: 1;
+    font-size: 14px;
+    height: 44px;
+  }
+}
