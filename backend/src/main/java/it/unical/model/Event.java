@@ -53,6 +53,10 @@ public class Event {
     @com.fasterxml.jackson.annotation.JsonIgnore
     private java.util.Set<User> pendingParticipants = new java.util.HashSet<>();
 
+    @ManyToMany(mappedBy = "savedEvents")
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private java.util.Set<User> usersWhoSaved = new java.util.HashSet<>();
+
     public Event() {
     }
 
@@ -278,5 +282,13 @@ public class Event {
 
     public void setPendingUsersList(java.util.List<User> pendingUsersList) {
         this.pendingUsersList = pendingUsersList;
+    }
+
+    public java.util.Set<User> getUsersWhoSaved() {
+        return usersWhoSaved;
+    }
+
+    public void setUsersWhoSaved(java.util.Set<User> usersWhoSaved) {
+        this.usersWhoSaved = usersWhoSaved;
     }
 }

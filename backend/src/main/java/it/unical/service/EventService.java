@@ -51,26 +51,16 @@ public class EventService implements IEventService {
 
     @Override
     public List<Event> getOrganizedEvents(Long userId) {
-        // Fallback for old events: Find all participating events and filter by
-        // ownership
-        // This covers both "creator column set" and "creator column null but first
-        // participant"
-        // avoiding empty results for older events.
-        return userRepository.findById(userId)
-                .map(user -> user.getParticipatingEvents().stream()
-                        .filter(event -> {
-                            Long creatorId = event.getCreatorId();
-                            return creatorId != null && creatorId.equals(userId);
-                        })
-                        .map(event -> {
-                            // Populate transient pendingUsersList from persistent pendingParticipants
-                            if (event.getPendingParticipants() != null) {
-                                event.setPendingUsersList(new java.util.ArrayList<>(event.getPendingParticipants()));
-                            }
-                            return event;
-                        })
-                        .collect(java.util.stream.Collectors.toList()))
-                .orElse(new java.util.ArrayList<>());
+        List<Event> events = eventRepository.findByCreator_Id(userId);
+
+        // Populate transient pendingUsersList from persistent pendingParticipants for
+        // UI
+        for (Event event : events) {
+            if (event.getPendingParticipants() != null) {
+                event.setPendingUsersList(new java.util.ArrayList<>(event.getPendingParticipants()));
+            }
+        }
+        return events;
     }
 
     @Override
@@ -204,11 +194,15 @@ public class EventService implements IEventService {
                 event.getPendingParticipants().clear();
             }
 
-            // Remove event from all saved users (if needed) - Assuming similar relationship
-            // for favorites/saved
-            // if (event.getSavedEvents() != null) {
-            // Logic removed as getSavedEvents() is not mapped in Event
-            // }
+            // Remove event from all saved users
+            if (event.getUsersWhoSaved() != null) {
+                // Iterate copy to avoid ConcurrentModificationException
+                for (it.unical.model.User user : new java.util.ArrayList<>(event.getUsersWhoSaved())) {
+                    user.getSavedEvents().remove(event);
+                    userRepository.save(user);
+                }
+                event.getUsersWhoSaved().clear();
+            }
 
             eventRepository.deleteById(id);
         } else {
