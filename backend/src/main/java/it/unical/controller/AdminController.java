@@ -78,4 +78,10 @@ public class AdminController {
         eventService.rejectEvent(id, reason);
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/events/{id}")
+    public ResponseEntity<Void> deleteEvent(@PathVariable Long id) {
+        eventService.deleteEvent(id);
+        return ResponseEntity.ok().build();
+    }
 }

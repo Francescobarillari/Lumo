@@ -32,23 +32,45 @@ public class EventService implements IEventService {
 
         if (userId != null) {
             userRepository.findById(userId).ifPresent(user -> {
+                event.setCreator(user); // Fix: Set creator explicitly
                 // Determine if we should add to participating?
                 // Usually creator is automatically participating?
                 // Let's assume creator IS participating.
-                user.getParticipatingEvents().add(savedEvent);
+                user.getParticipatingEvents().add(savedEvent); // Keep this for consistency with participants logic
                 userRepository.save(user);
 
                 // IMPORTANT: Set relationship in Event side if bidirectional logical link
                 // needed immediately
                 // But JPA handles it via User side owning the relationship (mappedBy in Event)
             });
+            // Save again to persist creator FK
+            return eventRepository.save(event);
         }
         return savedEvent;
     }
 
     @Override
     public List<Event> getOrganizedEvents(Long userId) {
-        return eventRepository.findByCreator_Id(userId);
+        // Fallback for old events: Find all participating events and filter by
+        // ownership
+        // This covers both "creator column set" and "creator column null but first
+        // participant"
+        // avoiding empty results for older events.
+        return userRepository.findById(userId)
+                .map(user -> user.getParticipatingEvents().stream()
+                        .filter(event -> {
+                            Long creatorId = event.getCreatorId();
+                            return creatorId != null && creatorId.equals(userId);
+                        })
+                        .map(event -> {
+                            // Populate transient pendingUsersList from persistent pendingParticipants
+                            if (event.getPendingParticipants() != null) {
+                                event.setPendingUsersList(new java.util.ArrayList<>(event.getPendingParticipants()));
+                            }
+                            return event;
+                        })
+                        .collect(java.util.stream.Collectors.toList()))
+                .orElse(new java.util.ArrayList<>());
     }
 
     @Override
@@ -211,9 +233,9 @@ public class EventService implements IEventService {
             userRepository.save(user);
 
             // Notify Creator
-            it.unical.model.User creator = event.getCreator(); // Use the newly added Creator field logic
-            if (creator != null && !creator.getId().equals(userId)) { // Don't notify self
-                notificationService.createRichNotification(creator.getId(),
+            Long creatorId = event.getCreatorId(); // Use smart getter with fallback
+            if (creatorId != null && !creatorId.equals(userId)) { // Don't notify self
+                notificationService.createRichNotification(creatorId,
                         "Richiesta Partecipazione",
                         user.getName() + " vuole partecipare al tuo evento '" + event.getTitle() + "'",
                         "PARTICIPATION_REQUEST",

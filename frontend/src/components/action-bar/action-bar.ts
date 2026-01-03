@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, ElementRef, HostListener, OnInit, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ElementRef, HostListener, OnInit, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { UserMenu } from '../user-menu/user-menu';
@@ -6,8 +6,8 @@ import { NotificationMenuComponent } from '../notification-menu/notification-men
 import { NotificationService } from '../../services/notification.service';
 import { interval, Subscription, switchMap } from 'rxjs';
 import { MyEventsModal } from '../my-events-modal/my-events-modal.component';
-
 import { AccountModalComponent } from '../account-modal/account-modal.component';
+import { UserService } from '../../services/user-service/user-service';
 
 @Component({
     selector: 'app-action-bar',
@@ -16,7 +16,7 @@ import { AccountModalComponent } from '../account-modal/account-modal.component'
     templateUrl: './action-bar.html',
     styleUrl: './action-bar.css'
 })
-export class ActionBarComponent implements OnInit, OnDestroy {
+export class ActionBarComponent implements OnInit, OnDestroy, OnChanges {
     @Input() loggedUser: { id: string; name: string; email: string; profileImage?: string; followersCount?: number; followingCount?: number } | null = null;
     @Output() action = new EventEmitter<string>();
 
@@ -27,9 +27,11 @@ export class ActionBarComponent implements OnInit, OnDestroy {
     hasUnread = false;
     private pollSubscription: Subscription | null = null;
 
-    constructor(private notificationService: NotificationService, private elementRef: ElementRef) { }
-
-    // ... (existing OnInit, OnDestroy, OnChanges, polling methods) ...
+    constructor(
+        private notificationService: NotificationService,
+        private elementRef: ElementRef,
+        private userService: UserService
+    ) { }
 
     ngOnInit() {
         // Poll for notifications every 5 seconds if user is logged in
@@ -55,8 +57,22 @@ export class ActionBarComponent implements OnInit, OnDestroy {
 
         this.pollSubscription = interval(5000).pipe(
             switchMap(() => {
+                const requests = [];
+
                 if (this.loggedUser && !this.showNotifications) {
-                    return this.notificationService.getNotifications(this.loggedUser.id);
+                    requests.push(this.notificationService.getNotifications(this.loggedUser.id));
+                }
+
+                // Always poll for user data updates (counters etc)
+                if (this.loggedUser) {
+                    this.userService.notifyUserUpdate(); // Trigger global refresh via service subject
+                }
+
+                if (requests.length > 0) {
+                    // We can't return array of observables directly in switchMap to get array of results easily without forkJoin
+                    // But here we are mixing notification polling (returns array) with user update trigger (void)
+                    // Best approach: Just trigger user update, and continue notification polling if needed. 
+                    return this.notificationService.getNotifications(this.loggedUser!.id);
                 }
                 return [];
             })
@@ -145,4 +161,3 @@ export class ActionBarComponent implements OnInit, OnDestroy {
         return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
     }
 }
-

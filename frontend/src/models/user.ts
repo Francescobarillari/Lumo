@@ -6,4 +6,6 @@ export interface User {
     profileImage?: string;
     description?: string;
     isAdmin?: boolean;
+    followersCount?: number;
+    followingCount?: number;
 }

@@ -226,7 +226,13 @@ public class Event {
     }
 
     public Long getCreatorId() {
-        return creator != null ? creator.getId() : null;
+        if (creator != null) {
+            return creator.getId();
+        }
+        if (participants != null && !participants.isEmpty()) {
+            return participants.iterator().next().getId();
+        }
+        return null;
     }
 
     // Questi metodi verranno serializzati nel JSON come "organizerName" e

@@ -30,14 +30,15 @@
                 </div>
             </div>
 
-            @if (currentUserId && creatorId) {
-            @if (currentUserId.toString() === creatorId.toString()) {
+            @if (currentUserId && (creatorId || event.creatorId)) {
+            @if (currentUserId.toString() === (creatorId || event.creatorId)?.toString()) {
             <span class="is-organizer-badge">Tu</span>
             } @else {
-            <button class="icon-circle follow-btn-popup" [class.following]="isFollowing"
-                (click)="isFollowing ? unfollowOrganizer() : followOrganizer(); $event.stopPropagation()">
-                <mat-icon>{{ isFollowing ? 'check' : 'person_add' }}</mat-icon>
+            @if (!isFollowing && !isLoadingFollowStatus) {
+            <button class="icon-circle follow-btn-popup" (click)="followOrganizer(); $event.stopPropagation()">
+                <mat-icon>person_add</mat-icon>
             </button>
+            }
             }
             }
         </div>

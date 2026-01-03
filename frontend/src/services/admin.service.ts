@@ -26,4 +26,8 @@ export class AdminService {
     rejectEvent(id: number, reason?: string): Observable<void> {
         return this.http.post<void>(`${this.baseUrl}/events/${id}/reject`, { reason });
     }
+
+    deleteEvent(id: number): Observable<void> {
+        return this.http.delete<void>(`${this.baseUrl}/events/${id}`);
+    }
 }

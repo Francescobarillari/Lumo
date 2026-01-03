@@ -14,6 +14,7 @@ import { EventPopupCard } from '../../../components/event-popup-card/event-popup
 import { MapLocationSelector } from '../../../components/map-location-selector/map-location-selector';
 import { Event as LumoEvent } from '../../../models/event';
 import { EventService } from '../../../services/event.service';
+import { UserService } from '../../../services/user-service/user-service';
 
 @Component({
   selector: 'Home',
@@ -51,19 +52,17 @@ export class Home implements OnInit {
     private route: ActivatedRoute,
     private authService: AuthService,
     private http: HttpClient,
-    private eventService: EventService
+    private eventService: EventService,
+    private userService: UserService
   ) { }
 
   ngOnInit() {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      try {
-        this.loggedUser = JSON.parse(storedUser);
-      } catch (e) {
-        console.error('Errore parsing utente locale', e);
-        localStorage.removeItem('user');
-      }
-    }
+    this.refreshLocalUser();
+
+    // Subscribe to global user updates
+    this.userService.userUpdates$.subscribe(() => {
+      this.refreshUserFromBackend();
+    });
 
     this.route.queryParams.subscribe(params => {
       const token = params['token'];
@@ -82,6 +81,39 @@ export class Home implements OnInit {
           error: () => this.emailVerified = false
         });
       }
+    });
+  }
+
+  refreshLocalUser() {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      try {
+        this.loggedUser = JSON.parse(storedUser);
+      } catch (e) {
+        console.error('Errore parsing utente locale', e);
+        localStorage.removeItem('user');
+      }
+    }
+  }
+
+  refreshUserFromBackend() {
+    if (!this.loggedUser) return;
+
+    this.userService.getUserById(this.loggedUser.id).subscribe({
+      next: (user) => {
+        this.loggedUser = {
+          id: user.id || '',
+          name: user.name || user.email || 'Utente',
+          email: user.email || '',
+          profileImage: (user as any).profileImage,
+          followersCount: user.followersCount,
+          followingCount: user.followingCount
+        } as any;
+
+        localStorage.setItem('user', JSON.stringify(this.loggedUser));
+        console.log('User refreshed:', this.loggedUser);
+      },
+      error: (err) => console.error('Error refreshing user', err)
     });
   }
 
@@ -265,7 +297,12 @@ export class Home implements OnInit {
       email: user?.email || '',
       profileImage: (user as any).profileImage
     };
-    localStorage.setItem('user', JSON.stringify(this.loggedUser));
+
+    // Refresh fully to get counts
+    this.refreshUserFromBackend();
+
+    // Already setting in localStorage but refreshed one will overwrite it
+    // localStorage.setItem('user', JSON.stringify(this.loggedUser));
     this.closeAll();
   }
 

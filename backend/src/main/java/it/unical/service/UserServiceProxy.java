@@ -78,4 +78,9 @@ public class UserServiceProxy implements IUserService {
         System.out.println("[UserServiceProxy] User " + followerId + " unfollowing User " + followedId);
         realService.unfollowUser(followerId, followedId);
     }
+
+    @Override
+    public boolean isFollowing(Long followerId, Long followedId) {
+        return realService.isFollowing(followerId, followedId);
+    }
 }

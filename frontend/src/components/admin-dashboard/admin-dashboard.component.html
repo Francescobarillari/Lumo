@@ -198,8 +198,8 @@
                             </td>
                             <td>{{ ev.date }}</td>
                             <td>
-                                @if(!ev.isApproved) {
                                 <div class="action-buttons">
+                                    @if(!ev.isApproved) {
                                     @if (!eventsCurrentlyRejecting.includes(ev.id)) {
                                     <button class="btn-icon approve" (click)="approveEvent(ev)" title="Approva">
                                         <mat-icon>check</mat-icon>
@@ -219,8 +219,13 @@
                                         </button>
                                     </div>
                                     }
+                                    }
+
+                                    <button class="btn-icon delete" (click)="deleteEvent(ev)"
+                                        title="Elimina definitivamente">
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
                                 </div>
-                                }
                             </td>
                         </tr>
                         }

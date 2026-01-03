@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { User } from '../../models/user';
 
 @Injectable({
@@ -33,5 +33,16 @@ export class UserService {
 
   unfollowUser(followerId: string, followedId: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${followerId}/follow/${followedId}`);
+  }
+
+  isFollowing(followerId: string, followedId: string): Observable<{ isFollowing: boolean }> {
+    return this.http.get<{ isFollowing: boolean }>(`${this.apiUrl}/${followerId}/is-following/${followedId}?t=${new Date().getTime()}`);
+  }
+
+  private userUpdated = new Subject<void>();
+  userUpdates$ = this.userUpdated.asObservable();
+
+  notifyUserUpdate() {
+    this.userUpdated.next();
   }
 }

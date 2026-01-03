@@ -25,6 +25,7 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
     @Output() toggleFavorite = new EventEmitter<void>();
 
     isFollowing = false;
+    isLoadingFollowStatus = true; // Add loading state to prevent flicker
 
     constructor(private elementRef: ElementRef, private userService: UserService) { }
 
@@ -36,6 +37,32 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
         if (changes['eventPosition']) {
             this.positionCard();
         }
+        if (changes['event'] || changes['currentUserId'] || changes['creatorId']) {
+            this.checkIfFollowing();
+        }
+    }
+
+    checkIfFollowing() {
+        // Use input creatorId or fallback to event.creatorId
+        const targetCreatorId = this.creatorId || (this.event ? this.event.creatorId : null);
+
+        if (!this.currentUserId || !targetCreatorId || this.currentUserId === targetCreatorId.toString()) {
+            this.isFollowing = false;
+            this.isLoadingFollowStatus = false;
+            return;
+        }
+
+        this.isLoadingFollowStatus = true; // Start loading
+        this.userService.isFollowing(this.currentUserId, targetCreatorId.toString()).subscribe({
+            next: (res) => {
+                this.isFollowing = res.isFollowing;
+                this.isLoadingFollowStatus = false; // Stop loading
+            },
+            error: (err) => {
+                console.error('Error checking follow status', err);
+                this.isLoadingFollowStatus = false; // Stop loading on error
+            }
+        });
     }
 
     @HostListener('click', ['$event'])
@@ -94,22 +121,26 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
     }
 
     followOrganizer() {
-        if (!this.currentUserId || !this.creatorId) return;
+        const targetCreatorId = this.creatorId || (this.event ? this.event.creatorId : null);
+        if (!this.currentUserId || !targetCreatorId) return;
 
-        this.userService.followUser(this.currentUserId, this.creatorId.toString()).subscribe({
+        this.userService.followUser(this.currentUserId, targetCreatorId.toString()).subscribe({
             next: () => {
                 this.isFollowing = true;
+                this.userService.notifyUserUpdate();
             },
             error: (err) => console.error('Error following', err)
         });
     }
 
     unfollowOrganizer() {
-        if (!this.currentUserId || !this.creatorId) return;
+        const targetCreatorId = this.creatorId || (this.event ? this.event.creatorId : null);
+        if (!this.currentUserId || !targetCreatorId) return;
 
-        this.userService.unfollowUser(this.currentUserId, this.creatorId.toString()).subscribe({
+        this.userService.unfollowUser(this.currentUserId, targetCreatorId.toString()).subscribe({
             next: () => {
                 this.isFollowing = false;
+                this.userService.notifyUserUpdate();
             },
             error: (err) => console.error('Error unfollowing', err)
         });

@@ -136,6 +136,20 @@ export class AdminDashboardComponent implements OnInit {
         });
     }
 
+    deleteEvent(event: any) {
+        if (confirm(`Sei sicuro di voler eliminare DEFINITIVAMENTE l'evento "${event.title}"? Questa azione rimuoverà l'evento dalla mappa e da tutte le liste utenti. Non è reversibile.`)) {
+            this.adminService.deleteEvent(event.id).subscribe({
+                next: () => {
+                    this.loadData();
+                },
+                error: (err) => {
+                    console.error('Errore durante l\'eliminazione', err);
+                    alert('Errore durante l\'eliminazione dell\'evento.');
+                }
+            });
+        }
+    }
+
     signOut() {
         localStorage.removeItem('user');
         this.router.navigate(['/']);

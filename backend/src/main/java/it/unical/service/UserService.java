@@ -114,4 +114,14 @@ public class UserService implements IUserService {
             userRepository.save(follower);
         }
     }
+
+    @Override
+    public boolean isFollowing(Long followerId, Long followedId) {
+        User follower = userRepository.findById(followerId)
+                .orElseThrow(() -> new RuntimeException("Follower not found"));
+        User followed = userRepository.findById(followedId)
+                .orElseThrow(() -> new RuntimeException("User to check not found"));
+
+        return follower.getFollowing().contains(followed);
+    }
 }

@@ -96,4 +96,14 @@ public class UserController {
         userService.unfollowUser(followerId, followedId);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/{followerId}/is-following/{followedId}")
+    public ResponseEntity<Map<String, Boolean>> isFollowing(
+            @PathVariable Long followerId,
+            @PathVariable Long followedId) {
+        boolean isFollowing = userService.isFollowing(followerId, followedId);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("isFollowing", isFollowing);
+        return ResponseEntity.ok(response);
+    }
 }
