@@ -106,4 +106,33 @@ public class UserController {
         response.put("isFollowing", isFollowing);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/{id}/followers")
+    public ResponseEntity<List<User>> getFollowers(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getFollowers(id));
+    }
+
+    @GetMapping("/{id}/following")
+    public ResponseEntity<List<User>> getFollowing(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getFollowing(id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody Map<String, String> payload) {
+        String name = payload.get("name");
+        String email = payload.get("email");
+        return ResponseEntity.ok(userService.updateUser(id, name, email));
+    }
+
+    @PutMapping("/{id}/password")
+    public ResponseEntity<Void> changePassword(@PathVariable Long id, @RequestBody Map<String, String> payload) {
+        String oldPassword = payload.get("oldPassword");
+        String newPassword = payload.get("newPassword");
+        try {
+            userService.changePassword(id, oldPassword, newPassword);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }

@@ -124,4 +124,48 @@ public class UserService implements IUserService {
 
         return follower.getFollowing().contains(followed);
     }
+
+    @Override
+    public List<User> getFollowers(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return new java.util.ArrayList<>(user.getFollowers());
+    }
+
+    @Override
+    public List<User> getFollowing(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return new java.util.ArrayList<>(user.getFollowing());
+    }
+
+    @Override
+    public User updateUser(Long userId, String name, String email) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (name != null && !name.trim().isEmpty()) {
+            user.setName(name);
+        }
+        if (email != null && !email.trim().isEmpty()) {
+            // Check if email already exists if different? Assuming simple update for now.
+            // In a real app we might want to check unique constraint or handle exception
+            // from DB.
+            user.setEmail(email);
+        }
+        return userRepository.save(user);
+    }
+
+    @Override
+    public void changePassword(Long userId, String oldPassword, String newPassword) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!passwordEncoder.matches(oldPassword, user.getPasswordHash())) {
+            throw new RuntimeException("Incorrect old password");
+        }
+
+        user.setPasswordHash(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
 }

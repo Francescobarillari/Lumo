@@ -26,4 +26,12 @@ public interface IUserService {
     void unfollowUser(Long followerId, Long followedId);
 
     boolean isFollowing(Long followerId, Long followedId);
+
+    List<User> getFollowers(Long userId);
+
+    List<User> getFollowing(Long userId);
+
+    User updateUser(Long userId, String name, String email);
+
+    void changePassword(Long userId, String oldPassword, String newPassword);
 }

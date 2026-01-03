@@ -7,7 +7,7 @@
             </button>
         </div>
 
-        <div class="account-content">
+        <div class="account-content" *ngIf="view === 'profile'">
             <div class="profile-section">
                 <div class="avatar-container">
                     @if (user?.profileImage) {
@@ -23,12 +23,12 @@
                 <p class="user-email">{{ user?.email }}</p>
 
                 <div class="stats-container">
-                    <div class="stat-item">
+                    <div class="stat-item clickable" (click)="showFollowers()">
                         <span class="stat-value">{{ user?.followersCount || 0 }}</span>
                         <span class="stat-label">Followers</span>
                     </div>
                     <div class="stat-divider"></div>
-                    <div class="stat-item">
+                    <div class="stat-item clickable" (click)="showFollowing()">
                         <span class="stat-value">{{ user?.followingCount || 0 }}</span>
                         <span class="stat-label">Following</span>
                     </div>
@@ -36,12 +36,90 @@
             </div>
 
             <div class="actions-section">
-                <button class="action-btn change-photo" (click)="onChangePhoto()">
-                    <mat-icon>photo_camera</mat-icon>
-                    Change Profile Photo
+                <button class="action-btn" (click)="showEditProfile()">
+                    <mat-icon>settings</mat-icon>
+                    Edit Profile
                 </button>
-                <!-- Add more account actions here if needed -->
             </div>
+        </div>
+
+        <div class="edit-profile-view" *ngIf="view === 'edit-profile'">
+            <div class="list-header">
+                <button class="back-btn" (click)="onClose()">
+                    <mat-icon>arrow_back</mat-icon>
+                </button>
+                <h3>Edit Profile</h3>
+            </div>
+
+            <div class="edit-content-scroll">
+                <div class="edit-section">
+                    <h4>Personal Information</h4>
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input [(ngModel)]="editData.name" placeholder="Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input [(ngModel)]="editData.email" placeholder="Email">
+                    </div>
+                    <button class="action-btn save-btn" (click)="onSaveProfile()">Update Details</button>
+                </div>
+
+                <div class="section-divider"></div>
+
+                <div class="edit-section">
+                    <h4>Change Password</h4>
+                    <div class="form-group">
+                        <label>Current Password</label>
+                        <input type="password" [(ngModel)]="passwordData.old" placeholder="Current Password">
+                    </div>
+                    <div class="form-group">
+                        <label>New Password</label>
+                        <input type="password" [(ngModel)]="passwordData.new" placeholder="New Password">
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm New Password</label>
+                        <input type="password" [(ngModel)]="passwordData.confirm" placeholder="Confirm Password">
+                    </div>
+                    <button class="action-btn save-btn" (click)="onChangePassword()">Change Password</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="user-list-view" *ngIf="view !== 'profile' && view !== 'edit-profile'">
+            <div class="list-header">
+                <button class="back-btn" (click)="onClose()">
+                    <mat-icon>arrow_back</mat-icon>
+                </button>
+                <h3>{{ view === 'followers' ? 'Followers' : 'Following' }}</h3>
+            </div>
+
+            <div class="user-list" *ngIf="!loadingList; else loadingTemplate">
+                <div class="user-item" *ngFor="let u of userList">
+                    <div class="user-info">
+                        <img *ngIf="u.profileImage" [src]="u.profileImage" class="list-avatar">
+                        <div *ngIf="!u.profileImage" class="list-avatar-placeholder">{{ getInitials(u.name) }}</div>
+                        <span class="list-username">{{ u.name }}</span>
+                    </div>
+
+                    <button *ngIf="view === 'following' || (view === 'followers' && followingIds.has(u.id.toString()))"
+                        class="unfollow-btn" (click)="onUnfollow(u)">
+                        Unfollow
+                    </button>
+
+                    <button *ngIf="view === 'followers' && !followingIds.has(u.id.toString())" class="follow-btn"
+                        (click)="onFollow(u)">
+                        Follow
+                    </button>
+                </div>
+                <div *ngIf="userList.length === 0" class="empty-list">
+                    No users found.
+                </div>
+            </div>
+
+            <ng-template #loadingTemplate>
+                <div class="loading-spinner">Loading...</div>
+            </ng-template>
         </div>
     </div>
 </div>

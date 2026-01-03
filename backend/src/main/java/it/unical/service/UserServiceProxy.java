@@ -83,4 +83,26 @@ public class UserServiceProxy implements IUserService {
     public boolean isFollowing(Long followerId, Long followedId) {
         return realService.isFollowing(followerId, followedId);
     }
+
+    @Override
+    public List<User> getFollowers(Long userId) {
+        return realService.getFollowers(userId);
+    }
+
+    @Override
+    public List<User> getFollowing(Long userId) {
+        return realService.getFollowing(userId);
+    }
+
+    @Override
+    public User updateUser(Long userId, String name, String email) {
+        System.out.println("[UserServiceProxy] Updating user " + userId);
+        return realService.updateUser(userId, name, email);
+    }
+
+    @Override
+    public void changePassword(Long userId, String oldPassword, String newPassword) {
+        System.out.println("[UserServiceProxy] Changing password for user " + userId);
+        realService.changePassword(userId, oldPassword, newPassword);
+    }
 }

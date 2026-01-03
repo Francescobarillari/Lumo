@@ -39,6 +39,22 @@ export class UserService {
     return this.http.get<{ isFollowing: boolean }>(`${this.apiUrl}/${followerId}/is-following/${followedId}?t=${new Date().getTime()}`);
   }
 
+  getFollowers(userId: string): Observable<User[]> {
+    return this.http.get<User[]>(`${this.apiUrl}/${userId}/followers`);
+  }
+
+  getFollowing(userId: string): Observable<User[]> {
+    return this.http.get<User[]>(`${this.apiUrl}/${userId}/following`);
+  }
+
+  updateUser(userId: string, data: { name?: string, email?: string }): Observable<User> {
+    return this.http.put<User>(`${this.apiUrl}/${userId}`, data);
+  }
+
+  changePassword(userId: string, oldPassword: string, newPassword: string): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${userId}/password`, { oldPassword, newPassword });
+  }
+
   private userUpdated = new Subject<void>();
   userUpdates$ = this.userUpdated.asObservable();
 
