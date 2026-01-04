@@ -29,27 +29,27 @@ public class User {
 
     private byte[] profileImageData;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_participations", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "event_id"))
     @com.fasterxml.jackson.annotation.JsonIgnore
     private java.util.Set<Event> participatingEvents = new java.util.HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_saved", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "event_id"))
     @com.fasterxml.jackson.annotation.JsonIgnore
     private java.util.Set<Event> savedEvents = new java.util.HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_pending_participations", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "event_id"))
     @com.fasterxml.jackson.annotation.JsonIgnore
     private java.util.Set<Event> pendingEvents = new java.util.HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_follows", joinColumns = @JoinColumn(name = "follower_id"), inverseJoinColumns = @JoinColumn(name = "followed_id"))
     @com.fasterxml.jackson.annotation.JsonIgnore
     private java.util.Set<User> following = new java.util.HashSet<>();
 
-    @ManyToMany(mappedBy = "following", fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "following", fetch = FetchType.LAZY)
     @com.fasterxml.jackson.annotation.JsonIgnore
     private java.util.Set<User> followers = new java.util.HashSet<>();
 
