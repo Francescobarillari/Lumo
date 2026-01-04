@@ -44,7 +44,6 @@
 .popup-container.tablet .popup-content,
 .popup-container.mobile .popup-content {
   position: fixed;
-  background-color: var(--color-dark-gray);
   display: flex;
   justify-content: center;
   align-items: center;

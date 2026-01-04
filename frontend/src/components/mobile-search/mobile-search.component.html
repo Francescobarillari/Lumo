@@ -27,8 +27,9 @@
                     @for (event of searchResults; track event.id) {
                     <app-event-card [title]="event.title" [location]="event.city" [dateTime]="formatDateTime(event)"
                         [distance]="formatDistance(event.distanceKm)" [id]="event.id!" [isSaved]="!!event.isSaved"
-                        [isParticipating]="!!event.isParticipating" (focusLocation)="goToEvent(event)"
-                        (toggleFavorite)="toggleFavorite.emit(event)" />
+                        [isParticipating]="!!event.isParticipating" [organizerName]="event.organizerName"
+                        [organizerImage]="event.organizerImage" [creatorId]="event.creatorId" [currentUserId]="userId"
+                        (focusLocation)="goToEvent(event)" (toggleFavorite)="toggleFavorite.emit(event)" />
                     }
                     @if (isSearching && searchResults.length === 0) {
                     <div class="empty-state">Nessun evento trovato.</div>
@@ -67,6 +68,12 @@
                             <span class="loc-name">{{ user.name }}</span>
                             <span class="loc-details">{{ user.email }}</span>
                         </div>
+                        @if (userId && userId.toString() !== user.id.toString()) {
+                        <div class="icon-circle follow-icon" [class.following]="followingMap[user.id]"
+                            (click)="followingMap[user.id] ? unfollowUser(user, $event) : followUser(user, $event)">
+                            <mat-icon>{{ followingMap[user.id] ? 'person' : 'person_add' }}</mat-icon>
+                        </div>
+                        }
                     </div>
                     }
                     @if (isSearching && userResults.length === 0) {

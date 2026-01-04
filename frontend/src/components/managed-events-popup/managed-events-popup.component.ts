@@ -14,6 +14,7 @@ import { EventCardComponent } from '../event-card/event-card.component';
 export class ManagedEventsPopup {
     @Input() title: string = '';
     @Input() events: Event[] = [];
+    @Input() userId: string | null = null;
     @Output() close = new EventEmitter<void>();
     @Output() focusEvent = new EventEmitter<Event>();
     @Output() toggleFavorite = new EventEmitter<Event>();

@@ -34,10 +34,32 @@ export class CreateEventPopup {
             city: ['', Validators.required],
             date: ['', Validators.required],
             startTime: ['', Validators.required],
-            endTime: ['', Validators.required],
+            endTime: [''],
             nPartecipants: ['', [Validators.required, Validators.min(1)]],
             costPerPerson: ['']
-        });
+        }, { validators: this.timeRangeValidator });
+    }
+
+    private timeRangeValidator(group: FormGroup) {
+        const start = group.get('startTime')?.value;
+        const end = group.get('endTime')?.value;
+
+        if (start && end) {
+            const [h1, m1] = start.split(':').map(Number);
+            const [h2, m2] = end.split(':').map(Number);
+
+            const startMinutes = h1 * 60 + m1;
+            const endMinutes = h2 * 60 + m2;
+
+            if (endMinutes <= startMinutes) {
+                return { timeOrder: true };
+            }
+
+            if (endMinutes - startMinutes < 60) {
+                return { minDuration: true };
+            }
+        }
+        return null;
     }
 
     onClose() {
@@ -48,7 +70,10 @@ export class CreateEventPopup {
 
     hasError(field: string): boolean {
         const control = this.form.get(field);
-        return !!(this.submitAttempted && control && control.invalid);
+        const isTimeField = field === 'startTime' || field === 'endTime';
+        const hasTimeError = this.form.errors?.['timeOrder'] || this.form.errors?.['minDuration'];
+
+        return !!(this.submitAttempted && (control?.invalid || (isTimeField && hasTimeError)));
     }
 
     selectLocationOnMap() {
@@ -62,21 +87,42 @@ export class CreateEventPopup {
     }
 
     onSubmit() {
-        // Set flag to show validation errors
         this.submitAttempted = true;
+        this.errors = {}; // Clear previous errors
+        this.generalError = '';
 
-        // Mark all as touched to show validation errors
         Object.keys(this.form.controls).forEach(key => {
             this.form.get(key)?.markAsTouched();
         });
 
-        if (!this.form.valid) {
-            this.generalError = 'Compila tutti i campi richiesti';
-            return;
+        // Collect all field errors
+        const controls = this.form.controls;
+        if (controls['title'].invalid) this.errors.title = 'Il titolo è obbligatorio.';
+        if (controls['city'].invalid) this.errors.city = 'La città è obbligatoria.';
+        if (controls['description'].invalid) this.errors.description = 'La descrizione è obbligatoria.';
+        if (controls['date'].invalid) this.errors.date = 'La data è obbligatoria.';
+        if (controls['startTime'].invalid) this.errors.startTime = 'L\'orario di inizio è obbligatorio.';
+        // endTime is optional
+        if (controls['nPartecipants'].invalid) {
+            if (controls['nPartecipants'].errors?.['required']) {
+                this.errors.nPartecipants = 'Il numero di partecipanti è obbligatorio.';
+            } else if (controls['nPartecipants'].errors?.['min']) {
+                this.errors.nPartecipants = 'Il numero di partecipanti deve essere almeno 1.';
+            }
+        }
+
+        // Check cross-field validation
+        if (this.form.errors?.['timeOrder']) {
+            this.errors.time = 'L\'orario di inizio deve essere prima dell\'orario di fine.';
+        } else if (this.form.errors?.['minDuration']) {
+            this.errors.time = 'L\'evento deve durare almeno un\'ora.';
         }
 
         if (this.latitude === null || this.longitude === null) {
-            this.generalError = 'Seleziona una posizione sulla mappa';
+            this.errors.location = 'Seleziona una posizione sulla mappa.';
+        }
+
+        if (Object.keys(this.errors).length > 0) {
             return;
         }
 

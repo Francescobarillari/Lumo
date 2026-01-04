@@ -12,8 +12,9 @@
                 @for (event of events; track event.id) {
                 <app-event-card [title]="event.title" [location]="event.city" [dateTime]="formatDateTime(event)"
                     [distance]="formatDistance(event.distanceKm)" [id]="event.id!" [isSaved]="!!event.isSaved"
-                    [isParticipating]="!!event.isParticipating" (focusLocation)="onFocusEvent(event)"
-                    (toggleFavorite)="toggleFavorite.emit(event)" />
+                    [isParticipating]="!!event.isParticipating" [organizerName]="event.organizerName"
+                    [organizerImage]="event.organizerImage" [creatorId]="event.creatorId" [currentUserId]="userId"
+                    (focusLocation)="onFocusEvent(event)" (toggleFavorite)="toggleFavorite.emit(event)" />
                 }
                 @if (events.length === 0) {
                 <div class="empty-state">

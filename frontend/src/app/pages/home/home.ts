@@ -175,7 +175,7 @@ export class Home implements OnInit {
     this.showCropPopup = false;
     this.showCreateEventPopup = false;
     this.showLocationSelector = false;
-    this.selectedEvent = null;
+    this.closeEventPopup();
     if (this.mapView) this.mapView.managedPopupType = null;
   }
 

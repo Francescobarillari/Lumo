@@ -34,6 +34,7 @@ userMarkerEl.style.boxShadow = '0 0 3px rgba(0,0,0,0.3)';
   </app-sidebar>
 
   <app-mobile-search
+    [userId]="userId"
     (focusEvent)="flyToEvent($event)"
     (foundLocation)="flyToLocation($event)"
     (toggleFavorite)="onToggleFavorite($event)">
@@ -130,6 +131,9 @@ export class MapView implements AfterViewInit, OnDestroy, OnChanges {
   private userCoords: [number, number] | null = null;
   sidebarCollapsed = false;
   managedPopupType: 'saved' | 'participating' | null = null;
+  @ViewChild(SidebarComponent) sidebar!: SidebarComponent;
+  @ViewChild(MobileSearchComponent) mobileSearch!: MobileSearchComponent;
+
   private pollSubscription: Subscription | null = null;
 
   constructor(private eventService: EventService, private snackBar: MatSnackBar) { }
@@ -146,9 +150,15 @@ export class MapView implements AfterViewInit, OnDestroy, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['userId'] && !changes['userId'].isFirstChange()) {
+      this.resetSearch();
       this.loadEvents();
       this.startPolling();
     }
+  }
+
+  resetSearch() {
+    if (this.sidebar) this.sidebar.clearSearch();
+    if (this.mobileSearch) this.mobileSearch.clearSearch();
   }
 
   ngAfterViewInit(): void {

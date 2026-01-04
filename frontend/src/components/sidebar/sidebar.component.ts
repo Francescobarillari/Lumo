@@ -31,6 +31,7 @@ export class SidebarComponent implements OnChanges {
     userResults: User[] = [];
     activeTab: 'events' | 'places' | 'creators' = 'events';
     isSearching: boolean = false;
+    followingMap: { [userId: number]: boolean } = {};
 
     constructor(
         private eventService: EventService,
@@ -162,6 +163,32 @@ export class SidebarComponent implements OnChanges {
         // 3. Search Users (Backend)
         this.userService.searchUsers(this.searchQuery).subscribe(users => {
             this.userResults = users;
+            this.checkFollowingStatuses();
+        });
+    }
+
+    private checkFollowingStatuses() {
+        if (!this.userId) return;
+        this.userResults.forEach(user => {
+            this.userService.isFollowing(this.userId!, user.id.toString()).subscribe(res => {
+                this.followingMap[user.id] = res.isFollowing;
+            });
+        });
+    }
+
+    followUser(user: User, event: MouseEvent) {
+        event.stopPropagation();
+        if (!this.userId) return;
+        this.userService.followUser(this.userId, user.id.toString()).subscribe(() => {
+            this.followingMap[user.id] = true;
+        });
+    }
+
+    unfollowUser(user: User, event: MouseEvent) {
+        event.stopPropagation();
+        if (!this.userId) return;
+        this.userService.unfollowUser(this.userId, user.id.toString()).subscribe(() => {
+            this.followingMap[user.id] = false;
         });
     }
 

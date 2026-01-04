@@ -171,3 +171,35 @@
 .clickable {
     cursor: pointer;
 }
+
+.follow-icon {
+    background: var(--color-bit-gray);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-left: auto;
+}
+
+.follow-icon mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: var(--color-white);
+}
+
+.follow-icon:hover {
+    background: #555;
+}
+
+.follow-icon.following {
+    background: var(--color-accent);
+}
+
+.follow-icon.following mat-icon {
+    color: var(--color-black);
+}

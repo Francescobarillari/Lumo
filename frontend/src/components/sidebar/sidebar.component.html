@@ -86,6 +86,12 @@
                         <span class="loc-name">{{ user.name }}</span>
                         <span class="loc-details" style="font-size: 12px; opacity: 0.7;">{{ user.email }}</span>
                     </div>
+                    @if (userId && userId.toString() !== user.id.toString()) {
+                    <div class="icon-circle follow-icon" [class.following]="followingMap[user.id]"
+                        (click)="followingMap[user.id] ? unfollowUser(user, $event) : followUser(user, $event)">
+                        <mat-icon>{{ followingMap[user.id] ? 'person' : 'person_add' }}</mat-icon>
+                    </div>
+                    }
                 </div>
                 }
             </div>
@@ -105,8 +111,9 @@
                 @for (event of foundEvents; track $index) {
                 <app-event-card [title]="event.title" [location]="event.city" [dateTime]="formatDateTime(event)"
                     [distance]="formatDistance(event.distanceKm)" [id]="event.id!" [isSaved]="!!event.isSaved"
-                    [isParticipating]="!!event.isParticipating" (focusLocation)="goToEvent(event)"
-                    (toggleFavorite)="toggleFavorite.emit(event)" />
+                    [isParticipating]="!!event.isParticipating" [organizerName]="event.organizerName"
+                    [organizerImage]="event.organizerImage" [creatorId]="event.creatorId" [currentUserId]="userId"
+                    (focusLocation)="goToEvent(event)" (toggleFavorite)="toggleFavorite.emit(event)" />
                 }
                 @if (foundEvents.length === 0) {
                 <div class="empty-state">Nessun evento trovato nella tua zona.</div>
@@ -123,8 +130,9 @@
                 @for (event of followUpEvents; track $index) {
                 <app-event-card [title]="event.title" [location]="event.city" [dateTime]="formatDateTime(event)"
                     [distance]="formatDistance(event.distanceKm)" [id]="event.id!" [isSaved]="!!event.isSaved"
-                    [isParticipating]="!!event.isParticipating" (focusLocation)="goToEvent(event)"
-                    (toggleFavorite)="toggleFavorite.emit(event)" />
+                    [isParticipating]="!!event.isParticipating" [organizerName]="event.organizerName"
+                    [organizerImage]="event.organizerImage" [creatorId]="event.creatorId" [currentUserId]="userId"
+                    (focusLocation)="goToEvent(event)" (toggleFavorite)="toggleFavorite.emit(event)" />
                 }
                 @if (followUpEvents.length === 0) {
                 <div class="empty-state">Nessun evento imminente a cui partecipi.</div>
@@ -139,8 +147,9 @@
                 @for (event of savedEvents; track $index) {
                 <app-event-card [title]="event.title" [location]="event.city" [dateTime]="formatDateTime(event)"
                     [distance]="formatDistance(event.distanceKm)" [id]="event.id!" [isSaved]="!!event.isSaved"
-                    [isParticipating]="!!event.isParticipating" (focusLocation)="goToEvent(event)"
-                    (toggleFavorite)="toggleFavorite.emit(event)" />
+                    [isParticipating]="!!event.isParticipating" [organizerName]="event.organizerName"
+                    [organizerImage]="event.organizerImage" [creatorId]="event.creatorId" [currentUserId]="userId"
+                    (focusLocation)="goToEvent(event)" (toggleFavorite)="toggleFavorite.emit(event)" />
                 }
                 @if (savedEvents.length === 0) {
                 <div class="empty-state">Non hai ancora salvato nessun evento.</div>
@@ -155,7 +164,9 @@
                 @for (event of discoverEvents; track $index) {
                 <app-event-card [title]="event.title" [location]="event.city" [dateTime]="formatDateTime(event)"
                     [distance]="formatDistance(event.distanceKm)" [id]="event.id!" [isSaved]="!!event.isSaved"
-                    (focusLocation)="goToEvent(event)" (toggleFavorite)="toggleFavorite.emit(event)" />
+                    [organizerName]="event.organizerName" [organizerImage]="event.organizerImage"
+                    [creatorId]="event.creatorId" [currentUserId]="userId" (focusLocation)="goToEvent(event)"
+                    (toggleFavorite)="toggleFavorite.emit(event)" />
                 }
                 @if (discoverEvents.length === 0) {
                 <div class="empty-state">Nessun nuovo evento da scoprire al momento.</div>

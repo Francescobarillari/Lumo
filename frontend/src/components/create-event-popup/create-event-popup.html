@@ -13,6 +13,8 @@
             <h1>Crea Evento</h1>
             @if(generalError) {
             <p class="error">{{ generalError }}</p>
+            } @else if ((errors | keyvalue).length > 0) {
+            <p class="error">{{ (errors | keyvalue)[0].value }}</p>
             }
         </div>
 

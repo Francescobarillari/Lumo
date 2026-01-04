@@ -278,3 +278,35 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.follow-icon {
+    background: var(--color-bit-gray);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-left: auto;
+}
+
+.follow-icon mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: var(--color-white);
+}
+
+.follow-icon:hover {
+    background: #555;
+}
+
+.follow-icon.following {
+    background: var(--color-accent);
+}
+
+.follow-icon.following mat-icon {
+    color: var(--color-black);
+}
