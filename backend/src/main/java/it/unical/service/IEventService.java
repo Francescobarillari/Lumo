@@ -21,7 +21,7 @@ public interface IEventService {
 
     void rejectEvent(Long id, String reason);
 
-    Optional<Event> getEventById(Long id);
+    Optional<Event> getEventById(Long id, Long userId);
 
     Event updateEvent(Long id, Event updatedEvent);
 

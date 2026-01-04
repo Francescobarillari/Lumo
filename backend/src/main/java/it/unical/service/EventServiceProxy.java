@@ -69,8 +69,8 @@ public class EventServiceProxy implements IEventService {
     }
 
     @Override
-    public Optional<Event> getEventById(Long id) {
-        return realService.getEventById(id);
+    public Optional<Event> getEventById(Long id, Long userId) {
+        return realService.getEventById(id, userId);
     }
 
     @Override

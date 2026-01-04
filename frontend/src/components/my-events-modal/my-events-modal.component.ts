@@ -71,6 +71,18 @@ export class MyEventsModal implements OnInit {
                 if (event.pendingUsersList) {
                     event.pendingUsersList = event.pendingUsersList.filter(u => u.id !== user.id);
                 }
+
+                // Add to accepted list immediately
+                if (!event.acceptedUsersList) {
+                    event.acceptedUsersList = [];
+                }
+                event.acceptedUsersList.push(user);
+
+                // Sort by name
+                event.acceptedUsersList.sort((u1, u2) => (u1.name || '').localeCompare(u2.name || ''));
+
+                // Increment occupied spots
+                event.occupiedSpots = (event.occupiedSpots || 0) + 1;
             },
             error: (err) => console.error('Error accepting', err)
         });

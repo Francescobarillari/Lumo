@@ -5,7 +5,6 @@
     background-color: var(--color-gray);
     border-radius: var(--radius-md);
     padding: 12px var(--spacing-md);
-    margin-bottom: var(--spacing-md);
     color: var(--color-white);
 }
 

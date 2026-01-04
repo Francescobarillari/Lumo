@@ -59,6 +59,10 @@ public class EventService implements IEventService {
             if (event.getPendingParticipants() != null) {
                 event.setPendingUsersList(new java.util.ArrayList<>(event.getPendingParticipants()));
             }
+            if (event.getPendingParticipants() != null) {
+                event.setPendingUsersList(new java.util.ArrayList<>(event.getPendingParticipants()));
+            }
+            processEventParticipants(event);
         }
         return events;
     }
@@ -66,7 +70,9 @@ public class EventService implements IEventService {
     @Override
     public List<Event> getJoinedEvents(Long userId) {
         return userRepository.findById(userId)
-                .map(user -> new java.util.ArrayList<>(user.getParticipatingEvents()))
+                .map(user -> user.getParticipatingEvents().stream()
+                        .filter(e -> e.getCreator() == null || !e.getCreator().getId().equals(userId))
+                        .collect(java.util.stream.Collectors.toList()))
                 .orElse(new java.util.ArrayList<>());
     }
 
@@ -79,6 +85,8 @@ public class EventService implements IEventService {
             if (userOpt.isPresent()) {
                 it.unical.model.User user = userOpt.get();
                 for (Event event : events) {
+                    processEventParticipants(event); // Centralized logic
+
                     if (user.getParticipatingEvents().stream().anyMatch(e -> e.getId().equals(event.getId()))) {
                         event.setIsParticipating(true);
                         event.setParticipationStatus("ACCEPTED");
@@ -93,8 +101,35 @@ public class EventService implements IEventService {
                     }
                 }
             }
+        } else {
+            // Even if no user logged in, we want occupied spots
+            for (Event event : events) {
+                processEventParticipants(event);
+            }
         }
         return events;
+    }
+
+    // Helper method to process participants (exclude creator + sort)
+    private void processEventParticipants(Event event) {
+        if (event.getParticipants() != null) {
+            Long creatorId = event.getCreatorId();
+            List<it.unical.model.User> realParticipants = new java.util.ArrayList<>();
+
+            for (it.unical.model.User p : event.getParticipants()) {
+                if (creatorId == null || !p.getId().equals(creatorId)) {
+                    realParticipants.add(p);
+                }
+            }
+
+            event.setOccupiedSpots(realParticipants.size());
+            event.setAcceptedUsersList(realParticipants);
+            // Sort by name for consistency
+            event.getAcceptedUsersList().sort((u1, u2) -> u1.getName().compareToIgnoreCase(u2.getName()));
+        } else {
+            event.setOccupiedSpots(0);
+            event.setAcceptedUsersList(new java.util.ArrayList<>());
+        }
     }
 
     // ✅ Restituisce eventi IN ATTESA (Per Admin)
@@ -149,8 +184,30 @@ public class EventService implements IEventService {
     }
 
     // ✅ Trova un evento per ID
-    public Optional<Event> getEventById(Long id) {
-        return eventRepository.findById(id);
+    // ✅ Trova un evento per ID (con contesto utente)
+    public Optional<Event> getEventById(Long id, Long userId) {
+        return eventRepository.findById(id).map(event -> {
+            processEventParticipants(event);
+
+            if (userId != null) {
+                userRepository.findById(userId).ifPresent(user -> {
+                    if (user.getParticipatingEvents().stream().anyMatch(e -> e.getId().equals(event.getId()))) {
+                        event.setIsParticipating(true);
+                        event.setParticipationStatus("ACCEPTED");
+                    } else if (user.getPendingEvents().stream().anyMatch(e -> e.getId().equals(event.getId()))) {
+                        event.setParticipationStatus("PENDING");
+                    } else {
+                        event.setParticipationStatus("NONE");
+                    }
+
+                    if (user.getSavedEvents().stream().anyMatch(e -> e.getId().equals(event.getId()))) {
+                        event.setIsSaved(true);
+                    }
+                });
+            }
+
+            return event;
+        });
     }
 
     // ✅ Aggiorna un evento

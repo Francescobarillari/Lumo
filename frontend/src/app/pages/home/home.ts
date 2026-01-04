@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../../services/auth.service';
 import { MapView } from '../../../components/map-view/map-view';
@@ -41,7 +41,7 @@ export class Home implements OnInit {
   selectedEvent: LumoEvent | null = null;
   eventScreenPosition: { x: number, y: number } | null = null;
 
-  loggedUser: { id: string; name: string; email: string; profileImage?: string } | null = null;
+  loggedUser: { id: string; name: string; email: string; profileImage?: string; isAdmin?: boolean } | null = null;
 
   recentEmail = '';
   recentToken = '';
@@ -50,6 +50,7 @@ export class Home implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private authService: AuthService,
     private http: HttpClient,
     private eventService: EventService,
@@ -58,6 +59,7 @@ export class Home implements OnInit {
 
   ngOnInit() {
     this.refreshLocalUser();
+    this.checkAdminRedirect();
 
     // Subscribe to global user updates
     this.userService.userUpdates$.subscribe(() => {
@@ -84,6 +86,12 @@ export class Home implements OnInit {
     });
   }
 
+  checkAdminRedirect() {
+    if (this.loggedUser && this.loggedUser.isAdmin) {
+      this.router.navigate(['/admin']);
+    }
+  }
+
   refreshLocalUser() {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
@@ -107,8 +115,14 @@ export class Home implements OnInit {
           email: user.email || '',
           profileImage: (user as any).profileImage,
           followersCount: user.followersCount,
-          followingCount: user.followingCount
+          followingCount: user.followingCount,
+          isAdmin: user.isAdmin
         } as any;
+
+        if (this.loggedUser?.isAdmin) {
+          this.router.navigate(['/admin']);
+          return;
+        }
 
         localStorage.setItem('user', JSON.stringify(this.loggedUser));
         console.log('User refreshed:', this.loggedUser);
@@ -181,6 +195,24 @@ export class Home implements OnInit {
       this.mapView.map.off('click', this.onMapClick.bind(this));
       this.mapView.map.on('click', this.onMapClick.bind(this));
     }
+
+    // Creating context for potential fetch
+    const currentUserId = this.loggedUser ? this.loggedUser.id : undefined;
+
+    // Fetch fresh data for the event to ensure status (participating/saved) is up to date
+    this.eventService.getEventById(event.id, currentUserId).subscribe({
+      next: (freshEvent) => {
+        // Update selected event with fresh data, preserving some map props if needed
+        // but freshEvent should have everything.
+        this.selectedEvent = freshEvent;
+        // Re-position because maybe initial position was based on stale object?
+        // Actually coords shouldn't change, but good to trigger update.
+        // We need to ensure latitude/longitude are present in freshEvent.
+        // If backend sends them, good.
+        this.updateCardPosition();
+      },
+      error: (err) => console.error('Error fetching fresh event data', err)
+    });
 
     // Add global document click listener for UI elements (Sidebar, etc)
     // Use setTimeout to avoid catching the current click event that opened the popup (though marker stopPropagation handles it, this is safer)
@@ -295,8 +327,14 @@ export class Home implements OnInit {
       id: user?.id || '',
       name: user?.name || user?.email || 'Utente',
       email: user?.email || '',
-      profileImage: (user as any).profileImage
+      profileImage: (user as any).profileImage,
+      isAdmin: (user as any).isAdmin
     };
+
+    if (this.loggedUser.isAdmin) {
+      this.router.navigate(['/admin']);
+      return;
+    }
 
     // Refresh fully to get counts
     this.refreshUserFromBackend();

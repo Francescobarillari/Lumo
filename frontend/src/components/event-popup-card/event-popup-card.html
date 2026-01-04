@@ -14,6 +14,9 @@
 
         <div class="info-section">
             <p class="info-item">👥 {{ event.nPartecipants || 'Non specificato' }} partecipanti</p>
+            <p class="info-item" *ngIf="event.occupiedSpots !== undefined">
+                🎫 {{ event.nPartecipants - (event.occupiedSpots || 0) }} posti rimanenti
+            </p>
             <p class="info-item">💰 {{ formatCost() }}</p>
         </div>
 

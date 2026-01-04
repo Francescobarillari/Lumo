@@ -20,4 +20,6 @@ export interface Event {
   isApproved?: boolean;
   creatorId?: number;
   pendingUsersList?: import('./user').User[];
+  acceptedUsersList?: import('./user').User[];
+  occupiedSpots?: number;
 }

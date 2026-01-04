@@ -30,8 +30,13 @@ export class EventService {
   }
 
   // Utility per futuro: ottenere singolo evento
-  getEvent(id: number): Observable<Event> {
-    return this.http.get<Event>(`${this.baseUrl}/${id}`);
+  // Utility per futuro: ottenere singolo evento
+  getEventById(id: number, userId?: string): Observable<Event> {
+    let url = `${this.baseUrl}/${id}`;
+    if (userId) {
+      url += `?userId=${userId}`;
+    }
+    return this.http.get<Event>(url);
   }
 
   // ✅ Ricerca eventi

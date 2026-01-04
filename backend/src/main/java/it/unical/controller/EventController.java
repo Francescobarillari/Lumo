@@ -30,8 +30,8 @@ public class EventController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Event> getEventById(@PathVariable Long id) {
-        return eventService.getEventById(id);
+    public Optional<Event> getEventById(@PathVariable Long id, @RequestParam(required = false) Long userId) {
+        return eventService.getEventById(id, userId);
     }
 
     @GetMapping("/organized")

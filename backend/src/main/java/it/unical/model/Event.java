@@ -45,6 +45,12 @@ public class Event {
     @Transient
     private java.util.List<User> pendingUsersList;
 
+    @Transient
+    private java.util.List<User> acceptedUsersList;
+
+    @Transient
+    private Integer occupiedSpots;
+
     @ManyToMany(mappedBy = "participatingEvents")
     @com.fasterxml.jackson.annotation.JsonIgnore
     private java.util.Set<User> participants = new java.util.HashSet<>();
@@ -233,9 +239,6 @@ public class Event {
         if (creator != null) {
             return creator.getId();
         }
-        if (participants != null && !participants.isEmpty()) {
-            return participants.iterator().next().getId();
-        }
         return null;
     }
 
@@ -245,18 +248,12 @@ public class Event {
         if (creator != null) {
             return creator.getName();
         }
-        if (participants != null && !participants.isEmpty()) {
-            return participants.iterator().next().getName();
-        }
         return "Lumo Eventer";
     }
 
     public String getOrganizerImage() {
         if (creator != null) {
             return creator.getProfileImage();
-        }
-        if (participants != null && !participants.isEmpty()) {
-            return participants.iterator().next().getProfileImage();
         }
         return null;
     }
@@ -282,6 +279,22 @@ public class Event {
 
     public void setPendingUsersList(java.util.List<User> pendingUsersList) {
         this.pendingUsersList = pendingUsersList;
+    }
+
+    public java.util.List<User> getAcceptedUsersList() {
+        return acceptedUsersList;
+    }
+
+    public void setAcceptedUsersList(java.util.List<User> acceptedUsersList) {
+        this.acceptedUsersList = acceptedUsersList;
+    }
+
+    public Integer getOccupiedSpots() {
+        return occupiedSpots;
+    }
+
+    public void setOccupiedSpots(Integer occupiedSpots) {
+        this.occupiedSpots = occupiedSpots;
     }
 
     public java.util.Set<User> getUsersWhoSaved() {

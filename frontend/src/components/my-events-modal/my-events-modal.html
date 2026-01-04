@@ -27,6 +27,7 @@
                 <div class="event-summary">
                     <div class="event-info">
                         <h3>{{ event.title }}</h3>
+                        <span class="event-location">{{ event.city }}</span>
                         <span class="event-date">{{ formatDateTime(event) }}</span>
                         <span class="requests-badge" *ngIf="event.pendingUsersList?.length"
                             (click)="toggleRequests(event.id)">
@@ -41,26 +42,62 @@
                 </div>
 
                 <!-- Requests Section -->
-                @if (expandedEventRequestsId === event.id && event.pendingUsersList?.length) {
+                @if (expandedEventRequestsId === event.id) {
                 <div class="requests-panel">
-                    <h4>Richieste di partecipazione</h4>
-                    @for (user of event.pendingUsersList; track user.id) {
-                    <div class="request-item">
-                        <div class="user-info">
-                            <img [src]="user.profileImage || 'assets/placeholder-user.png'" class="user-avatar">
-                            <span>{{ user.name }} {{ user.surname }}</span>
+                    <!-- Event Overview Section -->
+                    <div class="event-overview-section">
+                        <h4>Panoramica Evento</h4>
+                        <div class="stats-card">
+                            <div class="stat-item">
+                                <span class="stat-label">Partecipanti Accettati</span>
+                                <span class="stat-value">{{ event.acceptedUsersList?.length || 0 }}</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Capacità</span>
+                                <span class="stat-value">
+                                    {{ event.acceptedUsersList?.length || 0 }} / {{ event.nPartecipants }}
+                                </span>
+                            </div>
                         </div>
-                        <div class="request-actions">
-                            <button class="accept-btn" (click)="acceptRequest(event, user)">Accetta</button>
-                            <button class="reject-btn" (click)="rejectRequest(event, user)">Rifiuta</button>
+
+                        @if (event.acceptedUsersList?.length) {
+                        <div class="participants-list">
+                            <h5 class="section-subtitle">Persone Accettate</h5>
+                            <div class="participants-grid">
+                                @for (user of event.acceptedUsersList; track user.id) {
+                                <div class="participant-chip">
+                                    <img [src]="user.profileImage || 'assets/placeholder-user.png'"
+                                        class="participant-avatar">
+                                    <span class="participant-name">{{ user.name }} {{ user.surname }}</span>
+                                </div>
+                                }
+                            </div>
                         </div>
+                        } @else {
+                        <p class="no-data-msg">Nessun partecipante accettato al momento.</p>
+                        }
                     </div>
-                    }
-                </div>
-                }
-                @else if (expandedEventRequestsId === event.id && !event.pendingUsersList?.length) {
-                <div class="requests-panel">
-                    <p class="no-requests">Nessuna richiesta in attesa.</p>
+
+                    <!-- Pending Requests Section -->
+                    <div class="pending-requests-section">
+                        <h4>Richieste in attesa ({{ event.pendingUsersList?.length || 0 }})</h4>
+                        @if (event.pendingUsersList?.length) {
+                        @for (user of event.pendingUsersList; track user.id) {
+                        <div class="request-item">
+                            <div class="user-info">
+                                <img [src]="user.profileImage || 'assets/placeholder-user.png'" class="user-avatar">
+                                <span>{{ user.name }} {{ user.surname }}</span>
+                            </div>
+                            <div class="request-actions">
+                                <button class="accept-btn" (click)="acceptRequest(event, user)">Accetta</button>
+                                <button class="reject-btn" (click)="rejectRequest(event, user)">Rifiuta</button>
+                            </div>
+                        </div>
+                        }
+                        } @else {
+                        <p class="no-requests">Nessuna richiesta in attesa.</p>
+                        }
+                    </div>
                 </div>
                 }
             </div>
@@ -76,7 +113,7 @@
             @for (event of joinedEvents; track event.id) {
             <app-event-card [title]="event.title" [location]="event.city" [dateTime]="formatDateTime(event)"
                 [id]="event.id!" [isSaved]="!!event.isSaved" [isParticipating]="!!event.isParticipating"
-                [showDistance]="false">
+                [showDistance]="false" [showActions]="false">
             </app-event-card>
             }
             @empty {

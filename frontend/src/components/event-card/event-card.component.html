@@ -6,7 +6,11 @@
         @if (distance()) {
         <p class="distance">{{ distance() }}</p>
         }
+        @if (maxParticipants() && occupiedSpots() !== undefined) {
+        <p class="spots-info">🎫 {{ maxParticipants()! - occupiedSpots()! }} posti rim.</p>
+        }
     </div>
+    @if (showActions()) {
     <div class="actions-section">
         <div class="icon-circle" (click)="focusLocation.emit(); $event.stopPropagation()">
             <mat-icon>place</mat-icon>
@@ -17,6 +21,7 @@
         </div>
         }
     </div>
+    }
 </div>
 
 @if (organizerName()) {
