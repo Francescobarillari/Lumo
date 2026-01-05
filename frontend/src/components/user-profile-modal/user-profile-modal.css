@@ -18,7 +18,7 @@
     border-radius: 16px;
     padding: 24px;
     color: white;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
     max-height: 85vh;
     display: flex;
     flex-direction: column;
@@ -50,7 +50,7 @@
 }
 
 .close-btn:hover {
-    background: rgba(255,255,255,0.1);
+    background: rgba(255, 255, 255, 0.1);
     color: white;
 }
 
@@ -68,7 +68,8 @@
     height: 100px;
 }
 
-.profile-image, .profile-placeholder {
+.profile-image,
+.profile-placeholder {
     width: 100%;
     height: 100%;
     border-radius: 50%;
@@ -97,16 +98,30 @@
     font-size: 14px;
 }
 
+.user-description {
+    margin: 8px 0 0 0;
+    color: #e0e0e0;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.4;
+    max-width: 90%;
+    opacity: 0.9;
+    text-align: center;
+}
+
 .stats-container {
     display: flex;
     align-items: center;
-    gap: 24px;
+    justify-content: space-between;
+    /* Spread items */
+    gap: 0;
+    /* Remove fixed gap */
     margin-top: 16px;
-    background: rgba(255,255,255,0.05);
-    padding: 16px 24px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 16px 12px;
+    /* Slightly reduced side padding */
     border-radius: 12px;
     width: 100%;
-    justify-content: center;
 }
 
 .stat-item {
@@ -114,11 +129,14 @@
     flex-direction: column;
     align-items: center;
     gap: 4px;
+    flex: 1;
+    /* Force equal width */
 }
 
 .stat-item.clickable {
     cursor: pointer;
 }
+
 .stat-item.clickable:hover {
     opacity: 0.8;
 }
@@ -130,7 +148,8 @@
 }
 
 .stat-label {
-    font-size: 12px;
+    font-size: 11px;
+    /* Slightly smaller to fit */
     color: #888;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -138,8 +157,11 @@
 
 .stat-divider {
     width: 1px;
-    height: 40px;
-    background: rgba(255,255,255,0.1);
+    height: 30px;
+    /* adjusted height */
+    background: rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+    /* Don't shrink */
 }
 
 /* Actions */
@@ -167,7 +189,8 @@
     display: flex;
     flex-direction: column;
     flex: 1;
-    overflow: hidden; /* For inner scroll */
+    overflow: hidden;
+    /* For inner scroll */
 }
 
 .list-header {
@@ -200,7 +223,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 8px;
-    background: rgba(255,255,255,0.05);
+    background: rgba(255, 255, 255, 0.05);
     border-radius: 8px;
 }
 
@@ -210,7 +233,8 @@
     gap: 12px;
 }
 
-.list-avatar, .list-avatar-placeholder {
+.list-avatar,
+.list-avatar-placeholder {
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -247,11 +271,13 @@
 }
 
 .small-btn.unfollow-btn {
-    background: rgba(255,255,255,0.1);
+    background: rgba(255, 255, 255, 0.1);
     color: white;
 }
 
-.loading-spinner, .error-state, .empty-list {
+.loading-spinner,
+.error-state,
+.empty-list {
     text-align: center;
     color: #888;
     padding: 20px;
