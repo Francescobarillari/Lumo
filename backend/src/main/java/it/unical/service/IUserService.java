@@ -31,7 +31,7 @@ public interface IUserService {
 
     List<User> getFollowing(Long userId);
 
-    User updateUser(Long userId, String name, String email);
+    User updateUser(Long userId, String name, String email, String description);
 
     void changePassword(Long userId, String oldPassword, String newPassword);
 }

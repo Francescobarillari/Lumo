@@ -47,7 +47,7 @@ export class UserService {
     return this.http.get<User[]>(`${this.apiUrl}/${userId}/following`);
   }
 
-  updateUser(userId: string, data: { name?: string, email?: string }): Observable<User> {
+  updateUser(userId: string, data: { name?: string, email?: string, description?: string }): Observable<User> {
     return this.http.put<User>(`${this.apiUrl}/${userId}`, data);
   }
 

@@ -12,7 +12,7 @@ import { FormsModule } from '@angular/forms';
     styleUrl: './account-modal.css'
 })
 export class AccountModalComponent {
-    @Input() user: { id: string; name: string; email: string; profileImage?: string; followersCount?: number; followingCount?: number } | null = null;
+    @Input() user: { id: string; name: string; email: string; description?: string; profileImage?: string; followersCount?: number; followingCount?: number } | null = null;
     @Output() close = new EventEmitter<void>();
     @Output() changePhoto = new EventEmitter<void>();
 
@@ -21,7 +21,7 @@ export class AccountModalComponent {
     followingIds: Set<string> = new Set();
     loadingList = false;
 
-    editData = { name: '', email: '' };
+    editData = { name: '', email: '', description: '' };
     passwordData = { old: '', new: '', confirm: '' };
 
     constructor(private userService: UserService) { }
@@ -130,7 +130,11 @@ export class AccountModalComponent {
     showEditProfile() {
         if (!this.user) return;
         this.view = 'edit-profile';
-        this.editData = { name: this.user.name, email: this.user.email };
+        this.editData = {
+            name: this.user.name,
+            email: this.user.email,
+            description: this.user.description || ''
+        };
         this.passwordData = { old: '', new: '', confirm: '' };
     }
 
@@ -142,6 +146,7 @@ export class AccountModalComponent {
                 if (this.user) {
                     this.user.name = updatedUser.name;
                     this.user.email = updatedUser.email;
+                    this.user.description = updatedUser.description;
                 }
                 alert('Profile updated successfully');
                 this.userService.notifyUserUpdate();
@@ -150,6 +155,30 @@ export class AccountModalComponent {
                 console.error(err);
                 alert('Failed to update profile');
             }
+        });
+    }
+
+    getShareLink(): string {
+        if (!this.user) return '';
+        // Assuming the app is hosted at root or we construct the full URL
+        const protocol = window.location.protocol;
+        const host = window.location.host;
+        return `${protocol}//${host}/?user=${this.user.id}`;
+    }
+
+    getQrCodeUrl(): string {
+        if (!this.user) return '';
+        const link = this.getShareLink();
+        // Using QR Server API
+        return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(link)}`;
+    }
+
+    copyShareLink() {
+        const link = this.getShareLink();
+        navigator.clipboard.writeText(link).then(() => {
+            alert('Link copied to clipboard!');
+        }).catch(err => {
+            console.error('Failed to copy: ', err);
         });
     }
 

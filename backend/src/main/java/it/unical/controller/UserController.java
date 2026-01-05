@@ -121,7 +121,9 @@ public class UserController {
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody Map<String, String> payload) {
         String name = payload.get("name");
         String email = payload.get("email");
-        return ResponseEntity.ok(userService.updateUser(id, name, email));
+        String description = payload.get("description");
+        System.out.println("UserController: updateUser request. ID=" + id + ", Desc=" + description);
+        return ResponseEntity.ok(userService.updateUser(id, name, email, description));
     }
 
     @PutMapping("/{id}/password")

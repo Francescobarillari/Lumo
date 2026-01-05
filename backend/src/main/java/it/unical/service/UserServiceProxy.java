@@ -95,9 +95,9 @@ public class UserServiceProxy implements IUserService {
     }
 
     @Override
-    public User updateUser(Long userId, String name, String email) {
+    public User updateUser(Long userId, String name, String email, String description) {
         System.out.println("[UserServiceProxy] Updating user " + userId);
-        return realService.updateUser(userId, name, email);
+        return realService.updateUser(userId, name, email, description);
     }
 
     @Override

@@ -53,8 +53,19 @@ public class User {
     @com.fasterxml.jackson.annotation.JsonIgnore
     private java.util.Set<User> followers = new java.util.HashSet<>();
 
+    @Column(length = 500)
+    private String description;
+
     @Transient
     private int approvedEventsCount = 0;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public int getApprovedEventsCount() {
         return approvedEventsCount;

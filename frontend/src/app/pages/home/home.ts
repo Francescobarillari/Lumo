@@ -74,6 +74,21 @@ export class Home implements OnInit {
     this.route.queryParams.subscribe(params => {
       const token = params['token'];
       const email = params['email'];
+      const userId = params['user'];
+
+      if (userId) {
+        // Handle Deep Link for User Profile
+        // Ensure user is loaded or just open the modal with ID
+        this.openUserProfile(userId);
+
+        // Remove query param to clean URL (Optional but good UX)
+        this.router.navigate([], {
+          relativeTo: this.route,
+          queryParams: { user: null },
+          queryParamsHandling: 'merge', // remove to replace all with null
+          replaceUrl: true
+        });
+      }
 
       if (token) {
         this.recentToken = token;
@@ -118,6 +133,7 @@ export class Home implements OnInit {
           id: user.id || '',
           name: user.name || user.email || 'Utente',
           email: user.email || '',
+          description: user.description,
           profileImage: (user as any).profileImage,
           followersCount: user.followersCount,
           followingCount: user.followingCount,

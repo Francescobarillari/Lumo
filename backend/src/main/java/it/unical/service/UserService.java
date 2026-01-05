@@ -144,7 +144,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User updateUser(Long userId, String name, String email) {
+    public User updateUser(Long userId, String name, String email, String description) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -156,6 +156,9 @@ public class UserService implements IUserService {
             // In a real app we might want to check unique constraint or handle exception
             // from DB.
             user.setEmail(email);
+        }
+        if (description != null) {
+            user.setDescription(description);
         }
         return userRepository.save(user);
     }
