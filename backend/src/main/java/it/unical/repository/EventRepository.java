@@ -28,4 +28,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "OR LOWER(e.city) LIKE LOWER(CONCAT('%', :query, '%'))) " +
             "AND e.isApproved = true")
     List<Event> searchEvents(@Param("query") String query);
+
+    int countByCreator_IdAndIsApprovedTrue(Long creatorId);
 }

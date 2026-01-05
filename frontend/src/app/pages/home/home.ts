@@ -12,6 +12,7 @@ import { CropImagePopup } from '../../../components/crop-image-popup/crop-image-
 import { CreateEventPopup } from '../../../components/create-event-popup/create-event-popup';
 import { EventPopupCard } from '../../../components/event-popup-card/event-popup-card';
 import { MapLocationSelector } from '../../../components/map-location-selector/map-location-selector';
+import { UserProfileModalComponent } from '../../../components/user-profile-modal/user-profile-modal.component';
 import { Event as LumoEvent } from '../../../models/event';
 import { EventService } from '../../../services/event.service';
 import { UserService } from '../../../services/user-service/user-service';
@@ -19,7 +20,7 @@ import { UserService } from '../../../services/user-service/user-service';
 @Component({
   selector: 'Home',
   standalone: true,
-  imports: [MapView, SignUpPopup, SignInPopup, VerifyEmailPopup, ActionBarComponent, CropImagePopup, CreateEventPopup, EventPopupCard, MapLocationSelector],
+  imports: [MapView, SignUpPopup, SignInPopup, VerifyEmailPopup, ActionBarComponent, CropImagePopup, CreateEventPopup, EventPopupCard, MapLocationSelector, UserProfileModalComponent],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
@@ -40,6 +41,10 @@ export class Home implements OnInit {
   showLocationSelector = false;
   selectedEvent: LumoEvent | null = null;
   eventScreenPosition: { x: number, y: number } | null = null;
+
+  // User Profile Popup State
+  showUserProfile = false;
+  selectedUserProfileId: string | null = null;
 
   loggedUser: { id: string; name: string; email: string; profileImage?: string; isAdmin?: boolean } | null = null;
 
@@ -177,6 +182,14 @@ export class Home implements OnInit {
     this.showLocationSelector = false;
     this.closeEventPopup();
     if (this.mapView) this.mapView.managedPopupType = null;
+    this.showUserProfile = false;
+    this.selectedUserProfileId = null;
+  }
+
+  openUserProfile(userId: string) {
+    this.closeAll();
+    this.selectedUserProfileId = userId;
+    this.showUserProfile = true;
   }
 
   openEventPopup(event: LumoEvent) {

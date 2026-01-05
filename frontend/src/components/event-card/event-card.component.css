@@ -94,6 +94,14 @@
     gap: 8px;
 }
 
+.organizer-details.clickable {
+    cursor: pointer;
+}
+
+.organizer-details.clickable:hover {
+    opacity: 0.8;
+}
+
 .organizer-img {
     width: 24px;
     height: 24px;

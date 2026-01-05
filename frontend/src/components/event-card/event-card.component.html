@@ -24,9 +24,9 @@
     }
 </div>
 
-@if (organizerName()) {
+@if (organizerName() && showOrganizerInfo()) {
 <div class="organizer-info">
-    <div class="organizer-details">
+    <div class="organizer-details clickable" (click)="openOrganizerProfile.emit(); $event.stopPropagation()">
         <div class="organizer-img" [style.background-image]="organizerImage() ? 'url(' + organizerImage() + ')' : ''">
             @if (!organizerImage()) {
             <mat-icon>person</mat-icon>

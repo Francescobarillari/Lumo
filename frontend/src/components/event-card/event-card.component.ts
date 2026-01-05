@@ -20,6 +20,7 @@ export class EventCardComponent implements OnInit {
     isParticipating = input<boolean>(false);
     showDistance = input<boolean>(true);
     showActions = input<boolean>(true);
+    showOrganizerInfo = input<boolean>(true);
 
     // Organizer Info
     organizerName = input<string>();
@@ -37,6 +38,7 @@ export class EventCardComponent implements OnInit {
 
     @Output() focusLocation = new EventEmitter<void>();
     @Output() toggleFavorite = new EventEmitter<void>();
+    @Output() openOrganizerProfile = new EventEmitter<void>();
 
     constructor(private userService: UserService) { }
 

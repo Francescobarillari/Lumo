@@ -30,7 +30,8 @@ userMarkerEl.style.boxShadow = '0 0 3px rgba(0,0,0,0.3)';
     (focusEvent)="flyToEvent($event)"
     (toggleSidebar)="toggleSidebar()"
     (toggleFavorite)="onToggleFavorite($event)"
-    (foundLocation)="flyToLocation($event)">
+    (foundLocation)="flyToLocation($event)"
+    (openUserProfile)="openUserProfile.emit($event)">
   </app-sidebar>
 
   <app-mobile-search
@@ -124,6 +125,7 @@ export class MapView implements AfterViewInit, OnDestroy, OnChanges {
   @Output() eventSelected = new EventEmitter<Event>();
   @Output() mapInteract = new EventEmitter<void>();
   @Output() eventsUpdated = new EventEmitter<Event[]>(); // Emit when events list updates
+  @Output() openUserProfile = new EventEmitter<string>(); // Emit when user profile requested
 
   private mapInstance!: mapboxgl.Map;
   private eventMarkers = new Map<number, mapboxgl.Marker>();

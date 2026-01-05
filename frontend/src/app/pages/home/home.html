@@ -25,8 +25,14 @@
   <SignInPopup (switchToSignUp)="switchToSignUp()" (close)="closeAll()" (signInSuccess)="onSignInSuccess($event)" />
   }
 
+  @if (showUserProfile) {
+  <app-user-profile-modal [userId]="selectedUserProfileId"
+    [currentUserId]="loggedUser ? (loggedUser.id.toString()) : null" (close)="closeAll()"></app-user-profile-modal>
+  }
+
   <map-view [userId]="loggedUser ? loggedUser.id || '' : null" (eventSelected)="openEventPopup($event)"
-    (mapInteract)="closeEventPopup()" (requestLogin)="openSignIn()" (eventsUpdated)="onEventsUpdated($event)">
+    (mapInteract)="closeEventPopup()" (requestLogin)="openSignIn()" (eventsUpdated)="onEventsUpdated($event)"
+    (openUserProfile)="openUserProfile($event)">
   </map-view>
 
   @if (showCropPopup && selectedImageFile) {

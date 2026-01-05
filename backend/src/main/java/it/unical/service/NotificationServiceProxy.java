@@ -56,4 +56,10 @@ public class NotificationServiceProxy implements INotificationService {
         System.out.println("[NotificationProxy] Updating notification " + notificationId + " type to " + newType);
         realService.updateType(notificationId, newType);
     }
+
+    @Override
+    public void deleteNotification(Long notificationId) {
+        System.out.println("[NotificationProxy] Deleting notification " + notificationId);
+        realService.deleteNotification(notificationId);
+    }
 }

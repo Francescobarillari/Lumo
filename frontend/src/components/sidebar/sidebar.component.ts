@@ -24,6 +24,7 @@ export class SidebarComponent implements OnChanges {
     @Output() toggleSidebar = new EventEmitter<void>();
     @Output() toggleFavorite = new EventEmitter<Event>();
     @Output() foundLocation = new EventEmitter<{ lat: number, lng: number }>(); // New output
+    @Output() openUserProfile = new EventEmitter<string>(); // New output for profile
 
     searchQuery: string = '';
     searchResults: Event[] = [];
@@ -171,6 +172,7 @@ export class SidebarComponent implements OnChanges {
         if (!this.userId) return;
         this.userResults.forEach(user => {
             this.userService.isFollowing(this.userId!, user.id.toString()).subscribe(res => {
+                console.log(`Checking follow status for ${user.id} (me: ${this.userId}):`, res);
                 this.followingMap[user.id] = res.isFollowing;
             });
         });

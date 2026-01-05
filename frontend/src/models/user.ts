@@ -8,4 +8,5 @@ export interface User {
     isAdmin?: boolean;
     followersCount?: number;
     followingCount?: number;
+    approvedEventsCount?: number;
 }

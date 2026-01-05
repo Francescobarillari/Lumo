@@ -29,7 +29,11 @@ public class UserService implements IUserService {
 
     @Override
     public User getUserById(Long id) {
-        return userRepository.findById(id).orElse(null);
+        User user = userRepository.findById(id).orElse(null);
+        if (user != null) {
+            user.setApprovedEventsCount(eventRepository.countByCreator_IdAndIsApprovedTrue(id));
+        }
+        return user;
     }
 
     @Override
@@ -122,7 +126,7 @@ public class UserService implements IUserService {
         User followed = userRepository.findById(followedId)
                 .orElseThrow(() -> new RuntimeException("User to check not found"));
 
-        return follower.getFollowing().contains(followed);
+        return follower.getFollowing().stream().anyMatch(u -> u.getId().equals(followedId));
     }
 
     @Override
