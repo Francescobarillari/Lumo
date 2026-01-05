@@ -15,11 +15,15 @@ public class UserService implements IUserService {
 
     private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
+    private final INotificationService notificationService;
+
     public UserService(UserRepository userRepository, it.unical.repository.EventRepository eventRepository,
-            org.springframework.security.crypto.password.PasswordEncoder passwordEncoder) {
+            org.springframework.security.crypto.password.PasswordEncoder passwordEncoder,
+            INotificationService notificationService) {
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;
         this.passwordEncoder = passwordEncoder;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -102,8 +106,18 @@ public class UserService implements IUserService {
         User followed = userRepository.findById(followedId)
                 .orElseThrow(() -> new RuntimeException("User to follow not found"));
 
-        follower.getFollowing().add(followed);
-        userRepository.save(follower);
+        if (!follower.getFollowing().contains(followed)) {
+            follower.getFollowing().add(followed);
+            userRepository.save(follower);
+
+            // Notify Followed User
+            notificationService.createRichNotification(followedId,
+                    "Nuovo Follower",
+                    follower.getName() + " ha iniziato a seguirti!",
+                    "NEW_FOLLOWER",
+                    null,
+                    followerId);
+        }
     }
 
     @Override

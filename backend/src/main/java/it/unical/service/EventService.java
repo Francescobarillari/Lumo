@@ -229,6 +229,29 @@ public class EventService implements IEventService {
         Optional<Event> eventOpt = eventRepository.findById(id);
         if (eventOpt.isPresent()) {
             Event event = eventOpt.get();
+            it.unical.model.User creator = event.getCreator();
+
+            // Notify Creator
+            if (creator != null) {
+                notificationService.createNotification(creator.getId(),
+                        "Evento Eliminato",
+                        "Il tuo evento '" + event.getTitle() + "' è stato eliminato con successo dispiace!.",
+                        "EVENT_CANCELLED");
+            }
+
+            // Notify Participants
+            if (event.getParticipants() != null) {
+                for (it.unical.model.User participant : event.getParticipants()) {
+                    // Avoid notifying creator again if they are in participants list (logic depends
+                    // on model)
+                    if (creator == null || !participant.getId().equals(creator.getId())) {
+                        notificationService.createNotification(participant.getId(),
+                                "Evento Annullato",
+                                "L'evento '" + event.getTitle() + "' a cui partecipavi è stato annullato.",
+                                "EVENT_CANCELLED");
+                    }
+                }
+            }
 
             // Remove event from all participants
             if (event.getParticipants() != null) {

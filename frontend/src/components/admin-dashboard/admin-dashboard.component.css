@@ -322,6 +322,16 @@ tr:last-child td {
     color: white;
 }
 
+.delete {
+    background: rgba(229, 57, 53, 0.1);
+    color: var(--color-error);
+}
+
+.delete:hover {
+    background: var(--color-error);
+    color: white;
+}
+
 /* Inline Reject Form */
 .inline-reject {
     display: flex;
