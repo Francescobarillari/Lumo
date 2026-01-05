@@ -28,7 +28,7 @@
 
             <!-- FOLLOW ACTION -->
             @if (currentUserId && user.id.toString() !== currentUserId) {
-            <button class="action-btn follow-main-btn" [class.following]="isFollowing" (click)="toggleFollow()">
+            <button class="button follow-main-btn" [class.following]="isFollowing" (click)="toggleFollow()">
                 {{ isFollowing ? 'Seguito' : 'Segui' }}
             </button>
             }

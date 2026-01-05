@@ -166,16 +166,17 @@
 
 /* Actions */
 .follow-main-btn {
-    background: #FFB800;
-    color: #1a1a1a;
-    border: none;
-    padding: 10px 32px;
-    border-radius: 24px;
-    font-weight: 600;
-    cursor: pointer;
-    font-size: 16px;
-    margin-top: 8px;
+    /* Inherit basic style from .button */
     width: 100%;
+    margin-top: 8px;
+    color: var(--color-black) !important;
+    /* Override white text for contrast on yellow */
+}
+
+/* Ensure background is accent (yellow) by default via .button, 
+   but specific override here using var/color just in case of specificity issues */
+.follow-main-btn:not(.following) {
+    background-color: var(--color-accent);
 }
 
 .follow-main-btn.following {

@@ -8,56 +8,63 @@
         </div>
 
         <div class="account-content" *ngIf="view === 'profile'">
-            <div class="profile-section">
-                <div class="avatar-container">
-                    @if (user?.profileImage) {
-                    <img [src]="user?.profileImage" alt="Profile" class="profile-image">
-                    } @else {
-                    <div class="profile-placeholder">{{ getInitials(user?.name || '') }}</div>
-                    }
-                    <button class="edit-photo-btn" (click)="onChangePhoto()">
-                        <mat-icon>edit</mat-icon>
-                    </button>
-                </div>
-                <h3 class="user-name">{{ user?.name }}</h3>
-                <p class="user-email">{{ user?.email }}</p>
-                <p class="user-description">{{ user?.description || 'Find The Glow' }}</p>
+            <div class="content-row">
+                <div class="content-col left-col">
+                    <div class="profile-section">
+                        <div class="avatar-container">
+                            @if (user?.profileImage) {
+                            <img [src]="user?.profileImage" alt="Profile" class="profile-image">
+                            } @else {
+                            <div class="profile-placeholder">{{ getInitials(user?.name || '') }}</div>
+                            }
+                            <button class="edit-photo-btn" (click)="onChangePhoto()">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                        </div>
+                        <h3 class="user-name">{{ user?.name }}</h3>
+                        <p class="user-email">
+                            <mat-icon>mail_outline</mat-icon>
+                            {{ getDiscreteEmail(user?.email) }}
+                        </p>
+                        <p class="user-description">{{ user?.description || 'Find The Glow' }}</p>
 
-                <div class="stats-container">
-                    <div class="stat-item clickable" (click)="showFollowers()">
-                        <span class="stat-value">{{ user?.followersCount || 0 }}</span>
-                        <span class="stat-label">Followers</span>
+                        <div class="stats-container">
+                            <div class="stat-item clickable" (click)="showFollowers()">
+                                <span class="stat-value">{{ user?.followersCount || 0 }}</span>
+                                <span class="stat-label">Followers</span>
+                            </div>
+                            <div class="stat-divider"></div>
+                            <div class="stat-item clickable" (click)="showFollowing()">
+                                <span class="stat-value">{{ user?.followingCount || 0 }}</span>
+                                <span class="stat-label">Following</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="stat-divider"></div>
-                    <div class="stat-item clickable" (click)="showFollowing()">
-                        <span class="stat-value">{{ user?.followingCount || 0 }}</span>
-                        <span class="stat-label">Following</span>
-                    </div>
-                </div>
-            </div>
 
-            <div class="actions-section">
-                <!-- Spacing handled by CSS now for perfect centering -->
-                <button class="action-btn" (click)="showEditProfile()">
-                    <mat-icon>settings</mat-icon>
-                    Edit Profile
-                </button>
-            </div>
-
-            <div class="section-divider"></div>
-
-            <!-- EMBEDDED QR CODE SECTION -->
-            <div class="share-section-embedded">
-                <span class="share-header">Share Profile</span>
-                <div class="qr-code-wrapper">
-                    <img [src]="getQrCodeUrl()" alt="Profile QR Code">
-                </div>
-                <div class="share-details">
-                    <div class="mini-link-group">
-                        <button class="mini-copy-btn" (click)="copyShareLink()">
-                            <mat-icon>content_copy</mat-icon>
-                            Copy Link
+                    <div class="actions-section">
+                        <button class="action-btn" (click)="showEditProfile()">
+                            <mat-icon>settings</mat-icon>
+                            Edit Profile
                         </button>
+                    </div>
+                </div>
+
+                <div class="vertical-divider"></div>
+
+                <div class="content-col right-col">
+                    <div class="share-section-embedded">
+                        <span class="share-header">Share Profile</span>
+                        <div class="qr-code-wrapper">
+                            <img [src]="getQrCodeUrl()" alt="Profile QR Code">
+                        </div>
+                        <div class="share-details">
+                            <div class="mini-link-group">
+                                <button class="mini-copy-btn" (click)="copyShareLink()">
+                                    <mat-icon>content_copy</mat-icon>
+                                    Copy Link
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -71,8 +78,8 @@
                 <h3>Edit Profile</h3>
             </div>
 
-            <div class="edit-content-scroll">
-                <div class="edit-section">
+            <div class="edit-content-layout">
+                <div class="edit-section left-section">
                     <h4>Personal Information</h4>
                     <div class="form-group">
                         <label>Name</label>
@@ -87,12 +94,12 @@
                         <textarea [(ngModel)]="editData.description" placeholder="Description (e.g. Find The Glow)"
                             rows="3"></textarea>
                     </div>
-                    <button class="action-btn save-btn" (click)="onSaveProfile()">Update Details</button>
+                    <button class="button save-btn" (click)="onSaveProfile()">Update Details</button>
                 </div>
 
-                <div class="section-divider"></div>
+                <div class="vertical-divider"></div>
 
-                <div class="edit-section">
+                <div class="edit-section right-section">
                     <h4>Change Password</h4>
                     <div class="form-group">
                         <label>Current Password</label>
@@ -106,7 +113,7 @@
                         <label>Confirm New Password</label>
                         <input type="password" [(ngModel)]="passwordData.confirm" placeholder="Confirm Password">
                     </div>
-                    <button class="action-btn save-btn" (click)="onChangePassword()">Change Password</button>
+                    <button class="button save-btn" (click)="onChangePassword()">Change Password</button>
                 </div>
             </div>
         </div>

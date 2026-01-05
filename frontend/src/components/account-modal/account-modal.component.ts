@@ -43,6 +43,15 @@ export class AccountModalComponent {
         return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
     }
 
+    getDiscreteEmail(email: string | undefined): string {
+        if (!email) return '';
+        if (email.length <= 25) return email;
+        const parts = email.split('@');
+        if (parts.length !== 2) return email; // Fallback for weird formats
+        const [user, domain] = parts;
+        return `...${user.slice(-3)}@${domain}`;
+    }
+
     showFollowers() {
         if (!this.user) return;
         const userId = this.user.id;
