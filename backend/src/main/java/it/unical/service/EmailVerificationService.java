@@ -7,6 +7,7 @@ import it.unical.repository.EmailVerificationRepository;
 import it.unical.repository.UserRepository;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ public class EmailVerificationService {
     private final PasswordEncoder passwordEncoder; // per cautela, ma password già hashata in EmailVerification
     private static final long TOKEN_TTL_HOURS = 24;
     private final String frontendVerifyBaseUrl;
+    private final String fromAddress;
 
     public EmailVerificationService(
             EmailVerificationRepository verificationRepo,
@@ -35,6 +37,7 @@ public class EmailVerificationService {
         this.mailSender = mailSender;
         this.passwordEncoder = passwordEncoder;
         this.frontendVerifyBaseUrl = env.getProperty("app.frontend.verify-url", "http://localhost:4200/verify-email");
+        this.fromAddress = env.getProperty("app.mail.from", "no-reply@lumo.com");
     }
 
     public String createPendingRegistration(String name, String email, String birthdate, String rawPassword) {
@@ -69,8 +72,18 @@ public class EmailVerificationService {
                 "Se non hai richiesto questa registrazione, ignora questa email.\n\n" +
                 "Saluti,\nTeam LUMO";
 
+        if (fromAddress == null || fromAddress.isBlank()) {
+            throw new IllegalStateException("Configurazione SMTP mancante: MAIL_FROM non impostata");
+        }
+        if (mailSender instanceof JavaMailSenderImpl impl) {
+            if (impl.getHost() == null || impl.getHost().isBlank()) {
+                throw new IllegalStateException("Configurazione SMTP mancante: MAIL_HOST non impostata");
+            }
+        }
+
         SimpleMailMessage msg = new SimpleMailMessage();
         msg.setTo(v.getEmail());
+        msg.setFrom(fromAddress);
         msg.setSubject(subject);
         msg.setText(text);
         System.out.println("Invio mail a: " + v.getEmail() + " link: " + link);
