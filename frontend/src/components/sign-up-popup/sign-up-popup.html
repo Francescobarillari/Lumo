@@ -32,7 +32,7 @@
           <FormField [error]="hasError('email')" [control]="form.get('email')!" [type]="'text'" placeholder="Email">
           </FormField>
           <FormField [error]="hasError('password')" [control]="form.get('password')!" [type]="'password'"
-            placeholder="Password"></FormField>
+            placeholder="Password" [showToggle]="true"></FormField>
           <button type="button" class="button" (click)="onSubmit()">Sign Up</button>
         </form>
 

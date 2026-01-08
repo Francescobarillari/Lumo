@@ -41,6 +41,34 @@ input[type="date"] {
     padding-top: 12px;
 }
 
+.input-with-toggle {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-with-toggle.with-toggle .input-field {
+    padding-right: 42px;
+}
+
+.toggle-btn {
+    position: absolute;
+    right: 10px;
+    background: transparent;
+    border: none;
+    color: #bbbbbb;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    padding: 4px;
+}
+
+.toggle-btn mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
 .input-field {
     width: 100%;
     height: 50px;

@@ -2,6 +2,13 @@
     @if (type === 'textarea') {
     <textarea [formControl]="control!" [placeholder]="placeholder" class="input-field"></textarea>
     } @else {
-    <input [formControl]="control!" [type]="type" [placeholder]="placeholder" class="input-field" />
+    <div class="input-with-toggle" [class.with-toggle]="showToggle && type === 'password'">
+        <input [formControl]="control!" [type]="inputType" [placeholder]="placeholder" class="input-field" />
+        @if (showToggle && type === 'password') {
+        <button type="button" class="toggle-btn" (click)="togglePasswordVisibility($event)">
+            <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        }
+    </div>
     }
 </div>
