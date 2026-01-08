@@ -340,6 +340,39 @@
   transform: translateY(1px);
 }
 
+.owner-note {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #f0f0f0;
+  font-weight: var(--font-weight-semibold);
+  font-size: 14px;
+}
+
+.cancel-btn {
+  width: 100%;
+  margin-top: 10px;
+  background: #b61e1e;
+  color: #fff;
+  font-weight: var(--font-weight-semibold);
+  border: none;
+  border-radius: 12px;
+  padding: 10px 14px;
+  letter-spacing: 0.2px;
+  box-shadow: 0 8px 18px rgba(182, 30, 30, 0.35);
+  transition: filter 0.15s ease, transform 0.1s ease;
+}
+
+.cancel-btn:hover {
+  filter: brightness(1.05);
+}
+
+.cancel-btn:active {
+  transform: translateY(1px);
+}
+
 @media (max-width: 480px) {
   .card-content {
     width: calc(100vw - 24px);

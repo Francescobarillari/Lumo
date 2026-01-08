@@ -64,6 +64,21 @@ export class MyEventsModal implements OnInit {
         }
     }
 
+    deleteEvent(event: Event) {
+        const confirmed = confirm('Sei sicuro di voler cancellare questo evento?');
+        if (!confirmed) return;
+
+        this.eventService.deleteEvent(event.id).subscribe({
+            next: () => {
+                this.organizedEvents = this.organizedEvents.filter(e => e.id !== event.id);
+                if (this.expandedEventRequestsId === event.id) {
+                    this.expandedEventRequestsId = null;
+                }
+            },
+            error: (err) => console.error('Errore nella cancellazione dell\'evento', err)
+        });
+    }
+
     acceptRequest(event: Event, user: User) {
         this.eventService.acceptParticipation(event.id, user.id).subscribe({
             next: () => {

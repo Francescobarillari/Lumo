@@ -35,6 +35,9 @@
                         </span>
                     </div>
                     <div class="event-actions">
+                        <button class="icon-btn danger" (click)="deleteEvent(event)" title="Cancella evento">
+                            <mat-icon>delete</mat-icon>
+                        </button>
                         <button class="icon-btn" (click)="toggleRequests(event.id)" title="Manage Requests">
                             <mat-icon>group</mat-icon>
                         </button>

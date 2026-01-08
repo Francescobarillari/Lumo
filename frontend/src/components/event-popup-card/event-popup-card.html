@@ -69,15 +69,20 @@
       }
     </div>
 
-    @if (event.participationStatus === 'ACCEPTED') {
-    <div class="participation-actions">
-      <button class="button partecipa-btn accepted" disabled>Sei dentro</button>
-      <button class="button leave-btn" type="button" (click)="onLeave()">Leave</button>
-    </div>
-    } @else if (event.participationStatus === 'PENDING') {
-    <button class="button partecipa-btn pending" disabled>In Attesa</button>
+    @if (isOrganizer()) {
+    <div class="owner-note">Non puoi partecipare al tuo stesso evento</div>
+    <button class="button cancel-btn" type="button" (click)="onDeleteEvent()">Cancella evento</button>
     } @else {
-    <button class="button partecipa-btn" (click)="onParticipate()">Richiedi partecipazione</button>
+      @if (event.participationStatus === 'ACCEPTED') {
+      <div class="participation-actions">
+        <button class="button partecipa-btn accepted" disabled>Sei dentro</button>
+        <button class="button leave-btn" type="button" (click)="onLeave()">Leave</button>
+      </div>
+      } @else if (event.participationStatus === 'PENDING') {
+      <button class="button partecipa-btn pending" disabled>In Attesa</button>
+      } @else {
+      <button class="button partecipa-btn" (click)="onParticipate()">Richiedi partecipazione</button>
+      }
     }
   </div>
 </div>

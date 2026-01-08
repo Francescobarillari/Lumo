@@ -356,6 +356,33 @@ export class Home implements OnInit {
     });
   }
 
+  onDeleteEvent(event: LumoEvent) {
+    if (!this.loggedUser) {
+      this.openSignIn();
+      return;
+    }
+
+    if (event.creatorId && event.creatorId.toString() !== this.loggedUser.id.toString()) {
+      console.warn('Non sei l\'organizzatore di questo evento');
+      return;
+    }
+
+    const confirmed = confirm('Sei sicuro di voler cancellare questo evento? Questa azione non può essere annullata.');
+    if (!confirmed) return;
+
+    this.eventService.deleteEvent(event.id).subscribe({
+      next: () => {
+        // Remove from local state
+        if (this.mapView) {
+          this.mapView.events = this.mapView.events.filter(e => e.id !== event.id);
+          this.mapView.loadEvents?.();
+        }
+        this.closeEventPopup();
+      },
+      error: (err) => console.error('Errore nella cancellazione dell\'evento', err)
+    });
+  }
+
   onToggleFavorite() {
     if (this.selectedEvent && this.mapView) {
       // Delegate to MapView which holds the list and logic

@@ -115,6 +115,12 @@
     /* Center align like event card */
 }
 
+.event-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
 .event-info {
     display: flex;
     flex-direction: column;
@@ -184,6 +190,16 @@
 .icon-btn:hover {
     background-color: #555555;
     color: var(--color-white);
+}
+
+.icon-btn.danger {
+    background-color: #5a1a1a;
+    color: #f5c6cb;
+}
+
+.icon-btn.danger:hover {
+    background-color: #7a2222;
+    color: #fff;
 }
 
 /* Requests Panel */

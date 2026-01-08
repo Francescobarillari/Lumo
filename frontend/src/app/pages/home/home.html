@@ -59,6 +59,6 @@
     [organizerName]="selectedEvent.organizerName || ''" [organizerImage]="selectedEvent.organizerImage"
     [currentUserId]="loggedUser ? (loggedUser.id ? loggedUser.id.toString() : null) : null"
     [creatorId]="selectedEvent.creatorId" (openOrganizerProfile)="openUserProfile($event)"
-    (leave)="onLeaveEvent($event)" />
+    (leave)="onLeaveEvent($event)" (deleteEvent)="onDeleteEvent($event)" />
   }
 </div>

@@ -25,6 +25,7 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
     @Output() toggleFavorite = new EventEmitter<void>();
     @Output() openOrganizerProfile = new EventEmitter<string>();
     @Output() leave = new EventEmitter<Event>();
+    @Output() deleteEvent = new EventEmitter<Event>();
 
     isFollowing = false;
     isLoadingFollowStatus = true; // Add loading state to prevent flicker
@@ -129,11 +130,22 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
     }
 
     onParticipate() {
+        if (this.isOrganizer()) return;
         this.participate.emit(this.event);
     }
 
     onLeave() {
         this.leave.emit(this.event);
+    }
+
+    onDeleteEvent() {
+        if (!this.isOrganizer()) return;
+        this.deleteEvent.emit(this.event);
+    }
+
+    isOrganizer(): boolean {
+        const creatorId = this.creatorId ?? this.event?.creatorId;
+        return !!this.currentUserId && !!creatorId && this.currentUserId.toString() === creatorId.toString();
     }
 
     private getOrganizerId(): string | null {

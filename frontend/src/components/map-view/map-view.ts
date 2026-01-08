@@ -272,7 +272,7 @@ export class MapView implements AfterViewInit, OnDestroy, OnChanges {
     }
   }
 
-  private loadEvents() {
+  loadEvents() {
     this.eventService.getEvents(this.userId || undefined).subscribe({
       next: (events) => {
         this.events = events.filter((e) => this.isFutureEvent(e));
