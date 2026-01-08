@@ -128,7 +128,7 @@
 
             <div class="user-list" *ngIf="!loadingList; else loadingTemplate">
                 <div class="user-item" *ngFor="let u of userList">
-                    <div class="user-info">
+                    <div class="user-info" (click)="openProfileFromList(u)">
                         <img *ngIf="u.profileImage" [src]="u.profileImage" class="list-avatar">
                         <div *ngIf="!u.profileImage" class="list-avatar-placeholder">{{ getInitials(u.name) }}</div>
                         <span class="list-username">{{ u.name }}</span>

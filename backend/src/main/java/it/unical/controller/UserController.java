@@ -107,6 +107,27 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/{followerId}/follow/{followedId}/notifications")
+    public ResponseEntity<Map<String, Boolean>> getFollowNotifications(
+            @PathVariable Long followerId,
+            @PathVariable Long followedId) {
+        boolean enabled = userService.isFollowNotificationsEnabled(followerId, followedId);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("enabled", enabled);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{followerId}/follow/{followedId}/notifications")
+    public ResponseEntity<Map<String, Boolean>> setFollowNotifications(
+            @PathVariable Long followerId,
+            @PathVariable Long followedId,
+            @RequestParam boolean enabled) {
+        userService.setFollowNotifications(followerId, followedId, enabled);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("enabled", enabled);
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/{id}/followers")
     public ResponseEntity<List<User>> getFollowers(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getFollowers(id));

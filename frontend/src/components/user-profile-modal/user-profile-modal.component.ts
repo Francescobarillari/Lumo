@@ -17,10 +17,13 @@ export class UserProfileModalComponent implements OnChanges {
     @Input() userId: string | null = null;
     @Input() currentUserId: string | null = null;
     @Output() close = new EventEmitter<void>();
+    @Output() openProfile = new EventEmitter<string>();
 
     user: User | null = null;
     isFollowing: boolean = false;
     loading: boolean = false;
+    notificationsEnabled: boolean = false;
+    notificationsLoading: boolean = false;
 
     // Followers/Following lists
     view: 'profile' | 'followers' | 'following' | 'events' = 'profile';
@@ -68,6 +71,11 @@ export class UserProfileModalComponent implements OnChanges {
         this.userService.isFollowing(this.currentUserId, this.userId).subscribe({
             next: (res) => {
                 this.isFollowing = res.isFollowing;
+                if (this.isFollowing) {
+                    this.loadNotificationPreference();
+                } else {
+                    this.notificationsEnabled = false;
+                }
             },
             error: (err) => console.error(err)
         });
@@ -93,6 +101,7 @@ export class UserProfileModalComponent implements OnChanges {
             this.userService.followUser(this.currentUserId, this.userId).subscribe({
                 next: () => {
                     this.isFollowing = true;
+                    this.notificationsEnabled = true;
                     if (this.user) {
                         this.user.followersCount = (this.user.followersCount || 0) + 1;
                     }
@@ -171,6 +180,12 @@ export class UserProfileModalComponent implements OnChanges {
         });
     }
 
+    onOpenProfileFromList(targetUser: User) {
+        if (!targetUser?.id) return;
+        this.view = 'profile';
+        this.openProfile.emit(targetUser.id.toString());
+    }
+
     onListUnfollow(targetUser: User) {
         if (!this.currentUserId) return;
         if (confirm(`Sei sicuro di voler smettere di seguire ${targetUser.name}?`)) {
@@ -236,5 +251,39 @@ export class UserProfileModalComponent implements OnChanges {
             ? 'Gratuito'
             : ev.costPerPerson.toString();
         return { participants, freeSpots, cost };
+    }
+
+    toggleNotifications(event?: MouseEvent) {
+        event?.stopPropagation();
+        if (!this.currentUserId || !this.userId || !this.isFollowing) return;
+
+        const nextValue = !this.notificationsEnabled;
+        this.notificationsLoading = true;
+        this.userService.setFollowNotifications(this.currentUserId, this.userId, nextValue).subscribe({
+            next: (res) => {
+                this.notificationsEnabled = res.enabled;
+                this.notificationsLoading = false;
+            },
+            error: (err) => {
+                console.error('Errore aggiornando le notifiche follow', err);
+                this.notificationsLoading = false;
+            }
+        });
+    }
+
+    private loadNotificationPreference() {
+        if (!this.currentUserId || !this.userId) return;
+        this.notificationsLoading = true;
+        this.userService.getFollowNotifications(this.currentUserId, this.userId).subscribe({
+            next: (res) => {
+                this.notificationsEnabled = !!res.enabled;
+                this.notificationsLoading = false;
+            },
+            error: (err) => {
+                console.error('Errore recuperando preferenza notifiche follow', err);
+                this.notificationsEnabled = false;
+                this.notificationsLoading = false;
+            }
+        });
     }
 }

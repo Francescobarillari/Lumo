@@ -110,6 +110,14 @@
     text-align: center;
 }
 
+.follow-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 6px 0 12px;
+}
+
 .stats-container {
     display: flex;
     align-items: center;
@@ -167,11 +175,10 @@
 
 /* Actions */
 .follow-main-btn {
-    /* Inherit basic style from .button */
     width: 100%;
-    margin-top: 8px;
+    max-width: 220px;
+    margin: 0 auto;
     color: var(--color-black) !important;
-    /* Override white text for contrast on yellow */
 }
 
 /* Ensure background is accent (yellow) by default via .button, 
@@ -184,6 +191,38 @@
     background: rgba(255, 255, 255, 0.1);
     color: white;
     border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.bell-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.06);
+    color: #f1f1f1;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+}
+
+.bell-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.bell-btn:active {
+    transform: translateY(1px);
+}
+
+.bell-btn.active {
+    border-color: var(--color-accent);
+    background: rgba(251, 188, 4, 0.18);
+    color: var(--color-accent);
+}
+
+.bell-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 /* Events View */
@@ -346,6 +385,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
+    cursor: pointer;
 }
 
 .list-avatar,

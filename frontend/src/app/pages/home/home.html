@@ -5,7 +5,8 @@
     <a class="button" (click)="openSignIn()">Sign In</a>
   </div>
   } @else {
-  <app-action-bar [loggedUser]="loggedUser" (action)="onMenuAction($event)"></app-action-bar>
+  <app-action-bar [loggedUser]="loggedUser" (action)="onMenuAction($event)"
+    (openProfile)="openUserProfile($event)"></app-action-bar>
 
   <!-- Hidden input for file selection triggered by menu -->
   <input id="hiddenFileInput" type="file" (change)="onFileSelected($event)" style="display: none" accept="image/*">
@@ -27,7 +28,8 @@
 
   @if (showUserProfile) {
   <app-user-profile-modal [userId]="selectedUserProfileId"
-    [currentUserId]="loggedUser ? (loggedUser.id.toString()) : null" (close)="closeAll()"></app-user-profile-modal>
+    [currentUserId]="loggedUser ? (loggedUser.id.toString()) : null" (close)="closeAll()"
+    (openProfile)="openUserProfile($event)"></app-user-profile-modal>
   }
 
   <map-view [userId]="loggedUser ? loggedUser.id || '' : null" (eventSelected)="openEventPopup($event)"

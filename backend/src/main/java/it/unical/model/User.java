@@ -53,6 +53,11 @@ public class User {
     @com.fasterxml.jackson.annotation.JsonIgnore
     private java.util.Set<User> followers = new java.util.HashSet<>();
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_follow_notifications", joinColumns = @JoinColumn(name = "follower_id"), inverseJoinColumns = @JoinColumn(name = "followed_id"))
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private java.util.Set<User> followNotifications = new java.util.HashSet<>();
+
     @Column(length = 500)
     private String description;
 
@@ -187,6 +192,14 @@ public class User {
 
     public void setFollowers(java.util.Set<User> followers) {
         this.followers = followers;
+    }
+
+    public java.util.Set<User> getFollowNotifications() {
+        return followNotifications;
+    }
+
+    public void setFollowNotifications(java.util.Set<User> followNotifications) {
+        this.followNotifications = followNotifications;
     }
 
     public int getFollowersCount() {

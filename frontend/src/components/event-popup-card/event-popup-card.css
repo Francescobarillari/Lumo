@@ -351,6 +351,32 @@
   font-size: 14px;
 }
 
+.notify-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bell-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.bell-btn.active {
+  background: rgba(251, 188, 4, 0.16);
+  border-color: var(--color-accent);
+}
+
+.bell-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.notify-label {
+  font-size: 12px;
+  color: #cfcfcf;
+}
+
 .cancel-btn {
   width: 100%;
   margin-top: 10px;

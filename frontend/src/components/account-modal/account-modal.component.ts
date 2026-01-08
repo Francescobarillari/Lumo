@@ -15,6 +15,7 @@ export class AccountModalComponent {
     @Input() user: { id: string; name: string; email: string; description?: string; profileImage?: string; followersCount?: number; followingCount?: number } | null = null;
     @Output() close = new EventEmitter<void>();
     @Output() changePhoto = new EventEmitter<void>();
+    @Output() openProfile = new EventEmitter<string>();
 
     view: 'profile' | 'followers' | 'following' | 'edit-profile' = 'profile';
     userList: any[] = [];
@@ -134,6 +135,12 @@ export class AccountModalComponent {
                 error: (err) => console.error(err)
             });
         }
+    }
+
+    openProfileFromList(userToOpen: any) {
+        if (!userToOpen?.id) return;
+        this.view = 'profile';
+        this.openProfile.emit(userToOpen.id.toString());
     }
 
     showEditProfile() {

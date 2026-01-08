@@ -30,9 +30,17 @@
 
             <!-- FOLLOW ACTION -->
             @if (currentUserId && user.id.toString() !== currentUserId) {
-            <button class="button follow-main-btn" [class.following]="isFollowing" (click)="toggleFollow()">
-                {{ isFollowing ? 'Seguito' : 'Segui' }}
-            </button>
+            <div class="follow-actions">
+                <button class="button follow-main-btn" [class.following]="isFollowing" (click)="toggleFollow()">
+                    {{ isFollowing ? 'Seguito' : 'Segui' }}
+                </button>
+                @if (isFollowing) {
+                <button class="bell-btn" [class.active]="notificationsEnabled" [disabled]="notificationsLoading"
+                    (click)="toggleNotifications($event)">
+                    <mat-icon>{{ notificationsEnabled ? 'notifications' : 'notifications_off' }}</mat-icon>
+                </button>
+                }
+            </div>
             }
 
             <div class="stats-container">
@@ -67,7 +75,7 @@
             <div class="user-list" *ngIf="!loadingList; else loadingTemplate">
                 @for (u of userList; track u.id) {
                 <div class="user-item">
-                    <div class="user-info">
+                    <div class="user-info" (click)="onOpenProfileFromList(u)">
                         @if (u.profileImage) {
                         <img [src]="u.profileImage" class="list-avatar">
                         } @else {

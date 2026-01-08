@@ -29,6 +29,8 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
 
     isFollowing = false;
     isLoadingFollowStatus = true; // Add loading state to prevent flicker
+    notificationsEnabled = false;
+    notificationsLoading = false;
 
     constructor(private elementRef: ElementRef, private userService: UserService) { }
 
@@ -52,6 +54,7 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
         if (!this.currentUserId || !targetCreatorId || this.currentUserId === targetCreatorId.toString()) {
             this.isFollowing = false;
             this.isLoadingFollowStatus = false;
+            this.notificationsEnabled = false;
             return;
         }
 
@@ -60,10 +63,16 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
             next: (res) => {
                 this.isFollowing = res.isFollowing;
                 this.isLoadingFollowStatus = false; // Stop loading
+                if (this.isFollowing) {
+                    this.loadNotificationPreference(targetCreatorId.toString());
+                } else {
+                    this.notificationsEnabled = false;
+                }
             },
             error: (err) => {
                 console.error('Error checking follow status', err);
                 this.isLoadingFollowStatus = false; // Stop loading on error
+                this.notificationsEnabled = false;
             }
         });
     }
@@ -141,6 +150,25 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
     onDeleteEvent() {
         if (!this.isOrganizer()) return;
         this.deleteEvent.emit(this.event);
+    }
+
+    toggleNotifications(event: MouseEvent) {
+        event.stopPropagation();
+        const targetCreatorId = this.creatorId || (this.event ? this.event.creatorId : null);
+        if (!this.currentUserId || !targetCreatorId || !this.isFollowing) return;
+
+        const nextValue = !this.notificationsEnabled;
+        this.notificationsLoading = true;
+        this.userService.setFollowNotifications(this.currentUserId, targetCreatorId.toString(), nextValue).subscribe({
+            next: (res) => {
+                this.notificationsEnabled = res.enabled;
+                this.notificationsLoading = false;
+            },
+            error: (err) => {
+                console.error('Error updating follow notifications', err);
+                this.notificationsLoading = false;
+            }
+        });
     }
 
     isOrganizer(): boolean {
@@ -221,6 +249,7 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
         this.userService.followUser(this.currentUserId, targetCreatorId.toString()).subscribe({
             next: () => {
                 this.isFollowing = true;
+                this.notificationsEnabled = true;
                 this.userService.notifyUserUpdate();
             },
             error: (err) => console.error('Error following', err)
@@ -234,6 +263,7 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
         this.userService.unfollowUser(this.currentUserId, targetCreatorId.toString()).subscribe({
             next: () => {
                 this.isFollowing = false;
+                this.notificationsEnabled = false;
                 this.userService.notifyUserUpdate();
             },
             error: (err) => console.error('Error unfollowing', err)
@@ -257,5 +287,21 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
             event: this.event
         });
         this.openOrganizerProfile.emit(organizerId);
+    }
+
+    private loadNotificationPreference(targetCreatorId: string) {
+        if (!this.currentUserId) return;
+        this.notificationsLoading = true;
+        this.userService.getFollowNotifications(this.currentUserId, targetCreatorId).subscribe({
+            next: (res) => {
+                this.notificationsEnabled = !!res.enabled;
+                this.notificationsLoading = false;
+            },
+            error: (err) => {
+                console.error('Error fetching follow notifications preference', err);
+                this.notificationsEnabled = false;
+                this.notificationsLoading = false;
+            }
+        });
     }
 }

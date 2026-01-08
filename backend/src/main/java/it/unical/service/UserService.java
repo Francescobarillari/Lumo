@@ -108,6 +108,8 @@ public class UserService implements IUserService {
 
         if (!follower.getFollowing().contains(followed)) {
             follower.getFollowing().add(followed);
+            // Enable notifications by default on follow
+            follower.getFollowNotifications().add(followed);
             userRepository.save(follower);
 
             // Notify Followed User
@@ -129,6 +131,7 @@ public class UserService implements IUserService {
 
         if (follower.getFollowing().contains(followed)) {
             follower.getFollowing().remove(followed);
+            follower.getFollowNotifications().remove(followed);
             userRepository.save(follower);
         }
     }
@@ -141,6 +144,35 @@ public class UserService implements IUserService {
                 .orElseThrow(() -> new RuntimeException("User to check not found"));
 
         return follower.getFollowing().stream().anyMatch(u -> u.getId().equals(followedId));
+    }
+
+    @Override
+    public boolean isFollowNotificationsEnabled(Long followerId, Long followedId) {
+        User follower = userRepository.findById(followerId)
+                .orElseThrow(() -> new RuntimeException("Follower not found"));
+        User followed = userRepository.findById(followedId)
+                .orElseThrow(() -> new RuntimeException("User to check not found"));
+
+        return follower.getFollowNotifications().stream().anyMatch(u -> u.getId().equals(followedId));
+    }
+
+    @Override
+    public void setFollowNotifications(Long followerId, Long followedId, boolean enabled) {
+        User follower = userRepository.findById(followerId)
+                .orElseThrow(() -> new RuntimeException("Follower not found"));
+        User followed = userRepository.findById(followedId)
+                .orElseThrow(() -> new RuntimeException("User to check not found"));
+
+        if (!follower.getFollowing().contains(followed)) {
+            throw new RuntimeException("Impossibile impostare notifiche per un utente che non segui.");
+        }
+
+        if (enabled) {
+            follower.getFollowNotifications().add(followed);
+        } else {
+            follower.getFollowNotifications().remove(followed);
+        }
+        userRepository.save(follower);
     }
 
     @Override

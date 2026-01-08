@@ -64,6 +64,14 @@
       <button class="icon-circle follow-btn-popup" (click)="followOrganizer(); $event.stopPropagation()">
         <mat-icon>person_add</mat-icon>
       </button>
+      } @else if (isFollowing) {
+      <div class="notify-toggle">
+        <button class="icon-circle bell-btn" [class.active]="notificationsEnabled" [disabled]="notificationsLoading"
+          (click)="toggleNotifications($event)">
+          <mat-icon>{{ notificationsEnabled ? 'notifications' : 'notifications_off' }}</mat-icon>
+        </button>
+        <span class="notify-label">{{ notificationsEnabled ? 'Notifiche attive' : 'Notifiche spente' }}</span>
+      </div>
       }
       }
       }

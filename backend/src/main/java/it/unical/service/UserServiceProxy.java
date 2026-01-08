@@ -85,6 +85,17 @@ public class UserServiceProxy implements IUserService {
     }
 
     @Override
+    public boolean isFollowNotificationsEnabled(Long followerId, Long followedId) {
+        return realService.isFollowNotificationsEnabled(followerId, followedId);
+    }
+
+    @Override
+    public void setFollowNotifications(Long followerId, Long followedId, boolean enabled) {
+        System.out.println("[UserServiceProxy] User " + followerId + " set notifications (" + enabled + ") for user " + followedId);
+        realService.setFollowNotifications(followerId, followedId, enabled);
+    }
+
+    @Override
     public List<User> getFollowers(Long userId) {
         return realService.getFollowers(userId);
     }

@@ -19,6 +19,7 @@ import { UserService } from '../../services/user-service/user-service';
 export class ActionBarComponent implements OnInit, OnDestroy, OnChanges {
     @Input() loggedUser: { id: string; name: string; email: string; profileImage?: string; followersCount?: number; followingCount?: number } | null = null;
     @Output() action = new EventEmitter<string>();
+    @Output() openProfile = new EventEmitter<string>();
 
     showUserMenu = false;
     showNotifications = false;
@@ -146,6 +147,11 @@ export class ActionBarComponent implements OnInit, OnDestroy, OnChanges {
             this.action.emit(actionName);
         }
         this.showUserMenu = false;
+    }
+
+    onOpenProfileFromAccount(userId: string) {
+        this.showAccountModal = false;
+        this.openProfile.emit(userId);
     }
 
     onChangePhotoFromAccount() {

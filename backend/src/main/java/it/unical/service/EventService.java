@@ -45,6 +45,13 @@ public class EventService implements IEventService {
                 // IMPORTANT: Set relationship in Event side if bidirectional logical link
                 // needed immediately
                 // But JPA handles it via User side owning the relationship (mappedBy in Event)
+
+                // Notify followers who enabled notifications for this creator
+                notifyFollowersAboutEvent(user,
+                        savedEvent,
+                        "Nuovo evento",
+                        user.getName() + " ha pubblicato un nuovo evento: '" + savedEvent.getTitle() + "'.",
+                        "NEW_EVENT");
             });
             // Save again to persist creator FK
             return eventRepository.save(event);
@@ -243,7 +250,7 @@ public class EventService implements IEventService {
             if (creator != null) {
                 notificationService.createNotification(creator.getId(),
                         "Evento Eliminato",
-                        "Il tuo evento '" + event.getTitle() + "' è stato eliminato con successo dispiace!.",
+                        "Il tuo evento '" + event.getTitle() + "' è stato eliminato con successo.",
                         "EVENT_CANCELLED");
             }
 
@@ -290,6 +297,15 @@ public class EventService implements IEventService {
                     userRepository.save(user);
                 }
                 event.getUsersWhoSaved().clear();
+            }
+
+            // Notify followers who enabled notifications for this creator
+            if (creator != null) {
+                notifyFollowersAboutEvent(creator,
+                        event,
+                        "Evento cancellato",
+                        creator.getName() + " ha cancellato l'evento '" + event.getTitle() + "'.",
+                        "EVENT_CANCELLED_FOLLOWED");
             }
 
             eventRepository.deleteById(id);
@@ -392,5 +408,21 @@ public class EventService implements IEventService {
         if (event.getPendingParticipants() != null) {
             event.getPendingParticipants().remove(user);
         }
+    }
+
+    private void notifyFollowersAboutEvent(it.unical.model.User creator, Event event, String title, String message, String type) {
+        if (creator.getFollowers() == null || creator.getFollowers().isEmpty()) return;
+
+        creator.getFollowers().forEach(follower -> {
+            if (follower.getFollowNotifications().contains(creator)) {
+                notificationService.createRichNotification(
+                        follower.getId(),
+                        title,
+                        message,
+                        type,
+                        event.getId(),
+                        creator.getId());
+            }
+        });
     }
 }

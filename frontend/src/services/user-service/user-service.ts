@@ -39,6 +39,14 @@ export class UserService {
     return this.http.get<{ isFollowing: boolean }>(`${this.apiUrl}/${followerId}/is-following/${followedId}?t=${new Date().getTime()}`);
   }
 
+  getFollowNotifications(followerId: string, followedId: string): Observable<{ enabled: boolean }> {
+    return this.http.get<{ enabled: boolean }>(`${this.apiUrl}/${followerId}/follow/${followedId}/notifications?t=${new Date().getTime()}`);
+  }
+
+  setFollowNotifications(followerId: string, followedId: string, enabled: boolean): Observable<{ enabled: boolean }> {
+    return this.http.put<{ enabled: boolean }>(`${this.apiUrl}/${followerId}/follow/${followedId}/notifications?enabled=${enabled}`, {});
+  }
+
   getFollowers(userId: string): Observable<User[]> {
     return this.http.get<User[]>(`${this.apiUrl}/${userId}/followers`);
   }

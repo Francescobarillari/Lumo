@@ -32,6 +32,7 @@
 }
 
 @if (showAccountModal) {
-<app-account-modal [user]="loggedUser" (close)="showAccountModal = false" (changePhoto)="onChangePhotoFromAccount()">
+<app-account-modal [user]="loggedUser" (close)="showAccountModal = false" (changePhoto)="onChangePhotoFromAccount()"
+    (openProfile)="onOpenProfileFromAccount($event)">
 </app-account-modal>
 }

@@ -27,6 +27,10 @@ public interface IUserService {
 
     boolean isFollowing(Long followerId, Long followedId);
 
+    boolean isFollowNotificationsEnabled(Long followerId, Long followedId);
+
+    void setFollowNotifications(Long followerId, Long followedId, boolean enabled);
+
     List<User> getFollowers(Long userId);
 
     List<User> getFollowing(Long userId);
