@@ -8,13 +8,51 @@
 
     <div class="search-container" *ngIf="!collapsed">
         <input type="text" placeholder="Search city, events or user" class="search-input" [(ngModel)]="searchQuery"
-            (keyup.enter)="onSearch()">
+            (keyup.enter)="onSearch()" (ngModelChange)="onSearchChange($event)">
 
         @if (isSearching) {
         <mat-icon class="search-icon clickable" (click)="clearSearch()">close</mat-icon>
         } @else {
         <mat-icon class="search-icon clickable" (click)="onSearch()">search</mat-icon>
         }
+    </div>
+
+    <div class="filter-sort" *ngIf="!collapsed">
+        <div class="pill dropdown" (click)="filterMenuOpen = !filterMenuOpen; sortMenuOpen = false;">
+            <div class="pill-inner">
+                <mat-icon>filter_list</mat-icon>
+                <span>{{ filterLabels[filterOption] }}</span>
+                <mat-icon class="chevron">{{ filterMenuOpen ? 'expand_less' : 'expand_more' }}</mat-icon>
+            </div>
+            @if (filterMenuOpen) {
+            <div class="dropdown-menu">
+                @for (opt of filterOrder; track $index) {
+                <button class="menu-item" (click)="selectFilter(opt); $event.stopPropagation()">
+                    <span>{{ filterLabels[opt] }}</span>
+                    @if (filterOption === opt) { <mat-icon>check</mat-icon> }
+                </button>
+                }
+            </div>
+            }
+        </div>
+
+        <div class="pill dropdown" (click)="sortMenuOpen = !sortMenuOpen; filterMenuOpen = false;">
+            <div class="pill-inner">
+                <mat-icon>swap_vert</mat-icon>
+                <span>{{ sortLabels[sortOption] }}</span>
+                <mat-icon class="chevron">{{ sortMenuOpen ? 'expand_less' : 'expand_more' }}</mat-icon>
+            </div>
+            @if (sortMenuOpen) {
+            <div class="dropdown-menu">
+                @for (opt of sortOrder; track $index) {
+                <button class="menu-item" (click)="selectSort(opt); $event.stopPropagation()">
+                    <span>{{ sortLabels[opt] }}</span>
+                    @if (sortOption === opt) { <mat-icon>check</mat-icon> }
+                </button>
+                }
+            </div>
+            }
+        </div>
     </div>
 
     <div class="sections-container" *ngIf="!collapsed">
@@ -36,7 +74,7 @@
         @if (activeTab === 'events') {
         <div class="events-section">
             <div class="events-list">
-                @for (event of searchResults; track $index) {
+                @for (event of getFiltered(searchResults); track $index) {
                 <app-event-card [title]="event.title" [location]="event.city" [dateTime]="formatDateTime(event)"
                     [distance]="formatDistance(event.distanceKm)" [id]="event.id!" [isSaved]="!!event.isSaved"
                     [isParticipating]="!!event.isParticipating" [organizerName]="event.organizerName"
@@ -109,7 +147,7 @@
         <div class="events-section">
             <h2 class="section-title">FOUND EVENTS</h2>
             <div class="events-list">
-                @for (event of foundEvents; track $index) {
+                @for (event of getFiltered(foundEvents); track $index) {
                 <app-event-card [title]="event.title" [location]="event.city" [dateTime]="formatDateTime(event)"
                     [distance]="formatDistance(event.distanceKm)" [id]="event.id!" [isSaved]="!!event.isSaved"
                     [isParticipating]="!!event.isParticipating" [organizerName]="event.organizerName"
@@ -130,7 +168,7 @@
         <div class="events-section">
             <h2 class="section-title">FOLLOW UP EVENTS</h2>
             <div class="events-list">
-                @for (event of followUpEvents; track $index) {
+                @for (event of getFiltered(followUpEvents); track $index) {
                 <app-event-card [title]="event.title" [location]="event.city" [dateTime]="formatDateTime(event)"
                     [distance]="formatDistance(event.distanceKm)" [id]="event.id!" [isSaved]="!!event.isSaved"
                     [isParticipating]="!!event.isParticipating" [organizerName]="event.organizerName"
@@ -149,7 +187,7 @@
         <div class="events-section">
             <h2 class="section-title">SAVED EVENTS</h2>
             <div class="events-list">
-                @for (event of savedEvents; track $index) {
+                @for (event of getFiltered(savedEvents); track $index) {
                 <app-event-card [title]="event.title" [location]="event.city" [dateTime]="formatDateTime(event)"
                     [distance]="formatDistance(event.distanceKm)" [id]="event.id!" [isSaved]="!!event.isSaved"
                     [distance]="formatDistance(event.distanceKm)" [id]="event.id!" [isSaved]="!!event.isSaved"
@@ -169,7 +207,7 @@
         <div class="events-section">
             <h2 class="section-title">DISCOVER EVENTS</h2>
             <div class="events-list">
-                @for (event of discoverEvents; track $index) {
+                @for (event of getFiltered(discoverEvents); track $index) {
                 <app-event-card [title]="event.title" [location]="event.city" [dateTime]="formatDateTime(event)"
                     [distance]="formatDistance(event.distanceKm)" [id]="event.id!" [isSaved]="!!event.isSaved"
                     [organizerName]="event.organizerName" [organizerImage]="event.organizerImage"

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,6 +8,7 @@ import { EventService } from '../../services/event.service';
 import { MapboxService } from '../../services/mapbox.service';
 import { UserService } from '../../services/user-service/user-service';
 import { User } from '../../models/user';
+import { Subject, Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
 
 @Component({
     selector: 'app-sidebar',
@@ -16,7 +17,7 @@ import { User } from '../../models/user';
     templateUrl: './sidebar.component.html',
     styleUrl: './sidebar.component.css'
 })
-export class SidebarComponent implements OnChanges {
+export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
     @Input() events: Event[] = [];
     @Output() focusEvent = new EventEmitter<Event>();
     @Input() collapsed = false;
@@ -34,16 +35,56 @@ export class SidebarComponent implements OnChanges {
     isSearching: boolean = false;
     followingMap: { [userId: number]: boolean } = {};
 
+
     constructor(
         private eventService: EventService,
         private mapboxService: MapboxService,
         private userService: UserService
     ) { }
 
+    private searchInput$ = new Subject<string>();
+    private searchSub?: Subscription;
+
+    ngOnInit() {
+        this.searchSub = this.searchInput$
+            .pipe(debounceTime(300), distinctUntilChanged())
+            .subscribe((value) => {
+                const trimmed = value?.trim() || '';
+                if (!trimmed) {
+                    this.clearSearch();
+                    return;
+                }
+                this.onSearchInternal(trimmed);
+            });
+    }
+
+    ngOnDestroy() {
+        this.searchSub?.unsubscribe();
+    }
+
     followUpEvents: Event[] = [];
     savedEvents: Event[] = [];
     discoverEvents: Event[] = [];
     foundEvents: Event[] = [];
+
+    // Filter/Sort state
+    filterOption: 'all' | 'participating' | 'free' | 'available' = 'all';
+    sortOption: 'date' | 'distance' | 'name' = 'date';
+    filterMenuOpen = false;
+    sortMenuOpen = false;
+    readonly filterOrder: Array<typeof this.filterOption> = ['all', 'participating', 'free', 'available'];
+    readonly sortOrder: Array<typeof this.sortOption> = ['date', 'distance', 'name'];
+    readonly filterLabels: Record<typeof this.filterOption, string> = {
+        all: 'Tutti',
+        participating: 'Partecipi',
+        free: 'Gratuiti',
+        available: 'Posti liberi'
+    };
+    readonly sortLabels: Record<typeof this.sortOption, string> = {
+        date: 'Data',
+        distance: 'Distanza',
+        name: 'Nome'
+    };
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes['events'] || changes['userId']) {
@@ -112,6 +153,77 @@ export class SidebarComponent implements OnChanges {
         });
     }
 
+    private applyFilters(events: Event[]): Event[] {
+        let filtered = [...events];
+
+        switch (this.filterOption) {
+            case 'participating':
+                filtered = filtered.filter(e => !!e.isParticipating);
+                break;
+            case 'free':
+                filtered = filtered.filter(e => e.costPerPerson == null || e.costPerPerson === 0);
+                break;
+            case 'available':
+                filtered = filtered.filter(e => {
+                    if (e.nPartecipants == null || e.occupiedSpots == null) return true;
+                    const freeSpots = e.nPartecipants - e.occupiedSpots;
+                    return freeSpots > 0;
+                });
+                break;
+            default:
+                break;
+        }
+
+        switch (this.sortOption) {
+            case 'distance':
+                filtered.sort((a, b) => {
+                    const da = a.distanceKm ?? Number.MAX_SAFE_INTEGER;
+                    const db = b.distanceKm ?? Number.MAX_SAFE_INTEGER;
+                    return da - db;
+                });
+                break;
+            case 'name':
+                filtered.sort((a, b) => (a.title || '').localeCompare(b.title || '', 'it'));
+                break;
+            case 'date':
+            default:
+                filtered.sort((a, b) => {
+                    const aTime = new Date(`${a.date}T${a.startTime || '00:00'}`).getTime();
+                    const bTime = new Date(`${b.date}T${b.startTime || '00:00'}`).getTime();
+                    return aTime - bTime;
+                });
+                break;
+        }
+
+        return filtered;
+    }
+
+    getFiltered(list: Event[]): Event[] {
+        return this.applyFilters(list);
+    }
+
+    cycleFilter() {
+        const idx = this.filterOrder.indexOf(this.filterOption);
+        this.filterOption = this.filterOrder[(idx + 1) % this.filterOrder.length];
+    }
+
+    cycleSort() {
+        const idx = this.sortOrder.indexOf(this.sortOption);
+        this.sortOption = this.sortOrder[(idx + 1) % this.sortOrder.length];
+    }
+
+    selectFilter(option: typeof this.filterOption) {
+        this.filterOption = option;
+        this.filterMenuOpen = false;
+        this.sortMenuOpen = false;
+    }
+
+    selectSort(option: typeof this.sortOption) {
+        this.sortOption = option;
+        this.sortMenuOpen = false;
+        this.filterMenuOpen = false;
+    }
+
     formatDateTime(event: Event): string {
         const date = event.date ? new Date(`${event.date}T00:00:00`) : null;
         const start = event.startTime ? event.startTime.slice(0, 5) : '';
@@ -140,21 +252,29 @@ export class SidebarComponent implements OnChanges {
     }
 
 
+    onSearchChange(value: string) {
+        this.searchQuery = value;
+        this.searchInput$.next(value);
+    }
+
     onSearch() {
         if (!this.searchQuery || this.searchQuery.trim() === '') {
             this.clearSearch();
             return;
         }
+        this.onSearchInternal(this.searchQuery.trim());
+    }
 
+    private onSearchInternal(query: string) {
         this.isSearching = true;
 
         // 1. Search Events (Backend)
-        this.eventService.searchEvents(this.searchQuery).subscribe(results => {
+        this.eventService.searchEvents(query).subscribe(results => {
             this.searchResults = results;
         });
 
         // 2. Search City (Mapbox)
-        this.mapboxService.searchCity(this.searchQuery).subscribe(features => {
+        this.mapboxService.searchCity(query).subscribe(features => {
             this.cityResults = features.map(f => ({
                 name: f.place_name,
                 center: f.center
@@ -162,7 +282,7 @@ export class SidebarComponent implements OnChanges {
         });
 
         // 3. Search Users (Backend)
-        this.userService.searchUsers(this.searchQuery).subscribe(users => {
+        this.userService.searchUsers(query).subscribe(users => {
             this.userResults = users;
             this.checkFollowingStatuses();
         });
