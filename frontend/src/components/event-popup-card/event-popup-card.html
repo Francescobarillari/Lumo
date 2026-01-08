@@ -16,12 +16,19 @@
           <span>{{ formatHeroDate() }}</span>
         </p>
       </div>
-      @if (!event.isParticipating) {
-      <button class="favorite-icon" [class.saved]="isSaved()" (click)="toggleFavorite.emit(); $event.stopPropagation()"
-        aria-label="Salva evento">
-        <mat-icon>{{ isSaved() ? 'favorite' : 'favorite_border' }}</mat-icon>
-      </button>
-    }
+      <div class="action-icons">
+        @if (hasCoordinates()) {
+        <button type="button" class="action-icon map-icon" (click)="openInMaps($event)" aria-label="Apri su Google Maps">
+          <mat-icon>map</mat-icon>
+        </button>
+        }
+        @if (!event.isParticipating) {
+        <button class="action-icon favorite-icon" [class.saved]="isSaved()" (click)="toggleFavorite.emit(); $event.stopPropagation()"
+          aria-label="Salva evento">
+          <mat-icon>{{ isSaved() ? 'favorite' : 'favorite_border' }}</mat-icon>
+        </button>
+        }
+      </div>
     </div>
 
     <div class="chip-row">

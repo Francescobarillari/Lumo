@@ -209,6 +209,20 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
         return 'Luogo da definire';
     }
 
+    hasCoordinates(): boolean {
+        return !!this.event &&
+            Number.isFinite(this.event.latitude) &&
+            Number.isFinite(this.event.longitude);
+    }
+
+    openInMaps(event?: MouseEvent) {
+        event?.stopPropagation();
+        if (!this.hasCoordinates()) return;
+
+        const url = `https://www.google.com/maps/search/?api=1&query=${this.event.latitude},${this.event.longitude}`;
+        window.open(url, '_blank', 'noopener');
+    }
+
     showDescription(): boolean {
         return !!this.event.description && this.event.description !== this.getSubtitle();
     }
