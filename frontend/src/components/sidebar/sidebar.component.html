@@ -123,7 +123,6 @@
                     </div>
                     <div class="loc-info">
                         <span class="loc-name">{{ user.name }}</span>
-                        <span class="loc-details" style="font-size: 12px; opacity: 0.7;">{{ user.email }}</span>
                     </div>
                     @if (userId && userId.toString() !== user.id.toString()) {
                     <div class="icon-circle follow-icon" [class.following]="followingMap[user.id]"

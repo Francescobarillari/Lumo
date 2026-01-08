@@ -58,7 +58,7 @@
                 @if (activeTab === 'creators') {
                 <div class="list-view">
                     @for (user of userResults; track user.id) {
-                    <div class="location-item clickable">
+                    <div class="location-item clickable" (click)="openProfile(user)">
                         <div class="icon-circle"
                             [style.background-image]="user.profileImage ? 'url(' + user.profileImage + ')' : ''"
                             [style.background-size]="'cover'">
@@ -66,7 +66,6 @@
                         </div>
                         <div class="loc-info">
                             <span class="loc-name">{{ user.name }}</span>
-                            <span class="loc-details">{{ user.email }}</span>
                         </div>
                         @if (userId && userId.toString() !== user.id.toString()) {
                         <div class="icon-circle follow-icon" [class.following]="followingMap[user.id]"

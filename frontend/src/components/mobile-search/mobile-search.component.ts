@@ -19,6 +19,7 @@ export class MobileSearchComponent {
     @Output() focusEvent = new EventEmitter<Event>();
     @Output() foundLocation = new EventEmitter<{ lat: number, lng: number }>();
     @Output() toggleFavorite = new EventEmitter<Event>();
+    @Output() openUserProfile = new EventEmitter<string>();
     @Input() userId: string | null = null;
 
     searchQuery: string = '';
@@ -95,6 +96,11 @@ export class MobileSearchComponent {
         this.userService.unfollowUser(this.userId, user.id.toString()).subscribe(() => {
             this.followingMap[user.id] = false;
         });
+    }
+
+    openProfile(user: User) {
+        this.openUserProfile.emit(user.id.toString());
+        this.closeSearch();
     }
 
     setActiveTab(tab: 'events' | 'places' | 'creators') {

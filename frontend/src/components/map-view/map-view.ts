@@ -38,7 +38,8 @@ userMarkerEl.style.boxShadow = '0 0 3px rgba(0,0,0,0.3)';
     [userId]="userId"
     (focusEvent)="flyToEvent($event)"
     (foundLocation)="flyToLocation($event)"
-    (toggleFavorite)="onToggleFavorite($event)">
+    (toggleFavorite)="onToggleFavorite($event)"
+    (openUserProfile)="openUserProfile.emit($event)">
   </app-mobile-search>
 
   <app-managed-events-popup
