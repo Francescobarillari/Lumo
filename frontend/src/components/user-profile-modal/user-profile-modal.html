@@ -46,7 +46,7 @@
                     <span class="stat-label">Following</span>
                 </div>
                 <div class="stat-divider"></div>
-                <div class="stat-item">
+                <div class="stat-item clickable" (click)="showEvents()">
                     <span class="stat-value">{{ user.approvedEventsCount || 0 }}</span>
                     <span class="stat-label">Eventi</span>
                 </div>
@@ -55,7 +55,7 @@
         }
 
         <!-- LIST VIEW (Followers/Following) -->
-        @if (view !== 'profile') {
+        @if (view === 'followers' || view === 'following') {
         <div class="list-view">
             <div class="list-header">
                 <button class="back-btn" (click)="onClose()"> <!-- onClose resets to profile if view != profile -->
@@ -93,6 +93,84 @@
             <ng-template #loadingTemplate>
                 <div class="loading-spinner">Caricamento lista...</div>
             </ng-template>
+        </div>
+        }
+
+        <!-- EVENTS VIEW -->
+        @if (view === 'events') {
+        <div class="events-view">
+            <div class="list-header">
+                <button class="back-btn" (click)="onClose()">
+                    <mat-icon>arrow_back</mat-icon>
+                </button>
+                <h3>Eventi</h3>
+            </div>
+
+            <div class="events-section">
+                <h4>In arrivo</h4>
+                @if (loadingEvents) {
+                <div class="loading-spinner">Caricamento eventi...</div>
+                } @else if (upcomingEvents.length === 0) {
+                <div class="empty-list">Nessun evento in arrivo.</div>
+                } @else {
+                @for (ev of upcomingEvents; track ev.id) {
+                <div class="event-card">
+                    <div class="event-card-header">
+                        <p class="event-title">{{ ev.title }}</p>
+                        <p class="event-sub">
+                            <mat-icon class="inline-icon">event</mat-icon>
+                            <span>{{ formatEventDate(ev) }}</span>
+                            <mat-icon class="inline-icon">place</mat-icon>
+                            <span>{{ ev.city }}</span>
+                        </p>
+                    </div>
+                    <div class="event-stats">
+                        <span class="pill stat-pill">
+                            <mat-icon>group</mat-icon>
+                            <span>{{ eventStats(ev).participants }} partecipanti</span>
+                        </span>
+                        <span class="pill stat-pill">
+                            <mat-icon>euro</mat-icon>
+                            <span>{{ eventStats(ev).cost }}</span>
+                        </span>
+                    </div>
+                </div>
+                }
+                }
+            </div>
+
+            <div class="events-section">
+                <h4>Passati</h4>
+                @if (loadingEvents) {
+                <div class="loading-spinner">Caricamento eventi...</div>
+                } @else if (pastEvents.length === 0) {
+                <div class="empty-list">Nessun evento passato.</div>
+                } @else {
+                @for (ev of pastEvents; track ev.id) {
+                <div class="event-card past">
+                    <div class="event-card-header">
+                        <p class="event-title">{{ ev.title }}</p>
+                        <p class="event-sub">
+                            <mat-icon class="inline-icon">event</mat-icon>
+                            <span>{{ formatEventDate(ev) }}</span>
+                            <mat-icon class="inline-icon">place</mat-icon>
+                            <span>{{ ev.city }}</span>
+                        </p>
+                    </div>
+                    <div class="event-stats">
+                        <span class="pill stat-pill">
+                            <mat-icon>group</mat-icon>
+                            <span>{{ eventStats(ev).participants }} partecipanti</span>
+                        </span>
+                        <span class="pill stat-pill">
+                            <mat-icon>euro</mat-icon>
+                            <span>{{ eventStats(ev).cost }}</span>
+                        </span>
+                    </div>
+                </div>
+                }
+                }
+            </div>
         </div>
         }
 

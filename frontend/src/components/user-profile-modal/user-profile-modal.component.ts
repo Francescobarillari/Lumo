@@ -1,8 +1,10 @@
-import { Component, EventEmitter, Input, Output, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { UserService } from '../../services/user-service/user-service';
 import { User } from '../../models/user';
+import { EventService } from '../../services/event.service';
+import { Event } from '../../models/event';
 
 @Component({
     selector: 'app-user-profile-modal',
@@ -21,12 +23,15 @@ export class UserProfileModalComponent implements OnChanges {
     loading: boolean = false;
 
     // Followers/Following lists
-    view: 'profile' | 'followers' | 'following' = 'profile';
+    view: 'profile' | 'followers' | 'following' | 'events' = 'profile';
     userList: User[] = [];
     loadingList: boolean = false;
     myFollowingIds: Set<string> = new Set(); // To knowing if I follow the people in the lists
+    loadingEvents: boolean = false;
+    upcomingEvents: Event[] = [];
+    pastEvents: Event[] = [];
 
-    constructor(private userService: UserService) { }
+    constructor(private userService: UserService, private eventService: EventService) { }
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['userId'] && this.userId) {
@@ -177,5 +182,59 @@ export class UserProfileModalComponent implements OnChanges {
                 error: (err) => console.error(err)
             });
         }
+    }
+
+    showEvents() {
+        if (!this.userId) return;
+        this.view = 'events';
+        if (this.upcomingEvents.length || this.pastEvents.length || this.loadingEvents) {
+            return;
+        }
+        this.loadingEvents = true;
+        this.eventService.getOrganizedEvents(this.userId).subscribe({
+            next: (events) => {
+                const now = new Date();
+                this.upcomingEvents = [];
+                this.pastEvents = [];
+                events.forEach(ev => {
+                    const eventDate = new Date(`${ev.date}T${ev.endTime || ev.startTime || '00:00'}`);
+                    if (eventDate.getTime() >= now.getTime()) {
+                        this.upcomingEvents.push(ev);
+                    } else {
+                        this.pastEvents.push(ev);
+                    }
+                });
+                this.upcomingEvents.sort((a, b) => new Date(`${a.date}T${a.startTime || '00:00'}`).getTime() - new Date(`${b.date}T${b.startTime || '00:00'}`).getTime());
+                this.pastEvents.sort((a, b) => new Date(`${b.date}T${b.startTime || '00:00'}`).getTime() - new Date(`${a.date}T${a.startTime || '00:00'}`).getTime());
+                this.loadingEvents = false;
+            },
+            error: (err) => {
+                console.error('Error loading events by user', err);
+                this.loadingEvents = false;
+            }
+        });
+    }
+
+    formatEventDate(ev: Event): string {
+        const date = ev.date ? new Date(`${ev.date}T00:00:00`) : null;
+        const start = ev.startTime ? ev.startTime.slice(0, 5) : '';
+        const end = ev.endTime ? ev.endTime.slice(0, 5) : '';
+        const datePart = date ? date.toLocaleDateString('it-IT', { day: '2-digit', month: 'short' }) : '';
+        const timePart = start && end ? `${start} - ${end}` : start || end;
+        return [datePart, timePart].filter(Boolean).join(' • ');
+    }
+
+    eventStats(ev: Event): { participants: string; freeSpots?: string; cost: string } {
+        const occupied = ev.occupiedSpots ?? 0;
+        const max = ev.nPartecipants ?? null;
+        let participants = `${occupied}${max ? `/${max}` : ''}`;
+        let freeSpots: string | undefined;
+        if (max != null) {
+            freeSpots = Math.max(max - occupied, 0).toString();
+        }
+        const cost = ev.costPerPerson == null || ev.costPerPerson === 0
+            ? 'Gratuito'
+            : ev.costPerPerson.toString();
+        return { participants, freeSpots, cost };
     }
 }
