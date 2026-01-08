@@ -16,6 +16,7 @@ export class FormField {
   @Input() error: boolean = false;
   @Input() customClass: string = ''; // For custom styling
   @Input() showToggle: boolean = false;
+  @Input() min: number | null = null;
 
   showPassword = false;
 

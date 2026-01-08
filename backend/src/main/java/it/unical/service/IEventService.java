@@ -34,4 +34,6 @@ public interface IEventService {
     void acceptParticipation(Long requesterId, Long eventId);
 
     void rejectParticipation(Long requesterId, Long eventId);
+
+    void leaveEvent(Long userId, Long eventId);
 }

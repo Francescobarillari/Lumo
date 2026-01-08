@@ -24,6 +24,7 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
     @Output() participate = new EventEmitter<Event>();
     @Output() toggleFavorite = new EventEmitter<void>();
     @Output() openOrganizerProfile = new EventEmitter<string>();
+    @Output() leave = new EventEmitter<Event>();
 
     isFollowing = false;
     isLoadingFollowStatus = true; // Add loading state to prevent flicker
@@ -129,6 +130,10 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
 
     onParticipate() {
         this.participate.emit(this.event);
+    }
+
+    onLeave() {
+        this.leave.emit(this.event);
     }
 
     private getOrganizerId(): string | null {

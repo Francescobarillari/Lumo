@@ -28,6 +28,9 @@ public class EventService implements IEventService {
     public Event createEvent(Event event, Long userId) {
         event.setCreatedAt(LocalDateTime.now());
         event.setIsApproved(false); // Default pending
+        if (event.getCostPerPerson() != null && event.getCostPerPerson() < 0) {
+            event.setCostPerPerson(0.0);
+        }
         Event savedEvent = eventRepository.save(event);
 
         if (userId != null) {
@@ -220,6 +223,11 @@ public class EventService implements IEventService {
             event.setDate(updatedEvent.getDate());
             event.setStartTime(updatedEvent.getStartTime());
             event.setEndTime(updatedEvent.getEndTime());
+            if (updatedEvent.getCostPerPerson() != null && updatedEvent.getCostPerPerson() < 0) {
+                event.setCostPerPerson(0.0);
+            } else {
+                event.setCostPerPerson(updatedEvent.getCostPerPerson());
+            }
             return eventRepository.save(event);
         }).orElseThrow(() -> new RuntimeException("Evento non trovato con ID: " + id));
     }
@@ -365,6 +373,24 @@ public class EventService implements IEventService {
                     "PARTICIPATION_REJECTED",
                     eventId,
                     null);
+        }
+    }
+
+    public void leaveEvent(Long userId, Long eventId) {
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new RuntimeException("Event not found"));
+        it.unical.model.User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        boolean removed = user.getParticipatingEvents().remove(event);
+        // Clean up any stale pending link as well
+        user.getPendingEvents().remove(event);
+        userRepository.save(user);
+
+        if (removed && event.getParticipants() != null) {
+            event.getParticipants().remove(user);
+        }
+        if (event.getPendingParticipants() != null) {
+            event.getPendingParticipants().remove(user);
         }
     }
 }

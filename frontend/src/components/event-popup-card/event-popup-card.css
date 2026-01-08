@@ -306,6 +306,40 @@
   pointer-events: none;
 }
 
+.participation-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.participation-actions .partecipa-btn {
+  width: auto;
+  margin-top: 0;
+  flex: 1 1 auto;
+}
+
+.leave-btn {
+  flex: 0 0 auto;
+  margin-top: 0;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: transparent;
+  color: #f7f7f7;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.2px;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+
+.leave-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.leave-btn:active {
+  transform: translateY(1px);
+}
+
 @media (max-width: 480px) {
   .card-content {
     width: calc(100vw - 24px);

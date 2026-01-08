@@ -58,6 +58,7 @@
     (close)="closeEventPopup()" (participate)="onParticipate($event)" (toggleFavorite)="onToggleFavorite()"
     [organizerName]="selectedEvent.organizerName || ''" [organizerImage]="selectedEvent.organizerImage"
     [currentUserId]="loggedUser ? (loggedUser.id ? loggedUser.id.toString() : null) : null"
-    [creatorId]="selectedEvent.creatorId" (openOrganizerProfile)="openUserProfile($event)" />
+    [creatorId]="selectedEvent.creatorId" (openOrganizerProfile)="openUserProfile($event)"
+    (leave)="onLeaveEvent($event)" />
   }
 </div>

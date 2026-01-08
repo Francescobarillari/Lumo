@@ -3,7 +3,8 @@
     <textarea [formControl]="control!" [placeholder]="placeholder" class="input-field"></textarea>
     } @else {
     <div class="input-with-toggle" [class.with-toggle]="showToggle && type === 'password'">
-        <input [formControl]="control!" [type]="inputType" [placeholder]="placeholder" class="input-field" />
+        <input [formControl]="control!" [type]="inputType" [placeholder]="placeholder" class="input-field"
+            [attr.min]="min" />
         @if (showToggle && type === 'password') {
         <button type="button" class="toggle-btn" (click)="togglePasswordVisibility($event)">
             <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>

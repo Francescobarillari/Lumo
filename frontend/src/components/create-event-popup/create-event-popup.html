@@ -42,7 +42,7 @@
                 <FormField [error]="hasError('nPartecipants')" [control]="$any(form.get('nPartecipants'))"
                     [type]="'number'" placeholder="N. Partecipanti" />
                 <FormField [error]="hasError('costPerPerson')" [control]="$any(form.get('costPerPerson'))"
-                    [type]="'number'" placeholder="Costo (€)" />
+                    [type]="'number'" [min]="0" placeholder="Costo (€)" />
             </div>
 
             <button type="button" class="button location-btn" (click)="selectLocationOnMap()">

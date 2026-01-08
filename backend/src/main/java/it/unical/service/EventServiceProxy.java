@@ -109,4 +109,10 @@ public class EventServiceProxy implements IEventService {
         System.out.println("[Proxy] Rejecting participation for User " + requesterId + " in Event " + eventId);
         realService.rejectParticipation(requesterId, eventId);
     }
+
+    @Override
+    public void leaveEvent(Long userId, Long eventId) {
+        System.out.println("[Proxy] User " + userId + " leaving Event " + eventId);
+        realService.leaveEvent(userId, eventId);
+    }
 }

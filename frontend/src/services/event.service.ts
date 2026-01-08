@@ -49,6 +49,10 @@ export class EventService {
     return this.http.post<void>(`${this.baseUrl}/${eventId}/participation-request?userId=${userId}`, {});
   }
 
+  leaveEvent(eventId: number, userId: string | number): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/${eventId}/participants/${userId}/leave`, {});
+  }
+
   acceptParticipation(eventId: number, userId: string | number): Observable<void> {
     return this.http.post<void>(`${this.baseUrl}/${eventId}/participants/${userId}/accept`, {});
   }

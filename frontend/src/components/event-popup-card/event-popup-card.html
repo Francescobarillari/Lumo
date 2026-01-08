@@ -70,7 +70,10 @@
     </div>
 
     @if (event.participationStatus === 'ACCEPTED') {
-    <button class="button partecipa-btn accepted" disabled>Sei dentro</button>
+    <div class="participation-actions">
+      <button class="button partecipa-btn accepted" disabled>Sei dentro</button>
+      <button class="button leave-btn" type="button" (click)="onLeave()">Leave</button>
+    </div>
     } @else if (event.participationStatus === 'PENDING') {
     <button class="button partecipa-btn pending" disabled>In Attesa</button>
     } @else {

@@ -71,4 +71,10 @@ public class EventController {
         eventService.rejectParticipation(userId, id);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/{id}/participants/{userId}/leave")
+    public ResponseEntity<Void> leaveEvent(@PathVariable Long id, @PathVariable Long userId) {
+        eventService.leaveEvent(userId, id);
+        return ResponseEntity.ok().build();
+    }
 }

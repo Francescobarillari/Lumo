@@ -322,6 +322,40 @@ export class Home implements OnInit {
     });
   }
 
+  onLeaveEvent(event: LumoEvent) {
+    if (!this.loggedUser) {
+      this.openSignIn();
+      return;
+    }
+
+    const confirmed = confirm('Sei sicuro di voler lasciare l\'evento?');
+    if (!confirmed) return;
+
+    this.eventService.leaveEvent(event.id, this.loggedUser.id).subscribe({
+      next: () => {
+        if (this.selectedEvent && this.selectedEvent.id === event.id) {
+          this.selectedEvent.participationStatus = 'NONE';
+          this.selectedEvent.isParticipating = false;
+          if (typeof this.selectedEvent.occupiedSpots === 'number' && this.selectedEvent.occupiedSpots > 0) {
+            this.selectedEvent.occupiedSpots -= 1;
+          }
+        }
+
+        if (this.mapView) {
+          const target = this.mapView.events.find(e => e.id === event.id);
+          if (target) {
+            target.participationStatus = 'NONE';
+            target.isParticipating = false;
+            if (typeof target.occupiedSpots === 'number' && target.occupiedSpots > 0) {
+              target.occupiedSpots -= 1;
+            }
+          }
+        }
+      },
+      error: (err) => console.error('Error leaving event', err)
+    });
+  }
+
   onToggleFavorite() {
     if (this.selectedEvent && this.mapView) {
       // Delegate to MapView which holds the list and logic

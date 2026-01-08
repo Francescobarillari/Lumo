@@ -36,7 +36,7 @@ export class CreateEventPopup {
             startTime: ['', Validators.required],
             endTime: [''],
             nPartecipants: ['', [Validators.required, Validators.min(1)]],
-            costPerPerson: ['']
+            costPerPerson: ['', [Validators.min(0)]]
         }, { validators: this.timeRangeValidator });
     }
 
@@ -110,6 +110,13 @@ export class CreateEventPopup {
                 this.errors.nPartecipants = 'Il numero di partecipanti deve essere almeno 1.';
             }
         }
+        if (controls['costPerPerson'].invalid) {
+            if (controls['costPerPerson'].errors?.['min']) {
+                this.errors.costPerPerson = 'Il costo non può essere negativo.';
+            } else {
+                this.errors.costPerPerson = 'Costo non valido.';
+            }
+        }
 
         // Check cross-field validation
         if (this.form.errors?.['timeOrder']) {
@@ -135,7 +142,9 @@ export class CreateEventPopup {
             startTime: formValue.startTime,
             endTime: formValue.endTime,
             nPartecipants: parseInt(formValue.nPartecipants),
-            costPerPerson: formValue.costPerPerson ? parseFloat(formValue.costPerPerson) : null,
+            costPerPerson: formValue.costPerPerson !== null && formValue.costPerPerson !== ''
+                ? Math.max(0, parseFloat(formValue.costPerPerson))
+                : null,
             latitude: this.latitude,
             longitude: this.longitude
         };
