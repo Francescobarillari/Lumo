@@ -244,8 +244,15 @@ export class MapView implements AfterViewInit, OnDestroy, OnChanges {
     }
   }
 
+  private isFutureEvent(event: Event): boolean {
+    if (!event.date) return true;
+    const end = event.endTime || event.startTime || '23:59';
+    const eventDateTime = new Date(`${event.date}T${end}`);
+    return eventDateTime.getTime() >= Date.now();
+  }
+
   private handleEventsUpdate(events: Event[]) {
-    const filteredEvents = events;
+    const filteredEvents = events.filter((e) => this.isFutureEvent(e));
 
     // Check for changes (lazy check by length or deep compare if needed)
     // For now, update if length differs OR map markers check
@@ -267,7 +274,7 @@ export class MapView implements AfterViewInit, OnDestroy, OnChanges {
   private loadEvents() {
     this.eventService.getEvents(this.userId || undefined).subscribe({
       next: (events) => {
-        this.events = events;
+        this.events = events.filter((e) => this.isFutureEvent(e));
 
         this.updateDistancesAndSort();
         this.placeEventMarkers();

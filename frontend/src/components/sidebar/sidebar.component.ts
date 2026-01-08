@@ -85,6 +85,12 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
         distance: 'Distanza',
         name: 'Nome'
     };
+    private isFutureEvent = (event: Event): boolean => {
+        if (!event.date) return true;
+        const end = event.endTime || event.startTime || '23:59';
+        const eventDateTime = new Date(`${event.date}T${end}`);
+        return eventDateTime.getTime() >= Date.now();
+    };
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes['events'] || changes['userId']) {
@@ -103,7 +109,7 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
 
         // Guest Mode
         if (!this.userId) {
-            this.foundEvents = [...this.events];
+            this.foundEvents = this.events.filter(this.isFutureEvent);
             return;
         }
 
@@ -114,7 +120,7 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
         // 1. Fetch Follow Up Events (Directly from backend to ensure we get everything, including own events)
         this.eventService.getJoinedEvents(this.userId).subscribe({
             next: (joined) => {
-                this.followUpEvents = joined;
+                this.followUpEvents = joined.filter(this.isFutureEvent);
 
                 // Sort by Date
                 this.followUpEvents.sort((a, b) => {
@@ -127,7 +133,7 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
         });
 
         // 2. Categorize Map Events for Saved and Discover
-        this.events.forEach(event => {
+        this.events.filter(this.isFutureEvent).forEach(event => {
             let isSaved = false;
             const isParticipating = event.isParticipating || false;
 
@@ -270,7 +276,7 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
 
         // 1. Search Events (Backend)
         this.eventService.searchEvents(query).subscribe(results => {
-            this.searchResults = results;
+            this.searchResults = results.filter(this.isFutureEvent);
         });
 
         // 2. Search City (Mapbox)
