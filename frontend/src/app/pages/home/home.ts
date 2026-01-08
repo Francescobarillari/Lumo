@@ -203,6 +203,7 @@ export class Home implements OnInit {
   }
 
   openUserProfile(userId: string) {
+    console.log('[Home] openUserProfile', userId);
     this.closeAll();
     this.selectedUserProfileId = userId;
     this.showUserProfile = true;

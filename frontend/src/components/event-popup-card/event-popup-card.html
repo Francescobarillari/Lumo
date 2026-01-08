@@ -1,57 +1,80 @@
 <div class="card-container">
-    <div class="card-content">
-        <div class="header-row">
-            <h1 class="title">{{ event.title }}</h1>
-            @if (!event.isParticipating) {
-            <mat-icon class="favorite-icon" [class.saved]="isSaved()"
-                (click)="toggleFavorite.emit(); $event.stopPropagation()">
-                {{ isSaved() ? 'favorite' : 'favorite_border' }}
-            </mat-icon>
-            }
-        </div>
-        <p class="day-time">{{ formatDateTime() }}</p>
-        <p class="description">{{ event.description }}</p>
-
-        <div class="info-section">
-            <p class="info-item">👥 {{ event.nPartecipants || 'Non specificato' }} partecipanti</p>
-            <p class="info-item" *ngIf="event.occupiedSpots !== undefined">
-                🎫 {{ event.nPartecipants - (event.occupiedSpots || 0) }} posti rimanenti
-            </p>
-            <p class="info-item">💰 {{ formatCost() }}</p>
-        </div>
-
-        <div class="eventer-section">
-            <div class="eventer-info">
-                @if (organizerImage) {
-                <img [src]="organizerImage" alt="Organizer" class="organizer-avatar">
-                } @else {
-                <div class="organizer-avatar placeholder">{{ getInitials(organizerName) }}</div>
-                }
-                <div class="eventer-text">
-                    <span class="eventer-label">Eventer</span>
-                    <span class="eventer-name">{{ organizerName }}</span>
-                </div>
-            </div>
-
-            @if (currentUserId && (creatorId || event.creatorId)) {
-            @if (currentUserId.toString() === (creatorId || event.creatorId)?.toString()) {
-            <span class="is-organizer-badge">Tu</span>
-            } @else {
-            @if (!isFollowing && !isLoadingFollowStatus) {
-            <button class="icon-circle follow-btn-popup" (click)="followOrganizer(); $event.stopPropagation()">
-                <mat-icon>person_add</mat-icon>
-            </button>
-            }
-            }
-            }
-        </div>
-
-        @if (event.participationStatus === 'ACCEPTED') {
-        <button class="button partecipa-btn accepted" disabled>Sei dentro</button>
-        } @else if (event.participationStatus === 'PENDING') {
-        <button class="button partecipa-btn pending" disabled>In Attesa</button>
+  <div class="card-content">
+    <div class="header-row">
+      <div class="title-block">
+        <h1 class="title">{{ event.title }}</h1>
+        @if (event.city) {
+        <p class="subtitle">
+          <mat-icon class="inline-icon">place</mat-icon>
+          <span>{{ event.city }}</span>
+        </p>
         } @else {
-        <button class="button partecipa-btn" (click)="onParticipate()">Richiedi partecipazione</button>
+        <p class="subtitle">{{ getSubtitle() }}</p>
         }
+        <p class="accent-date">
+          <mat-icon class="inline-icon">event</mat-icon>
+          <span>{{ formatHeroDate() }}</span>
+        </p>
+      </div>
+      @if (!event.isParticipating) {
+      <button class="favorite-icon" [class.saved]="isSaved()" (click)="toggleFavorite.emit(); $event.stopPropagation()"
+        aria-label="Salva evento">
+        <mat-icon>{{ isSaved() ? 'favorite' : 'favorite_border' }}</mat-icon>
+      </button>
+    }
     </div>
+
+    <div class="chip-row">
+      <span class="chip">
+        <mat-icon>group</mat-icon>
+        <span>{{ getActualParticipants() }} partecipanti</span>
+      </span>
+      <span class="chip" *ngIf="event.occupiedSpots !== undefined">
+        <mat-icon>event_available</mat-icon>
+        <span>{{ event.nPartecipants - (event.occupiedSpots || 0) }} posti liberi</span>
+      </span>
+      <span class="chip">
+        <mat-icon>euro</mat-icon>
+        <span>{{ formatCost() }}</span>
+      </span>
+    </div>
+
+    <p class="description" *ngIf="showDescription()">{{ event.description }}</p>
+
+    <div class="eventer-section">
+      <div class="eventer-info">
+        <button class="eventer-hit" type="button" (click)="onOrganizerClick(); $event.stopPropagation()">
+          @if (organizerImage) {
+          <img [src]="organizerImage" alt="Organizer" class="organizer-avatar">
+          } @else {
+          <div class="organizer-avatar placeholder">{{ getInitials(organizerName) }}</div>
+          }
+          <div class="eventer-text">
+            <span class="eventer-label">Organizzatore</span>
+            <span class="eventer-name">{{ organizerName }}</span>
+          </div>
+        </button>
+      </div>
+
+      @if (currentUserId && (creatorId || event.creatorId)) {
+      @if (currentUserId.toString() === (creatorId || event.creatorId)?.toString()) {
+      <span class="is-organizer-badge">Tu</span>
+      } @else {
+      @if (!isFollowing && !isLoadingFollowStatus) {
+      <button class="icon-circle follow-btn-popup" (click)="followOrganizer(); $event.stopPropagation()">
+        <mat-icon>person_add</mat-icon>
+      </button>
+      }
+      }
+      }
+    </div>
+
+    @if (event.participationStatus === 'ACCEPTED') {
+    <button class="button partecipa-btn accepted" disabled>Sei dentro</button>
+    } @else if (event.participationStatus === 'PENDING') {
+    <button class="button partecipa-btn pending" disabled>In Attesa</button>
+    } @else {
+    <button class="button partecipa-btn" (click)="onParticipate()">Richiedi partecipazione</button>
+    }
+  </div>
 </div>

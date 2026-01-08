@@ -23,6 +23,7 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
     @Output() close = new EventEmitter<void>();
     @Output() participate = new EventEmitter<Event>();
     @Output() toggleFavorite = new EventEmitter<void>();
+    @Output() openOrganizerProfile = new EventEmitter<string>();
 
     isFollowing = false;
     isLoadingFollowStatus = true; // Add loading state to prevent flicker
@@ -70,16 +71,55 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
         event.stopPropagation();
     }
 
+    @HostListener('window:resize')
+    onResize() {
+        this.positionCard();
+    }
+
     private positionCard() {
         if (!this.eventPosition) return;
 
         const cardContainer = this.elementRef.nativeElement.querySelector('.card-container') as HTMLElement;
         if (cardContainer) {
-            // Position card above marker with offset
+            const sidebar = document.querySelector('.sidebar-container') as HTMLElement | null;
+            const sidebarRect = sidebar?.getBoundingClientRect();
+            const sidebarRight = sidebarRect && !sidebar?.classList.contains('collapsed')
+                ? sidebarRect.right
+                : 0;
+
+            const baseMargin = 12;
+            const leftSafeMargin = sidebarRight > 0 ? sidebarRight + baseMargin : baseMargin;
+            const margin = baseMargin;
+            const width = cardContainer.offsetWidth || 0;
+            const height = cardContainer.offsetHeight || 0;
+            const viewportW = window.innerWidth;
+            const viewportH = window.innerHeight;
+
             const offsetY = -20; // px above marker
-            cardContainer.style.left = `${this.eventPosition.x}px`;
-            cardContainer.style.top = `${this.eventPosition.y + offsetY}px`;
-            cardContainer.style.transform = 'translate(-50%, -100%)'; // Center horizontally, position above
+            let x = this.eventPosition.x;
+            let y = this.eventPosition.y + offsetY;
+
+            // Adjust horizontally to keep within viewport once translate(-50%) is applied
+            const leftAfter = x - width / 2;
+            const rightAfter = x + width / 2;
+            if (leftAfter < leftSafeMargin) {
+                x += leftSafeMargin - leftAfter;
+            } else if (rightAfter > viewportW - margin) {
+                x -= rightAfter - (viewportW - margin);
+            }
+
+            // Adjust vertically to avoid clipping top/bottom (translateY(-100%) pulls it up by its height)
+            const topAfter = y - height;
+            if (topAfter < margin) {
+                y += margin - topAfter;
+            }
+            if (y > viewportH - margin) {
+                y = viewportH - margin;
+            }
+
+            cardContainer.style.left = `${x}px`;
+            cardContainer.style.top = `${y}px`;
+            cardContainer.style.transform = 'translate(-50%, -100%)';
         }
     }
 
@@ -89,6 +129,43 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
 
     onParticipate() {
         this.participate.emit(this.event);
+    }
+
+    private getOrganizerId(): string | null {
+        const rawId =
+            this.creatorId ??
+            this.event?.creatorId ??
+            // Fallback if backend sent embedded creator object
+            (this.event as any)?.creator?.id;
+        return rawId !== undefined && rawId !== null ? String(rawId) : null;
+    }
+
+    formatHeroDate(): string {
+        const date = this.event.date ? new Date(`${this.event.date}T00:00:00`) : null;
+        const start = this.event.startTime ? this.event.startTime.slice(0, 5) : null;
+        const weekday = date ? date.toLocaleDateString('it-IT', { weekday: 'short' }) : '';
+        const dayMonth = date ? date.toLocaleDateString('it-IT', { day: '2-digit', month: 'short' }) : '';
+
+        const datePart = [weekday, dayMonth].filter(Boolean).join(' ');
+        const timePart = start ? start : '';
+        return [datePart, timePart].filter(Boolean).join(', ');
+    }
+
+    getActualParticipants(): number {
+        if (this.event.occupiedSpots !== undefined && this.event.occupiedSpots !== null) {
+            return this.event.occupiedSpots;
+        }
+        return this.event.nPartecipants || 0;
+    }
+
+    getSubtitle(): string {
+        if (this.event.city) return this.event.city;
+        if (this.event.description) return this.event.description;
+        return 'Luogo da definire';
+    }
+
+    showDescription(): boolean {
+        return !!this.event.description && this.event.description !== this.getSubtitle();
     }
 
     formatDateTime(): string {
@@ -144,5 +221,24 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
             },
             error: (err) => console.error('Error unfollowing', err)
         });
+    }
+
+    onOrganizerClick() {
+        const organizerId = this.getOrganizerId();
+        if (!organizerId) {
+            console.log('[EventPopupCard] organizer click with missing id', {
+                creatorIdInput: this.creatorId,
+                eventCreatorId: this.event?.creatorId,
+                event: this.event
+            });
+            return;
+        }
+        console.log('[EventPopupCard] open organizer', {
+            organizerId,
+            creatorIdInput: this.creatorId,
+            eventCreatorId: this.event?.creatorId,
+            event: this.event
+        });
+        this.openOrganizerProfile.emit(organizerId);
     }
 }
