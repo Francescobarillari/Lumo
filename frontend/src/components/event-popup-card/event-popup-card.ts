@@ -101,6 +101,8 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
             const baseMargin = 12;
             const leftSafeMargin = sidebarRight > 0 ? sidebarRight + baseMargin : baseMargin;
             const margin = baseMargin;
+            const isMobile = window.innerWidth <= 768;
+            const topSafeMargin = isMobile ? 100 : margin;
             const width = cardContainer.offsetWidth || 0;
             const height = cardContainer.offsetHeight || 0;
             const viewportW = window.innerWidth;
@@ -121,8 +123,8 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
 
             // Adjust vertically to avoid clipping top/bottom (translateY(-100%) pulls it up by its height)
             const topAfter = y - height;
-            if (topAfter < margin) {
-                y += margin - topAfter;
+            if (topAfter < topSafeMargin) {
+                y += topSafeMargin - topAfter;
             }
             if (y > viewportH - margin) {
                 y = viewportH - margin;
