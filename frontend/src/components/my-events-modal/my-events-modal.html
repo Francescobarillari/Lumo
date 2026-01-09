@@ -2,7 +2,11 @@
 
 <div class="modal-container">
     <div class="modal-header">
-        <div class="tabs">
+        <button class="back-btn mobile-only" (click)="close.emit()">
+            <mat-icon>arrow_back</mat-icon>
+        </button>
+
+        <div class="tabs tablet-desktop-only">
             <button class="tab-btn" [class.active]="activeTab === 'ORGANIZED'" (click)="switchTab('ORGANIZED')">
                 My Events
             </button>
@@ -10,7 +14,10 @@
                 Joined Events
             </button>
         </div>
-        <button class="close-btn" (click)="close.emit()">
+
+        <h2 class="mobile-only yellow-title">{{ getViewTitle() }}</h2>
+
+        <button class="close-btn tablet-desktop-only" (click)="close.emit()">
             <mat-icon>close</mat-icon>
         </button>
     </div>

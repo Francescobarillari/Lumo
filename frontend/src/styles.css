@@ -202,7 +202,7 @@
     width: 100%;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
     .mobile-header {
         display: flex;
     }
@@ -211,6 +211,24 @@
         min-height: 100vh;
         background-color: var(--color-dark-gray);
     }
+
+    .desktop-only,
+    .tablet-desktop-only {
+        display: none !important;
+    }
+
+    .mobile-only {
+        display: block !important;
+    }
+}
+
+.desktop-only,
+.tablet-desktop-only {
+    display: block;
+}
+
+.mobile-only {
+    display: none;
 }
 
 /*stili di base per il body*/

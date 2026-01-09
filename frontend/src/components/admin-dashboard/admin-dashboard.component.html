@@ -156,6 +156,7 @@
         <div class="full-table-section">
             <!-- Search for Events -->
             <div class="search-container">
+                <mat-icon class="search-icon">search</mat-icon>
                 <input type="text" [(ngModel)]="searchTermEvents"
                     placeholder="Cerca eventi per titolo, città o organizzatore..." class="search-input">
             </div>
@@ -221,7 +222,7 @@
                                     }
                                     }
 
-                                    <button class="btn-icon delete" (click)="deleteEvent(ev)"
+                                    <button *ngIf="ev.isApproved" class="btn-icon delete" (click)="deleteEvent(ev)"
                                         title="Elimina definitivamente">
                                         <mat-icon>delete_outline</mat-icon>
                                     </button>
@@ -239,6 +240,7 @@
         <div class="full-table-section">
             <!-- Search for Users -->
             <div class="search-container">
+                <mat-icon class="search-icon">search</mat-icon>
                 <input type="text" [(ngModel)]="searchTermUsers" placeholder="Cerca utenti per nome o email..."
                     class="search-input">
             </div>

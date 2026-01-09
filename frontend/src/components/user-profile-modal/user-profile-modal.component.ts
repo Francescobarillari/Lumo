@@ -51,6 +51,15 @@ export class UserProfileModalComponent implements OnChanges {
         }
     }
 
+    getViewTitle(): string {
+        switch (this.view) {
+            case 'followers': return 'Followers';
+            case 'following': return 'Following';
+            case 'events': return 'Eventi';
+            default: return 'Profilo';
+        }
+    }
+
     loadUser() {
         if (!this.userId) return;
         this.loading = true;

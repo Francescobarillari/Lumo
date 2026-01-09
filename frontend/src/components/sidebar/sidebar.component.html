@@ -10,14 +10,17 @@
         <input type="text" placeholder="Search city, events or user" class="search-input" [(ngModel)]="searchQuery"
             (keyup.enter)="onSearch()" (ngModelChange)="onSearchChange($event)">
 
-        @if (isSearching) {
-        <mat-icon class="search-icon clickable" (click)="clearSearch()">close</mat-icon>
-        } @else {
-        <mat-icon class="search-icon clickable" (click)="onSearch()">search</mat-icon>
-        }
+        <div class="search-actions">
+            @if (isSearching) {
+            <mat-icon class="search-icon clickable" (click)="clearSearch()">close</mat-icon>
+            } @else {
+            <mat-icon class="search-icon clickable" (click)="onSearch()">search</mat-icon>
+            }
+            <mat-icon class="options-icon clickable" (click)="showFilterOptions = !showFilterOptions">tune</mat-icon>
+        </div>
     </div>
 
-    <div class="filter-sort" *ngIf="!collapsed">
+    <div class="filter-sort" *ngIf="!collapsed && showFilterOptions">
         <div class="pill dropdown" (click)="filterMenuOpen = !filterMenuOpen; sortMenuOpen = false;">
             <div class="pill-inner">
                 <mat-icon>filter_list</mat-icon>

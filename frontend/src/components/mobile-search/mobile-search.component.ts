@@ -21,6 +21,7 @@ export class MobileSearchComponent {
     @Output() toggleFavorite = new EventEmitter<Event>();
     @Output() openUserProfile = new EventEmitter<string>();
     @Input() userId: string | null = null;
+    @Input() events: Event[] = [];
 
     searchQuery: string = '';
     isExpanded: boolean = false;
@@ -32,11 +33,42 @@ export class MobileSearchComponent {
     userResults: User[] = [];
     followingMap: { [userId: number]: boolean } = {};
 
+    // Restore desktop sections for mobile
+    followUpEvents: Event[] = [];
+    savedEvents: Event[] = [];
+    discoverEvents: Event[] = [];
+    foundEvents: Event[] = [];
+
+    // Filter/Sort state
+    filterOption: 'all' | 'participating' | 'free' | 'available' = 'all';
+    sortOption: 'date' | 'distance' | 'name' = 'date';
+    filterMenuOpen = false;
+    sortMenuOpen = false;
+    showFilterOptions = false;
+
+    readonly filterOrder: Array<typeof this.filterOption> = ['all', 'participating', 'free', 'available'];
+    readonly sortOrder: Array<typeof this.sortOption> = ['date', 'distance', 'name'];
+    readonly filterLabels: Record<typeof this.filterOption, string> = {
+        all: 'Tutti',
+        participating: 'Partecipi',
+        free: 'Gratuiti',
+        available: 'Posti liberi'
+    };
+    readonly sortLabels: Record<typeof this.sortOption, string> = {
+        date: 'Data',
+        distance: 'Distanza',
+        name: 'Nome'
+    };
+
     constructor(
         private eventService: EventService,
         private mapboxService: MapboxService,
         private userService: UserService
     ) { }
+
+    ngOnChanges() {
+        this.categorizeEvents();
+    }
 
     toggleExpand() {
         this.isExpanded = !this.isExpanded;
@@ -145,4 +177,64 @@ export class MobileSearchComponent {
         if (distanceKm < 1) return `${(distanceKm * 1000).toFixed(0)} m`;
         return `${distanceKm.toFixed(1)} km`;
     }
+
+    private isFutureEvent = (event: Event): boolean => {
+        if (!event.date) return true;
+        const end = event.endTime || event.startTime || '23:59';
+        const eventDateTime = new Date(`${event.date}T${end}`);
+        return eventDateTime.getTime() >= Date.now();
+    };
+
+    private categorizeEvents() {
+        this.followUpEvents = [];
+        this.savedEvents = [];
+        this.discoverEvents = [];
+        this.foundEvents = [];
+
+        if (!this.userId) {
+            this.foundEvents = this.events.filter(this.isFutureEvent);
+            return;
+        }
+
+        this.eventService.getJoinedEvents(this.userId).subscribe(joined => {
+            this.followUpEvents = joined.filter(this.isFutureEvent);
+        });
+
+        this.events.filter(this.isFutureEvent).forEach(event => {
+            const isSaved = event.isSaved || false;
+            const isParticipating = event.isParticipating || false;
+
+            if (isSaved) this.savedEvents.push(event);
+            if (!isParticipating && !isSaved) this.discoverEvents.push(event);
+        });
+    }
+
+    private applyFilters(events: Event[]): Event[] {
+        let filtered = [...events];
+        switch (this.filterOption) {
+            case 'participating': filtered = filtered.filter(e => !!e.isParticipating); break;
+            case 'free': filtered = filtered.filter(e => e.costPerPerson == null || e.costPerPerson === 0); break;
+            case 'available': filtered = filtered.filter(e => {
+                if (e.nPartecipants == null || e.occupiedSpots == null) return true;
+                return (e.nPartecipants - e.occupiedSpots) > 0;
+            }); break;
+        }
+        switch (this.sortOption) {
+            case 'distance': filtered.sort((a, b) => (a.distanceKm ?? 999) - (b.distanceKm ?? 999)); break;
+            case 'name': filtered.sort((a, b) => (a.title || '').localeCompare(b.title || '')); break;
+            case 'date': default: filtered.sort((a, b) => {
+                const aTime = new Date(`${a.date}T${a.startTime || '00:00'}`).getTime();
+                const bTime = new Date(`${b.date}T${b.startTime || '00:00'}`).getTime();
+                return aTime - bTime;
+            }); break;
+        }
+        return filtered;
+    }
+
+    getFiltered(list: Event[]): Event[] {
+        return this.applyFilters(list);
+    }
+
+    selectFilter(opt: any) { this.filterOption = opt; this.filterMenuOpen = false; }
+    selectSort(opt: any) { this.sortOption = opt; this.sortMenuOpen = false; }
 }

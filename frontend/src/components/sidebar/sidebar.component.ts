@@ -34,6 +34,7 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
     activeTab: 'events' | 'places' | 'creators' = 'events';
     isSearching: boolean = false;
     followingMap: { [userId: number]: boolean } = {};
+    showFilterOptions: boolean = false;
 
 
     constructor(
@@ -85,6 +86,11 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
         distance: 'Distanza',
         name: 'Nome'
     };
+
+    get isFiltering(): boolean {
+        return this.filterOption !== 'all';
+    }
+
     private isFutureEvent = (event: Event): boolean => {
         if (!event.date) return true;
         const end = event.endTime || event.startTime || '23:59';
@@ -338,5 +344,9 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
         this.cityResults = [];
         this.userResults = [];
         this.activeTab = 'events';
+    }
+
+    isMobileOrTablet(): boolean {
+        return window.innerWidth <= 1024;
     }
 }

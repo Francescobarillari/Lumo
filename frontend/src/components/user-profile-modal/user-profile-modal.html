@@ -1,8 +1,11 @@
 <div class="modal-backdrop" (click)="onClose()">
     <div class="modal-container" (click)="$event.stopPropagation()">
         <div class="modal-header">
-            <h2>Profilo</h2>
-            <button class="close-btn" (click)="onClose()">
+            <button class="back-btn mobile-only" (click)="onClose()">
+                <mat-icon>arrow_back</mat-icon>
+            </button>
+            <h2 [class.yellow-title]="view !== 'profile'">{{ getViewTitle() }}</h2>
+            <button class="close-btn tablet-desktop-only" (click)="onClose()">
                 <mat-icon>close</mat-icon>
             </button>
         </div>

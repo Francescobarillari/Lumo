@@ -163,38 +163,117 @@
     font-style: italic;
 }
 
-.clickable {
-    cursor: pointer;
-}
-
-.follow-icon {
-    background: var(--color-bit-gray);
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
+.search-actions {
     display: flex;
     align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-left: auto;
+    gap: 12px;
 }
 
-.follow-icon mat-icon {
+.options-icon,
+.close-icon {
+    color: var(--color-gray-light);
     font-size: 20px;
     width: 20px;
     height: 20px;
+}
+
+.filter-sort-container {
+    display: flex;
+    gap: 8px;
+    padding: 0 0 10px 0;
+    overflow-x: auto;
+}
+
+.mobile-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.section-title {
+    color: var(--color-accent);
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+/* Reusing sidebar pill styles */
+.pill {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    padding: 0;
+    border-radius: 12px;
+    border: 1px solid var(--color-bit-gray);
+    background: var(--color-gray);
     color: var(--color-white);
+    cursor: pointer;
+    font-size: 11px;
+    min-width: 120px;
 }
 
-.follow-icon:hover {
-    background: #555;
+.pill-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 8px 12px;
+    gap: 6px;
 }
 
-.follow-icon.following {
-    background: var(--color-accent);
+.pill mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
 }
 
-.follow-icon.following mat-icon {
-    color: var(--color-black);
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 6px;
+    background: var(--color-gray);
+    border: 1px solid var(--color-bit-gray);
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+    min-width: 160px;
+    z-index: 10002;
+    padding: 4px;
+}
+
+.menu-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    border: none;
+    background: transparent;
+    color: var(--color-white);
+    font-size: 13px;
+    border-radius: 8px;
+}
+
+.menu-item mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: var(--color-accent);
+}
+
+.chevron {
+    margin-left: auto;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.clickable {
+    cursor: pointer;
 }

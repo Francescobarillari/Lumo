@@ -155,6 +155,7 @@ export class ActionBarComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     onChangePhotoFromAccount() {
+        this.showAccountModal = false; // Close modal during image selection
         this.action.emit('change-photo');
     }
 

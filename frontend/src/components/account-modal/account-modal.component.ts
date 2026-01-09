@@ -30,9 +30,18 @@ export class AccountModalComponent {
     onClose() {
         if (this.view !== 'profile') {
             this.view = 'profile';
-            return;
+        } else {
+            this.close.emit();
         }
-        this.close.emit();
+    }
+
+    getViewTitle(): string {
+        switch (this.view) {
+            case 'edit-profile': return 'Edit profile';
+            case 'followers': return 'Followers';
+            case 'following': return 'Following';
+            default: return 'Account';
+        }
     }
 
     onChangePhoto() {

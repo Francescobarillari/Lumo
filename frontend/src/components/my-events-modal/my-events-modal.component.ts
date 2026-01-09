@@ -17,6 +17,11 @@ export class MyEventsModal implements OnInit {
     @Input() userId!: string | number;
     @Output() close = new EventEmitter<void>();
 
+    view: 'organized' | 'joined' = 'organized'; // Simplified/restored if needed, or keep activeTab
+
+    getViewTitle(): string {
+        return this.activeTab === 'ORGANIZED' ? 'My Events' : 'Joined Events';
+    }
     activeTab: 'ORGANIZED' | 'JOINED' = 'ORGANIZED';
     organizedEvents: Event[] = [];
     joinedEvents: Event[] = [];
