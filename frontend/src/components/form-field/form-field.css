@@ -74,7 +74,7 @@ input[type="date"] {
     height: 50px;
     padding: 0 var(--spacing-md);
     background-color: var(--color-gray);
-    border: 2px solid var(--color-gray);
+    border: 2px solid rgba(255, 255, 255, 0.12);
     border-radius: var(--radius-lg);
     color: var(--color-white);
     font-size: 16px;

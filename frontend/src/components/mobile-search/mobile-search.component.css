@@ -8,6 +8,12 @@
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
+@media (max-width: 767px) {
+    .mobile-search-wrapper {
+        bottom: 40px;
+    }
+}
+
 .mobile-search-wrapper.expanded {
     bottom: 0;
     right: 0;

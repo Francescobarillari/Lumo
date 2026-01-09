@@ -12,7 +12,9 @@
 }
 
 .modal-container {
-    background: #1a1a1a;
+    background:
+        radial-gradient(circle at 15% 20%, rgba(252, 195, 36, 0.12), transparent 34%),
+        linear-gradient(160deg, #1a1a1a 0%, #0f0f0f 60%, #080808 100%);
     width: 90%;
     max-width: 400px;
     border-radius: 16px;
@@ -23,6 +25,12 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+}
+
+.modal-container.events-mode {
+    background:
+        radial-gradient(circle at 14% 18%, rgba(252, 195, 36, 0.18), transparent 42%),
+        linear-gradient(160deg, #1a1a1a 0%, #101010 55%, #060606 100%);
 }
 
 @media (max-width: 768px) {
@@ -45,12 +53,14 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 24px;
+    padding-top: 2px;
 }
 
 .modal-header h2 {
     margin: 0;
     font-size: 20px;
     font-weight: 600;
+    line-height: 1.2;
 }
 
 .yellow-title {
@@ -268,16 +278,14 @@
 }
 
 .events-section {
-    background:
-        radial-gradient(circle at 15% 20%, rgba(252, 195, 36, 0.12), transparent 34%),
-        linear-gradient(160deg, #1a1a1a 0%, #0f0f0f 60%, #080808 100%);
+    background: rgba(255, 255, 255, 0.04);
     padding: 12px;
     border-radius: 14px;
     display: flex;
     flex-direction: column;
     gap: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 
 /* Scrollbar styling similar to sidebar */
@@ -341,6 +349,11 @@
 
 .event-sub .inline-icon {
     color: var(--color-accent);
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    flex-shrink: 0;
 }
 
 .event-stats {
@@ -363,10 +376,12 @@
 }
 
 .stat-pill mat-icon {
-    font-size: 15px;
-    width: 15px;
-    height: 15px;
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
     color: var(--color-accent);
+    flex-shrink: 0;
 }
 
 /* List View */
@@ -391,6 +406,12 @@
     color: white;
     cursor: pointer;
     padding: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    line-height: 0;
 }
 
 .user-list {

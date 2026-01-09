@@ -112,8 +112,8 @@ notification-menu {
 
     /* Mobile styles for action-bar container only */
     .action-bar {
-        top: auto;
-        bottom: 90px;
+        top: 20px;
+        bottom: auto;
         right: 20px;
         padding: 8px;
         height: 60px;

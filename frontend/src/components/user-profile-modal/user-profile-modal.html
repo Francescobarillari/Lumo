@@ -1,5 +1,5 @@
 <div class="modal-backdrop" (click)="onClose()">
-    <div class="modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-container" [class.events-mode]="view === 'events'" (click)="$event.stopPropagation()">
         <div class="modal-header">
             <button class="back-btn mobile-only" (click)="onClose()">
                 <mat-icon>arrow_back</mat-icon>

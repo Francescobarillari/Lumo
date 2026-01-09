@@ -7,6 +7,10 @@
             <button class="pill-btn" (click)="deleteRead()" title="Cancella notifiche lette">
                 <mat-icon>delete_sweep</mat-icon>
             </button>
+            <button class="pill-btn mobile-only" (click)="close.emit()" title="Chiudi notifiche"
+                aria-label="Chiudi notifiche">
+                <mat-icon>close</mat-icon>
+            </button>
         </div>
     </div>
     <div class="notif-list">

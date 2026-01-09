@@ -100,6 +100,10 @@ userMarkerEl.style.boxShadow = '0 0 3px rgba(0,0,0,0.3)';
     app-mobile-search {
       display: block;
     }
+
+    .locate-btn {
+      bottom: 40px;
+    }
   }
 
   :host ::ng-deep .mapboxgl-popup.event-popup .mapboxgl-popup-content {
