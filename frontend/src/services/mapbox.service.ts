@@ -30,4 +30,22 @@ export class MapboxService {
             })
         );
     }
+
+    reverseGeocode(lat: number, lng: number): Observable<string | null> {
+        const url = `${this.apiUrl}/${lng},${lat}.json`;
+        const params = {
+            access_token: Environment.mapboxToken,
+            types: 'place,locality',
+            limit: '1',
+            language: 'it'
+        };
+
+        return this.http.get(url, { params }).pipe(
+            map((response: any) => {
+                const features = response?.features || [];
+                const placeFeature = features.find((f: any) => (f.place_type || []).includes('place')) || features[0];
+                return placeFeature?.text || placeFeature?.place_name || null;
+            })
+        );
+    }
 }

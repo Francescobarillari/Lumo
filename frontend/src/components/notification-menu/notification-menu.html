@@ -1,7 +1,13 @@
 <div class="notif-container">
-    <div class="notif-header mobile-header">
-        <mat-icon (click)="close.emit()">arrow_back</mat-icon>
-        <h1>Notifiche</h1>
+    <div class="notif-header">
+        <div class="title-wrap">
+            <h1>Notifiche</h1>
+        </div>
+        <div class="header-actions">
+            <button class="pill-btn" (click)="deleteRead()" title="Cancella notifiche lette">
+                <mat-icon>delete_sweep</mat-icon>
+            </button>
+        </div>
     </div>
     <div class="notif-list">
         @if (notifications.length === 0) {

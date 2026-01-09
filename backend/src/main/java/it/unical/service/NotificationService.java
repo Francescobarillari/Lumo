@@ -70,6 +70,21 @@ public class NotificationService implements INotificationService {
         notificationRepo.deleteById(notificationId);
     }
 
+    @Override
+    public void deleteReadNotifications(Long userId) {
+        notificationRepo.deleteByUserIdAndIsReadTrue(userId);
+    }
+
+    @Override
+    public void clearParticipationRequestNotification(Long creatorId, Long eventId, Long requesterId) {
+        if (creatorId == null || eventId == null || requesterId == null) return;
+        notificationRepo.deleteByUserIdAndRelatedEventIdAndRelatedUserIdAndType(
+                creatorId,
+                eventId,
+                requesterId,
+                "PARTICIPATION_REQUEST");
+    }
+
     // Check for events starting within 3 days that the user follows/participates in
     private void checkAndCreateFollowUpNotifications(Long userId) {
         User user = userRepo.findById(userId).orElse(null);
@@ -80,6 +95,11 @@ public class NotificationService implements INotificationService {
         LocalDate threeDaysFromNow = today.plusDays(3);
 
         for (Event event : user.getParticipatingEvents()) {
+            // Skip follow-up for events created by the user (owner shouldn't be treated as a participant)
+            if (event.getCreatorId() != null && event.getCreatorId().equals(userId)) {
+                continue;
+            }
+
             if (event.getDate() != null && !event.getDate().isBefore(today)
                     && !event.getDate().isAfter(threeDaysFromNow)) {
 

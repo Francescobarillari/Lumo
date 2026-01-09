@@ -18,4 +18,8 @@ public interface INotificationService {
     void updateType(Long notificationId, String newType);
 
     void deleteNotification(Long notificationId);
+
+    void deleteReadNotifications(Long userId);
+
+    void clearParticipationRequestNotification(Long creatorId, Long eventId, Long requesterId);
 }

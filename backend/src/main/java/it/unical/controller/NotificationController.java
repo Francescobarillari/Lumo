@@ -44,4 +44,10 @@ public class NotificationController {
         notificationService.deleteNotification(id);
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/read")
+    public ResponseEntity<Void> deleteReadNotifications(@RequestParam Long userId) {
+        notificationService.deleteReadNotifications(userId);
+        return ResponseEntity.ok().build();
+    }
 }

@@ -6,6 +6,7 @@ import { CircleIcon } from '../circle-icon/circle-icon';
 import { HttpClient } from '@angular/common/http';
 
 import { MatIconModule } from '@angular/material/icon';
+import { MapboxService } from '../../services/mapbox.service';
 
 @Component({
     selector: 'create-event-popup',
@@ -26,12 +27,12 @@ export class CreateEventPopup {
     latitude: number | null = null;
     longitude: number | null = null;
     locationText = 'Seleziona posizione sulla mappa';
+    selectedCity: string | null = null;
 
-    constructor(private fb: FormBuilder, private http: HttpClient) {
+    constructor(private fb: FormBuilder, private http: HttpClient, private mapboxService: MapboxService) {
         this.form = this.fb.group({
             title: ['', Validators.required],
             description: ['', Validators.required],
-            city: ['', Validators.required],
             date: ['', Validators.required],
             startTime: ['', Validators.required],
             endTime: [''],
@@ -83,7 +84,17 @@ export class CreateEventPopup {
     setLocation(lat: number, lng: number) {
         this.latitude = lat;
         this.longitude = lng;
+        this.selectedCity = null;
         this.locationText = 'Posizione selezionata';
+
+        this.mapboxService.reverseGeocode(lat, lng).subscribe({
+            next: (city) => {
+                if (!city) return;
+                this.selectedCity = city;
+                this.locationText = `Posizione: ${city}`;
+            },
+            error: (err) => console.error('Error reverse geocoding city', err)
+        });
     }
 
     onSubmit() {
@@ -98,7 +109,6 @@ export class CreateEventPopup {
         // Collect all field errors
         const controls = this.form.controls;
         if (controls['title'].invalid) this.errors.title = 'Il titolo è obbligatorio.';
-        if (controls['city'].invalid) this.errors.city = 'La città è obbligatoria.';
         if (controls['description'].invalid) this.errors.description = 'La descrizione è obbligatoria.';
         if (controls['date'].invalid) this.errors.date = 'La data è obbligatoria.';
         if (controls['startTime'].invalid) this.errors.startTime = 'L\'orario di inizio è obbligatorio.';
@@ -127,6 +137,8 @@ export class CreateEventPopup {
 
         if (this.latitude === null || this.longitude === null) {
             this.errors.location = 'Seleziona una posizione sulla mappa.';
+        } else if (!this.selectedCity) {
+            this.errors.location = 'Impossibile rilevare la città dalla posizione selezionata.';
         }
 
         if (Object.keys(this.errors).length > 0) {
@@ -137,7 +149,7 @@ export class CreateEventPopup {
         const eventData = {
             title: formValue.title,
             description: formValue.description,
-            city: formValue.city,
+            city: this.selectedCity,
             date: formValue.date,
             startTime: formValue.startTime,
             endTime: formValue.endTime,

@@ -62,4 +62,17 @@ public class NotificationServiceProxy implements INotificationService {
         System.out.println("[NotificationProxy] Deleting notification " + notificationId);
         realService.deleteNotification(notificationId);
     }
+
+    @Override
+    public void deleteReadNotifications(Long userId) {
+        System.out.println("[NotificationProxy] Deleting read notifications for user " + userId);
+        realService.deleteReadNotifications(userId);
+    }
+
+    @Override
+    public void clearParticipationRequestNotification(Long creatorId, Long eventId, Long requesterId) {
+        System.out.println("[NotificationProxy] Clearing participation request notification for creator " + creatorId
+                + ", event " + eventId + ", requester " + requesterId);
+        realService.clearParticipationRequestNotification(creatorId, eventId, requesterId);
+    }
 }

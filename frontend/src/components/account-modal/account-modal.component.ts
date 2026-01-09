@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UserService } from '../../services/user-service/user-service';
+import { CircleIcon } from '../circle-icon/circle-icon';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
@@ -7,7 +8,7 @@ import { FormsModule } from '@angular/forms';
 @Component({
     selector: 'app-account-modal',
     standalone: true,
-    imports: [CommonModule, MatIconModule, FormsModule],
+    imports: [CommonModule, MatIconModule, FormsModule, CircleIcon],
     templateUrl: './account-modal.html',
     styleUrl: './account-modal.css'
 })

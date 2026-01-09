@@ -348,6 +348,7 @@ public class EventService implements IEventService {
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new RuntimeException("Event not found"));
         it.unical.model.User requester = userRepository.findById(requesterId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+        Long creatorId = event.getCreatorId();
 
         if (requester.getPendingEvents().contains(event)) {
             System.out.println("User found in pending list. Proceeding...");
@@ -361,6 +362,9 @@ public class EventService implements IEventService {
                     "PARTICIPATION_ACCEPTED",
                     eventId,
                     null);
+            if (creatorId != null) {
+                notificationService.clearParticipationRequestNotification(creatorId, eventId, requesterId);
+            }
             System.out.println("Participation accepted and saved.");
         } else {
             System.out.println("ERROR: User NOT found in pending list for this event. Current pending events IDs: ");
@@ -378,6 +382,7 @@ public class EventService implements IEventService {
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new RuntimeException("Event not found"));
         it.unical.model.User requester = userRepository.findById(requesterId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+        Long creatorId = event.getCreatorId();
 
         if (requester.getPendingEvents().contains(event)) {
             requester.getPendingEvents().remove(event);
@@ -389,6 +394,9 @@ public class EventService implements IEventService {
                     "PARTICIPATION_REJECTED",
                     eventId,
                     null);
+            if (creatorId != null) {
+                notificationService.clearParticipationRequestNotification(creatorId, eventId, requesterId);
+            }
         }
     }
 

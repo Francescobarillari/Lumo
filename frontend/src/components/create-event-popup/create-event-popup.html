@@ -19,11 +19,9 @@
         </div>
 
         <form class="form">
-            <div class="two-column">
+            <div class="two-column single-column">
                 <FormField [error]="hasError('title')" [control]="$any(form.get('title'))" [type]="'text'"
                     placeholder="Titolo" />
-                <FormField [error]="hasError('city')" [control]="$any(form.get('city'))" [type]="'text'"
-                    placeholder="Città" />
             </div>
 
             <FormField [error]="hasError('description')" [control]="$any(form.get('description'))" [type]="'textarea'"

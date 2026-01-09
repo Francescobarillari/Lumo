@@ -35,6 +35,16 @@ export class NotificationMenuComponent implements OnInit {
         this.expandedId = this.expandedId === id ? null : id;
     }
 
+    deleteRead() {
+        if (!this.userId) return;
+        this.notifService.deleteReadNotifications(this.userId).subscribe({
+            next: () => {
+                this.notifications = this.notifications.filter(n => !n.isRead);
+            },
+            error: (err) => console.error('Error deleting read notifications', err)
+        });
+    }
+
     acceptRequest(n: Notification, event: Event) {
         event.stopPropagation();
         console.log('Attempting to accept request:', n);
