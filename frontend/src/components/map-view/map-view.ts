@@ -9,7 +9,6 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { interval, Subscription, switchMap } from 'rxjs';
 import { MobileSearchComponent } from '../mobile-search/mobile-search.component';
-import { ManagedEventsPopup } from '../managed-events-popup/managed-events-popup.component';
 
 // crea l'elemento HTML per il marker della posizione utente
 const userMarkerEl = document.createElement('div');
@@ -42,14 +41,6 @@ userMarkerEl.style.boxShadow = '0 0 3px rgba(0,0,0,0.3)';
     (openUserProfile)="openUserProfile.emit($event)">
   </app-mobile-search>
 
-  <app-managed-events-popup
-    *ngIf="managedPopupType"
-    [title]="managedPopupType === 'saved' ? 'Saved Events' : 'Joined Events'"
-    [events]="getManagedEvents()"
-    (close)="managedPopupType = null"
-    (focusEvent)="flyToEvent($event)"
-    (toggleFavorite)="onToggleFavorite($event)">
-  </app-managed-events-popup>
 
   <div id="map" class="map-container"></div>
   
@@ -123,7 +114,7 @@ userMarkerEl.style.boxShadow = '0 0 3px rgba(0,0,0,0.3)';
   }
   `,
   standalone: true,
-  imports: [SidebarComponent, MobileSearchComponent, ManagedEventsPopup, MatIconModule, MatSnackBarModule, CommonModule],
+  imports: [SidebarComponent, MobileSearchComponent, MatIconModule, MatSnackBarModule, CommonModule],
 })
 export class MapView implements AfterViewInit, OnDestroy, OnChanges {
   @Input() userId: string | null = null;
@@ -456,12 +447,4 @@ export class MapView implements AfterViewInit, OnDestroy, OnChanges {
     });
   }
 
-  getManagedEvents(): Event[] {
-    if (this.managedPopupType === 'saved') {
-      return this.events.filter(e => e.isSaved);
-    } else if (this.managedPopupType === 'participating') {
-      return this.events.filter(e => e.isParticipating);
-    }
-    return [];
-  }
 }

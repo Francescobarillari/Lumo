@@ -50,7 +50,7 @@
     flex: 1;
     overflow-y: auto;
     /* Scroll inside if content is too tall, though horizontal split usually aims to fit */
-    padding-right: 5px;
+    padding: 5%;
 }
 
 /* Scrollbar styling for the layout container if needed */
@@ -94,14 +94,65 @@
 
 @media (max-width: 768px) {
     .modal-header {
-        justify-content: space-between;
-        /* Arrow left, Title right */
-        gap: 16px;
+        height: 70px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 24px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 0;
+    }
+
+    .title-wrap {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+        z-index: 5;
     }
 
     .modal-header h2 {
-        text-align: right;
-        flex: 1;
+        font-size: 24px !important;
+        color: var(--color-accent) !important;
+        text-align: center;
+        margin: 0 !important;
+        width: auto !important;
+        height: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        line-height: normal !important;
+    }
+
+    .back-arrow {
+        position: absolute;
+        left: 24px;
+        font-size: 24px;
+        cursor: pointer;
+        color: var(--color-white);
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        height: 100%;
+        top: 0;
+    }
+
+    .close {
+        position: absolute;
+        right: 24px;
+        z-index: 10;
+        display: none !important;
+        /* Standardize: hide secondary close on mobile if back arrow exists? 
+                                     Actually, in AccountModal, back arrow goes back to profile, 
+                                     closing modal from profile. So it's enough. */
     }
 }
 
@@ -639,13 +690,15 @@
         border-radius: 0;
         border: none;
         overflow-y: auto;
-        padding: 24px 32px 80px 32px;
+        padding: 0 0 80px 0;
     }
 
     .content-row,
     .edit-content-layout {
         flex-direction: column;
         gap: 24px;
+        background: linear-gradient(160deg, rgba(20, 20, 20), rgba(12, 12, 12));
+
     }
 
     .vertical-divider {
@@ -658,6 +711,8 @@
     .edit-section {
         width: 100%;
         flex: none;
+        padding: 24px;
+        box-sizing: border-box;
     }
 
     .share-section-embedded {
@@ -676,6 +731,10 @@
 
     .edit-section {
         padding: 0 8px;
+    }
+
+    .user-list {
+        padding: 24px;
     }
 }
 

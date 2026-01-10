@@ -80,6 +80,13 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public List<it.unical.model.Event> getSavedEvents(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+        return new java.util.ArrayList<>(user.getSavedEvents());
+    }
+
+    @Override
     public String updateProfileImage(Long userId, byte[] imageData) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         user.setProfileImageData(imageData);

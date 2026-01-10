@@ -16,6 +16,8 @@ public interface IUserService {
 
     boolean toggleSavedEvent(Long userId, Long eventId);
 
+    List<it.unical.model.Event> getSavedEvents(Long userId);
+
     // New methods to replace Controller logic
     String updateProfileImage(Long userId, byte[] imageData);
 

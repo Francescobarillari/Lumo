@@ -16,7 +16,6 @@
 }
 
 .popup-container.desktop .popup-content {
-    padding: 0 30px 30px 30px;
     position: relative;
     align-items: center;
     width: 45%;
@@ -41,16 +40,6 @@
 .header {
     padding: 20px 0 10px 0;
     text-align: center;
-    width: 100%;
-}
-
-.form {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: var(--spacing-md);
-    /* Uniform spacing */
     width: 100%;
 }
 
@@ -213,6 +202,7 @@
     }
 
     .form {
+        background: linear-gradient(160deg, rgba(20, 20, 20, 0.96), rgba(12, 12, 12, 0.98));
         display: flex;
         flex-direction: column;
         justify-content: center;
