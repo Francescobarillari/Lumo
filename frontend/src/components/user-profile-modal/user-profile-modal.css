@@ -275,6 +275,8 @@
     padding-right: 4px;
     scrollbar-width: thin;
     scrollbar-color: var(--color-bit-gray) transparent;
+    max-height: 500px;
+    /* Limit height to prevent stretching entire modal */
 }
 
 .events-section {
