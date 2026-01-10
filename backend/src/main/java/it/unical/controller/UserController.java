@@ -81,6 +81,11 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/{userId}/saved-events")
+    public ResponseEntity<List<it.unical.model.Event>> getSavedEvents(@PathVariable Long userId) {
+        return ResponseEntity.ok(userService.getSavedEvents(userId));
+    }
+
     @PostMapping("/{followerId}/follow/{followedId}")
     public ResponseEntity<Void> followUser(
             @PathVariable Long followerId,

@@ -1,10 +1,10 @@
 <div class="modal-backdrop" (click)="onClose()">
     <div class="modal-container" (click)="$event.stopPropagation()">
         <div class="modal-header">
-            <button class="back-btn mobile-only" (click)="onClose()">
-                <mat-icon>arrow_back</mat-icon>
-            </button>
-            <h2 [class.yellow-title]="view !== 'profile'">{{ getViewTitle() }}</h2>
+            <mat-icon (click)="onClose()" class="mobile-only back-arrow">arrow_back</mat-icon>
+            <div class="title-wrap">
+                <h2 [class.yellow-title]="view !== 'profile'">{{ getViewTitle() }}</h2>
+            </div>
             <CircleIcon class="close tablet-desktop-only" [path]="'assets/icon/close.svg'" (click)="onClose()" />
         </div>
 
@@ -115,12 +115,6 @@
         </div>
 
         <div class="user-list-view" *ngIf="view !== 'profile' && view !== 'edit-profile'">
-            <div class="list-header">
-                <button class="back-btn" (click)="onClose()">
-                    <mat-icon>arrow_back</mat-icon>
-                </button>
-                <h3>{{ view === 'followers' ? 'Followers' : 'Following' }}</h3>
-            </div>
 
             <div class="user-list" *ngIf="!loadingList; else loadingTemplate">
                 <div class="user-item" *ngFor="let u of userList">

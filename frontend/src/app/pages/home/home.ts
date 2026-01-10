@@ -460,12 +460,6 @@ export class Home implements OnInit {
     } else if (action === 'crea-evento' || action === 'add-event') {
       console.log('Crea Evento clicked');
       this.showCreateEventPopup = true;
-    } else if (action === 'saved-events') {
-      console.log('Saved Events clicked');
-      if (this.mapView) this.mapView.managedPopupType = 'saved';
-    } else if (action === 'participating-events') {
-      console.log('Participating Events clicked');
-      if (this.mapView) this.mapView.managedPopupType = 'participating';
     }
   }
 

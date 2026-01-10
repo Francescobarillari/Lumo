@@ -38,9 +38,9 @@ export class AccountModalComponent {
 
     getViewTitle(): string {
         switch (this.view) {
-            case 'edit-profile': return 'Edit profile';
+            case 'edit-profile': return 'Modifica Profilo';
             case 'followers': return 'Followers';
-            case 'following': return 'Following';
+            case 'following': return 'Seguiti';
             default: return 'Account';
         }
     }

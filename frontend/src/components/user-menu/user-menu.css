@@ -102,7 +102,7 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    background: var(--color-dark-gray);
+    background: linear-gradient(160deg, rgba(20, 20, 20), rgba(12, 12, 12));
     overflow-y: auto;
   }
 

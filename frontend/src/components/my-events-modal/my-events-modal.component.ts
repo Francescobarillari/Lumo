@@ -20,11 +20,23 @@ export class MyEventsModal implements OnInit {
     view: 'organized' | 'joined' = 'organized'; // Simplified/restored if needed, or keep activeTab
 
     getViewTitle(): string {
-        return this.activeTab === 'ORGANIZED' ? 'My Events' : 'Joined Events';
+        if (this.expandedEventRequestsId) return 'Manage Requests';
+        if (this.activeTab === 'ORGANIZED') return 'My Events';
+        if (this.activeTab === 'JOINED') return 'Joined Events';
+        return 'Saved Events';
     }
-    activeTab: 'ORGANIZED' | 'JOINED' = 'ORGANIZED';
+
+    onBack() {
+        if (this.expandedEventRequestsId) {
+            this.expandedEventRequestsId = null;
+        } else {
+            this.close.emit();
+        }
+    }
+    activeTab: 'ORGANIZED' | 'JOINED' | 'SAVED' = 'ORGANIZED';
     organizedEvents: Event[] = [];
     joinedEvents: Event[] = [];
+    savedEvents: Event[] = [];
     loading = false;
 
     // For expanding requests view for a specific event
@@ -47,16 +59,25 @@ export class MyEventsModal implements OnInit {
         this.eventService.getJoinedEvents(this.userId).subscribe({
             next: (events) => {
                 this.joinedEvents = events;
-                this.loading = false;
             },
             error: (err) => {
                 console.error('Error loading joined events', err);
+            }
+        });
+
+        this.eventService.getSavedEvents(this.userId).subscribe({
+            next: (events) => {
+                this.savedEvents = events;
+                this.loading = false;
+            },
+            error: (err) => {
+                console.error('Error loading saved events', err);
                 this.loading = false;
             }
         });
     }
 
-    switchTab(tab: 'ORGANIZED' | 'JOINED') {
+    switchTab(tab: 'ORGANIZED' | 'JOINED' | 'SAVED') {
         this.activeTab = tab;
         this.expandedEventRequestsId = null; // Reset expansion
     }

@@ -2,9 +2,7 @@
 
 <div class="modal-container">
     <div class="modal-header">
-        <button class="back-btn mobile-only" (click)="close.emit()">
-            <mat-icon>arrow_back</mat-icon>
-        </button>
+        <mat-icon (click)="onBack()" class="mobile-only back-arrow">arrow_back</mat-icon>
 
         <div class="tabs tablet-desktop-only">
             <button class="tab-btn" [class.active]="activeTab === 'ORGANIZED'" (click)="switchTab('ORGANIZED')">
@@ -13,12 +11,33 @@
             <button class="tab-btn" [class.active]="activeTab === 'JOINED'" (click)="switchTab('JOINED')">
                 Joined Events
             </button>
+            <button class="tab-btn" [class.active]="activeTab === 'SAVED'" (click)="switchTab('SAVED')">
+                Saved Events
+            </button>
         </div>
 
-        <h2 class="mobile-only yellow-title">{{ getViewTitle() }}</h2>
+        <div class="title-wrap mobile-only">
+            <h2 class="yellow-title">{{ getViewTitle() }}</h2>
+        </div>
 
         <button class="close-btn tablet-desktop-only" (click)="close.emit()">
             <mat-icon>close</mat-icon>
+        </button>
+    </div>
+
+    <!-- Mobile Tab Bar -->
+    <div class="mobile-tabs mobile-only">
+        <button class="mobile-tab-btn" [class.active]="activeTab === 'ORGANIZED'" (click)="switchTab('ORGANIZED')">
+            <mat-icon>event</mat-icon>
+            <span>My Events</span>
+        </button>
+        <button class="mobile-tab-btn" [class.active]="activeTab === 'JOINED'" (click)="switchTab('JOINED')">
+            <mat-icon>group</mat-icon>
+            <span>Joined</span>
+        </button>
+        <button class="mobile-tab-btn" [class.active]="activeTab === 'SAVED'" (click)="switchTab('SAVED')">
+            <mat-icon>bookmark</mat-icon>
+            <span>Saved</span>
         </button>
     </div>
 
@@ -28,9 +47,9 @@
         }
 
         @if (!loading && activeTab === 'ORGANIZED') {
-        <div class="events-list">
+        <div class="events-list" [class.has-expanded-requests]="expandedEventRequestsId">
             @for (event of organizedEvents; track event.id) {
-            <div class="organized-event-item">
+            <div class="organized-event-item" [class.expanded]="expandedEventRequestsId === event.id">
                 <div class="event-summary">
                     <div class="event-info">
                         <h3>{{ event.title }}</h3>
@@ -128,6 +147,20 @@
             }
             @empty {
             <div class="empty-state">You haven't joined any events yet.</div>
+            }
+        </div>
+        }
+
+        @if (!loading && activeTab === 'SAVED') {
+        <div class="events-grid">
+            @for (event of savedEvents; track event.id) {
+            <app-event-card [title]="event.title" [location]="event.city" [dateTime]="formatDateTime(event)"
+                [id]="event.id!" [isSaved]="true" [isParticipating]="!!event.isParticipating" [showDistance]="false"
+                [showActions]="false">
+            </app-event-card>
+            }
+            @empty {
+            <div class="empty-state">You haven't saved any events yet.</div>
             }
         </div>
         }

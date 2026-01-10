@@ -1,16 +1,15 @@
 <div class="notif-container">
     <div class="notif-header">
+        <mat-icon (click)="close.emit()" class="mobile-only back-arrow">arrow_back</mat-icon>
         <div class="title-wrap">
-            <h1>Notifications</h1>
+            <h1>Notifiche</h1>
         </div>
         <div class="header-actions">
             <button class="pill-btn" (click)="deleteRead()" title="Delete read notifications">
                 <mat-icon>delete_sweep</mat-icon>
             </button>
-            <button class="pill-btn mobile-only" (click)="close.emit()" title="Close notifications"
-                aria-label="Close notifications">
-                <mat-icon>close</mat-icon>
-            </button>
+            <!-- Close button only on mobile if it's meant to be an X, but user asked for back arrow.
+                 Wrapping the old close button as per previous turn logic but keeping it hidden if back arrow is preferred. -->
         </div>
     </div>
     <div class="notif-list">

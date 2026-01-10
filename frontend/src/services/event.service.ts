@@ -29,6 +29,10 @@ export class EventService {
     return this.http.post<{ isSaved: boolean }>(`http://localhost:8080/api/users/${userId}/saved-events/${eventId}`, {});
   }
 
+  getSavedEvents(userId: string | number): Observable<Event[]> {
+    return this.http.get<Event[]>(`http://localhost:8080/api/users/${userId}/saved-events`);
+  }
+
   // Utility per futuro: ottenere singolo evento
   // Utility per futuro: ottenere singolo evento
   getEventById(id: number, userId?: string): Observable<Event> {
