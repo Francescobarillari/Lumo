@@ -26,8 +26,59 @@ export class NotificationMenuComponent implements OnInit {
     loadNotifications() {
         if (!this.userId) return;
         this.notifService.getNotifications(this.userId).subscribe(list => {
-            this.notifications = list;
+            this.notifications = list.map(n => this.translateNotification(n));
         });
+    }
+
+    translateNotification(n: Notification): Notification {
+        // Translate Title
+        switch (n.type) {
+            case 'APPROVED':
+                n.title = 'Event Approved';
+                // Try to extract event name "Il tuo evento 'X' è stato approvato..."
+                // Regex matches single quotes or just assumes pattern
+                const matchApp = n.message.match(/evento '(.+?)'/);
+                if (matchApp && matchApp[1]) {
+                    n.message = `Your event '${matchApp[1]}' has been approved and is now visible!`;
+                } else if (n.message.includes('approvato')) {
+                    n.message = 'Your event has been approved and is now visible!';
+                }
+                break;
+            case 'REJECTED':
+                n.title = 'Event Rejected';
+                const matchRej = n.message.match(/evento '(.+?)'/);
+                if (matchRej && matchRej[1]) {
+                    n.message = `Your event '${matchRej[1]}' has been rejected.`;
+                } else {
+                    n.message = 'Your event has been rejected.';
+                }
+                break;
+            case 'PARTICIPATION_REQUEST':
+                n.title = 'Participation Request';
+                // "L'utente X chiede di partecipare..." or similar
+                // This is harder to parse without exact string, so we might leave message or try generic
+                // If we assume structure: "L'utente {name} vuole partecipare all'evento '{event}'"
+                const matchReq = n.message.match(/L'utente (.+?) vuole partecipare all'evento '(.+?)'/);
+                if (matchReq) {
+                    n.message = `User '${matchReq[1]}' wants to join event '${matchReq[2]}'.`;
+                }
+                break;
+            case 'PARTICIPATION_ACCEPTED':
+                n.title = 'Request Accepted';
+                n.message = 'Your request to join the event has been accepted!';
+                break;
+            case 'PARTICIPATION_REJECTED':
+                n.title = 'Request Rejected';
+                n.message = 'Your request to join the event has been rejected.';
+                break;
+            case 'REQUEST_ACCEPTED':
+                n.title = 'Request Accepted'; // Past tense decision
+                break;
+            case 'REQUEST_REJECTED':
+                n.title = 'Request Rejected';
+                break;
+        }
+        return n;
     }
 
     toggleExpand(id: number, event: Event) {

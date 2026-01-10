@@ -18,13 +18,14 @@
       </div>
       <div class="action-icons">
         @if (hasCoordinates()) {
-        <button type="button" class="action-icon map-icon" (click)="openInMaps($event)" aria-label="Apri su Google Maps">
+        <button type="button" class="action-icon map-icon" (click)="openInMaps($event)"
+          aria-label="Open in Google Maps">
           <mat-icon>map</mat-icon>
         </button>
         }
         @if (!event.isParticipating) {
-        <button class="action-icon favorite-icon" [class.saved]="isSaved()" (click)="toggleFavorite.emit(); $event.stopPropagation()"
-          aria-label="Salva evento">
+        <button class="action-icon favorite-icon" [class.saved]="isSaved()"
+          (click)="toggleFavorite.emit(); $event.stopPropagation()" aria-label="Save event">
           <mat-icon>{{ isSaved() ? 'favorite' : 'favorite_border' }}</mat-icon>
         </button>
         }
@@ -34,11 +35,11 @@
     <div class="chip-row">
       <span class="chip">
         <mat-icon>group</mat-icon>
-        <span>{{ getActualParticipants() }} partecipanti</span>
+        <span>{{ getActualParticipants() }} participants</span>
       </span>
       <span class="chip" *ngIf="event.occupiedSpots !== undefined">
         <mat-icon>event_available</mat-icon>
-        <span>{{ event.nPartecipants - (event.occupiedSpots || 0) }} posti liberi</span>
+        <span>{{ event.nPartecipants - (event.occupiedSpots || 0) }} spots left</span>
       </span>
       <span class="chip">
         <mat-icon>euro</mat-icon>
@@ -57,7 +58,7 @@
           <div class="organizer-avatar placeholder">{{ getInitials(organizerName) }}</div>
           }
           <div class="eventer-text">
-            <span class="eventer-label">Organizzatore</span>
+            <span class="eventer-label">Organizer</span>
             <span class="eventer-name">{{ organizerName }}</span>
           </div>
         </button>
@@ -65,7 +66,7 @@
 
       @if (currentUserId && (creatorId || event.creatorId)) {
       @if (currentUserId.toString() === (creatorId || event.creatorId)?.toString()) {
-      <span class="is-organizer-badge">Tu</span>
+      <span class="is-organizer-badge">You</span>
       } @else {
       @if (!isFollowing && !isLoadingFollowStatus) {
       <button class="icon-circle follow-btn-popup" (click)="followOrganizer(); $event.stopPropagation()">
@@ -77,7 +78,7 @@
           (click)="toggleNotifications($event)">
           <mat-icon>{{ notificationsEnabled ? 'notifications' : 'notifications_off' }}</mat-icon>
         </button>
-        <span class="notify-label">{{ notificationsEnabled ? 'Notifiche attive' : 'Notifiche spente' }}</span>
+        <span class="notify-label">{{ notificationsEnabled ? 'Notifications on' : 'Notifications off' }}</span>
       </div>
       }
       }
@@ -85,19 +86,19 @@
     </div>
 
     @if (isOrganizer()) {
-    <div class="owner-note">Non puoi partecipare al tuo stesso evento</div>
-    <button class="button cancel-btn" type="button" (click)="onDeleteEvent()">Cancella evento</button>
+    <div class="owner-note">You cannot join your own event</div>
+    <button class="button cancel-btn" type="button" (click)="onDeleteEvent()">Delete event</button>
     } @else {
-      @if (event.participationStatus === 'ACCEPTED') {
-      <div class="participation-actions">
-        <button class="button partecipa-btn accepted" disabled>Sei dentro</button>
-        <button class="button leave-btn" type="button" (click)="onLeave()">Leave</button>
-      </div>
-      } @else if (event.participationStatus === 'PENDING') {
-      <button class="button partecipa-btn pending" disabled>In Attesa</button>
-      } @else {
-      <button class="button partecipa-btn" (click)="onParticipate()">Richiedi partecipazione</button>
-      }
+    @if (event.participationStatus === 'ACCEPTED') {
+    <div class="participation-actions">
+      <button class="button partecipa-btn accepted" disabled>Joined</button>
+      <button class="button leave-btn" type="button" (click)="onLeave()">Leave</button>
+    </div>
+    } @else if (event.participationStatus === 'PENDING') {
+    <button class="button partecipa-btn pending" disabled>Pending</button>
+    } @else {
+    <button class="button partecipa-btn" (click)="onParticipate()">Request to join</button>
+    }
     }
   </div>
 </div>

@@ -11,11 +11,11 @@
             </a>
             <a href="javascript:void(0)" class="nav-item" [class.active]="currentView === 'events'"
                 (click)="setView('events')">
-                <mat-icon>event</mat-icon> Eventi
+                <mat-icon>event</mat-icon> Events
             </a>
             <a href="javascript:void(0)" class="nav-item" [class.active]="currentView === 'users'"
                 (click)="setView('users')">
-                <mat-icon>people</mat-icon> Utenti
+                <mat-icon>people</mat-icon> Users
             </a>
         </nav>
         <button class="btn-logout" (click)="signOut()">
@@ -29,9 +29,9 @@
             @if (currentView === 'dashboard') {
             <h1>Dashboard Overview</h1>
             } @else if (currentView === 'events') {
-            <h1>Gestione Eventi</h1>
+            <h1>Event Management</h1>
             } @else if (currentView === 'users') {
-            <h1>Gestione Utenti</h1>
+            <h1>User Management</h1>
             }
         </div>
 
@@ -42,21 +42,21 @@
                 <div class="stat-icon users-icon"><mat-icon>people</mat-icon></div>
                 <div class="stat-info">
                     <span class="stat-value">{{ totalUsers }}</span>
-                    <span class="stat-label">Utenti Registrati</span>
+                    <span class="stat-label">Registered Users</span>
                 </div>
             </div>
             <div class="stat-card" (click)="setView('events')">
                 <div class="stat-icon events-icon"><mat-icon>event</mat-icon></div>
                 <div class="stat-info">
                     <span class="stat-value">{{ totalEvents }}</span>
-                    <span class="stat-label">Totale Eventi</span>
+                    <span class="stat-label">Total Events</span>
                 </div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon pending-icon"><mat-icon>assignment</mat-icon></div>
                 <div class="stat-info">
                     <span class="stat-value">{{ pendingEventsCount }}</span>
-                    <span class="stat-label">In Attesa di Approvazione</span>
+                    <span class="stat-label">Pending Approval</span>
                 </div>
             </div>
         </div>
@@ -67,18 +67,18 @@
             <!-- Recent Requests Table -->
             <div class="requests-section">
                 <div class="section-header">
-                    <h3>Richieste Recenti</h3>
-                    <button class="btn-link" (click)="setView('events')">Vedi tutte</button>
+                    <h3>Recent Requests</h3>
+                    <button class="btn-link" (click)="setView('events')">See all</button>
                 </div>
 
                 <div class="table-container">
                     <table>
                         <thead>
                             <tr>
-                                <th>EVENTO</th>
-                                <th>ORGANIZZATORE</th>
-                                <th>DATA</th>
-                                <th>AZIONI</th>
+                                <th>EVENT</th>
+                                <th>ORGANIZER</th>
+                                <th>DATE</th>
+                                <th>ACTIONS</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -101,15 +101,15 @@
                                 <td>
                                     <div class="action-buttons">
                                         @if (!eventsCurrentlyRejecting.includes(ev.id)) {
-                                        <button class="btn-icon approve" (click)="approveEvent(ev)" title="Approva">
+                                        <button class="btn-icon approve" (click)="approveEvent(ev)" title="Approve">
                                             <mat-icon>check</mat-icon>
                                         </button>
-                                        <button class="btn-icon reject" (click)="rejectEvent(ev)" title="Rifiuta">
+                                        <button class="btn-icon reject" (click)="rejectEvent(ev)" title="Reject">
                                             <mat-icon>close</mat-icon>
                                         </button>
                                         } @else {
                                         <div class="inline-reject">
-                                            <input #reasonInput type="text" placeholder="Motivo..." class="input-reason"
+                                            <input #reasonInput type="text" placeholder="Reason..." class="input-reason"
                                                 autoFocus (keyup.enter)="confirmReject(ev, reasonInput.value)">
                                             <button class="btn-icon approve"
                                                 (click)="confirmReject(ev, reasonInput.value)">
@@ -126,7 +126,7 @@
                             }
                             @if (recentRequests.length === 0) {
                             <tr>
-                                <td colspan="4" class="no-data">Nessuna richiesta pendente.</td>
+                                <td colspan="4" class="no-data">No pending requests.</td>
                             </tr>
                             }
                         </tbody>
@@ -136,15 +136,15 @@
 
             <!-- Quick Actions -->
             <div class="actions-section">
-                <h3>Azioni Rapide</h3>
+                <h3>Quick Actions</h3>
                 <div class="quick-actions">
                     <button class="action-card" (click)="setView('events')">
                         <mat-icon class="action-icon">verified_user</mat-icon>
-                        <span>Gestisci Eventi</span>
+                        <span>Manage Events</span>
                     </button>
                     <button class="action-card outline" (click)="setView('users')">
                         <mat-icon class="action-icon">search</mat-icon>
-                        <span>Cerca Utenti</span>
+                        <span>Search Users</span>
                     </button>
                 </div>
             </div>
@@ -158,7 +158,7 @@
             <div class="search-container">
                 <mat-icon class="search-icon">search</mat-icon>
                 <input type="text" [(ngModel)]="searchTermEvents"
-                    placeholder="Cerca eventi per titolo, città o organizzatore..." class="search-input">
+                    placeholder="Search events by title, city or organizer..." class="search-input">
             </div>
 
             <div class="table-container">
@@ -166,11 +166,11 @@
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>EVENTO</th>
-                            <th>ORGANIZZATORE</th>
-                            <th>STATO</th>
-                            <th>DATA</th>
-                            <th>AZIONI</th>
+                            <th>EVENT</th>
+                            <th>ORGANIZER</th>
+                            <th>STATUS</th>
+                            <th>DATE</th>
+                            <th>ACTIONS</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -192,9 +192,9 @@
                             </td>
                             <td>
                                 @if(ev.isApproved) {
-                                <span class="status-badge approved">Approvato</span>
+                                <span class="status-badge approved">Approved</span>
                                 } @else {
-                                <span class="status-badge pending">In Attesa</span>
+                                <span class="status-badge pending">Pending</span>
                                 }
                             </td>
                             <td>{{ ev.date }}</td>
@@ -202,15 +202,15 @@
                                 <div class="action-buttons">
                                     @if(!ev.isApproved) {
                                     @if (!eventsCurrentlyRejecting.includes(ev.id)) {
-                                    <button class="btn-icon approve" (click)="approveEvent(ev)" title="Approva">
+                                    <button class="btn-icon approve" (click)="approveEvent(ev)" title="Approve">
                                         <mat-icon>check</mat-icon>
                                     </button>
-                                    <button class="btn-icon reject" (click)="rejectEvent(ev)" title="Rifiuta">
+                                    <button class="btn-icon reject" (click)="rejectEvent(ev)" title="Reject">
                                         <mat-icon>close</mat-icon>
                                     </button>
                                     } @else {
                                     <div class="inline-reject">
-                                        <input #reasonInput type="text" placeholder="Motivo..." class="input-reason"
+                                        <input #reasonInput type="text" placeholder="Reason..." class="input-reason"
                                             autoFocus (keyup.enter)="confirmReject(ev, reasonInput.value)">
                                         <button class="btn-icon approve" (click)="confirmReject(ev, reasonInput.value)">
                                             <mat-icon>check</mat-icon>
@@ -223,7 +223,7 @@
                                     }
 
                                     <button *ngIf="ev.isApproved" class="btn-icon delete" (click)="deleteEvent(ev)"
-                                        title="Elimina definitivamente">
+                                        title="Delete Permanently">
                                         <mat-icon>delete_outline</mat-icon>
                                     </button>
                                 </div>
@@ -241,7 +241,7 @@
             <!-- Search for Users -->
             <div class="search-container">
                 <mat-icon class="search-icon">search</mat-icon>
-                <input type="text" [(ngModel)]="searchTermUsers" placeholder="Cerca utenti per nome o email..."
+                <input type="text" [(ngModel)]="searchTermUsers" placeholder="Search users by name or email..."
                     class="search-input">
             </div>
 
@@ -250,9 +250,9 @@
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>UTENTE</th>
+                            <th>USER</th>
                             <th>EMAIL</th>
-                            <th>RUOLO</th>
+                            <th>ROLE</th>
                         </tr>
                     </thead>
                     <tbody>

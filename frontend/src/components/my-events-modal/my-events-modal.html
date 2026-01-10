@@ -38,11 +38,11 @@
                         <span class="event-date">{{ formatDateTime(event) }}</span>
                         <span class="requests-badge" *ngIf="event.pendingUsersList?.length"
                             (click)="toggleRequests(event.id)">
-                            {{ event.pendingUsersList?.length }} Richieste
+                            {{ event.pendingUsersList?.length }} Requests
                         </span>
                     </div>
                     <div class="event-actions">
-                        <button class="icon-btn danger" (click)="deleteEvent(event)" title="Cancella evento">
+                        <button class="icon-btn danger" (click)="deleteEvent(event)" title="Delete event">
                             <mat-icon>delete</mat-icon>
                         </button>
                         <button class="icon-btn" (click)="toggleRequests(event.id)" title="Manage Requests">
@@ -56,14 +56,14 @@
                 <div class="requests-panel">
                     <!-- Event Overview Section -->
                     <div class="event-overview-section">
-                        <h4>Panoramica Evento</h4>
+                        <h4>Event Overview</h4>
                         <div class="stats-card">
                             <div class="stat-item">
-                                <span class="stat-label">Partecipanti Accettati</span>
+                                <span class="stat-label">Accepted Participants</span>
                                 <span class="stat-value">{{ event.acceptedUsersList?.length || 0 }}</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-label">Capacità</span>
+                                <span class="stat-label">Capacity</span>
                                 <span class="stat-value">
                                     {{ event.acceptedUsersList?.length || 0 }} / {{ event.nPartecipants }}
                                 </span>
@@ -72,7 +72,7 @@
 
                         @if (event.acceptedUsersList?.length) {
                         <div class="participants-list">
-                            <h5 class="section-subtitle">Persone Accettate</h5>
+                            <h5 class="section-subtitle">Accepted People</h5>
                             <div class="participants-grid">
                                 @for (user of event.acceptedUsersList; track user.id) {
                                 <div class="participant-chip">
@@ -84,13 +84,13 @@
                             </div>
                         </div>
                         } @else {
-                        <p class="no-data-msg">Nessun partecipante accettato al momento.</p>
+                        <p class="no-data-msg">No participants accepted yet.</p>
                         }
                     </div>
 
                     <!-- Pending Requests Section -->
                     <div class="pending-requests-section">
-                        <h4>Richieste in attesa ({{ event.pendingUsersList?.length || 0 }})</h4>
+                        <h4>Pending Requests ({{ event.pendingUsersList?.length || 0 }})</h4>
                         @if (event.pendingUsersList?.length) {
                         @for (user of event.pendingUsersList; track user.id) {
                         <div class="request-item">
@@ -99,13 +99,13 @@
                                 <span>{{ user.name }} {{ user.surname }}</span>
                             </div>
                             <div class="request-actions">
-                                <button class="accept-btn" (click)="acceptRequest(event, user)">Accetta</button>
-                                <button class="reject-btn" (click)="rejectRequest(event, user)">Rifiuta</button>
+                                <button class="accept-btn" (click)="acceptRequest(event, user)">Accept</button>
+                                <button class="reject-btn" (click)="rejectRequest(event, user)">Reject</button>
                             </div>
                         </div>
                         }
                         } @else {
-                        <p class="no-requests">Nessuna richiesta in attesa.</p>
+                        <p class="no-requests">No pending requests.</p>
                         }
                     </div>
                 </div>

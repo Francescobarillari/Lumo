@@ -1,21 +1,21 @@
 <div class="notif-container">
     <div class="notif-header">
         <div class="title-wrap">
-            <h1>Notifiche</h1>
+            <h1>Notifications</h1>
         </div>
         <div class="header-actions">
-            <button class="pill-btn" (click)="deleteRead()" title="Cancella notifiche lette">
+            <button class="pill-btn" (click)="deleteRead()" title="Delete read notifications">
                 <mat-icon>delete_sweep</mat-icon>
             </button>
-            <button class="pill-btn mobile-only" (click)="close.emit()" title="Chiudi notifiche"
-                aria-label="Chiudi notifiche">
+            <button class="pill-btn mobile-only" (click)="close.emit()" title="Close notifications"
+                aria-label="Close notifications">
                 <mat-icon>close</mat-icon>
             </button>
         </div>
     </div>
     <div class="notif-list">
         @if (notifications.length === 0) {
-        <div class="empty-state">Nessuna notifica</div>
+        <div class="empty-state">No notifications</div>
         } @else {
         @for (n of notifications; track n.id) {
         <div class="notif-item" [class.unread]="!n.isRead">
@@ -35,10 +35,10 @@
 
                 @if (n.type === 'PARTICIPATION_REQUEST') {
                 <div class="action-buttons">
-                    <div class="btn-approve" (click)="acceptRequest(n, $event)" title="Accetta">
+                    <div class="btn-approve" (click)="acceptRequest(n, $event)" title="Accept">
                         <mat-icon>check</mat-icon>
                     </div>
-                    <div class="btn-reject" (click)="rejectRequest(n, $event)" title="Rifiuta">
+                    <div class="btn-reject" (click)="rejectRequest(n, $event)" title="Reject">
                         <mat-icon>close</mat-icon>
                     </div>
                 </div>
@@ -46,13 +46,13 @@
 
                 @if (n.type === 'REQUEST_ACCEPTED') {
                 <div class="status-msg success">
-                    <mat-icon>check_circle</mat-icon> Accettata
+                    <mat-icon>check_circle</mat-icon> Accepted
                 </div>
                 }
 
                 @if (n.type === 'REQUEST_REJECTED') {
                 <div class="status-msg error">
-                    <mat-icon>cancel</mat-icon> Rifiutata
+                    <mat-icon>cancel</mat-icon> Rejected
                 </div>
                 }
 

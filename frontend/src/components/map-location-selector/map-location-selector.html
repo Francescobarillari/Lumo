@@ -2,13 +2,13 @@
 
 <div class="selector-container">
     <div class="instruction-text">
-        📍 Seleziona una posizione per il tuo evento
+        📍 Select a location for your event
     </div>
 
     <div class="search-section">
         <div class="search-bar">
             <mat-icon>search</mat-icon>
-            <input type="text" placeholder="Cerca città o luogo..." [(ngModel)]="searchQuery" (input)="onSearch()">
+            <input type="text" placeholder="Search city or place..." [(ngModel)]="searchQuery" (input)="onSearch()">
             @if (searchQuery) {
             <mat-icon class="clear-icon" (click)="searchQuery = ''; cityResults = []">close</mat-icon>
             }
@@ -29,6 +29,6 @@
     <div id="location-map" class="map"></div>
 
     <button class="button confirm-btn" (click)="onConfirm()" [disabled]="!selectedCoords">
-        Conferma Posizione
+        Confirm Location
     </button>
 </div>

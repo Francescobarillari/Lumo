@@ -190,8 +190,9 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
     formatHeroDate(): string {
         const date = this.event.date ? new Date(`${this.event.date}T00:00:00`) : null;
         const start = this.event.startTime ? this.event.startTime.slice(0, 5) : null;
-        const weekday = date ? date.toLocaleDateString('it-IT', { weekday: 'short' }) : '';
-        const dayMonth = date ? date.toLocaleDateString('it-IT', { day: '2-digit', month: 'short' }) : '';
+        // Use 'en-US' or default browser locale for English
+        const weekday = date ? date.toLocaleDateString('en-US', { weekday: 'short' }) : '';
+        const dayMonth = date ? date.toLocaleDateString('en-US', { day: '2-digit', month: 'short' }) : '';
 
         const datePart = [weekday, dayMonth].filter(Boolean).join(' ');
         const timePart = start ? start : '';
@@ -208,7 +209,7 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
     getSubtitle(): string {
         if (this.event.city) return this.event.city;
         if (this.event.description) return this.event.description;
-        return 'Luogo da definire';
+        return 'Location TBD';
     }
 
     hasCoordinates(): boolean {
@@ -235,7 +236,7 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
         const end = this.event.endTime ? this.event.endTime.slice(0, 5) : null;
 
         const datePart = date
-            ? date.toLocaleDateString('it-IT', { day: '2-digit', month: 'short' })
+            ? date.toLocaleDateString('en-US', { day: '2-digit', month: 'short' })
             : '';
         const timePart = end ? `${start} — ${end}` : start;
 
@@ -244,9 +245,9 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
 
     formatCost(): string {
         if (this.event.costPerPerson !== undefined && this.event.costPerPerson !== null) {
-            return `€${this.event.costPerPerson} per persona`;
+            return `${this.event.costPerPerson} per person`;
         }
-        return 'Gratuito';
+        return 'Free';
     }
 
     getInitials(name: string): string {

@@ -4,13 +4,13 @@
     <div class="popup-content">
         <div class="mobile-header">
             <mat-icon (click)="onClose()">arrow_back</mat-icon>
-            <h1>Crea Evento</h1>
+            <h1>Create Event</h1>
         </div>
 
         <CircleIcon class="close tablet-desktop-only" [path]="'assets/icon/close.svg'" (click)="onClose()" />
 
         <div class="header desktop-header">
-            <h1>Crea Evento</h1>
+            <h1>Create Event</h1>
             @if(generalError) {
             <p class="error">{{ generalError }}</p>
             } @else if ((errors | keyvalue).length > 0) {
@@ -21,33 +21,33 @@
         <form class="form">
             <div class="two-column single-column">
                 <FormField [error]="hasError('title')" [control]="$any(form.get('title'))" [type]="'text'"
-                    placeholder="Titolo" />
+                    placeholder="Title" />
             </div>
 
             <FormField [error]="hasError('description')" [control]="$any(form.get('description'))" [type]="'textarea'"
-                placeholder="Descrizione" customClass="tall-field" />
+                placeholder="Description" customClass="tall-field" />
 
             <div class="three-column">
                 <FormField [error]="hasError('date')" [control]="$any(form.get('date'))" [type]="'date'"
-                    placeholder="Data" />
+                    placeholder="Date" />
                 <FormField [error]="hasError('startTime')" [control]="$any(form.get('startTime'))" [type]="'time'"
-                    placeholder="Inizio" />
+                    placeholder="Start" />
                 <FormField [error]="hasError('endTime')" [control]="$any(form.get('endTime'))" [type]="'time'"
-                    placeholder="Fine" />
+                    placeholder="End" />
             </div>
 
             <div class="two-column">
                 <FormField [error]="hasError('nPartecipants')" [control]="$any(form.get('nPartecipants'))"
-                    [type]="'number'" placeholder="N. Partecipanti" />
+                    [type]="'number'" placeholder="Max Participants" />
                 <FormField [error]="hasError('costPerPerson')" [control]="$any(form.get('costPerPerson'))"
-                    [type]="'number'" [min]="0" placeholder="Costo (€)" />
+                    [type]="'number'" [min]="0" placeholder="Cost (€)" />
             </div>
 
             <button type="button" class="button location-btn" (click)="selectLocationOnMap()">
                 📍 {{ locationText }}
             </button>
 
-            <button type="button" class="button" (click)="onSubmit()">Crea Evento</button>
+            <button type="button" class="button" (click)="onSubmit()">Create Event</button>
         </form>
     </div>
 </div>

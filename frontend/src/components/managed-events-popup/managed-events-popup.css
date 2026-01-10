@@ -25,6 +25,29 @@
     min-height: 100%;
 }
 
+.close-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    margin-left: auto;
+}
+
+.tablet-desktop-only {
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .tablet-desktop-only {
+        display: block;
+    }
+
+    .mobile-header mat-icon:first-child {
+        display: none;
+    }
+}
+
 .list-content {
     flex: 1;
     overflow-y: auto;

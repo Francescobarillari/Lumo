@@ -7,7 +7,7 @@
   <div class="mobile-popup-container">
     <div class="mobile-header">
       <mat-icon (click)="closePopup()">arrow_back</mat-icon>
-      <h1>Registrati</h1>
+      <h1>Sign Up</h1>
     </div>
 
     <div class="centered-content">
@@ -21,7 +21,7 @@
           @else if(errors['birthdate']) { <p class="error">{{ errors['birthdate'] }}</p> }
           @else if(errors['email']) { <p class="error">{{ errors['email'] }}</p> }
           @else if(errors['password']) { <p class="error">{{ errors['password'] }}</p> }
-          @else {<p>start to join events</p>}
+          @else {<p>Start joining events</p>}
         </div>
 
         <form class="form">

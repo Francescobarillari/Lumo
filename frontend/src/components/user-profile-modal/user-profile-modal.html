@@ -11,7 +11,7 @@
         </div>
 
         @if (loading) {
-        <div class="loading-spinner">Caricamento...</div>
+        <div class="loading-spinner">Loading...</div>
         } @else if (user) {
 
         <!-- PROFILE VIEW -->
@@ -35,7 +35,7 @@
             @if (currentUserId && user.id.toString() !== currentUserId) {
             <div class="follow-actions">
                 <button class="button follow-main-btn" [class.following]="isFollowing" (click)="toggleFollow()">
-                    {{ isFollowing ? 'Seguito' : 'Segui' }}
+                    {{ isFollowing ? 'Following' : 'Follow' }}
                 </button>
                 @if (isFollowing) {
                 <button class="bell-btn" [class.active]="notificationsEnabled" [disabled]="notificationsLoading"
@@ -59,7 +59,7 @@
                 <div class="stat-divider"></div>
                 <div class="stat-item clickable" (click)="showEvents()">
                     <span class="stat-value">{{ user.approvedEventsCount || 0 }}</span>
-                    <span class="stat-label">Eventi</span>
+                    <span class="stat-label">Events</span>
                 </div>
             </div>
         </div>
@@ -98,11 +98,11 @@
                 </div>
                 }
                 @if (userList.length === 0) {
-                <div class="empty-list">Nessun utente trovato.</div>
+                <div class="empty-list">No users found.</div>
                 }
             </div>
             <ng-template #loadingTemplate>
-                <div class="loading-spinner">Caricamento lista...</div>
+                <div class="loading-spinner">Loading list...</div>
             </ng-template>
         </div>
         }
@@ -114,15 +114,15 @@
                 <button class="back-btn" (click)="onClose()">
                     <mat-icon>arrow_back</mat-icon>
                 </button>
-                <h3>Eventi</h3>
+                <h3>Events</h3>
             </div>
 
             <div class="events-section">
-                <h4>In arrivo</h4>
+                <h4>Upcoming</h4>
                 @if (loadingEvents) {
-                <div class="loading-spinner">Caricamento eventi...</div>
+                <div class="loading-spinner">Loading events...</div>
                 } @else if (upcomingEvents.length === 0) {
-                <div class="empty-list">Nessun evento in arrivo.</div>
+                <div class="empty-list">No upcoming events.</div>
                 } @else {
                 @for (ev of upcomingEvents; track ev.id) {
                 <div class="event-card">
@@ -151,11 +151,11 @@
             </div>
 
             <div class="events-section">
-                <h4>Passati</h4>
+                <h4>Past</h4>
                 @if (loadingEvents) {
-                <div class="loading-spinner">Caricamento eventi...</div>
+                <div class="loading-spinner">Loading events...</div>
                 } @else if (pastEvents.length === 0) {
-                <div class="empty-list">Nessun evento passato.</div>
+                <div class="empty-list">No past events.</div>
                 } @else {
                 @for (ev of pastEvents; track ev.id) {
                 <div class="event-card past">
@@ -186,7 +186,7 @@
         }
 
         } @else {
-        <div class="error-state">Impossibile caricare il profilo.</div>
+        <div class="error-state">Unable to load profile.</div>
         }
     </div>
 </div>

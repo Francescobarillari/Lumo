@@ -7,7 +7,7 @@
   <div class="mobile-popup-container">
     <div class="mobile-header">
       <mat-icon (click)="closePopup()">arrow_back</mat-icon>
-      <h1>Accedi</h1>
+      <h1>Sign In</h1>
     </div>
 
     <div class="centered-content">
@@ -19,7 +19,7 @@
           @if(generalError) { <p class="error">{{ generalError }}</p> }
           @else if(errors['email']) { <p class="error">{{ errors['email'] }}</p> }
           @else if(errors['password']) { <p class="error">{{ errors['password'] }}</p> }
-          @else{<p>Sign in in LUMO</p>}
+          @else{<p>Sign in to LUMO</p>}
         </div>
 
         <form class="form">

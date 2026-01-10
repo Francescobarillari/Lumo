@@ -64,13 +64,13 @@
 
         <div class="tabs-header">
             <button class="tab-btn" [class.active]="activeTab === 'events'" (click)="setActiveTab('events')">
-                EVENTI
+                EVENTS
             </button>
             <button class="tab-btn" [class.active]="activeTab === 'places'" (click)="setActiveTab('places')">
-                LOCALITÀ
+                PLACES
             </button>
             <button class="tab-btn" [class.active]="activeTab === 'creators'" (click)="setActiveTab('creators')">
-                EVENTER
+                CREATORS
             </button>
         </div>
 
@@ -87,7 +87,7 @@
                 }
             </div>
             @if (searchResults.length === 0) {
-            <div class="empty-state">Nessun evento trovato.</div>
+            <div class="empty-state">No events found.</div>
             }
         </div>
         }
@@ -107,7 +107,7 @@
                 }
             </div>
             @if (cityResults.length === 0) {
-            <div class="empty-state">Nessuna località trovata.</div>
+            <div class="empty-state">No places found.</div>
             }
         </div>
         }
@@ -137,7 +137,7 @@
                 }
             </div>
             @if (userResults.length === 0) {
-            <div class="empty-state">Nessun eventer trovato.</div>
+            <div class="empty-state">No creators found.</div>
             }
         </div>
         }
@@ -159,7 +159,7 @@
                     (openOrganizerProfile)="event.creatorId ? openUserProfile.emit(event.creatorId.toString()) : null" />
                 }
                 @if (foundEvents.length === 0) {
-                <div class="empty-state">Nessun evento trovato nella tua zona.</div>
+                <div class="empty-state">No events found in your area.</div>
                 }
             </div>
         </div>
@@ -180,7 +180,7 @@
                     (openOrganizerProfile)="event.creatorId ? openUserProfile.emit(event.creatorId.toString()) : null" />
                 }
                 @if (followUpEvents.length === 0) {
-                <div class="empty-state">Nessun evento imminente a cui partecipi.</div>
+                <div class="empty-state">No upcoming events you are participating in.</div>
                 }
             </div>
         </div>
@@ -200,7 +200,7 @@
                     (openOrganizerProfile)="event.creatorId ? openUserProfile.emit(event.creatorId.toString()) : null" />
                 }
                 @if (savedEvents.length === 0) {
-                <div class="empty-state">Non hai ancora salvato nessun evento.</div>
+                <div class="empty-state">You haven't saved any events yet.</div>
                 }
             </div>
         </div>
@@ -218,7 +218,7 @@
                     (openOrganizerProfile)="event.creatorId ? openUserProfile.emit(event.creatorId.toString()) : null" />
                 }
                 @if (discoverEvents.length === 0) {
-                <div class="empty-state">Nessun nuovo evento da scoprire al momento.</div>
+                <div class="empty-state">No new events to discover at the moment.</div>
                 }
             </div>
         </div>

@@ -44,7 +44,7 @@ userMarkerEl.style.boxShadow = '0 0 3px rgba(0,0,0,0.3)';
 
   <app-managed-events-popup
     *ngIf="managedPopupType"
-    [title]="managedPopupType === 'saved' ? 'Eventi Salvati' : 'Eventi a cui partecipi'"
+    [title]="managedPopupType === 'saved' ? 'Saved Events' : 'Joined Events'"
     [events]="getManagedEvents()"
     (close)="managedPopupType = null"
     (focusEvent)="flyToEvent($event)"
@@ -285,7 +285,7 @@ export class MapView implements AfterViewInit, OnDestroy, OnChanges {
         this.placeEventMarkers();
       },
       error: (err) => {
-        console.error('Errore nel recupero degli eventi', err);
+        console.error('Error fetching events', err);
       }
     });
   }
@@ -427,7 +427,7 @@ export class MapView implements AfterViewInit, OnDestroy, OnChanges {
 
   onToggleFavorite(event: Event) {
     if (!this.userId) {
-      const snackBarRef = this.snackBar.open('Per salvare gli eventi devi effettuare l\'accesso.', 'ACCEDI', {
+      const snackBarRef = this.snackBar.open('You must sign in to save events.', 'SIGN IN', {
         duration: 5000,
         horizontalPosition: 'center',
         verticalPosition: 'bottom',
@@ -452,7 +452,7 @@ export class MapView implements AfterViewInit, OnDestroy, OnChanges {
 
         // Se necessario, aggiorniamo anche i marker o altro (ma i marker non cambiano per 'saved')
       },
-      error: (err) => console.error('Errore nel toggle preferito', err)
+      error: (err) => console.error('Error toggling favorite', err)
     });
   }
 

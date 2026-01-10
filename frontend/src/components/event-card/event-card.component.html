@@ -7,7 +7,7 @@
         <p class="distance">{{ distance() }}</p>
         }
         @if (maxParticipants() && occupiedSpots() !== undefined) {
-        <p class="spots-info">🎫 {{ maxParticipants()! - occupiedSpots()! }} posti rim.</p>
+        <p class="spots-info">🎫 {{ maxParticipants()! - occupiedSpots()! }} spots left</p>
         }
     </div>
     @if (showActions()) {
@@ -37,11 +37,11 @@
 
     @if (currentUserId() && creatorId()) {
     @if (currentUserId()?.toString() === creatorId()?.toString()) {
-    <span class="is-organizer-badge">Tu sei l'organizzatore</span>
+    <span class="is-organizer-badge">You are the organizer</span>
     } @else {
     <button class="follow-btn" [class.following]="isFollowing"
         (click)="isFollowing ? unfollowOrganizer($event) : followOrganizer($event)">
-        {{ isFollowing ? 'Seguito' : 'Segui' }}
+        {{ isFollowing ? 'Following' : 'Follow' }}
     </button>
     }
     }

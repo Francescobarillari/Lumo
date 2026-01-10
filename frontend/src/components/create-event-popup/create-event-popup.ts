@@ -26,7 +26,7 @@ export class CreateEventPopup {
 
     latitude: number | null = null;
     longitude: number | null = null;
-    locationText = 'Seleziona posizione sulla mappa';
+    locationText = 'Select position on map';
     selectedCity: string | null = null;
 
     constructor(private fb: FormBuilder, private http: HttpClient, private mapboxService: MapboxService) {
@@ -85,13 +85,13 @@ export class CreateEventPopup {
         this.latitude = lat;
         this.longitude = lng;
         this.selectedCity = null;
-        this.locationText = 'Posizione selezionata';
+        this.locationText = 'Location selected';
 
         this.mapboxService.reverseGeocode(lat, lng).subscribe({
             next: (city) => {
                 if (!city) return;
                 this.selectedCity = city;
-                this.locationText = `Posizione: ${city}`;
+                this.locationText = `Location: ${city}`;
             },
             error: (err) => console.error('Error reverse geocoding city', err)
         });
@@ -108,37 +108,37 @@ export class CreateEventPopup {
 
         // Collect all field errors
         const controls = this.form.controls;
-        if (controls['title'].invalid) this.errors.title = 'Il titolo è obbligatorio.';
-        if (controls['description'].invalid) this.errors.description = 'La descrizione è obbligatoria.';
-        if (controls['date'].invalid) this.errors.date = 'La data è obbligatoria.';
-        if (controls['startTime'].invalid) this.errors.startTime = 'L\'orario di inizio è obbligatorio.';
+        if (controls['title'].invalid) this.errors.title = 'Title is required.';
+        if (controls['description'].invalid) this.errors.description = 'Description is required.';
+        if (controls['date'].invalid) this.errors.date = 'Date is required.';
+        if (controls['startTime'].invalid) this.errors.startTime = 'Start time is required.';
         // endTime is optional
         if (controls['nPartecipants'].invalid) {
             if (controls['nPartecipants'].errors?.['required']) {
-                this.errors.nPartecipants = 'Il numero di partecipanti è obbligatorio.';
+                this.errors.nPartecipants = 'Number of participants is required.';
             } else if (controls['nPartecipants'].errors?.['min']) {
-                this.errors.nPartecipants = 'Il numero di partecipanti deve essere almeno 1.';
+                this.errors.nPartecipants = 'Number of participants must be at least 1.';
             }
         }
         if (controls['costPerPerson'].invalid) {
             if (controls['costPerPerson'].errors?.['min']) {
-                this.errors.costPerPerson = 'Il costo non può essere negativo.';
+                this.errors.costPerPerson = 'Cost cannot be negative.';
             } else {
-                this.errors.costPerPerson = 'Costo non valido.';
+                this.errors.costPerPerson = 'Invalid cost.';
             }
         }
 
         // Check cross-field validation
         if (this.form.errors?.['timeOrder']) {
-            this.errors.time = 'L\'orario di inizio deve essere prima dell\'orario di fine.';
+            this.errors.time = 'Start time must be before end time.';
         } else if (this.form.errors?.['minDuration']) {
-            this.errors.time = 'L\'evento deve durare almeno un\'ora.';
+            this.errors.time = 'Event must last at least one hour.';
         }
 
         if (this.latitude === null || this.longitude === null) {
-            this.errors.location = 'Seleziona una posizione sulla mappa.';
+            this.errors.location = 'Select a location on the map.';
         } else if (!this.selectedCity) {
-            this.errors.location = 'Impossibile rilevare la città dalla posizione selezionata.';
+            this.errors.location = 'Unable to detect city from selected location.';
         }
 
         if (Object.keys(this.errors).length > 0) {
@@ -171,7 +171,7 @@ export class CreateEventPopup {
             },
             error: (err) => {
                 console.error('Error creating event:', err);
-                this.generalError = 'Errore nella creazione dell\'evento';
+                this.generalError = 'Error creating event';
             }
         });
     }

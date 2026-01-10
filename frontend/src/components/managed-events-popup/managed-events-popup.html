@@ -5,6 +5,9 @@
         <div class="mobile-header">
             <mat-icon (click)="onClose()">arrow_back</mat-icon>
             <h1>{{ title }}</h1>
+            <button class="close-btn tablet-desktop-only" (click)="onClose()">
+                <mat-icon>close</mat-icon>
+            </button>
         </div>
 
         <div class="list-content">
@@ -19,7 +22,7 @@
                 @if (events.length === 0) {
                 <div class="empty-state">
                     <mat-icon>event_busy</mat-icon>
-                    <p>Nessun evento in questa lista.</p>
+                    <p>No events in this list.</p>
                 </div>
                 }
             </div>
