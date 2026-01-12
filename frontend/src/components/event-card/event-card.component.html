@@ -10,14 +10,21 @@
         <p class="spots-info">🎫 {{ maxParticipants()! - occupiedSpots()! }} spots left</p>
         }
     </div>
-    @if (showActions()) {
+    @if (showActions() || showShare()) {
     <div class="actions-section">
+        @if (showActions()) {
         <div class="icon-circle" (click)="focusLocation.emit(); $event.stopPropagation()">
             <mat-icon>place</mat-icon>
         </div>
         @if (!isParticipating()) {
         <div class="icon-circle" (click)="toggleFavorite.emit(); $event.stopPropagation()">
             <mat-icon [class.saved]="isSaved()">{{ isSaved() ? 'favorite' : 'favorite_border' }}</mat-icon>
+        </div>
+        }
+        }
+        @if (showShare()) {
+        <div class="icon-circle" (click)="shareEvent.emit(); $event.stopPropagation()">
+            <mat-icon>share</mat-icon>
         </div>
         }
     </div>

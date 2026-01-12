@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../../services/auth.service';
@@ -24,7 +24,7 @@ import { UserService } from '../../../services/user-service/user-service';
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
-export class Home implements OnInit {
+export class Home implements OnInit, AfterViewInit {
 
   @ViewChild(MapView) mapView!: MapView;
 
@@ -52,6 +52,9 @@ export class Home implements OnInit {
   recentToken = '';
 
   emailVerified = false;
+  private pendingSharedEventId: number | null = null;
+  private sharedEventRetryCount = 0;
+  private sharedEventLoading = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -75,6 +78,7 @@ export class Home implements OnInit {
       const token = params['token'];
       const email = params['email'];
       const userId = params['user'];
+      const eventId = params['event'];
 
       if (userId) {
         // Handle Deep Link for User Profile
@@ -86,6 +90,21 @@ export class Home implements OnInit {
           relativeTo: this.route,
           queryParams: { user: null },
           queryParamsHandling: 'merge', // remove to replace all with null
+          replaceUrl: true
+        });
+      }
+
+      if (eventId) {
+        const parsed = Number(eventId);
+        if (!Number.isNaN(parsed)) {
+          this.pendingSharedEventId = parsed;
+          this.loadSharedEvent();
+        }
+
+        this.router.navigate([], {
+          relativeTo: this.route,
+          queryParams: { event: null },
+          queryParamsHandling: 'merge',
           replaceUrl: true
         });
       }
@@ -104,6 +123,10 @@ export class Home implements OnInit {
         });
       }
     });
+  }
+
+  ngAfterViewInit() {
+    this.loadSharedEvent();
   }
 
   checkAdminRedirect() {
@@ -150,6 +173,40 @@ export class Home implements OnInit {
       },
       error: (err) => console.error('Error refreshing user', err)
     });
+  }
+
+  private loadSharedEvent() {
+    if (!this.pendingSharedEventId || this.sharedEventLoading) return;
+
+    const eventId = this.pendingSharedEventId;
+    const currentUserId = this.loggedUser ? this.loggedUser.id : undefined;
+
+    this.sharedEventLoading = true;
+    this.eventService.getEventById(eventId, currentUserId).subscribe({
+      next: (event) => {
+        this.sharedEventLoading = false;
+        this.openSharedEventOnMap(event);
+      },
+      error: (err) => {
+        this.sharedEventLoading = false;
+        this.pendingSharedEventId = null;
+        console.error('Error loading shared event', err);
+      }
+    });
+  }
+
+  private openSharedEventOnMap(event: LumoEvent) {
+    if (!this.mapView?.map) {
+      if (this.sharedEventRetryCount < 12) {
+        this.sharedEventRetryCount += 1;
+        setTimeout(() => this.openSharedEventOnMap(event), 250);
+      }
+      return;
+    }
+
+    this.sharedEventRetryCount = 0;
+    this.pendingSharedEventId = null;
+    this.mapView.flyToEvent(event);
   }
 
 
@@ -388,6 +445,11 @@ export class Home implements OnInit {
       // Delegate to MapView which holds the list and logic
       this.mapView.onToggleFavorite(this.selectedEvent);
     }
+  }
+
+  openShare(event: LumoEvent) {
+    if (!this.mapView) return;
+    this.mapView.openShare(event);
   }
 
   // Handle location selector workflow

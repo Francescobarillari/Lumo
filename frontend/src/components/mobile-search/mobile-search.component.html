@@ -100,7 +100,8 @@
                         [distance]="formatDistance(event.distanceKm)" [id]="event.id!" [isSaved]="!!event.isSaved"
                         [isParticipating]="!!event.isParticipating" [organizerName]="event.organizerName"
                         [organizerImage]="event.organizerImage" [creatorId]="event.creatorId" [currentUserId]="userId"
-                        (focusLocation)="goToEvent(event)" (toggleFavorite)="toggleFavorite.emit(event)" />
+                        (focusLocation)="goToEvent(event)" (toggleFavorite)="toggleFavorite.emit(event)"
+                        (shareEvent)="shareEvent.emit(event)" />
                     }
                     @if (searchResults.length === 0) {
                     <div class="empty-state">No events found.</div>
@@ -118,7 +119,8 @@
                             [isParticipating]="!!event.isParticipating" [organizerName]="event.organizerName"
                             [organizerImage]="event.organizerImage" [creatorId]="event.creatorId"
                             [currentUserId]="userId" (focusLocation)="goToEvent(event)"
-                            (toggleFavorite)="toggleFavorite.emit(event)" [showOrganizerInfo]="false" />
+                            (toggleFavorite)="toggleFavorite.emit(event)" (shareEvent)="shareEvent.emit(event)"
+                            [showOrganizerInfo]="false" />
                         }
                         @if (foundEvents.length === 0) {
                         <div class="empty-state">No events found in your area.</div>
@@ -136,7 +138,8 @@
                             [isParticipating]="!!event.isParticipating" [organizerName]="event.organizerName"
                             [organizerImage]="event.organizerImage" [creatorId]="event.creatorId"
                             [currentUserId]="userId" (focusLocation)="goToEvent(event)"
-                            (toggleFavorite)="toggleFavorite.emit(event)" [showOrganizerInfo]="false" />
+                            (toggleFavorite)="toggleFavorite.emit(event)" (shareEvent)="shareEvent.emit(event)"
+                            [showOrganizerInfo]="false" />
                         }
                         @if (followUpEvents.length === 0) {
                         <div class="empty-state">No upcoming events you are participating in.</div>
@@ -154,7 +157,8 @@
                             [isParticipating]="!!event.isParticipating" [organizerName]="event.organizerName"
                             [organizerImage]="event.organizerImage" [creatorId]="event.creatorId"
                             [currentUserId]="userId" (focusLocation)="goToEvent(event)"
-                            (toggleFavorite)="toggleFavorite.emit(event)" [showOrganizerInfo]="false" />
+                            (toggleFavorite)="toggleFavorite.emit(event)" (shareEvent)="shareEvent.emit(event)"
+                            [showOrganizerInfo]="false" />
                         }
                         @if (savedEvents.length === 0) {
                         <div class="empty-state">You haven't saved any events yet.</div>
@@ -171,7 +175,8 @@
                             [id]="event.id!" [isSaved]="!!event.isSaved" [organizerName]="event.organizerName"
                             [organizerImage]="event.organizerImage" [creatorId]="event.creatorId"
                             [currentUserId]="userId" (focusLocation)="goToEvent(event)"
-                            (toggleFavorite)="toggleFavorite.emit(event)" [showOrganizerInfo]="false" />
+                            (toggleFavorite)="toggleFavorite.emit(event)" (shareEvent)="shareEvent.emit(event)"
+                            [showOrganizerInfo]="false" />
                         }
                         @if (discoverEvents.length === 0) {
                         <div class="empty-state">No new events to discover at the moment.</div>

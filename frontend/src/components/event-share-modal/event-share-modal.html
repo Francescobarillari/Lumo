@@ -1,0 +1,36 @@
+@if (event) {
+<div class="event-share-backdrop" (click)="close.emit()">
+    <div class="event-share-modal" (click)="$event.stopPropagation()">
+        <div class="event-share-header">
+            <div class="header-title">
+                <mat-icon>share</mat-icon>
+                <span>Condividi evento</span>
+            </div>
+            <button class="close-btn" (click)="close.emit()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+
+        <div class="event-share-content">
+            <div class="poster-preview" [style.backgroundImage]="'url(' + templateUrl + ')'">
+                @if (posterPreviewUrl) {
+                <img class="poster-preview-image" [src]="posterPreviewUrl" alt="Locandina evento">
+                } @else {
+                <div class="poster-preview-loading">Anteprima in generazione...</div>
+                }
+            </div>
+
+            <div class="share-actions">
+                <button class="button action-btn" (click)="downloadPoster()" [disabled]="downloading">
+                    <mat-icon>download</mat-icon>
+                    <span>{{ downloading ? 'Generazione...' : 'Scarica locandina' }}</span>
+                </button>
+                <button class="button action-btn secondary" (click)="shareLink()">
+                    <mat-icon>link</mat-icon>
+                    <span>Condividi link</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+}

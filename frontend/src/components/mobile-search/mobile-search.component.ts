@@ -20,6 +20,7 @@ export class MobileSearchComponent {
     @Output() foundLocation = new EventEmitter<{ lat: number, lng: number }>();
     @Output() toggleFavorite = new EventEmitter<Event>();
     @Output() openUserProfile = new EventEmitter<string>();
+    @Output() shareEvent = new EventEmitter<Event>();
     @Input() userId: string | null = null;
     @Input() events: Event[] = [];
 

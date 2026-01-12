@@ -9,6 +9,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { interval, Subscription, switchMap } from 'rxjs';
 import { MobileSearchComponent } from '../mobile-search/mobile-search.component';
+import { EventShareModalComponent } from '../event-share-modal/event-share-modal.component';
 
 // crea l'elemento HTML per il marker della posizione utente
 const userMarkerEl = document.createElement('div');
@@ -30,6 +31,7 @@ userMarkerEl.style.boxShadow = '0 0 3px rgba(0,0,0,0.3)';
     (toggleSidebar)="toggleSidebar()"
     (toggleFavorite)="onToggleFavorite($event)"
     (foundLocation)="flyToLocation($event)"
+    (shareEvent)="openShare($event)"
     (openUserProfile)="openUserProfile.emit($event)">
   </app-sidebar>
 
@@ -39,9 +41,13 @@ userMarkerEl.style.boxShadow = '0 0 3px rgba(0,0,0,0.3)';
     (focusEvent)="flyToEvent($event)"
     (foundLocation)="flyToLocation($event)"
     (toggleFavorite)="onToggleFavorite($event)"
+    (shareEvent)="openShare($event)"
     (openUserProfile)="openUserProfile.emit($event)">
   </app-mobile-search>
 
+  @if (sharingEvent) {
+  <app-event-share-modal [event]="sharingEvent" (close)="sharingEvent = null"></app-event-share-modal>
+  }
 
   <div id="map" class="map-container"></div>
   
@@ -164,7 +170,7 @@ userMarkerEl.style.boxShadow = '0 0 3px rgba(0,0,0,0.3)';
   }
   `,
   standalone: true,
-  imports: [SidebarComponent, MobileSearchComponent, MatIconModule, MatSnackBarModule, CommonModule],
+  imports: [SidebarComponent, MobileSearchComponent, EventShareModalComponent, MatIconModule, MatSnackBarModule, CommonModule],
 })
 export class MapView implements AfterViewInit, OnDestroy, OnChanges {
   @Input() userId: string | null = null;
@@ -176,6 +182,7 @@ export class MapView implements AfterViewInit, OnDestroy, OnChanges {
   private mapInstance!: mapboxgl.Map;
   private eventMarkers = new Map<number, mapboxgl.Marker>();
   events: Event[] = [];
+  sharingEvent: Event | null = null;
   private userCoords: [number, number] | null = null;
   sidebarCollapsed = false;
   managedPopupType: 'saved' | 'participating' | null = null;
@@ -489,6 +496,10 @@ export class MapView implements AfterViewInit, OnDestroy, OnChanges {
       },
       error: (err) => console.error('Error toggling favorite', err)
     });
+  }
+
+  openShare(event: Event) {
+    this.sharingEvent = event;
   }
 
 }

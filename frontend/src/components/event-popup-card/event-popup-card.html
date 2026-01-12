@@ -29,6 +29,10 @@
           <mat-icon>{{ isSaved() ? 'favorite' : 'favorite_border' }}</mat-icon>
         </button>
         }
+        <button class="action-icon share-icon" (click)="shareEvent.emit(event); $event.stopPropagation()"
+          aria-label="Share event">
+          <mat-icon>share</mat-icon>
+        </button>
       </div>
     </div>
 

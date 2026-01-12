@@ -4,12 +4,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { Event } from '../../models/event';
 import { EventService } from '../../services/event.service';
 import { EventCardComponent } from '../event-card/event-card.component';
+import { EventShareModalComponent } from '../event-share-modal/event-share-modal.component';
 import { User } from '../../models/user';
 
 @Component({
     selector: 'app-my-events-modal',
     standalone: true,
-    imports: [CommonModule, MatIconModule, EventCardComponent],
+    imports: [CommonModule, MatIconModule, EventCardComponent, EventShareModalComponent],
     templateUrl: './my-events-modal.html',
     styleUrl: './my-events-modal.css'
 })
@@ -38,6 +39,7 @@ export class MyEventsModal implements OnInit {
     joinedEvents: Event[] = [];
     savedEvents: Event[] = [];
     loading = false;
+    sharingEvent: Event | null = null;
 
     // For expanding requests view for a specific event
     expandedEventRequestsId: number | null = null;
@@ -138,6 +140,10 @@ export class MyEventsModal implements OnInit {
             },
             error: (err) => console.error('Error rejecting', err)
         });
+    }
+
+    openShare(event: Event) {
+        this.sharingEvent = event;
     }
 
     formatDateTime(event: Event): string {

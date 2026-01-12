@@ -142,7 +142,7 @@
             @for (event of joinedEvents; track event.id) {
             <app-event-card [title]="event.title" [location]="event.city" [dateTime]="formatDateTime(event)"
                 [id]="event.id!" [isSaved]="!!event.isSaved" [isParticipating]="!!event.isParticipating"
-                [showDistance]="false" [showActions]="false">
+                [showDistance]="false" [showActions]="false" (shareEvent)="openShare(event)">
             </app-event-card>
             }
             @empty {
@@ -156,7 +156,7 @@
             @for (event of savedEvents; track event.id) {
             <app-event-card [title]="event.title" [location]="event.city" [dateTime]="formatDateTime(event)"
                 [id]="event.id!" [isSaved]="true" [isParticipating]="!!event.isParticipating" [showDistance]="false"
-                [showActions]="false">
+                [showActions]="false" (shareEvent)="openShare(event)">
             </app-event-card>
             }
             @empty {
@@ -166,3 +166,7 @@
         }
     </div>
 </div>
+
+@if (sharingEvent) {
+<app-event-share-modal [event]="sharingEvent" (close)="sharingEvent = null"></app-event-share-modal>
+}

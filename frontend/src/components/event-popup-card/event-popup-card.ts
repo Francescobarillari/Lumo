@@ -26,6 +26,7 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
     @Output() openOrganizerProfile = new EventEmitter<string>();
     @Output() leave = new EventEmitter<Event>();
     @Output() deleteEvent = new EventEmitter<Event>();
+    @Output() shareEvent = new EventEmitter<Event>();
 
     isFollowing = false;
     isLoadingFollowStatus = true; // Add loading state to prevent flicker

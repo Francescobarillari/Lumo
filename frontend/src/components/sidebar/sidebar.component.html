@@ -112,6 +112,7 @@
                     [isParticipating]="!!event.isParticipating" [organizerName]="event.organizerName"
                     [organizerImage]="event.organizerImage" [creatorId]="event.creatorId" [currentUserId]="userId"
                     (focusLocation)="goToEvent(event)" (toggleFavorite)="toggleFavorite.emit(event)"
+                    (shareEvent)="shareEvent.emit(event)"
                     (openOrganizerProfile)="event.creatorId ? openUserProfile.emit(event.creatorId.toString()) : null" />
                 }
             </div>
@@ -184,6 +185,7 @@
                     [isParticipating]="!!event.isParticipating" [organizerName]="event.organizerName"
                     [organizerImage]="event.organizerImage" [creatorId]="event.creatorId" [currentUserId]="userId"
                     (focusLocation)="goToEvent(event)" (toggleFavorite)="toggleFavorite.emit(event)"
+                    (shareEvent)="shareEvent.emit(event)"
                     [showOrganizerInfo]="false"
                     (openOrganizerProfile)="event.creatorId ? openUserProfile.emit(event.creatorId.toString()) : null" />
                 }
@@ -205,6 +207,7 @@
                     [isParticipating]="!!event.isParticipating" [organizerName]="event.organizerName"
                     [organizerImage]="event.organizerImage" [creatorId]="event.creatorId" [currentUserId]="userId"
                     (focusLocation)="goToEvent(event)" (toggleFavorite)="toggleFavorite.emit(event)"
+                    (shareEvent)="shareEvent.emit(event)"
                     [showOrganizerInfo]="false"
                     (openOrganizerProfile)="event.creatorId ? openUserProfile.emit(event.creatorId.toString()) : null" />
                 }
@@ -225,6 +228,7 @@
                     [isParticipating]="!!event.isParticipating" [organizerName]="event.organizerName"
                     [organizerImage]="event.organizerImage" [creatorId]="event.creatorId" [currentUserId]="userId"
                     (focusLocation)="goToEvent(event)" (toggleFavorite)="toggleFavorite.emit(event)"
+                    (shareEvent)="shareEvent.emit(event)"
                     [showOrganizerInfo]="false"
                     (openOrganizerProfile)="event.creatorId ? openUserProfile.emit(event.creatorId.toString()) : null" />
                 }
@@ -243,7 +247,8 @@
                     [distance]="formatDistance(event.distanceKm)" [id]="event.id!" [isSaved]="!!event.isSaved"
                     [organizerName]="event.organizerName" [organizerImage]="event.organizerImage"
                     [creatorId]="event.creatorId" [currentUserId]="userId" (focusLocation)="goToEvent(event)"
-                    (toggleFavorite)="toggleFavorite.emit(event)" [showOrganizerInfo]="false"
+                    (toggleFavorite)="toggleFavorite.emit(event)" (shareEvent)="shareEvent.emit(event)"
+                    [showOrganizerInfo]="false"
                     (openOrganizerProfile)="event.creatorId ? openUserProfile.emit(event.creatorId.toString()) : null" />
                 }
                 @if (discoverEvents.length === 0) {

@@ -26,6 +26,7 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
     @Output() toggleFavorite = new EventEmitter<Event>();
     @Output() foundLocation = new EventEmitter<{ lat: number, lng: number }>(); // New output
     @Output() openUserProfile = new EventEmitter<string>(); // New output for profile
+    @Output() shareEvent = new EventEmitter<Event>();
 
     searchQuery: string = '';
     searchResults: Event[] = [];
