@@ -121,6 +121,55 @@ userMarkerEl.style.boxShadow = '0 0 3px rgba(0,0,0,0.3)';
   :host ::ng-deep .mapboxgl-popup.event-popup .mapboxgl-popup-tip {
     border-top-color: var(--color-dark-gray);
   }
+
+  /* Golden Pulse Core Marker Styles */
+  :host ::ng-deep .golden-pulse-marker {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    background: transparent;
+  }
+
+  /* The Diamond Core */
+  :host ::ng-deep .golden-pulse-marker::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    background-color: #FCC324;
+    border: 2px solid white;
+    border-radius: 3px;
+    transform: rotate(45deg);
+    box-shadow: 0 0 10px rgba(252, 195, 36, 0.8);
+    z-index: 2;
+    animation: corePulse 3s infinite ease-in-out;
+  }
+
+  /* The Soft Glow Halo */
+  :host ::ng-deep .golden-pulse-marker::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(252, 195, 36, 0.4) 0%, rgba(252, 195, 36, 0) 70%);
+    border-radius: 50%;
+    z-index: 1;
+    opacity: 0.6;
+    animation: glowPulse 2.5s infinite ease-in-out;
+  }
+
+  @keyframes corePulse {
+    0%, 100% { opacity: 1; transform: rotate(45deg) scale(1); }
+    50% { opacity: 0.8; transform: rotate(45deg) scale(0.9); }
+  }
+
+  @keyframes glowPulse {
+    0%, 100% { opacity: 0.2; transform: scale(0.8); }
+    50% { opacity: 0.7; transform: scale(1.2); }
+  }
   `,
   standalone: true,
   imports: [SidebarComponent, MobileSearchComponent, ManagedEventsPopup, MatIconModule, MatSnackBarModule, CommonModule],
@@ -298,13 +347,7 @@ export class MapView implements AfterViewInit, OnDestroy, OnChanges {
       if (event.latitude == null || event.longitude == null) return;
 
       const markerEl = document.createElement('div');
-      markerEl.style.width = '30px';
-      markerEl.style.height = '30px';
-      markerEl.style.backgroundColor = '#FCC324';
-      markerEl.style.borderRadius = '50%';
-      markerEl.style.cursor = 'pointer';
-      markerEl.style.border = '3px solid white';
-      markerEl.style.boxShadow = '0 3px 10px rgba(252, 195, 36, 0.6), 0 0 20px rgba(252, 195, 36, 0.3)';
+      markerEl.className = 'golden-pulse-marker';
 
       const marker = new mapboxgl.Marker({ element: markerEl })
         .setLngLat([event.longitude, event.latitude])
