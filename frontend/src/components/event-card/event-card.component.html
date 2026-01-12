@@ -44,7 +44,7 @@
 
     @if (currentUserId() && creatorId()) {
     @if (currentUserId()?.toString() === creatorId()?.toString()) {
-    <span class="is-organizer-badge">You are the organizer</span>
+    <span class="is-organizer-badge">You are the eventer</span>
     } @else {
     <button class="follow-btn" [class.following]="isFollowing"
         (click)="isFollowing ? unfollowOrganizer($event) : followOrganizer($event)">

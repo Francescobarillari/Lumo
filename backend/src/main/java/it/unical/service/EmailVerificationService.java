@@ -141,6 +141,44 @@ public class EmailVerificationService {
         v.setUsed(true);
         verificationRepo.save(v);
 
+        sendWelcomeEmail(user);
+
         return user;
+    }
+
+    public void sendWelcomeEmail(User user) {
+        if (user == null || user.getEmail() == null || user.getEmail().isBlank()) {
+            return;
+        }
+
+        if (fromAddress == null || fromAddress.isBlank()) {
+            System.err.println("Welcome email skipped: MAIL_FROM not configured");
+            return;
+        }
+        if (mailSender instanceof JavaMailSenderImpl impl) {
+            if (impl.getHost() == null || impl.getHost().isBlank()) {
+                System.err.println("Welcome email skipped: MAIL_HOST not configured");
+                return;
+            }
+        }
+
+        String name = user.getName() != null && !user.getName().isBlank() ? user.getName() : "there";
+        String subject = "Welcome to LUMO!";
+        String text = "Hi " + name + ",\n\n" +
+                "Welcome to LUMO — you're all set to discover events, follow eventers, and share your own.\n\n" +
+                "We're happy you're here.\n\n" +
+                "See you on the map,\n" +
+                "Team LUMO";
+
+        try {
+            SimpleMailMessage msg = new SimpleMailMessage();
+            msg.setTo(user.getEmail());
+            msg.setFrom(fromAddress);
+            msg.setSubject(subject);
+            msg.setText(text);
+            mailSender.send(msg);
+        } catch (Exception e) {
+            System.err.println("Failed to send welcome email to " + user.getEmail() + ": " + e.getMessage());
+        }
     }
 }

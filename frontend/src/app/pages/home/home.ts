@@ -420,7 +420,7 @@ export class Home implements OnInit, AfterViewInit {
     }
 
     if (event.creatorId && event.creatorId.toString() !== this.loggedUser.id.toString()) {
-      console.warn('You are not the organizer of this event');
+      console.warn('You are not the eventer of this event');
       return;
     }
 

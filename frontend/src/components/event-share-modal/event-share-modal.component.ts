@@ -200,7 +200,7 @@ export class EventShareModalComponent implements OnChanges {
         if (event.organizerName) {
             ctx.fillStyle = '#B0B0B0';
             ctx.font = '500 26px "Stack Sans Headline", Arial, sans-serif';
-            ctx.fillText(`Organized by ${event.organizerName}`, infoX, y);
+            ctx.fillText(`Eventer: ${event.organizerName}`, infoX, y);
             y += 32;
         }
 

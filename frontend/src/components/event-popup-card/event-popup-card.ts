@@ -14,7 +14,7 @@ import { UserService } from '../../services/user-service/user-service';
 })
 export class EventPopupCard implements AfterViewInit, OnChanges {
     @Input() event!: Event;
-    @Input() organizerName: string = 'Event Organizer';
+    @Input() organizerName: string = 'Eventer';
     @Input() organizerImage?: string;
     @Input() eventPosition?: { x: number, y: number }; // Screen coordinates for positioning
     @Input() currentUserId: string | null = null;
@@ -291,14 +291,14 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
     onOrganizerClick() {
         const organizerId = this.getOrganizerId();
         if (!organizerId) {
-            console.log('[EventPopupCard] organizer click with missing id', {
+            console.log('[EventPopupCard] eventer click with missing id', {
                 creatorIdInput: this.creatorId,
                 eventCreatorId: this.event?.creatorId,
                 event: this.event
             });
             return;
         }
-        console.log('[EventPopupCard] open organizer', {
+        console.log('[EventPopupCard] open eventer', {
             organizerId,
             creatorIdInput: this.creatorId,
             eventCreatorId: this.event?.creatorId,

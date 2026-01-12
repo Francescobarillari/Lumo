@@ -20,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
@@ -178,7 +179,13 @@ public class AuthService {
                 ? nameFromGoogle
                 : email.split("@")[0];
 
-        User user = userRepo.findByEmail(email).orElseGet(() -> {
+        User user;
+        boolean isNewUser = false;
+        Optional<User> existingUser = userRepo.findByEmail(email);
+        if (existingUser.isPresent()) {
+            user = existingUser.get();
+        } else {
+            isNewUser = true;
             User u = new User();
             u.setEmail(email);
             u.setName(fallbackName);
@@ -202,8 +209,12 @@ public class AuthService {
                 userRepo.save(u);
             }
 
-            return u;
-        });
+            user = u;
+        }
+
+        if (isNewUser) {
+            emailVerificationService.sendWelcomeEmail(user);
+        }
 
         // Se l'utente esiste ma non ha nome, aggiorniamolo con il nome di Google
         if ((user.getName() == null || user.getName().isBlank()) && fallbackName != null) {
