@@ -42,6 +42,14 @@ export class MobileSearchComponent {
     // Filter/Sort state
     filterOption: 'all' | 'participating' | 'free' | 'available' = 'all';
     sortOption: 'date' | 'distance' | 'name' = 'date';
+    priceMin = 0;
+    priceMax = 100;
+    priceMaxLimit = 100;
+    priceStep = 1;
+    distanceMin = 0;
+    distanceMax = 20;
+    distanceMaxLimit = 20;
+    distanceStep = 0.5;
     filterMenuOpen = false;
     sortMenuOpen = false;
     showFilterOptions = false;
@@ -137,6 +145,10 @@ export class MobileSearchComponent {
 
     setActiveTab(tab: 'events' | 'places' | 'creators') {
         this.activeTab = tab;
+        if (tab !== 'events') {
+            this.filterMenuOpen = false;
+            this.sortMenuOpen = false;
+        }
     }
 
     selectCity(city: { name: string, center: [number, number] }) {
@@ -161,6 +173,10 @@ export class MobileSearchComponent {
     closeSearch() {
         this.isExpanded = false;
         this.clearSearch();
+    }
+
+    get hasSearchQuery(): boolean {
+        return this.searchQuery.trim().length > 0;
     }
 
     formatDateTime(event: Event): string {
@@ -190,6 +206,7 @@ export class MobileSearchComponent {
         this.savedEvents = [];
         this.discoverEvents = [];
         this.foundEvents = [];
+        this.updateRangeLimits();
 
         if (!this.userId) {
             this.foundEvents = this.events.filter(this.isFutureEvent);
@@ -207,6 +224,36 @@ export class MobileSearchComponent {
             if (isSaved) this.savedEvents.push(event);
             if (!isParticipating && !isSaved) this.discoverEvents.push(event);
         });
+    }
+
+    private updateRangeLimits() {
+        const priceValues = this.events.map(event => event.costPerPerson ?? 0);
+        const rawPriceMax = priceValues.length ? Math.max(...priceValues) : 0;
+        const nextPriceMaxLimit = Math.max(10, Math.ceil(rawPriceMax));
+
+        const distanceValues = this.events
+            .map(event => event.distanceKm)
+            .filter((value): value is number => typeof value === 'number' && !Number.isNaN(value));
+        const rawDistanceMax = distanceValues.length ? Math.max(...distanceValues) : 0;
+        const nextDistanceMaxLimit = Math.max(5, Math.ceil(rawDistanceMax));
+
+        const priceMaxAtLimit = this.priceMax === this.priceMaxLimit || this.priceMax === 0;
+        this.priceMaxLimit = nextPriceMaxLimit;
+        if (priceMaxAtLimit || this.priceMax > this.priceMaxLimit) {
+            this.priceMax = this.priceMaxLimit;
+        }
+        if (this.priceMin > this.priceMax) {
+            this.priceMin = this.priceMax;
+        }
+
+        const distanceMaxAtLimit = this.distanceMax === this.distanceMaxLimit || this.distanceMax === 0;
+        this.distanceMaxLimit = nextDistanceMaxLimit;
+        if (distanceMaxAtLimit || this.distanceMax > this.distanceMaxLimit) {
+            this.distanceMax = this.distanceMaxLimit;
+        }
+        if (this.distanceMin > this.distanceMax) {
+            this.distanceMin = this.distanceMax;
+        }
     }
 
     private applyFilters(events: Event[]): Event[] {
@@ -228,6 +275,24 @@ export class MobileSearchComponent {
                 return aTime - bTime;
             }); break;
         }
+
+        const isPriceFiltering = this.priceMin > 0 || this.priceMax < this.priceMaxLimit;
+        if (isPriceFiltering) {
+            filtered = filtered.filter((e) => {
+                const price = e.costPerPerson ?? 0;
+                return price >= this.priceMin && price <= this.priceMax;
+            });
+        }
+
+        const isDistanceFiltering = this.distanceMin > 0 || this.distanceMax < this.distanceMaxLimit;
+        if (isDistanceFiltering) {
+            filtered = filtered.filter((e) => {
+                const distance = e.distanceKm;
+                if (distance == null) return false;
+                return distance >= this.distanceMin && distance <= this.distanceMax;
+            });
+        }
+
         return filtered;
     }
 
@@ -235,6 +300,35 @@ export class MobileSearchComponent {
         return this.applyFilters(list);
     }
 
-    selectFilter(opt: any) { this.filterOption = opt; this.filterMenuOpen = false; }
-    selectSort(opt: any) { this.sortOption = opt; this.sortMenuOpen = false; }
+    selectFilter(opt: any) {
+        this.filterOption = opt;
+        this.filterMenuOpen = false;
+        this.sortMenuOpen = false;
+    }
+
+    selectSort(opt: any) {
+        this.sortOption = opt;
+        this.sortMenuOpen = false;
+        this.filterMenuOpen = false;
+    }
+
+    onPriceMinChange(value: string) {
+        const next = Math.max(0, Math.min(Number(value), this.priceMax));
+        this.priceMin = Number.isNaN(next) ? this.priceMin : next;
+    }
+
+    onPriceMaxChange(value: string) {
+        const next = Math.min(this.priceMaxLimit, Math.max(Number(value), this.priceMin));
+        this.priceMax = Number.isNaN(next) ? this.priceMax : next;
+    }
+
+    onDistanceMinChange(value: string) {
+        const next = Math.max(0, Math.min(Number(value), this.distanceMax));
+        this.distanceMin = Number.isNaN(next) ? this.distanceMin : next;
+    }
+
+    onDistanceMaxChange(value: string) {
+        const next = Math.min(this.distanceMaxLimit, Math.max(Number(value), this.distanceMin));
+        this.distanceMax = Number.isNaN(next) ? this.distanceMax : next;
+    }
 }

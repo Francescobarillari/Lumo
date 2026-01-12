@@ -4,6 +4,8 @@
         <mat-icon class="search-icon">search</mat-icon>
         <input type="text" placeholder="Search events, cities or people" class="pill-input" [(ngModel)]="searchQuery"
             (keyup.enter)="onSearch()" (focus)="!isExpanded && toggleExpand()" [readonly]="!isExpanded">
+        <mat-icon *ngIf="isExpanded && activeTab === 'events'" class="options-icon"
+            (click)="showFilterOptions = !showFilterOptions; filterMenuOpen = false; sortMenuOpen = false; $event.stopPropagation()">tune</mat-icon>
         <mat-icon *ngIf="isExpanded" class="close-icon"
             (click)="toggleExpand(); $event.stopPropagation()">close</mat-icon>
     </div>
@@ -21,20 +23,163 @@
                     (click)="setActiveTab('creators')">CREATORS</button>
             </div>
 
+            @if (activeTab === 'events' && showFilterOptions) {
+            <div class="filter-sort-container">
+                <div class="filter-row">
+                    <div class="pill dropdown" (click)="filterMenuOpen = !filterMenuOpen; sortMenuOpen = false;">
+                        <div class="pill-inner">
+                            <mat-icon>filter_list</mat-icon>
+                            <span>{{ filterLabels[filterOption] }}</span>
+                            <mat-icon class="chevron">{{ filterMenuOpen ? 'expand_less' : 'expand_more' }}</mat-icon>
+                        </div>
+                        @if (filterMenuOpen) {
+                        <div class="dropdown-menu">
+                            @for (opt of filterOrder; track $index) {
+                            <button class="menu-item" (click)="selectFilter(opt); $event.stopPropagation()">
+                                <span>{{ filterLabels[opt] }}</span>
+                                @if (filterOption === opt) { <mat-icon>check</mat-icon> }
+                            </button>
+                            }
+                        </div>
+                        }
+                    </div>
+
+                    <div class="pill dropdown" (click)="sortMenuOpen = !sortMenuOpen; filterMenuOpen = false;">
+                        <div class="pill-inner">
+                            <mat-icon>swap_vert</mat-icon>
+                            <span>{{ sortLabels[sortOption] }}</span>
+                            <mat-icon class="chevron">{{ sortMenuOpen ? 'expand_less' : 'expand_more' }}</mat-icon>
+                        </div>
+                        @if (sortMenuOpen) {
+                        <div class="dropdown-menu">
+                            @for (opt of sortOrder; track $index) {
+                            <button class="menu-item" (click)="selectSort(opt); $event.stopPropagation()">
+                                <span>{{ sortLabels[opt] }}</span>
+                                @if (sortOption === opt) { <mat-icon>check</mat-icon> }
+                            </button>
+                            }
+                        </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="range-filter">
+                    <div class="range-header">
+                        <span>Prezzo</span>
+                        <span class="range-value">€{{ priceMin.toFixed(0) }} - €{{ priceMax.toFixed(0) }}</span>
+                    </div>
+                    <div class="range-inputs">
+                        <input type="range" [min]="0" [max]="priceMaxLimit" [step]="priceStep" [value]="priceMin"
+                            (input)="onPriceMinChange($any($event.target).value)">
+                        <input type="range" [min]="priceMin" [max]="priceMaxLimit" [step]="priceStep"
+                            [value]="priceMax" (input)="onPriceMaxChange($any($event.target).value)">
+                    </div>
+                </div>
+
+                <div class="range-filter">
+                    <div class="range-header">
+                        <span>Distanza</span>
+                        <span class="range-value">{{ distanceMin.toFixed(1) }} - {{ distanceMax.toFixed(1) }} km</span>
+                    </div>
+                    <div class="range-inputs">
+                        <input type="range" [min]="0" [max]="distanceMaxLimit" [step]="distanceStep"
+                            [value]="distanceMin" (input)="onDistanceMinChange($any($event.target).value)">
+                        <input type="range" [min]="distanceMin" [max]="distanceMaxLimit" [step]="distanceStep"
+                            [value]="distanceMax" (input)="onDistanceMaxChange($any($event.target).value)">
+                    </div>
+                </div>
+            </div>
+            }
+
             <div class="results-scroll-area">
                 @if (activeTab === 'events') {
+                @if (isSearching && hasSearchQuery) {
                 <div class="list-view">
-                    @for (event of searchResults; track event.id) {
+                    @for (event of getFiltered(searchResults); track event.id) {
                     <app-event-card [title]="event.title" [location]="event.city" [dateTime]="formatDateTime(event)"
                         [distance]="formatDistance(event.distanceKm)" [id]="event.id!" [isSaved]="!!event.isSaved"
                         [isParticipating]="!!event.isParticipating" [organizerName]="event.organizerName"
                         [organizerImage]="event.organizerImage" [creatorId]="event.creatorId" [currentUserId]="userId"
                         (focusLocation)="goToEvent(event)" (toggleFavorite)="toggleFavorite.emit(event)" />
                     }
-                    @if (isSearching && searchResults.length === 0) {
+                    @if (searchResults.length === 0) {
                     <div class="empty-state">No events found.</div>
                     }
                 </div>
+                } @else {
+                @if (!userId) {
+                <div class="mobile-section">
+                    <div class="section-title">FOUND EVENTS</div>
+                    <div class="list-view">
+                        @for (event of getFiltered(foundEvents); track $index) {
+                        <app-event-card [title]="event.title" [location]="event.city"
+                            [dateTime]="formatDateTime(event)" [distance]="formatDistance(event.distanceKm)"
+                            [id]="event.id!" [isSaved]="!!event.isSaved"
+                            [isParticipating]="!!event.isParticipating" [organizerName]="event.organizerName"
+                            [organizerImage]="event.organizerImage" [creatorId]="event.creatorId"
+                            [currentUserId]="userId" (focusLocation)="goToEvent(event)"
+                            (toggleFavorite)="toggleFavorite.emit(event)" [showOrganizerInfo]="false" />
+                        }
+                        @if (foundEvents.length === 0) {
+                        <div class="empty-state">No events found in your area.</div>
+                        }
+                    </div>
+                </div>
+                } @else {
+                <div class="mobile-section">
+                    <div class="section-title">FOLLOW UP EVENTS</div>
+                    <div class="list-view">
+                        @for (event of getFiltered(followUpEvents); track $index) {
+                        <app-event-card [title]="event.title" [location]="event.city"
+                            [dateTime]="formatDateTime(event)" [distance]="formatDistance(event.distanceKm)"
+                            [id]="event.id!" [isSaved]="!!event.isSaved"
+                            [isParticipating]="!!event.isParticipating" [organizerName]="event.organizerName"
+                            [organizerImage]="event.organizerImage" [creatorId]="event.creatorId"
+                            [currentUserId]="userId" (focusLocation)="goToEvent(event)"
+                            (toggleFavorite)="toggleFavorite.emit(event)" [showOrganizerInfo]="false" />
+                        }
+                        @if (followUpEvents.length === 0) {
+                        <div class="empty-state">No upcoming events you are participating in.</div>
+                        }
+                    </div>
+                </div>
+
+                <div class="mobile-section">
+                    <div class="section-title">SAVED EVENTS</div>
+                    <div class="list-view">
+                        @for (event of getFiltered(savedEvents); track $index) {
+                        <app-event-card [title]="event.title" [location]="event.city"
+                            [dateTime]="formatDateTime(event)" [distance]="formatDistance(event.distanceKm)"
+                            [id]="event.id!" [isSaved]="!!event.isSaved"
+                            [isParticipating]="!!event.isParticipating" [organizerName]="event.organizerName"
+                            [organizerImage]="event.organizerImage" [creatorId]="event.creatorId"
+                            [currentUserId]="userId" (focusLocation)="goToEvent(event)"
+                            (toggleFavorite)="toggleFavorite.emit(event)" [showOrganizerInfo]="false" />
+                        }
+                        @if (savedEvents.length === 0) {
+                        <div class="empty-state">You haven't saved any events yet.</div>
+                        }
+                    </div>
+                </div>
+
+                <div class="mobile-section">
+                    <div class="section-title">DISCOVER EVENTS</div>
+                    <div class="list-view">
+                        @for (event of getFiltered(discoverEvents); track $index) {
+                        <app-event-card [title]="event.title" [location]="event.city"
+                            [dateTime]="formatDateTime(event)" [distance]="formatDistance(event.distanceKm)"
+                            [id]="event.id!" [isSaved]="!!event.isSaved" [organizerName]="event.organizerName"
+                            [organizerImage]="event.organizerImage" [creatorId]="event.creatorId"
+                            [currentUserId]="userId" (focusLocation)="goToEvent(event)"
+                            (toggleFavorite)="toggleFavorite.emit(event)" [showOrganizerInfo]="false" />
+                        }
+                        @if (discoverEvents.length === 0) {
+                        <div class="empty-state">No new events to discover at the moment.</div>
+                        }
+                    </div>
+                </div>
+                }
+                }
                 }
 
                 @if (activeTab === 'places') {
@@ -67,12 +212,6 @@
                         <div class="loc-info">
                             <span class="loc-name">{{ user.name }}</span>
                         </div>
-                        @if (userId && userId.toString() !== user.id.toString()) {
-                        <div class="icon-circle follow-icon" [class.following]="followingMap[user.id]"
-                            (click)="followingMap[user.id] ? unfollowUser(user, $event) : followUser(user, $event)">
-                            <mat-icon>{{ followingMap[user.id] ? 'person' : 'person_add' }}</mat-icon>
-                        </div>
-                        }
                     </div>
                     }
                     @if (isSearching && userResults.length === 0) {

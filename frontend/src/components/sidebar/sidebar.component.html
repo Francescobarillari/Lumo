@@ -16,45 +16,74 @@
             } @else {
             <mat-icon class="search-icon clickable" (click)="onSearch()">search</mat-icon>
             }
-            <mat-icon class="options-icon clickable" (click)="showFilterOptions = !showFilterOptions">tune</mat-icon>
+            <mat-icon class="options-icon clickable"
+                (click)="showFilterOptions = !showFilterOptions; filterMenuOpen = false; sortMenuOpen = false;">tune</mat-icon>
         </div>
     </div>
 
     <div class="filter-sort" *ngIf="!collapsed && showFilterOptions">
-        <div class="pill dropdown" (click)="filterMenuOpen = !filterMenuOpen; sortMenuOpen = false;">
-            <div class="pill-inner">
-                <mat-icon>filter_list</mat-icon>
-                <span>{{ filterLabels[filterOption] }}</span>
-                <mat-icon class="chevron">{{ filterMenuOpen ? 'expand_less' : 'expand_more' }}</mat-icon>
-            </div>
-            @if (filterMenuOpen) {
-            <div class="dropdown-menu">
-                @for (opt of filterOrder; track $index) {
-                <button class="menu-item" (click)="selectFilter(opt); $event.stopPropagation()">
-                    <span>{{ filterLabels[opt] }}</span>
-                    @if (filterOption === opt) { <mat-icon>check</mat-icon> }
-                </button>
+        <div class="filter-row">
+            <div class="pill dropdown" (click)="filterMenuOpen = !filterMenuOpen; sortMenuOpen = false;">
+                <div class="pill-inner">
+                    <mat-icon>filter_list</mat-icon>
+                    <span>{{ filterLabels[filterOption] }}</span>
+                    <mat-icon class="chevron">{{ filterMenuOpen ? 'expand_less' : 'expand_more' }}</mat-icon>
+                </div>
+                @if (filterMenuOpen) {
+                <div class="dropdown-menu">
+                    @for (opt of filterOrder; track $index) {
+                    <button class="menu-item" (click)="selectFilter(opt); $event.stopPropagation()">
+                        <span>{{ filterLabels[opt] }}</span>
+                        @if (filterOption === opt) { <mat-icon>check</mat-icon> }
+                    </button>
+                    }
+                </div>
                 }
             </div>
-            }
+
+            <div class="pill dropdown" (click)="sortMenuOpen = !sortMenuOpen; filterMenuOpen = false;">
+                <div class="pill-inner">
+                    <mat-icon>swap_vert</mat-icon>
+                    <span>{{ sortLabels[sortOption] }}</span>
+                    <mat-icon class="chevron">{{ sortMenuOpen ? 'expand_less' : 'expand_more' }}</mat-icon>
+                </div>
+                @if (sortMenuOpen) {
+                <div class="dropdown-menu">
+                    @for (opt of sortOrder; track $index) {
+                    <button class="menu-item" (click)="selectSort(opt); $event.stopPropagation()">
+                        <span>{{ sortLabels[opt] }}</span>
+                        @if (sortOption === opt) { <mat-icon>check</mat-icon> }
+                    </button>
+                    }
+                </div>
+                }
+            </div>
         </div>
 
-        <div class="pill dropdown" (click)="sortMenuOpen = !sortMenuOpen; filterMenuOpen = false;">
-            <div class="pill-inner">
-                <mat-icon>swap_vert</mat-icon>
-                <span>{{ sortLabels[sortOption] }}</span>
-                <mat-icon class="chevron">{{ sortMenuOpen ? 'expand_less' : 'expand_more' }}</mat-icon>
+        <div class="range-filter">
+            <div class="range-header">
+                <span>Prezzo</span>
+                <span class="range-value">€{{ priceMin.toFixed(0) }} - €{{ priceMax.toFixed(0) }}</span>
             </div>
-            @if (sortMenuOpen) {
-            <div class="dropdown-menu">
-                @for (opt of sortOrder; track $index) {
-                <button class="menu-item" (click)="selectSort(opt); $event.stopPropagation()">
-                    <span>{{ sortLabels[opt] }}</span>
-                    @if (sortOption === opt) { <mat-icon>check</mat-icon> }
-                </button>
-                }
+            <div class="range-inputs">
+                <input type="range" [min]="0" [max]="priceMaxLimit" [step]="priceStep" [value]="priceMin"
+                    (input)="onPriceMinChange($any($event.target).value)">
+                <input type="range" [min]="priceMin" [max]="priceMaxLimit" [step]="priceStep" [value]="priceMax"
+                    (input)="onPriceMaxChange($any($event.target).value)">
             </div>
-            }
+        </div>
+
+        <div class="range-filter">
+            <div class="range-header">
+                <span>Distanza</span>
+                <span class="range-value">{{ distanceMin.toFixed(1) }} - {{ distanceMax.toFixed(1) }} km</span>
+            </div>
+            <div class="range-inputs">
+                <input type="range" [min]="0" [max]="distanceMaxLimit" [step]="distanceStep" [value]="distanceMin"
+                    (input)="onDistanceMinChange($any($event.target).value)">
+                <input type="range" [min]="distanceMin" [max]="distanceMaxLimit" [step]="distanceStep"
+                    [value]="distanceMax" (input)="onDistanceMaxChange($any($event.target).value)">
+            </div>
         </div>
     </div>
 

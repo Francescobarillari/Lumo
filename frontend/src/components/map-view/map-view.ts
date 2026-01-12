@@ -34,6 +34,7 @@ userMarkerEl.style.boxShadow = '0 0 3px rgba(0,0,0,0.3)';
   </app-sidebar>
 
   <app-mobile-search
+    [events]="events"
     [userId]="userId"
     (focusEvent)="flyToEvent($event)"
     (foundLocation)="flyToLocation($event)"

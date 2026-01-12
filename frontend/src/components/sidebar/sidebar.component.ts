@@ -71,6 +71,14 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
     // Filter/Sort state
     filterOption: 'all' | 'participating' | 'free' | 'available' = 'all';
     sortOption: 'date' | 'distance' | 'name' = 'date';
+    priceMin = 0;
+    priceMax = 100;
+    priceMaxLimit = 100;
+    priceStep = 1;
+    distanceMin = 0;
+    distanceMax = 20;
+    distanceMaxLimit = 20;
+    distanceStep = 0.5;
     filterMenuOpen = false;
     sortMenuOpen = false;
     readonly filterOrder: Array<typeof this.filterOption> = ['all', 'participating', 'free', 'available'];
@@ -112,6 +120,7 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
         this.savedEvents = [];
         this.discoverEvents = [];
         this.foundEvents = [];
+        this.updateRangeLimits();
 
         // Guest Mode
         if (!this.userId) {
@@ -165,6 +174,36 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
         });
     }
 
+    private updateRangeLimits() {
+        const priceValues = this.events.map(event => event.costPerPerson ?? 0);
+        const rawPriceMax = priceValues.length ? Math.max(...priceValues) : 0;
+        const nextPriceMaxLimit = Math.max(10, Math.ceil(rawPriceMax));
+
+        const distanceValues = this.events
+            .map(event => event.distanceKm)
+            .filter((value): value is number => typeof value === 'number' && !Number.isNaN(value));
+        const rawDistanceMax = distanceValues.length ? Math.max(...distanceValues) : 0;
+        const nextDistanceMaxLimit = Math.max(5, Math.ceil(rawDistanceMax));
+
+        const priceMaxAtLimit = this.priceMax === this.priceMaxLimit || this.priceMax === 0;
+        this.priceMaxLimit = nextPriceMaxLimit;
+        if (priceMaxAtLimit || this.priceMax > this.priceMaxLimit) {
+            this.priceMax = this.priceMaxLimit;
+        }
+        if (this.priceMin > this.priceMax) {
+            this.priceMin = this.priceMax;
+        }
+
+        const distanceMaxAtLimit = this.distanceMax === this.distanceMaxLimit || this.distanceMax === 0;
+        this.distanceMaxLimit = nextDistanceMaxLimit;
+        if (distanceMaxAtLimit || this.distanceMax > this.distanceMaxLimit) {
+            this.distanceMax = this.distanceMaxLimit;
+        }
+        if (this.distanceMin > this.distanceMax) {
+            this.distanceMin = this.distanceMax;
+        }
+    }
+
     private applyFilters(events: Event[]): Event[] {
         let filtered = [...events];
 
@@ -207,6 +246,23 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
                 break;
         }
 
+        const isPriceFiltering = this.priceMin > 0 || this.priceMax < this.priceMaxLimit;
+        if (isPriceFiltering) {
+            filtered = filtered.filter((e) => {
+                const price = e.costPerPerson ?? 0;
+                return price >= this.priceMin && price <= this.priceMax;
+            });
+        }
+
+        const isDistanceFiltering = this.distanceMin > 0 || this.distanceMax < this.distanceMaxLimit;
+        if (isDistanceFiltering) {
+            filtered = filtered.filter((e) => {
+                const distance = e.distanceKm;
+                if (distance == null) return false;
+                return distance >= this.distanceMin && distance <= this.distanceMax;
+            });
+        }
+
         return filtered;
     }
 
@@ -234,6 +290,26 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
         this.sortOption = option;
         this.sortMenuOpen = false;
         this.filterMenuOpen = false;
+    }
+
+    onPriceMinChange(value: string) {
+        const next = Math.max(0, Math.min(Number(value), this.priceMax));
+        this.priceMin = Number.isNaN(next) ? this.priceMin : next;
+    }
+
+    onPriceMaxChange(value: string) {
+        const next = Math.min(this.priceMaxLimit, Math.max(Number(value), this.priceMin));
+        this.priceMax = Number.isNaN(next) ? this.priceMax : next;
+    }
+
+    onDistanceMinChange(value: string) {
+        const next = Math.max(0, Math.min(Number(value), this.distanceMax));
+        this.distanceMin = Number.isNaN(next) ? this.distanceMin : next;
+    }
+
+    onDistanceMaxChange(value: string) {
+        const next = Math.min(this.distanceMaxLimit, Math.max(Number(value), this.distanceMin));
+        this.distanceMax = Number.isNaN(next) ? this.distanceMax : next;
     }
 
     formatDateTime(event: Event): string {
