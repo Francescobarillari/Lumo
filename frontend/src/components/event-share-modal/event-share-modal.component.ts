@@ -80,7 +80,7 @@ export class EventShareModalComponent implements OnChanges {
             setTimeout(() => URL.revokeObjectURL(link.href), 1000);
         } catch (error) {
             console.error('Failed to download poster', error);
-            alert('Non riesco a generare la locandina. Puoi condividere il link.');
+            alert('Unable to generate the poster. You can share the link instead.');
         } finally {
             this.downloading = false;
         }
@@ -94,7 +94,7 @@ export class EventShareModalComponent implements OnChanges {
             try {
                 await navigator.share({
                     title: this.event.title,
-                    text: 'Guarda questo evento su Lumo',
+                    text: 'Check out this event on Lumo',
                     url: link
                 });
                 return;
@@ -111,10 +111,10 @@ export class EventShareModalComponent implements OnChanges {
         if (!link) return;
 
         navigator.clipboard.writeText(link).then(() => {
-            alert('Link copiato negli appunti!');
+            alert('Link copied to clipboard!');
         }).catch((err) => {
             console.error('Failed to copy link: ', err);
-            alert('Impossibile copiare il link.');
+            alert('Unable to copy the link.');
         });
     }
 

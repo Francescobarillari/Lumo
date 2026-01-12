@@ -14,7 +14,7 @@ export class VerifyEmailPage implements OnInit {
 
   token: string = '';
   verified: boolean = false;
-  message: string = 'Clicca il pulsante per verificare la tua email.';
+  message: string = 'Click the button to verify your email.';
 
   constructor(
     private route: ActivatedRoute,
@@ -33,7 +33,7 @@ export class VerifyEmailPage implements OnInit {
     this.authService.verifyEmail(this.token).subscribe({
       next: (res) => {
         this.verified = true;
-        this.message = 'Ti sei registrato con successo! Accesso in corso...';
+        this.message = 'You have been successfully registered! Signing you in...';
 
         if (res.data) {
           localStorage.setItem('user', JSON.stringify(res.data));
@@ -45,7 +45,7 @@ export class VerifyEmailPage implements OnInit {
       },
       error: (err) => {
         this.verified = false;
-        this.message = err.error?.error || 'Token non valido o scaduto.';
+        this.message = err.error?.error || 'Token is invalid or expired.';
       }
     });
   }

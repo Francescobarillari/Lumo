@@ -55,8 +55,8 @@ export class UserProfileModalComponent implements OnChanges {
         switch (this.view) {
             case 'followers': return 'Followers';
             case 'following': return 'Following';
-            case 'events': return 'Eventi';
-            default: return 'Profilo';
+            case 'events': return 'Events';
+            default: return 'Profile';
         }
     }
 
@@ -94,7 +94,7 @@ export class UserProfileModalComponent implements OnChanges {
         if (!this.userId || !this.currentUserId) return;
 
         if (this.isFollowing) {
-            if (confirm('Sei sicuro di voler smettere di seguire questo utente?')) {
+            if (confirm('Are you sure you want to unfollow this user?')) {
                 this.userService.unfollowUser(this.currentUserId, this.userId).subscribe({
                     next: () => {
                         this.isFollowing = false;
@@ -197,7 +197,7 @@ export class UserProfileModalComponent implements OnChanges {
 
     onListUnfollow(targetUser: User) {
         if (!this.currentUserId) return;
-        if (confirm(`Sei sicuro di voler smettere di seguire ${targetUser.name}?`)) {
+        if (confirm(`Are you sure you want to unfollow ${targetUser.name}?`)) {
             this.userService.unfollowUser(this.currentUserId, targetUser.id.toString()).subscribe({
                 next: () => {
                     this.myFollowingIds.delete(targetUser.id.toString());
@@ -243,7 +243,7 @@ export class UserProfileModalComponent implements OnChanges {
         const date = ev.date ? new Date(`${ev.date}T00:00:00`) : null;
         const start = ev.startTime ? ev.startTime.slice(0, 5) : '';
         const end = ev.endTime ? ev.endTime.slice(0, 5) : '';
-        const datePart = date ? date.toLocaleDateString('it-IT', { day: '2-digit', month: 'short' }) : '';
+        const datePart = date ? date.toLocaleDateString('en-US', { day: '2-digit', month: 'short' }) : '';
         const timePart = start && end ? `${start} - ${end}` : start || end;
         return [datePart, timePart].filter(Boolean).join(' • ');
     }
@@ -257,7 +257,7 @@ export class UserProfileModalComponent implements OnChanges {
             freeSpots = Math.max(max - occupied, 0).toString();
         }
         const cost = ev.costPerPerson == null || ev.costPerPerson === 0
-            ? 'Gratuito'
+            ? 'Free'
             : ev.costPerPerson.toString();
         return { participants, freeSpots, cost };
     }
@@ -274,7 +274,7 @@ export class UserProfileModalComponent implements OnChanges {
                 this.notificationsLoading = false;
             },
             error: (err) => {
-                console.error('Errore aggiornando le notifiche follow', err);
+                console.error('Error updating follow notifications', err);
                 this.notificationsLoading = false;
             }
         });
@@ -289,7 +289,7 @@ export class UserProfileModalComponent implements OnChanges {
                 this.notificationsLoading = false;
             },
             error: (err) => {
-                console.error('Errore recuperando preferenza notifiche follow', err);
+                console.error('Error loading follow notification preference', err);
                 this.notificationsEnabled = false;
                 this.notificationsLoading = false;
             }

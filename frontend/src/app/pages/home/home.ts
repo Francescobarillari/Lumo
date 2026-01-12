@@ -141,7 +141,7 @@ export class Home implements OnInit, AfterViewInit {
       try {
         this.loggedUser = JSON.parse(storedUser);
       } catch (e) {
-        console.error('Errore parsing utente locale', e);
+        console.error('Error parsing local user', e);
         localStorage.removeItem('user');
       }
     }
@@ -154,7 +154,7 @@ export class Home implements OnInit, AfterViewInit {
       next: (user) => {
         this.loggedUser = {
           id: user.id || '',
-          name: user.name || user.email || 'Utente',
+          name: user.name || user.email || 'User',
           email: user.email || '',
           description: user.description,
           profileImage: (user as any).profileImage,
@@ -231,7 +231,7 @@ export class Home implements OnInit, AfterViewInit {
         this.emailVerified = false;
       },
       error: (err) => {
-        console.error('Errore nel reinvio della mail di verifica', err);
+        console.error('Error resending verification email', err);
       }
     });
   }
@@ -385,7 +385,7 @@ export class Home implements OnInit, AfterViewInit {
       return;
     }
 
-    const confirmed = confirm('Sei sicuro di voler lasciare l\'evento?');
+    const confirmed = confirm('Are you sure you want to leave the event?');
     if (!confirmed) return;
 
     this.eventService.leaveEvent(event.id, this.loggedUser.id).subscribe({
@@ -420,11 +420,11 @@ export class Home implements OnInit, AfterViewInit {
     }
 
     if (event.creatorId && event.creatorId.toString() !== this.loggedUser.id.toString()) {
-      console.warn('Non sei l\'organizzatore di questo evento');
+      console.warn('You are not the organizer of this event');
       return;
     }
 
-    const confirmed = confirm('Sei sicuro di voler cancellare questo evento? Questa azione non può essere annullata.');
+    const confirmed = confirm('Are you sure you want to delete this event? This action cannot be undone.');
     if (!confirmed) return;
 
     this.eventService.deleteEvent(event.id).subscribe({
@@ -436,7 +436,7 @@ export class Home implements OnInit, AfterViewInit {
         }
         this.closeEventPopup();
       },
-      error: (err) => console.error('Errore nella cancellazione dell\'evento', err)
+      error: (err) => console.error('Error deleting event', err)
     });
   }
 
@@ -478,7 +478,7 @@ export class Home implements OnInit, AfterViewInit {
     console.log('User received on sign in:', user);
     this.loggedUser = {
       id: user?.id || '',
-      name: user?.name || user?.email || 'Utente',
+      name: user?.name || user?.email || 'User',
       email: user?.email || '',
       profileImage: (user as any).profileImage,
       isAdmin: (user as any).isAdmin
@@ -519,8 +519,8 @@ export class Home implements OnInit, AfterViewInit {
       console.log('Navigate to Account');
     } else if (action === 'events') {
       console.log('Navigate to Events');
-    } else if (action === 'crea-evento' || action === 'add-event') {
-      console.log('Crea Evento clicked');
+    } else if (action === 'add-event') {
+      console.log('Create Event clicked');
       this.showCreateEventPopup = true;
     }
   }

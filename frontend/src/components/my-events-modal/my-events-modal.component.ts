@@ -93,7 +93,7 @@ export class MyEventsModal implements OnInit {
     }
 
     deleteEvent(event: Event) {
-        const confirmed = confirm('Sei sicuro di voler cancellare questo evento?');
+        const confirmed = confirm('Are you sure you want to delete this event?');
         if (!confirmed) return;
 
         this.eventService.deleteEvent(event.id).subscribe({
@@ -103,7 +103,7 @@ export class MyEventsModal implements OnInit {
                     this.expandedEventRequestsId = null;
                 }
             },
-            error: (err) => console.error('Errore nella cancellazione dell\'evento', err)
+            error: (err) => console.error('Error deleting event', err)
         });
     }
 
@@ -149,7 +149,7 @@ export class MyEventsModal implements OnInit {
     formatDateTime(event: Event): string {
         const date = event.date ? new Date(`${event.date}T00:00:00`) : null;
         const start = event.startTime ? event.startTime.slice(0, 5) : '';
-        const datePart = date ? date.toLocaleDateString('it-IT', { day: '2-digit', month: 'short' }) : '';
+        const datePart = date ? date.toLocaleDateString('en-US', { day: '2-digit', month: 'short' }) : '';
         return `${datePart} | ${start}`;
     }
 }

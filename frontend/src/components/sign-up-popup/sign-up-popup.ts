@@ -118,7 +118,7 @@ export class SignUpPopup {
           return;
         }
 
-        this.generalError = 'Errore inatteso.';
+        this.generalError = 'Unexpected error.';
         console.warn('Unhandled error shape', err);
       }
     });
@@ -162,14 +162,14 @@ export class SignUpPopup {
             this.generalError = body.error;
             return;
           }
-          this.generalError = 'Accesso Google non riuscito.';
+          this.generalError = 'Google sign-in failed.';
         }
       });
     } catch (e: any) {
       if (e?.code === 'google_cancelled') {
-        return; // utente ha chiuso/soppresso il prompt: nessun errore, può riprovare
+        return; // User dismissed the prompt: no error, can retry.
       }
-      this.generalError = e?.message || 'Accesso Google non riuscito.';
+      this.generalError = e?.message || 'Google sign-in failed.';
     }
   }
 }

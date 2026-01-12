@@ -22,7 +22,7 @@ export class GoogleIdentityService {
       script.async = true;
       script.defer = true;
       script.onload = () => resolve();
-      script.onerror = () => reject(new Error('Impossibile caricare Google Identity Services'));
+      script.onerror = () => reject(new Error('Unable to load Google Identity Services'));
       document.head.appendChild(script);
     });
 
@@ -33,7 +33,7 @@ export class GoogleIdentityService {
     await this.loadScript();
 
     if (!Environment.googleClientId) {
-        throw new Error('Configura il Google Client ID.');
+        throw new Error('Configure the Google Client ID.');
     }
 
     const redirectUri = Environment.googleRedirectUri || window.location.origin;
@@ -49,11 +49,11 @@ export class GoogleIdentityService {
           if (response && response.code) {
             resolve(response.code);
           } else if (response && response.error) {
-            const err = new Error(response.error_description || response.error || 'Accesso Google annullato.');
+            const err = new Error(response.error_description || response.error || 'Google sign-in cancelled.');
             (err as any).code = response.error;
             reject(err);
           } else {
-            reject(new Error('Accesso Google annullato.'));
+            reject(new Error('Google sign-in cancelled.'));
           }
         }
       });
@@ -66,18 +66,18 @@ export class GoogleIdentityService {
     await this.loadScript();
 
     if (!Environment.googleClientId) {
-      throw new Error('Configura il Google Client ID.');
+      throw new Error('Configure the Google Client ID.');
     }
 
     return new Promise((resolve, reject) => {
       let handled = false;
       const mapReason = (reason?: string) => {
         const normalized = (reason || '').toLowerCase();
-        if (normalized.includes('invalid')) return { message: 'Configura il Google Client ID.', code: 'google_config' };
-        if (normalized.includes('missing')) return { message: 'Configura il Google Client ID.', code: 'google_config' };
-        if (normalized.includes('suppressed')) return { message: 'Accesso Google annullato: Google ha soppresso il prompt (cookie).', code: 'google_cancelled' };
-        if (normalized.includes('user_cancel')) return { message: 'Accesso Google annullato dall’utente.', code: 'google_cancelled' };
-        return { message: 'Accesso Google annullato.', code: 'google_cancelled' };
+        if (normalized.includes('invalid')) return { message: 'Configure the Google Client ID.', code: 'google_config' };
+        if (normalized.includes('missing')) return { message: 'Configure the Google Client ID.', code: 'google_config' };
+        if (normalized.includes('suppressed')) return { message: 'Google sign-in cancelled: Google suppressed the prompt (cookie).', code: 'google_cancelled' };
+        if (normalized.includes('user_cancel')) return { message: 'Google sign-in cancelled by the user.', code: 'google_cancelled' };
+        return { message: 'Google sign-in cancelled.', code: 'google_cancelled' };
       };
       const finish = (error?: { message: string; code?: string } | string, credential?: string) => {
         if (handled) return;
@@ -86,7 +86,7 @@ export class GoogleIdentityService {
         else {
           const message = typeof error === 'string' ? error : error?.message;
           const code = typeof error === 'string' ? undefined : error?.code;
-          const errObj: any = new Error(message || 'Accesso Google annullato.');
+          const errObj: any = new Error(message || 'Google sign-in cancelled.');
           if (code) errObj.code = code;
           reject(errObj);
         }
@@ -98,10 +98,10 @@ export class GoogleIdentityService {
           if (response && response.credential) {
             finish(undefined, response.credential);
           } else {
-            finish({ message: 'Accesso Google annullato.', code: 'google_cancelled' });
+            finish({ message: 'Google sign-in cancelled.', code: 'google_cancelled' });
           }
         },
-        // Modal popup: evita la soppressione One Tap dovuta a cookie/3rd-party blocking
+        // Modal popup: avoids One Tap suppression due to cookies/3rd-party blocking.
         ux_mode: 'popup',
         use_fedcm_for_prompt: true,
         itp_support: true,
@@ -116,7 +116,7 @@ export class GoogleIdentityService {
           const reason =
             notification?.getNotDisplayedReason?.() ||
             notification?.getSkippedReason?.() ||
-            'Accesso Google annullato.';
+            'Google sign-in cancelled.';
           finish(mapReason(reason));
         }
       });

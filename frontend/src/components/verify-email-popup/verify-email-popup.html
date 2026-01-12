@@ -13,10 +13,9 @@
     />
       <div class="header">
         <h1>Verify your email</h1>
-        @if (verified) {<p class="success">Sei stato registrato con sucesso</p>}
+        @if (verified) {<p class="success">You have been successfully registered</p>}
         @else {<p>Check your email and click the button</p>}
       </div>
-      <a class="button" (click)="resend()">Reinvia email di verifica</a>
+      <a class="button" (click)="resend()">Resend verification email</a>
     </div>
 </div>
-

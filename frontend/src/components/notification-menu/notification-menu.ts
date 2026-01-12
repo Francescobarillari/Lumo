@@ -31,36 +31,36 @@ export class NotificationMenuComponent implements OnInit {
     }
 
     translateNotification(n: Notification): Notification {
+        const quotedParts = (n.message || '').match(/["']([^"']+)["']/g)?.map((m) => m.slice(1, -1)) || [];
+        const eventName = quotedParts.length ? quotedParts[quotedParts.length - 1] : '';
+        const firstQuoted = quotedParts[0] || '';
+
         // Translate Title
         switch (n.type) {
             case 'APPROVED':
                 n.title = 'Event Approved';
-                // Try to extract event name "Il tuo evento 'X' è stato approvato..."
-                // Regex matches single quotes or just assumes pattern
-                const matchApp = n.message.match(/evento '(.+?)'/);
-                if (matchApp && matchApp[1]) {
-                    n.message = `Your event '${matchApp[1]}' has been approved and is now visible!`;
-                } else if (n.message.includes('approvato')) {
+                if (eventName) {
+                    n.message = `Your event '${eventName}' has been approved and is now visible!`;
+                } else {
                     n.message = 'Your event has been approved and is now visible!';
                 }
                 break;
             case 'REJECTED':
                 n.title = 'Event Rejected';
-                const matchRej = n.message.match(/evento '(.+?)'/);
-                if (matchRej && matchRej[1]) {
-                    n.message = `Your event '${matchRej[1]}' has been rejected.`;
+                if (eventName) {
+                    n.message = `Your event '${eventName}' has been rejected.`;
                 } else {
                     n.message = 'Your event has been rejected.';
                 }
                 break;
             case 'PARTICIPATION_REQUEST':
                 n.title = 'Participation Request';
-                // "L'utente X chiede di partecipare..." or similar
-                // This is harder to parse without exact string, so we might leave message or try generic
-                // If we assume structure: "L'utente {name} vuole partecipare all'evento '{event}'"
-                const matchReq = n.message.match(/L'utente (.+?) vuole partecipare all'evento '(.+?)'/);
-                if (matchReq) {
-                    n.message = `User '${matchReq[1]}' wants to join event '${matchReq[2]}'.`;
+                if (quotedParts.length >= 2) {
+                    n.message = `User '${firstQuoted}' wants to join event '${eventName}'.`;
+                } else if (eventName) {
+                    n.message = `A user wants to join event '${eventName}'.`;
+                } else {
+                    n.message = 'A user requested to join your event.';
                 }
                 break;
             case 'PARTICIPATION_ACCEPTED':

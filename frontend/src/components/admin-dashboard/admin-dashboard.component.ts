@@ -131,20 +131,20 @@ export class AdminDashboardComponent implements OnInit {
             },
             error: (err) => {
                 console.error('Rejection failed:', err);
-                alert('Errore durante il rifiuto dell\'evento.');
+                alert('Error while rejecting the event.');
             }
         });
     }
 
     deleteEvent(event: any) {
-        if (confirm(`Sei sicuro di voler eliminare DEFINITIVAMENTE l'evento "${event.title}"? Questa azione rimuoverà l'evento dalla mappa e da tutte le liste utenti. Non è reversibile.`)) {
+        if (confirm(`Are you sure you want to permanently delete the event "${event.title}"? This action will remove the event from the map and all user lists. It cannot be undone.`)) {
             this.adminService.deleteEvent(event.id).subscribe({
                 next: () => {
                     this.loadData();
                 },
                 error: (err) => {
-                    console.error('Errore durante l\'eliminazione', err);
-                    alert('Errore durante l\'eliminazione dell\'evento.');
+                    console.error('Error deleting event', err);
+                    alert('Error deleting the event.');
                 }
             });
         }

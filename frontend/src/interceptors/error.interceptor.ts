@@ -11,7 +11,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       if (err instanceof HttpErrorResponse) {
         return throwError(() => err);
       }
-      return throwError(() => err || 'Errore sconosciuto');
+      return throwError(() => err || 'Unknown error');
     })
   );
 };

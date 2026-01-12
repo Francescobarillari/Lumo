@@ -58,15 +58,15 @@ export class MobileSearchComponent {
     readonly filterOrder: Array<typeof this.filterOption> = ['all', 'participating', 'free', 'available'];
     readonly sortOrder: Array<typeof this.sortOption> = ['date', 'distance', 'name'];
     readonly filterLabels: Record<typeof this.filterOption, string> = {
-        all: 'Tutti',
-        participating: 'Partecipi',
-        free: 'Gratuiti',
-        available: 'Posti liberi'
+        all: 'All',
+        participating: 'Participating',
+        free: 'Free',
+        available: 'Available spots'
     };
     readonly sortLabels: Record<typeof this.sortOption, string> = {
-        date: 'Data',
-        distance: 'Distanza',
-        name: 'Nome'
+        date: 'Date',
+        distance: 'Distance',
+        name: 'Name'
     };
 
     constructor(
@@ -184,7 +184,7 @@ export class MobileSearchComponent {
         const date = event.date ? new Date(`${event.date}T00:00:00`) : null;
         const start = event.startTime ? event.startTime.slice(0, 5) : '';
         const end = event.endTime ? event.endTime.slice(0, 5) : '';
-        const datePart = date ? date.toLocaleDateString('it-IT', { day: '2-digit', month: 'short' }) : '';
+        const datePart = date ? date.toLocaleDateString('en-US', { day: '2-digit', month: 'short' }) : '';
         const timePart = start && end ? `${start} - ${end}` : start || end;
         return [datePart, timePart].filter(Boolean).join(' | ');
     }

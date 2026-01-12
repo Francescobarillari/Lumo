@@ -6,7 +6,7 @@ export function onlyLettersValidator(control: AbstractControl): ValidationErrors
   return /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/.test(value) ? null : { onlyLetters: true };
 }
 
-// Data valida + maggiore di 18
+// Valid date + at least 18
 export function adultValidator(control: AbstractControl) {
   const value = control.value; // stringa "YYYY-MM-DD"
   if (!value) return { adult: true };

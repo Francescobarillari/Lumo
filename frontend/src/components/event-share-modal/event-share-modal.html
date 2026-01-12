@@ -4,7 +4,7 @@
         <div class="event-share-header">
             <div class="header-title">
                 <mat-icon>share</mat-icon>
-                <span>Condividi evento</span>
+                <span>Share Event</span>
             </div>
             <button class="close-btn" (click)="close.emit()">
                 <mat-icon>close</mat-icon>
@@ -14,7 +14,7 @@
         <div class="event-share-content">
             <div class="poster-preview" [style.backgroundImage]="'url(' + templateUrl + ')'">
                 @if (posterPreviewUrl) {
-                <img class="poster-preview-image" [src]="posterPreviewUrl" alt="Locandina evento">
+                <img class="poster-preview-image" [src]="posterPreviewUrl" alt="Event poster">
                 } @else {
                 <div class="poster-preview-loading">Anteprima in generazione...</div>
                 }
@@ -23,11 +23,11 @@
             <div class="share-actions">
                 <button class="button action-btn" (click)="downloadPoster()" [disabled]="downloading">
                     <mat-icon>download</mat-icon>
-                    <span>{{ downloading ? 'Generazione...' : 'Scarica locandina' }}</span>
+                    <span>{{ downloading ? 'Generating...' : 'Download poster' }}</span>
                 </button>
                 <button class="button action-btn secondary" (click)="shareLink()">
                     <mat-icon>link</mat-icon>
-                    <span>Condividi link</span>
+                    <span>Share link</span>
                 </button>
             </div>
         </div>
