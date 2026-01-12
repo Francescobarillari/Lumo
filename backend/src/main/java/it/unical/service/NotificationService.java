@@ -77,7 +77,8 @@ public class NotificationService implements INotificationService {
 
     @Override
     public void clearParticipationRequestNotification(Long creatorId, Long eventId, Long requesterId) {
-        if (creatorId == null || eventId == null || requesterId == null) return;
+        if (creatorId == null || eventId == null || requesterId == null)
+            return;
         notificationRepo.deleteByUserIdAndRelatedEventIdAndRelatedUserIdAndType(
                 creatorId,
                 eventId,
@@ -95,7 +96,8 @@ public class NotificationService implements INotificationService {
         LocalDate threeDaysFromNow = today.plusDays(3);
 
         for (Event event : user.getParticipatingEvents()) {
-            // Skip follow-up for events created by the user (owner shouldn't be treated as a participant)
+            // Skip follow-up for events created by the user (owner shouldn't be treated as
+            // a participant)
             if (event.getCreatorId() != null && event.getCreatorId().equals(userId)) {
                 continue;
             }
@@ -113,14 +115,14 @@ public class NotificationService implements INotificationService {
                 // Let's create it only if NO notification of type 'FOLLOWUP' exists for this
                 // user with title containing event title.
 
-                String expectedTitle = "Evento in arrivo: " + event.getTitle();
+                String expectedTitle = "Upcoming event: " + event.getTitle();
                 boolean alreadyNotified = notificationRepo.findByUserIdOrderByCreatedAtDesc(userId).stream()
                         .anyMatch(n -> "FOLLOWUP".equals(n.getType()) && n.getTitle().equals(expectedTitle));
 
                 if (!alreadyNotified) {
                     createNotification(userId, expectedTitle,
-                            "L'evento '" + event.getTitle() + "' sta per iniziare (" + event.getDate()
-                                    + ")! Preparati.",
+                            "The event '" + event.getTitle() + "' is about to start (" + event.getDate()
+                                    + ")! Get ready.",
                             "FOLLOWUP");
                 }
             }
