@@ -49,8 +49,8 @@ public class EventService implements IEventService {
                 // Notify followers who enabled notifications for this creator
                 notifyFollowersAboutEvent(user,
                         savedEvent,
-                        "Nuovo evento",
-                        user.getName() + " ha pubblicato un nuovo evento: '" + savedEvent.getTitle() + "'.",
+                        "New event",
+                        user.getName() + " published a new event: '" + savedEvent.getTitle() + "'.",
                         "NEW_EVENT");
             });
             // Save again to persist creator FK
@@ -163,8 +163,8 @@ public class EventService implements IEventService {
         if (event.getParticipants() != null && !event.getParticipants().isEmpty()) {
             it.unical.model.User creator = event.getParticipants().iterator().next();
             notificationService.createNotification(creator.getId(),
-                    "Evento Approvato",
-                    "Il tuo evento '" + event.getTitle() + "' è stato approvato ed è ora visibile!",
+                    "Event Approved",
+                    "Your event '" + event.getTitle() + "' has been approved and is now visible!",
                     "APPROVED");
         }
         return saved;
@@ -179,13 +179,13 @@ public class EventService implements IEventService {
             if (event.getParticipants() != null && !event.getParticipants().isEmpty()) {
                 it.unical.model.User creator = event.getParticipants().iterator().next();
 
-                String message = "Il tuo evento '" + event.getTitle() + "' è stato rifiutato.";
+                String message = "Your event '" + event.getTitle() + "' has been rejected.";
                 if (reason != null && !reason.trim().isEmpty()) {
-                    message += " Motivazione: " + reason;
+                    message += " Reason: " + reason;
                 }
 
                 notificationService.createNotification(creator.getId(),
-                        "Evento Rifiutato",
+                        "Event Rejected",
                         message,
                         "REJECTED");
             }
@@ -249,8 +249,8 @@ public class EventService implements IEventService {
             // Notify Creator
             if (creator != null) {
                 notificationService.createNotification(creator.getId(),
-                        "Evento Eliminato",
-                        "Il tuo evento '" + event.getTitle() + "' è stato eliminato con successo.",
+                        "Event Deleted",
+                        "Your event '" + event.getTitle() + "' has been deleted successfully.",
                         "EVENT_CANCELLED");
             }
 
@@ -261,8 +261,8 @@ public class EventService implements IEventService {
                     // on model)
                     if (creator == null || !participant.getId().equals(creator.getId())) {
                         notificationService.createNotification(participant.getId(),
-                                "Evento Annullato",
-                                "L'evento '" + event.getTitle() + "' a cui partecipavi è stato annullato.",
+                                "Event Cancelled",
+                                "The event '" + event.getTitle() + "' you were participating in has been cancelled.",
                                 "EVENT_CANCELLED");
                     }
                 }
@@ -303,8 +303,8 @@ public class EventService implements IEventService {
             if (creator != null) {
                 notifyFollowersAboutEvent(creator,
                         event,
-                        "Evento cancellato",
-                        creator.getName() + " ha cancellato l'evento '" + event.getTitle() + "'.",
+                        "Event cancelled",
+                        creator.getName() + " cancelled the event '" + event.getTitle() + "'.",
                         "EVENT_CANCELLED_FOLLOWED");
             }
 
@@ -334,8 +334,8 @@ public class EventService implements IEventService {
             Long creatorId = event.getCreatorId(); // Use smart getter with fallback
             if (creatorId != null && !creatorId.equals(userId)) { // Don't notify self
                 notificationService.createRichNotification(creatorId,
-                        "Richiesta Partecipazione",
-                        user.getName() + " vuole partecipare al tuo evento '" + event.getTitle() + "'",
+                        "Participation Request",
+                        user.getName() + " wants to participate in your event '" + event.getTitle() + "'",
                         "PARTICIPATION_REQUEST",
                         eventId,
                         userId);
@@ -357,8 +357,8 @@ public class EventService implements IEventService {
             userRepository.save(requester);
 
             notificationService.createRichNotification(requesterId,
-                    "Richiesta Accettata! 🎉",
-                    "Sei stato accettato nell'evento '" + event.getTitle() + "'!",
+                    "Request Accepted! \uD83C\uDF89",
+                    "You have been accepted in the event '" + event.getTitle() + "'!",
                     "PARTICIPATION_ACCEPTED",
                     eventId,
                     null);
@@ -389,8 +389,8 @@ public class EventService implements IEventService {
             userRepository.save(requester);
 
             notificationService.createRichNotification(requesterId,
-                    "Richiesta Rifiutata",
-                    "La tua richiesta per '" + event.getTitle() + "' è stata rifiutata.",
+                    "Request Rejected",
+                    "Your request for '" + event.getTitle() + "' has been rejected.",
                     "PARTICIPATION_REJECTED",
                     eventId,
                     null);
@@ -418,8 +418,10 @@ public class EventService implements IEventService {
         }
     }
 
-    private void notifyFollowersAboutEvent(it.unical.model.User creator, Event event, String title, String message, String type) {
-        if (creator.getFollowers() == null || creator.getFollowers().isEmpty()) return;
+    private void notifyFollowersAboutEvent(it.unical.model.User creator, Event event, String title, String message,
+            String type) {
+        if (creator.getFollowers() == null || creator.getFollowers().isEmpty())
+            return;
 
         creator.getFollowers().forEach(follower -> {
             if (follower.getFollowNotifications().contains(creator)) {

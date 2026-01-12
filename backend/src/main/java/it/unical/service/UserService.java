@@ -114,8 +114,8 @@ public class UserService implements IUserService {
 
             // Notify Followed User
             notificationService.createRichNotification(followedId,
-                    "Nuovo Follower",
-                    follower.getName() + " ha iniziato a seguirti!",
+                    "New Follower",
+                    follower.getName() + " started following you!",
                     "NEW_FOLLOWER",
                     null,
                     followerId);
