@@ -44,19 +44,29 @@
 
 .tabs {
     display: flex;
-    gap: 16px;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
 }
 
 .tab-btn {
+    flex: 1;
     background: none;
     border: none;
     color: #888;
     font-size: 16px;
     font-weight: 600;
-    padding: 8px 0;
+    padding: 10px 24px;
     cursor: pointer;
     position: relative;
+    text-align: center;
+    border-left: 1px solid rgba(255, 255, 255, 0.12);
     transition: color 0.3s;
+}
+
+.tab-btn:first-child {
+    border-left: none;
 }
 
 .tab-btn.active {
