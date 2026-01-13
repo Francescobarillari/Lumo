@@ -27,6 +27,7 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
     @Output() leave = new EventEmitter<Event>();
     @Output() deleteEvent = new EventEmitter<Event>();
     @Output() shareEvent = new EventEmitter<Event>();
+    @Output() openChat = new EventEmitter<Event>();
 
     isFollowing = false;
     isLoadingFollowStatus = true; // Add loading state to prevent flicker
@@ -148,6 +149,10 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
 
     onLeave() {
         this.leave.emit(this.event);
+    }
+
+    onOpenChat() {
+        this.openChat.emit(this.event);
     }
 
     onDeleteEvent() {

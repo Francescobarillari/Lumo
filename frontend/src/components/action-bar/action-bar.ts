@@ -20,6 +20,7 @@ export class ActionBarComponent implements OnInit, OnDestroy, OnChanges {
     @Input() loggedUser: { id: string; name: string; email: string; profileImage?: string; followersCount?: number; followingCount?: number } | null = null;
     @Output() action = new EventEmitter<string>();
     @Output() openProfile = new EventEmitter<string>();
+    @Output() openChatFromNotification = new EventEmitter<number>();
 
     showUserMenu = false;
     showNotifications = false;
@@ -157,6 +158,11 @@ export class ActionBarComponent implements OnInit, OnDestroy, OnChanges {
     onChangePhotoFromAccount() {
         this.showAccountModal = false; // Close modal during image selection
         this.action.emit('change-photo');
+    }
+
+    onOpenChatFromNotification(eventId: number) {
+        this.showNotifications = false;
+        this.openChatFromNotification.emit(eventId);
     }
 
     onAddEvent() {

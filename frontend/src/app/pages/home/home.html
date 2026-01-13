@@ -6,7 +6,7 @@
   </div>
   } @else {
   <app-action-bar [loggedUser]="loggedUser" (action)="onMenuAction($event)"
-    (openProfile)="openUserProfile($event)"></app-action-bar>
+    (openProfile)="openUserProfile($event)" (openChatFromNotification)="onChatNotification($event)"></app-action-bar>
 
   <!-- Hidden input for file selection triggered by menu -->
   <input id="hiddenFileInput" type="file" (change)="onFileSelected($event)" style="display: none" accept="image/*">
@@ -61,6 +61,14 @@
     [organizerName]="selectedEvent.organizerName || ''" [organizerImage]="selectedEvent.organizerImage"
     [currentUserId]="loggedUser ? (loggedUser.id ? loggedUser.id.toString() : null) : null"
     [creatorId]="selectedEvent.creatorId" (openOrganizerProfile)="openUserProfile($event)"
-    (leave)="onLeaveEvent($event)" (deleteEvent)="onDeleteEvent($event)" (shareEvent)="openShare($event)" />
+    (leave)="onLeaveEvent($event)" (deleteEvent)="onDeleteEvent($event)" (shareEvent)="openShare($event)"
+    (openChat)="openChat($event)" />
+  }
+
+  @if (showChatModal && chatEvent) {
+  <event-chat-modal [event]="chatEvent" [currentUserId]="loggedUser?.id?.toString() || null"
+    (close)="closeChat()">
+  </event-chat-modal>
+  }
   }
 </div>

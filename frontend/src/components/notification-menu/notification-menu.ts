@@ -14,6 +14,7 @@ import { EventService } from '../../services/event.service';
 export class NotificationMenuComponent implements OnInit {
     @Input() userId!: number | string;
     @Output() close = new EventEmitter<void>();
+    @Output() openChat = new EventEmitter<number>();
     notifications: Notification[] = [];
     expandedId: number | null = null;
 
@@ -77,6 +78,9 @@ export class NotificationMenuComponent implements OnInit {
             case 'REQUEST_REJECTED':
                 n.title = 'Request Rejected';
                 break;
+            case 'CHAT_MESSAGE':
+                n.title = 'New chat message';
+                break;
         }
         return n;
     }
@@ -139,6 +143,18 @@ export class NotificationMenuComponent implements OnInit {
         });
     }
 
+    onNotificationClick(n: Notification) {
+        if (n.type !== 'CHAT_MESSAGE') {
+            return;
+        }
+        if (!n.relatedEventId) {
+            console.error('Missing relatedEventId in chat notification:', n);
+            return;
+        }
+        this.openChat.emit(n.relatedEventId);
+        this.close.emit();
+    }
+
     getIcon(type: string): string {
         switch (type) {
             case 'APPROVED': return 'check_circle';
@@ -149,6 +165,7 @@ export class NotificationMenuComponent implements OnInit {
             case 'PARTICIPATION_REJECTED': return 'person_remove';
             case 'REQUEST_ACCEPTED': return 'check_circle'; // Visual feedback for decision
             case 'REQUEST_REJECTED': return 'cancel'; // Visual feedback for decision
+            case 'CHAT_MESSAGE': return 'chat';
             case 'SUCCESS': return 'check_circle';
             case 'ERROR': return 'error';
             case 'WARNING': return 'warning';
@@ -164,6 +181,7 @@ export class NotificationMenuComponent implements OnInit {
             case 'PARTICIPATION_REQUEST': return '#2196f3'; // Blue
             case 'PARTICIPATION_ACCEPTED': return '#4caf50';
             case 'PARTICIPATION_REJECTED': return '#ff4444';
+            case 'CHAT_MESSAGE': return 'var(--color-accent)';
             default: return 'white';
         }
     }

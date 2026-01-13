@@ -11,6 +11,7 @@ import { ActionBarComponent } from '../../../components/action-bar/action-bar';
 import { CropImagePopup } from '../../../components/crop-image-popup/crop-image-popup';
 import { CreateEventPopup } from '../../../components/create-event-popup/create-event-popup';
 import { EventPopupCard } from '../../../components/event-popup-card/event-popup-card';
+import { EventChatModalComponent } from '../../../components/event-chat-modal/event-chat-modal';
 import { MapLocationSelector } from '../../../components/map-location-selector/map-location-selector';
 import { UserProfileModalComponent } from '../../../components/user-profile-modal/user-profile-modal.component';
 import { Event as LumoEvent } from '../../../models/event';
@@ -20,7 +21,7 @@ import { UserService } from '../../../services/user-service/user-service';
 @Component({
   selector: 'Home',
   standalone: true,
-  imports: [MapView, SignUpPopup, SignInPopup, VerifyEmailPopup, ActionBarComponent, CropImagePopup, CreateEventPopup, EventPopupCard, MapLocationSelector, UserProfileModalComponent],
+  imports: [MapView, SignUpPopup, SignInPopup, VerifyEmailPopup, ActionBarComponent, CropImagePopup, CreateEventPopup, EventPopupCard, MapLocationSelector, UserProfileModalComponent, EventChatModalComponent],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
@@ -38,8 +39,11 @@ export class Home implements OnInit, AfterViewInit {
 
   // Event popup states
   showCreateEventPopup = false;
+  showChatModal = false;
   showLocationSelector = false;
   selectedEvent: LumoEvent | null = null;
+  chatEvent: LumoEvent | null = null;
+  private previousSelectedEvent: LumoEvent | null = null;
   eventScreenPosition: { x: number, y: number } | null = null;
 
   // User Profile Popup State
@@ -252,6 +256,9 @@ export class Home implements OnInit, AfterViewInit {
     this.showVerifyPopup = false;
     this.showCropPopup = false;
     this.showCreateEventPopup = false;
+    this.showChatModal = false;
+    this.chatEvent = null;
+    this.previousSelectedEvent = null;
     this.showLocationSelector = false;
     this.closeEventPopup();
     if (this.mapView) this.mapView.managedPopupType = null;
@@ -306,6 +313,43 @@ export class Home implements OnInit, AfterViewInit {
     setTimeout(() => {
       document.addEventListener('click', this.onDocumentClick);
     }, 0);
+  }
+
+  openChat(event: LumoEvent) {
+    if (!this.loggedUser) {
+      this.openSignIn();
+      return;
+    }
+    if (this.selectedEvent) {
+      this.previousSelectedEvent = this.selectedEvent;
+      this.closeEventPopup();
+    }
+    this.chatEvent = event;
+    this.showChatModal = true;
+  }
+
+  onChatNotification(eventId: number) {
+    if (!this.loggedUser) {
+      this.openSignIn();
+      return;
+    }
+    this.eventService.getEventById(eventId, this.loggedUser.id).subscribe({
+      next: (event) => {
+        this.closeAll();
+        this.openChat(event);
+      },
+      error: (err) => console.error('Error opening chat from notification', err)
+    });
+  }
+
+  closeChat() {
+    this.showChatModal = false;
+    this.chatEvent = null;
+    if (this.previousSelectedEvent) {
+      const eventToRestore = this.previousSelectedEvent;
+      this.previousSelectedEvent = null;
+      this.openEventPopup(eventToRestore);
+    }
   }
 
   onEventsUpdated(newEvents: LumoEvent[]) {
