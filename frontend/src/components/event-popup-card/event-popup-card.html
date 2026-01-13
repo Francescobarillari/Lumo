@@ -27,6 +27,9 @@
         <button class="action-icon favorite-icon" [class.saved]="isSaved()"
           (click)="toggleFavorite.emit(); $event.stopPropagation()" aria-label="Save event">
           <mat-icon>{{ isSaved() ? 'favorite' : 'favorite_border' }}</mat-icon>
+          @if (event.savedCount !== undefined && event.savedCount !== null) {
+          <span class="favorite-count">{{ event.savedCount }}</span>
+          }
         </button>
         }
         <button class="action-icon share-icon" (click)="shareEvent.emit(event); $event.stopPropagation()"

@@ -83,7 +83,15 @@ public class UserService implements IUserService {
     public List<it.unical.model.Event> getSavedEvents(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
-        return new java.util.ArrayList<>(user.getSavedEvents());
+        List<it.unical.model.Event> events = new java.util.ArrayList<>(user.getSavedEvents());
+        for (it.unical.model.Event event : events) {
+            if (event.getUsersWhoSaved() != null) {
+                event.setSavedCount(event.getUsersWhoSaved().size());
+            } else {
+                event.setSavedCount(0);
+            }
+        }
+        return events;
     }
 
     @Override

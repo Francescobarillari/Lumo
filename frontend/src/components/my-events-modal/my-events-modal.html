@@ -149,7 +149,8 @@
         <div class="events-grid">
             @for (event of joinedEvents; track event.id) {
             <app-event-card [title]="event.title" [location]="event.city" [dateTime]="formatDateTime(event)"
-                [id]="event.id!" [isSaved]="!!event.isSaved" [isParticipating]="!!event.isParticipating"
+                [id]="event.id!" [isSaved]="!!event.isSaved" [savedCount]="event.savedCount"
+                [isParticipating]="!!event.isParticipating"
                 [showDistance]="false" [showActions]="false" (shareEvent)="openShare(event)">
             </app-event-card>
             }
@@ -163,8 +164,9 @@
         <div class="events-grid">
             @for (event of savedEvents; track event.id) {
             <app-event-card [title]="event.title" [location]="event.city" [dateTime]="formatDateTime(event)"
-                [id]="event.id!" [isSaved]="true" [isParticipating]="!!event.isParticipating" [showDistance]="false"
-                [showActions]="false" (shareEvent)="openShare(event)">
+                [id]="event.id!" [isSaved]="true" [savedCount]="event.savedCount"
+                [isParticipating]="!!event.isParticipating" [showDistance]="false" [showActions]="false"
+                (shareEvent)="openShare(event)">
             </app-event-card>
             }
             @empty {

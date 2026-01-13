@@ -71,8 +71,8 @@
                     <div class="range-inputs">
                         <input type="range" [min]="0" [max]="priceMaxLimit" [step]="priceStep" [value]="priceMin"
                             (input)="onPriceMinChange($any($event.target).value)">
-                        <input type="range" [min]="priceMin" [max]="priceMaxLimit" [step]="priceStep"
-                            [value]="priceMax" (input)="onPriceMaxChange($any($event.target).value)">
+                        <input type="range" [min]="priceMin" [max]="priceMaxLimit" [step]="priceStep" [value]="priceMax"
+                            (input)="onPriceMaxChange($any($event.target).value)">
                     </div>
                 </div>
 
@@ -98,6 +98,7 @@
                     @for (event of getFiltered(searchResults); track event.id) {
                     <app-event-card [title]="event.title" [location]="event.city" [dateTime]="formatDateTime(event)"
                         [distance]="formatDistance(event.distanceKm)" [id]="event.id!" [isSaved]="!!event.isSaved"
+                        [savedCount]="event.savedCount" [showSavedCount]="false"
                         [isParticipating]="!!event.isParticipating" [organizerName]="event.organizerName"
                         [organizerImage]="event.organizerImage" [creatorId]="event.creatorId" [currentUserId]="userId"
                         (focusLocation)="goToEvent(event)" (toggleFavorite)="toggleFavorite.emit(event)"
@@ -113,9 +114,9 @@
                     <div class="section-title">FOUND EVENTS</div>
                     <div class="list-view">
                         @for (event of getFiltered(foundEvents); track $index) {
-                        <app-event-card [title]="event.title" [location]="event.city"
-                            [dateTime]="formatDateTime(event)" [distance]="formatDistance(event.distanceKm)"
-                            [id]="event.id!" [isSaved]="!!event.isSaved"
+                        <app-event-card [title]="event.title" [location]="event.city" [dateTime]="formatDateTime(event)"
+                            [distance]="formatDistance(event.distanceKm)" [id]="event.id!" [isSaved]="!!event.isSaved"
+                            [savedCount]="event.savedCount" [showSavedCount]="false"
                             [isParticipating]="!!event.isParticipating" [organizerName]="event.organizerName"
                             [organizerImage]="event.organizerImage" [creatorId]="event.creatorId"
                             [currentUserId]="userId" (focusLocation)="goToEvent(event)"
@@ -132,9 +133,9 @@
                     <div class="section-title">FOLLOW UP EVENTS</div>
                     <div class="list-view">
                         @for (event of getFiltered(followUpEvents); track $index) {
-                        <app-event-card [title]="event.title" [location]="event.city"
-                            [dateTime]="formatDateTime(event)" [distance]="formatDistance(event.distanceKm)"
-                            [id]="event.id!" [isSaved]="!!event.isSaved"
+                        <app-event-card [title]="event.title" [location]="event.city" [dateTime]="formatDateTime(event)"
+                            [distance]="formatDistance(event.distanceKm)" [id]="event.id!" [isSaved]="!!event.isSaved"
+                            [savedCount]="event.savedCount" [showSavedCount]="false"
                             [isParticipating]="!!event.isParticipating" [organizerName]="event.organizerName"
                             [organizerImage]="event.organizerImage" [creatorId]="event.creatorId"
                             [currentUserId]="userId" (focusLocation)="goToEvent(event)"
@@ -151,9 +152,9 @@
                     <div class="section-title">SAVED EVENTS</div>
                     <div class="list-view">
                         @for (event of getFiltered(savedEvents); track $index) {
-                        <app-event-card [title]="event.title" [location]="event.city"
-                            [dateTime]="formatDateTime(event)" [distance]="formatDistance(event.distanceKm)"
-                            [id]="event.id!" [isSaved]="!!event.isSaved"
+                        <app-event-card [title]="event.title" [location]="event.city" [dateTime]="formatDateTime(event)"
+                            [distance]="formatDistance(event.distanceKm)" [id]="event.id!" [isSaved]="!!event.isSaved"
+                            [savedCount]="event.savedCount" [showSavedCount]="false"
                             [isParticipating]="!!event.isParticipating" [organizerName]="event.organizerName"
                             [organizerImage]="event.organizerImage" [creatorId]="event.creatorId"
                             [currentUserId]="userId" (focusLocation)="goToEvent(event)"
@@ -170,11 +171,11 @@
                     <div class="section-title">DISCOVER EVENTS</div>
                     <div class="list-view">
                         @for (event of getFiltered(discoverEvents); track $index) {
-                        <app-event-card [title]="event.title" [location]="event.city"
-                            [dateTime]="formatDateTime(event)" [distance]="formatDistance(event.distanceKm)"
-                            [id]="event.id!" [isSaved]="!!event.isSaved" [organizerName]="event.organizerName"
-                            [organizerImage]="event.organizerImage" [creatorId]="event.creatorId"
-                            [currentUserId]="userId" (focusLocation)="goToEvent(event)"
+                        <app-event-card [title]="event.title" [location]="event.city" [dateTime]="formatDateTime(event)"
+                            [distance]="formatDistance(event.distanceKm)" [id]="event.id!" [isSaved]="!!event.isSaved"
+                            [savedCount]="event.savedCount" [showSavedCount]="false"
+                            [organizerName]="event.organizerName" [organizerImage]="event.organizerImage"
+                            [creatorId]="event.creatorId" [currentUserId]="userId" (focusLocation)="goToEvent(event)"
                             (toggleFavorite)="toggleFavorite.emit(event)" (shareEvent)="shareEvent.emit(event)"
                             [showOrganizerInfo]="false" />
                         }

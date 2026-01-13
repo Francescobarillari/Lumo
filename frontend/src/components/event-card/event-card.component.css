@@ -58,6 +58,28 @@
     transition: background-color 0.2s;
 }
 
+.favorite-icon {
+    position: relative;
+}
+
+.favorite-count {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    min-width: 14px;
+    height: 14px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: rgba(16, 16, 16, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--color-accent);
+    font-size: 8px;
+    font-weight: var(--font-weight-bold);
+    display: grid;
+    place-items: center;
+    line-height: 1;
+}
+
 .icon-circle:hover {
     background-color: #555555;
     /* Maybe add var(--color-bit-gray-hover) */

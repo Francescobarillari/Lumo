@@ -312,8 +312,18 @@ export class MapView implements AfterViewInit, OnDestroy, OnChanges {
     // To properly support "status change" (e.g. participation), we should probably deep check or just update.
     // Updating always might flicker but ensures data freshness.
     // Let's implement a simple check: if JSON stringify is different.
-    const currentEventsJson = JSON.stringify(this.events.map(e => ({ id: e.id, status: e.participationStatus })));
-    const newEventsJson = JSON.stringify(filteredEvents.map(e => ({ id: e.id, status: e.participationStatus })));
+    const currentEventsJson = JSON.stringify(this.events.map(e => ({
+      id: e.id,
+      status: e.participationStatus,
+      saved: e.isSaved,
+      savedCount: e.savedCount
+    })));
+    const newEventsJson = JSON.stringify(filteredEvents.map(e => ({
+      id: e.id,
+      status: e.participationStatus,
+      saved: e.isSaved,
+      savedCount: e.savedCount
+    })));
 
     // If we only care about participation status or new events:
     if (this.events.length !== filteredEvents.length || currentEventsJson !== newEventsJson) {
@@ -486,8 +496,23 @@ export class MapView implements AfterViewInit, OnDestroy, OnChanges {
 
     this.eventService.toggleSavedEvent(this.userId, event.id).subscribe({
       next: (res) => {
+        const wasSaved = !!event.isSaved;
+        const previousCount = typeof event.savedCount === 'number' ? event.savedCount : 0;
         // Aggiorna lo stato locale dell'evento
         event.isSaved = res.isSaved;
+        if (res.isSaved && !wasSaved) {
+          event.savedCount = previousCount + 1;
+        } else if (!res.isSaved && wasSaved) {
+          event.savedCount = Math.max(0, previousCount - 1);
+        } else if (event.savedCount === undefined || event.savedCount === null) {
+          event.savedCount = previousCount;
+        }
+
+        const matchingEvent = this.events.find(e => e.id === event.id);
+        if (matchingEvent && matchingEvent !== event) {
+          matchingEvent.isSaved = event.isSaved;
+          matchingEvent.savedCount = event.savedCount;
+        }
 
         // Forza l'aggiornamento della Sidebar (che usa OnChanges) ricreando l'array
         this.events = [...this.events];

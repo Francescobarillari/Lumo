@@ -88,9 +88,13 @@ public class EventService implements IEventService {
     @Override
     public List<Event> getJoinedEvents(Long userId) {
         return userRepository.findById(userId)
-                .map(user -> user.getParticipatingEvents().stream()
-                        .filter(e -> e.getCreator() == null || !e.getCreator().getId().equals(userId))
-                        .collect(java.util.stream.Collectors.toList()))
+                .map(user -> {
+                    List<Event> events = user.getParticipatingEvents().stream()
+                            .filter(e -> e.getCreator() == null || !e.getCreator().getId().equals(userId))
+                            .collect(java.util.stream.Collectors.toList());
+                    events.forEach(this::processEventParticipants);
+                    return events;
+                })
                 .orElse(new java.util.ArrayList<>());
     }
 
@@ -148,16 +152,26 @@ public class EventService implements IEventService {
             event.setOccupiedSpots(0);
             event.setAcceptedUsersList(new java.util.ArrayList<>());
         }
+
+        if (event.getUsersWhoSaved() != null) {
+            event.setSavedCount(event.getUsersWhoSaved().size());
+        } else {
+            event.setSavedCount(0);
+        }
     }
 
     // ✅ Restituisce eventi IN ATTESA (Per Admin)
     public List<Event> getPendingEvents() {
-        return eventRepository.findByIsApprovedFalseOrderByDateAscStartTimeAsc();
+        List<Event> events = eventRepository.findByIsApprovedFalseOrderByDateAscStartTimeAsc();
+        events.forEach(this::processEventParticipants);
+        return events;
     }
 
     @Override
     public List<Event> getAllEventsForAdmin() {
-        return eventRepository.findAllByOrderByDateAscStartTimeAsc();
+        List<Event> events = eventRepository.findAllByOrderByDateAscStartTimeAsc();
+        events.forEach(this::processEventParticipants);
+        return events;
     }
 
     // ✅ Approva evento
@@ -326,7 +340,9 @@ public class EventService implements IEventService {
 
     // ✅ Cerca eventi
     public List<Event> searchEvents(String query) {
-        return eventRepository.searchEvents(query);
+        List<Event> events = eventRepository.searchEvents(query);
+        events.forEach(this::processEventParticipants);
+        return events;
     }
 
     // --- Participation Flow ---

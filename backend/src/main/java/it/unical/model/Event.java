@@ -40,6 +40,9 @@ public class Event {
     private boolean isSaved;
 
     @Transient
+    private int savedCount = 0;
+
+    @Transient
     private String participationStatus = "NONE"; // NONE, PENDING, ACCEPTED
 
     @Transient
@@ -201,6 +204,14 @@ public class Event {
 
     public void setIsSaved(boolean saved) {
         this.isSaved = saved;
+    }
+
+    public int getSavedCount() {
+        return savedCount;
+    }
+
+    public void setSavedCount(int savedCount) {
+        this.savedCount = Math.max(0, savedCount);
     }
 
     public String getParticipationStatus() {

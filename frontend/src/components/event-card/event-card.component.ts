@@ -17,11 +17,13 @@ export class EventCardComponent implements OnInit {
     distance = input<string>();
     id = input.required<number>();
     isSaved = input<boolean>(false);
+    savedCount = input<number | null | undefined>(null);
     isParticipating = input<boolean>(false);
     showDistance = input<boolean>(true);
     showActions = input<boolean>(true);
     showShare = input<boolean>(false);
     showOrganizerInfo = input<boolean>(true);
+    showSavedCount = input<boolean>(true);
 
     // Organizer Info
     organizerName = input<string>();
