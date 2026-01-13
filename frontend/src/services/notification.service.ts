@@ -4,7 +4,7 @@ export interface Notification {
     userId: number;
     title: string;
     message: string;
-    type: 'INFO' | 'SUCCESS' | 'WARNING' | 'ERROR' | 'APPROVED' | 'REJECTED' | 'FOLLOWUP' | 'PARTICIPATION_REQUEST' | 'PARTICIPATION_ACCEPTED' | 'PARTICIPATION_REJECTED' | 'REQUEST_ACCEPTED' | 'REQUEST_REJECTED' | 'CHAT_MESSAGE';
+    type: 'INFO' | 'SUCCESS' | 'WARNING' | 'ERROR' | 'APPROVED' | 'REJECTED' | 'FOLLOWUP' | 'PARTICIPATION_REQUEST' | 'PARTICIPATION_ACCEPTED' | 'PARTICIPATION_REJECTED' | 'REQUEST_ACCEPTED' | 'REQUEST_REJECTED' | 'CHAT_MESSAGE' | 'PARTICIPATION_REMOVED';
     isRead: boolean;
     createdAt: string;
     relatedEventId?: number;

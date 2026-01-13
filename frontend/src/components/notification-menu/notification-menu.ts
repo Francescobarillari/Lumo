@@ -190,11 +190,9 @@ export class NotificationMenuComponent implements OnInit {
             case 'PARTICIPATION_REQUEST': return '#2196f3'; // Blue
             case 'PARTICIPATION_ACCEPTED': return '#4caf50';
             case 'PARTICIPATION_REJECTED': return '#ff4444';
-<<<<<<< HEAD
             case 'PARTICIPATION_REMOVED': return '#ff4444';
-=======
             case 'CHAT_MESSAGE': return 'var(--color-accent)';
->>>>>>> qrcode-event
+
             default: return 'white';
         }
     }
