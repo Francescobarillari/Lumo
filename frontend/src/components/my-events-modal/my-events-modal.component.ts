@@ -5,12 +5,13 @@ import { Event } from '../../models/event';
 import { EventService } from '../../services/event.service';
 import { EventCardComponent } from '../event-card/event-card.component';
 import { EventShareModalComponent } from '../event-share-modal/event-share-modal.component';
+import { EventChatModalComponent } from '../event-chat-modal/event-chat-modal';
 import { User } from '../../models/user';
 
 @Component({
     selector: 'app-my-events-modal',
     standalone: true,
-    imports: [CommonModule, MatIconModule, EventCardComponent, EventShareModalComponent],
+    imports: [CommonModule, MatIconModule, EventCardComponent, EventShareModalComponent, EventChatModalComponent],
     templateUrl: './my-events-modal.html',
     styleUrl: './my-events-modal.css'
 })
@@ -43,6 +44,8 @@ export class MyEventsModal implements OnInit {
 
     // For expanding requests view for a specific event
     expandedEventRequestsId: number | null = null;
+    showChatModal = false;
+    chatEvent: Event | null = null;
 
     constructor(private eventService: EventService) { }
 
@@ -105,6 +108,16 @@ export class MyEventsModal implements OnInit {
             },
             error: (err) => console.error('Error deleting event', err)
         });
+    }
+
+    openChat(event: Event) {
+        this.chatEvent = event;
+        this.showChatModal = true;
+    }
+
+    closeChat() {
+        this.showChatModal = false;
+        this.chatEvent = null;
     }
 
     acceptRequest(event: Event, user: User) {

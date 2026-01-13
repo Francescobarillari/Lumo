@@ -17,7 +17,7 @@
         <div class="empty-state">No notifications</div>
         } @else {
         @for (n of notifications; track n.id) {
-        <div class="notif-item" [class.unread]="!n.isRead">
+        <div class="notif-item" [class.unread]="!n.isRead" (click)="onNotificationClick(n)">
             <div class="icon-section">
                 <mat-icon [style.color]="getIconColor(n.type)">{{ getIcon(n.type) }}</mat-icon>
             </div>

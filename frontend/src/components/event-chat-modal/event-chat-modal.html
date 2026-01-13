@@ -1,0 +1,150 @@
+<div class="chat-backdrop" (click)="onClose()">
+  <div class="chat-container" (click)="$event.stopPropagation()">
+    <div class="chat-header">
+      <div class="header-left">
+        <button class="icon-btn back-btn mobile-only" (click)="onClose()" aria-label="Back">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <div class="header-text">
+          <span class="title">Event Chat</span>
+          <span class="subtitle">{{ event.title }}</span>
+        </div>
+      </div>
+      <button class="icon-btn close-btn" (click)="onClose()" aria-label="Close chat">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <div class="chat-body">
+      <div class="chat-left">
+        <button class="pinned-toggle compact" type="button" *ngIf="pinnedMessages.length" (click)="togglePinnedOpen()">
+          <span class="pinned-title">
+            <mat-icon>push_pin</mat-icon>
+            Pinned
+          </span>
+          <mat-icon class="chevron" [class.open]="pinnedOpen">expand_more</mat-icon>
+        </button>
+        @if (pinnedOpen && pinnedMessages.length) {
+        <div class="pinned-list compact">
+          <button class="pinned-item" type="button" *ngFor="let pinned of pinnedMessages"
+            (click)="scrollToMessage(pinned.id)">
+            <span class="pin-label">{{ pinned.senderName }}</span>
+            <span class="pin-preview">{{ pinned.content }}</span>
+          </button>
+        </div>
+        }
+        <div class="messages" #messagesContainer (click)="closePinMenu()">
+          <div class="info-message" *ngFor="let info of infoMessages" [attr.id]="info.anchorId">
+            <div class="info-label">{{ info.label }}</div>
+            <div class="info-content">{{ info.content }}</div>
+            <a *ngIf="info.link" class="info-link" [href]="info.link" target="_blank" rel="noopener">Apri link</a>
+          </div>
+          <div class="timeline-item" *ngFor="let item of getTimelineItems()">
+            @if (item.type === 'message' && item.message) {
+            <div class="message" [attr.id]="getMessageAnchorId(item.message.id)"
+              [class.mine]="currentUserId && item.message.senderId.toString() === currentUserId"
+              [class.pin-enabled]="isOrganizer" (click)="openPinMenu(item.message, $event)">
+              <div class="avatar">
+                <img *ngIf="item.message.senderImage" [src]="item.message.senderImage" alt="Avatar">
+                <div *ngIf="!item.message.senderImage" class="placeholder">
+                  {{ item.message.senderName.slice(0, 1) || '?' }}
+                </div>
+              </div>
+              <div class="content">
+                <div class="meta">
+                  <span class="name">{{ item.message.senderName }}</span>
+                  <span class="time">{{ formatTimestamp(item.message.createdAt) }}</span>
+                  @if (isOrganizer && activePinMessageId === item.message.id) {
+                  <div class="pin-menu" (click)="$event.stopPropagation()">
+                    <button class="pin-menu-btn" type="button" (click)="togglePinFromMenu(item.message, $event)"
+                      [class.active]="isPinned(item.message.id)" [class.unpin]="isPinned(item.message.id)"
+                      [attr.aria-label]="isPinned(item.message.id) ? 'Unpin' : 'Pin message'">
+                      <mat-icon>push_pin</mat-icon>
+                    </button>
+                  </div>
+                  }
+                </div>
+                <div class="text">{{ item.message.content }}</div>
+              </div>
+            </div>
+            }
+            @if (item.type === 'poll' && item.poll) {
+            <div class="poll-message-card">
+              <div class="poll-message-header">
+                <span class="poll-tag">Sondaggio</span>
+                <span class="time">{{ formatTimestamp(item.poll.createdAt) }}</span>
+              </div>
+              <div class="poll-message-question">{{ item.poll.question }}</div>
+              <div class="poll-bars">
+                <div class="poll-bar-row" *ngFor="let option of item.poll.options">
+                  <div class="poll-bar-label">
+                    <span>{{ option.text }}</span>
+                    <span class="poll-bar-count">{{ getPollOptionCount(option) }}</span>
+                  </div>
+                  <div class="poll-bar-track">
+                    <div class="poll-bar-fill" [style.width]="getPollBarWidth(item.poll, option)"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="poll-choices">
+                <label class="poll-choice" *ngFor="let option of item.poll.options">
+                  <input type="checkbox" [checked]="pollSelections[item.poll.id]?.has(option.id)"
+                    [disabled]="item.poll.closed" (change)="toggleVote(item.poll, option.id)">
+                  <span class="choice-label">{{ option.text }}</span>
+                </label>
+              </div>
+              <div class="poll-actions">
+                <button class="pill" (click)="submitVote(item.poll)" [disabled]="item.poll.closed">Vota</button>
+                <button *ngIf="isOrganizer" class="pill ghost" (click)="closePoll(item.poll)"
+                  [disabled]="item.poll.closed">
+                  Chiudi
+                </button>
+              </div>
+              <div class="poll-total">Totale voti: {{ getPollTotalVotes(item.poll) }}</div>
+            </div>
+            }
+          </div>
+          <div *ngIf="getTimelineItems().length === 0" class="empty-state">
+            Nessun messaggio ancora.
+          </div>
+        </div>
+
+        <div class="mute-banner" *ngIf="isMuted">
+          Sei stato mutato: puoi leggere ma non inviare messaggi.
+        </div>
+
+        <div class="message-input">
+          <input [(ngModel)]="messageText" placeholder="Scrivi un messaggio..." (input)="messageError = ''"
+            [disabled]="isMuted" (keydown.enter)="sendMessage()">
+          <button *ngIf="currentUserId" class="add-btn" (click)="openPollPopup()" [disabled]="isMuted">
+            <mat-icon>add</mat-icon>
+          </button>
+          <button class="send-btn" (click)="sendMessage()" [disabled]="isMuted || !messageText.trim()">
+            <mat-icon>send</mat-icon>
+          </button>
+        </div>
+        <div class="message-error" *ngIf="messageError">{{ messageError }}</div>
+      </div>
+    </div>
+
+    @if (showPollPopup) {
+    <div class="poll-popup-backdrop" (click)="closePollPopup()">
+      <div class="poll-popup" (click)="$event.stopPropagation()">
+        <div class="poll-popup-header">
+          <span>Crea sondaggio</span>
+          <button class="icon-btn" (click)="closePollPopup()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+        <div class="poll-create">
+          <input [(ngModel)]="pollQuestion" placeholder="Domanda del sondaggio">
+          <textarea [(ngModel)]="pollOptionsText" rows="4" placeholder="Opzioni (una per riga)"></textarea>
+          <input type="datetime-local" [(ngModel)]="pollEndsAt">
+          <div class="poll-error" *ngIf="pollError">{{ pollError }}</div>
+          <button class="pill" (click)="createPoll()">Crea</button>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+</div>

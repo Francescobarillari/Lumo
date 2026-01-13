@@ -1,7 +1,9 @@
 package it.unical.service;
 
 import it.unical.repository.EventRepository;
+import it.unical.repository.EventChatRepository;
 import it.unical.model.Event;
+import it.unical.model.EventChat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,9 @@ public class EventService implements IEventService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private EventChatRepository chatRepository;
 
     // ✅ Crea un nuovo evento (In attesa di approvazione)
     public Event createEvent(Event event, Long userId) {
@@ -54,8 +59,11 @@ public class EventService implements IEventService {
                         "NEW_EVENT");
             });
             // Save again to persist creator FK
-            return eventRepository.save(event);
+            Event finalEvent = eventRepository.save(event);
+            ensureChat(finalEvent);
+            return finalEvent;
         }
+        ensureChat(savedEvent);
         return savedEvent;
     }
 
@@ -308,6 +316,8 @@ public class EventService implements IEventService {
                         "EVENT_CANCELLED_FOLLOWED");
             }
 
+            chatRepository.findByEvent_Id(event.getId()).ifPresent(chatRepository::delete);
+
             eventRepository.deleteById(id);
         } else {
             throw new RuntimeException("Evento non trovato con ID: " + id);
@@ -469,6 +479,18 @@ public class EventService implements IEventService {
                         event.getId(),
                         creator.getId());
             }
+        });
+    }
+
+    private void ensureChat(Event event) {
+        if (event == null || event.getId() == null) {
+            return;
+        }
+        chatRepository.findByEvent_Id(event.getId()).orElseGet(() -> {
+            EventChat chat = new EventChat();
+            chat.setEvent(event);
+            chat.setCreatedAt(LocalDateTime.now());
+            return chatRepository.save(chat);
         });
     }
 }
