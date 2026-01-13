@@ -36,9 +36,8 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
   pollSelections: Record<number, Set<number>> = {};
   pollError = '';
   showPollPopup = false;
-  pinnedOpen = true;
-  pinnedMessageIds = new Set<number>();
-  pinnedMessages: ChatMessage[] = [];
+  pinnedMessageId: number | null = null;
+  pinnedMessage: ChatMessage | null = null;
   activePinMessageId: number | null = null;
   bannedPatterns: RegExp[] = [];
   bannedRaw: string[] = [];
@@ -254,12 +253,8 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
     return `${Math.round((count / total) * 100)}%`;
   }
 
-  togglePinnedOpen() {
-    this.pinnedOpen = !this.pinnedOpen;
-  }
-
   isPinned(messageId: number): boolean {
-    return this.pinnedMessageIds.has(messageId);
+    return this.pinnedMessageId === messageId;
   }
 
   openPinMenu(message: ChatMessage, event: MouseEvent) {
@@ -279,13 +274,14 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   togglePin(message: ChatMessage) {
-    if (this.pinnedMessageIds.has(message.id)) {
-      this.pinnedMessageIds.delete(message.id);
+    if (this.pinnedMessageId === message.id) {
+      this.pinnedMessageId = null;
+      this.pinnedMessage = null;
     } else {
-      this.pinnedMessageIds.add(message.id);
+      this.pinnedMessageId = message.id;
+      this.pinnedMessage = message;
     }
-    this.refreshPinnedMessages();
-    this.persistPinnedMessages();
+    this.persistPinnedMessage();
   }
 
   scrollToMessage(messageId: number) {
@@ -324,11 +320,11 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
         if (messages.length === 0 && this.messages.length > 0) {
           return;
         }
-      this.messages = messages;
-      this.refreshPinnedMessages();
-      this.persistMessages();
-      this.scrollToBottom();
-    },
+        this.messages = messages;
+        this.refreshPinnedMessage();
+        this.persistMessages();
+        this.scrollToBottom();
+      },
       error: (err) => console.error('Error loading messages', err)
     });
 
@@ -422,7 +418,7 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
   private addMessage(message: ChatMessage) {
     if (!this.messages.some(existing => existing.id === message.id)) {
       this.messages = [...this.messages, message];
-      this.refreshPinnedMessages();
+      this.refreshPinnedMessage();
       this.persistMessages();
       this.scrollToBottom();
     }
@@ -431,7 +427,7 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
   private initializeChat() {
     if (!this.event) return;
     this.messages = this.getCachedMessages();
-    this.loadPinnedMessages();
+    this.loadPinnedMessage();
     this.buildInfoMessages();
     this.activePinMessageId = null;
     this.loadBannedWords();
@@ -486,47 +482,51 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
     return `chat-pins:${this.event.id}`;
   }
 
-  private loadPinnedMessages() {
+  private loadPinnedMessage() {
     const key = this.pinnedStorageKey();
     if (!key) return;
     const raw = localStorage.getItem(key);
     if (!raw) {
-      this.pinnedMessageIds = new Set<number>();
-      this.refreshPinnedMessages();
+      this.pinnedMessageId = null;
+      this.pinnedMessage = null;
       return;
     }
     try {
-      const parsed = JSON.parse(raw) as number[];
-      if (Array.isArray(parsed)) {
-        this.pinnedMessageIds = new Set(parsed.filter(id => typeof id === 'number'));
+      const parsed = JSON.parse(raw) as number;
+      if (typeof parsed === 'number') {
+        this.pinnedMessageId = parsed;
+        this.refreshPinnedMessage();
       } else {
-        this.pinnedMessageIds = new Set<number>();
+        this.pinnedMessageId = null;
+        this.pinnedMessage = null;
       }
     } catch {
-      this.pinnedMessageIds = new Set<number>();
+      this.pinnedMessageId = null;
+      this.pinnedMessage = null;
     }
-    this.refreshPinnedMessages();
   }
 
-  private persistPinnedMessages() {
+  private persistPinnedMessage() {
     const key = this.pinnedStorageKey();
     if (!key) return;
-    const payload = JSON.stringify(Array.from(this.pinnedMessageIds.values()));
-    localStorage.setItem(key, payload);
+    if (this.pinnedMessageId !== null) {
+      localStorage.setItem(key, JSON.stringify(this.pinnedMessageId));
+    } else {
+      localStorage.removeItem(key);
+    }
   }
 
-  private refreshPinnedMessages() {
-    if (this.pinnedMessageIds.size === 0) {
-      this.pinnedMessages = [];
+  private refreshPinnedMessage() {
+    if (this.pinnedMessageId === null) {
+      this.pinnedMessage = null;
       return;
     }
-    const pinnedSet = new Set(this.pinnedMessageIds);
-    this.pinnedMessages = this.messages.filter(message => pinnedSet.has(message.id));
+    this.pinnedMessage = this.messages.find(m => m.id === this.pinnedMessageId) || null;
   }
 
   private buildInfoMessages() {
     const info: Array<{
-      key: 'time' | 'place' | 'rules' | 'link';
+      key: 'time' | 'place' | 'link';
       label: string;
       content: string;
       anchorId: string;
@@ -536,7 +536,7 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
     if (time) {
       info.push({
         key: 'time',
-        label: 'Orario',
+        label: 'Time',
         content: time,
         anchorId: 'chat-info-time'
       });
@@ -545,25 +545,16 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
     if (place) {
       info.push({
         key: 'place',
-        label: 'Luogo',
+        label: 'Location',
         content: place,
         anchorId: 'chat-info-place'
-      });
-    }
-    const rules = this.event?.description?.trim();
-    if (rules) {
-      info.push({
-        key: 'rules',
-        label: 'Regole',
-        content: rules,
-        anchorId: 'chat-info-rules'
       });
     }
     const mapLink = this.getMapLink();
     if (mapLink) {
       info.push({
         key: 'link',
-        label: 'Link',
+        label: 'Map Link',
         content: mapLink,
         anchorId: 'chat-info-link',
         link: mapLink

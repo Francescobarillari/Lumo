@@ -17,19 +17,16 @@
 
     <div class="chat-body">
       <div class="chat-left">
-        <button class="pinned-toggle compact" type="button" *ngIf="pinnedMessages.length" (click)="togglePinnedOpen()">
-          <span class="pinned-title">
-            <mat-icon>push_pin</mat-icon>
-            Pinned
-          </span>
-          <mat-icon class="chevron" [class.open]="pinnedOpen">expand_more</mat-icon>
-        </button>
-        @if (pinnedOpen && pinnedMessages.length) {
-        <div class="pinned-list compact">
-          <button class="pinned-item" type="button" *ngFor="let pinned of pinnedMessages"
-            (click)="scrollToMessage(pinned.id)">
-            <span class="pin-label">{{ pinned.senderName }}</span>
-            <span class="pin-preview">{{ pinned.content }}</span>
+        <!-- Single Pinned Message Bar -->
+        @if (pinnedMessage) {
+        <div class="pinned-bar" (click)="scrollToMessage(pinnedMessage.id)">
+          <mat-icon class="pin-icon">push_pin</mat-icon>
+          <div class="pinned-content">
+            <span class="pinned-sender">{{ pinnedMessage.senderName }}</span>
+            <span class="pinned-text">{{ pinnedMessage.content }}</span>
+          </div>
+          <button class="unpin-btn" *ngIf="isOrganizer" (click)="togglePin(pinnedMessage); $event.stopPropagation()">
+            <mat-icon>close</mat-icon>
           </button>
         </div>
         }
@@ -37,7 +34,7 @@
           <div class="info-message" *ngFor="let info of infoMessages" [attr.id]="info.anchorId">
             <div class="info-label">{{ info.label }}</div>
             <div class="info-content">{{ info.content }}</div>
-            <a *ngIf="info.link" class="info-link" [href]="info.link" target="_blank" rel="noopener">Apri link</a>
+            <a *ngIf="info.link" class="info-link" [href]="info.link" target="_blank" rel="noopener">Open link</a>
           </div>
           <div class="timeline-item" *ngFor="let item of getTimelineItems()">
             @if (item.type === 'message' && item.message) {

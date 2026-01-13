@@ -144,6 +144,75 @@
   transform: rotate(180deg);
 }
 
+/* Single Pinned Message Bar (WhatsApp style) */
+.pinned-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(252, 195, 36, 0.12);
+  border: 1px solid rgba(252, 195, 36, 0.25);
+  border-radius: 12px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.pinned-bar:hover {
+  background: rgba(252, 195, 36, 0.18);
+}
+
+.pinned-bar .pin-icon {
+  color: var(--color-accent);
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.pinned-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.pinned-sender {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+.pinned-text {
+  font-size: 13px;
+  color: #e6e6e6;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.unpin-btn {
+  background: transparent;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.unpin-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.unpin-btn mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
 .pinned-list {
   display: flex;
   flex-direction: column;
@@ -349,6 +418,7 @@
   letter-spacing: 0.3px;
   color: var(--color-accent);
   margin-bottom: 4px;
+  font-weight: 700;
 }
 
 .info-content {
