@@ -6,8 +6,8 @@
           <mat-icon>arrow_back</mat-icon>
         </button>
         <div class="header-text">
-        <span class="title">Chat evento</span>
-        <span class="subtitle">{{ event.title }}</span>
+          <span class="title">Event Chat</span>
+          <span class="subtitle">{{ event.title }}</span>
         </div>
       </div>
       <button class="icon-btn close-btn" (click)="onClose()" aria-label="Close chat">
@@ -17,8 +17,7 @@
 
     <div class="chat-body">
       <div class="chat-left">
-        <button class="pinned-toggle compact" type="button" *ngIf="pinnedMessages.length"
-          (click)="togglePinnedOpen()">
+        <button class="pinned-toggle compact" type="button" *ngIf="pinnedMessages.length" (click)="togglePinnedOpen()">
           <span class="pinned-title">
             <mat-icon>push_pin</mat-icon>
             Pinned
@@ -89,16 +88,14 @@
               </div>
               <div class="poll-choices">
                 <label class="poll-choice" *ngFor="let option of item.poll.options">
-                  <input type="checkbox"
-                    [checked]="pollSelections[item.poll.id]?.has(option.id)"
-                    [disabled]="item.poll.closed"
-                    (change)="toggleVote(item.poll, option.id)">
+                  <input type="checkbox" [checked]="pollSelections[item.poll.id]?.has(option.id)"
+                    [disabled]="item.poll.closed" (change)="toggleVote(item.poll, option.id)">
                   <span class="choice-label">{{ option.text }}</span>
                 </label>
               </div>
               <div class="poll-actions">
-              <button class="pill" (click)="submitVote(item.poll)" [disabled]="item.poll.closed">Vota</button>
-              <button *ngIf="isOrganizer" class="pill ghost" (click)="closePoll(item.poll)"
+                <button class="pill" (click)="submitVote(item.poll)" [disabled]="item.poll.closed">Vota</button>
+                <button *ngIf="isOrganizer" class="pill ghost" (click)="closePoll(item.poll)"
                   [disabled]="item.poll.closed">
                   Chiudi
                 </button>
@@ -117,8 +114,7 @@
         </div>
 
         <div class="message-input">
-          <input [(ngModel)]="messageText" placeholder="Scrivi un messaggio..."
-            (input)="messageError = ''"
+          <input [(ngModel)]="messageText" placeholder="Scrivi un messaggio..." (input)="messageError = ''"
             [disabled]="isMuted" (keydown.enter)="sendMessage()">
           <button *ngIf="currentUserId" class="add-btn" (click)="openPollPopup()" [disabled]="isMuted">
             <mat-icon>add</mat-icon>
@@ -142,8 +138,7 @@
         </div>
         <div class="poll-create">
           <input [(ngModel)]="pollQuestion" placeholder="Domanda del sondaggio">
-          <textarea [(ngModel)]="pollOptionsText" rows="4"
-            placeholder="Opzioni (una per riga)"></textarea>
+          <textarea [(ngModel)]="pollOptionsText" rows="4" placeholder="Opzioni (una per riga)"></textarea>
           <input type="datetime-local" [(ngModel)]="pollEndsAt">
           <div class="poll-error" *ngIf="pollError">{{ pollError }}</div>
           <button class="pill" (click)="createPoll()">Crea</button>

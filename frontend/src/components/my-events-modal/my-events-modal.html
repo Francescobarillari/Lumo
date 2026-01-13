@@ -173,6 +173,7 @@
 @if (sharingEvent) {
 <app-event-share-modal [event]="sharingEvent" (close)="sharingEvent = null"></app-event-share-modal>
 }
+}
 
 @if (showChatModal && chatEvent) {
 <event-chat-modal [event]="chatEvent" [currentUserId]="userId.toString()" (close)="closeChat()">
