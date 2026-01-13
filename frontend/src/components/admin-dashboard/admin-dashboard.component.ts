@@ -35,6 +35,7 @@ export class AdminDashboardComponent implements OnInit {
 
     setView(view: 'dashboard' | 'events' | 'users') {
         this.currentView = view;
+        this.expandedEventId = null;
     }
 
     get filteredEvents() {

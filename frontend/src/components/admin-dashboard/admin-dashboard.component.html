@@ -100,6 +100,9 @@
                                 <td>{{ ev.date }}</td>
                                 <td>
                                     <div class="action-buttons">
+                                        <button class="btn-icon info" (click)="toggleDetails(ev.id)" title="View details">
+                                            <mat-icon>{{ expandedEventId === ev.id ? 'expand_less' : 'info' }}</mat-icon>
+                                        </button>
                                         @if (!eventsCurrentlyRejecting.includes(ev.id)) {
                                         <button class="btn-icon approve" (click)="approveEvent(ev)" title="Approve">
                                             <mat-icon>check</mat-icon>
@@ -123,6 +126,54 @@
                                     </div>
                                 </td>
                             </tr>
+                            @if (expandedEventId === ev.id) {
+                            <tr class="event-details-row">
+                                <td colspan="4">
+                                    <div class="event-details">
+                                        <div class="detail-item full">
+                                            <span class="detail-label">Description</span>
+                                            <span class="detail-value description">{{ ev.description || 'No description provided.' }}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Date</span>
+                                            <span class="detail-value">{{ ev.date || '-' }}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Time</span>
+                                            <span class="detail-value">{{ ev.startTime || '-' }} - {{ ev.endTime || '-' }}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">City</span>
+                                            <span class="detail-value">{{ ev.city || '-' }}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Capacity</span>
+                                            <span class="detail-value">{{ ev.nPartecipants || '-' }}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Cost</span>
+                                            <span class="detail-value">{{ ev.costPerPerson != null ? (ev.costPerPerson + ' EUR') : 'Free' }}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Coordinates</span>
+                                            <span class="detail-value">{{ ev.latitude != null && ev.longitude != null ? (ev.latitude + ', ' + ev.longitude) : '-' }}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Created</span>
+                                            <span class="detail-value">{{ ev.createdAt || '-' }}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Organizer</span>
+                                            <span class="detail-value">{{ ev.organizerName || ev.organizer || 'Unknown' }}</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Event ID</span>
+                                            <span class="detail-value">#{{ ev.id }}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            }
                             }
                             @if (recentRequests.length === 0) {
                             <tr>
@@ -200,6 +251,9 @@
                             <td>{{ ev.date }}</td>
                             <td>
                                 <div class="action-buttons">
+                                    <button class="btn-icon info" (click)="toggleDetails(ev.id)" title="View details">
+                                        <mat-icon>{{ expandedEventId === ev.id ? 'expand_less' : 'info' }}</mat-icon>
+                                    </button>
                                     @if(!ev.isApproved) {
                                     @if (!eventsCurrentlyRejecting.includes(ev.id)) {
                                     <button class="btn-icon approve" (click)="approveEvent(ev)" title="Approve">
@@ -229,6 +283,54 @@
                                 </div>
                             </td>
                         </tr>
+                        @if (expandedEventId === ev.id) {
+                        <tr class="event-details-row">
+                            <td colspan="6">
+                                <div class="event-details">
+                                    <div class="detail-item full">
+                                        <span class="detail-label">Description</span>
+                                        <span class="detail-value description">{{ ev.description || 'No description provided.' }}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Date</span>
+                                        <span class="detail-value">{{ ev.date || '-' }}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Time</span>
+                                        <span class="detail-value">{{ ev.startTime || '-' }} - {{ ev.endTime || '-' }}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">City</span>
+                                        <span class="detail-value">{{ ev.city || '-' }}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Capacity</span>
+                                        <span class="detail-value">{{ ev.nPartecipants || '-' }}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Cost</span>
+                                        <span class="detail-value">{{ ev.costPerPerson != null ? (ev.costPerPerson + ' EUR') : 'Free' }}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Coordinates</span>
+                                        <span class="detail-value">{{ ev.latitude != null && ev.longitude != null ? (ev.latitude + ', ' + ev.longitude) : '-' }}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Created</span>
+                                        <span class="detail-value">{{ ev.createdAt || '-' }}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Organizer</span>
+                                        <span class="detail-value">{{ ev.organizerName || ev.organizer || 'Unknown' }}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Event ID</span>
+                                        <span class="detail-value">#{{ ev.id }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        }
                         }
                     </tbody>
                 </table>
