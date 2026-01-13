@@ -28,10 +28,13 @@ export class AccountModalComponent {
     constructor(private userService: UserService) { }
 
     onClose() {
+        this.view = 'profile';
+        this.close.emit();
+    }
+
+    onBack() {
         if (this.view !== 'profile') {
             this.view = 'profile';
-        } else {
-            this.close.emit();
         }
     }
 

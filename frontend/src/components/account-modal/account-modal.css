@@ -92,6 +92,24 @@
     color: var(--color-accent) !important;
 }
 
+.back-arrow {
+    background: none;
+    border: none;
+    color: var(--color-white);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.back-arrow mat-icon {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+}
+
 @media (max-width: 768px) {
     .modal-header {
         height: 70px;
@@ -134,7 +152,6 @@
     .back-arrow {
         position: absolute;
         left: 24px;
-        font-size: 24px;
         cursor: pointer;
         color: var(--color-white);
         display: flex !important;
