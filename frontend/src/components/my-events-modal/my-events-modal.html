@@ -1,3 +1,4 @@
+@if (!showChatModal) {
 <div class="backdrop" (click)="close.emit()"></div>
 
 <div class="modal-container">
@@ -61,6 +62,9 @@
                         </span>
                     </div>
                     <div class="event-actions">
+                        <button class="icon-btn chat" (click)="openChat(event)" title="Open chat">
+                            <mat-icon>chat</mat-icon>
+                        </button>
                         <button class="icon-btn danger" (click)="deleteEvent(event)" title="Delete event">
                             <mat-icon>delete</mat-icon>
                         </button>
@@ -166,3 +170,9 @@
         }
     </div>
 </div>
+}
+
+@if (showChatModal && chatEvent) {
+<event-chat-modal [event]="chatEvent" [currentUserId]="userId.toString()" (close)="closeChat()">
+</event-chat-modal>
+}

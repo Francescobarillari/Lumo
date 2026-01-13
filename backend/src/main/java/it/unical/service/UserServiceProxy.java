@@ -56,6 +56,11 @@ public class UserServiceProxy implements IUserService {
     }
 
     @Override
+    public List<it.unical.model.Event> getSavedEvents(Long userId) {
+        return realService.getSavedEvents(userId);
+    }
+
+    @Override
     public String updateProfileImage(Long userId, byte[] imageData) {
         System.out.println("[UserServiceProxy] Updating profile image for user: " + userId + " (Size: "
                 + imageData.length + " bytes)");

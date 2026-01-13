@@ -92,6 +92,7 @@
     @if (event.participationStatus === 'ACCEPTED') {
     <div class="participation-actions">
       <button class="button partecipa-btn accepted" disabled>Joined</button>
+      <button class="button chat-btn" type="button" (click)="onOpenChat()">Chat</button>
       <button class="button leave-btn" type="button" (click)="onLeave()">Leave</button>
     </div>
     } @else if (event.participationStatus === 'PENDING') {
