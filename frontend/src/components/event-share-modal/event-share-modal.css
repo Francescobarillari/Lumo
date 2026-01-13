@@ -36,6 +36,13 @@
     font-size: 16px;
 }
 
+.header-title::before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+}
+
 .close-btn {
     background: none;
     border: none;

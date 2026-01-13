@@ -177,7 +177,7 @@ export class EventShareModalComponent implements OnChanges {
         const infoWidth = this.infoArea.width;
         let y = this.infoArea.y;
 
-        ctx.fillStyle = '#FFFFFF';
+        ctx.fillStyle = '#FCC324';
         ctx.font = '700 56px "Stack Sans Headline", Arial, sans-serif';
         y = this.drawWrappedText(ctx, eventTitle, infoX, y, infoWidth, 64, 2);
         y += 12;
