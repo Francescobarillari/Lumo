@@ -598,4 +598,10 @@ export class Home implements OnInit, AfterViewInit {
       });
     }
   }
+
+  onFocusEventFromMenu(event: LumoEvent) {
+    if (this.mapView) {
+      this.mapView.flyToEvent(event);
+    }
+  }
 }

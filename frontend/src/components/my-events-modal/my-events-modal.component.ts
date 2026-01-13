@@ -18,6 +18,7 @@ import { User } from '../../models/user';
 export class MyEventsModal implements OnInit {
     @Input() userId!: string | number;
     @Output() close = new EventEmitter<void>();
+    @Output() focusLocal = new EventEmitter<Event>();
 
     view: 'organized' | 'joined' = 'organized'; // Simplified/restored if needed, or keep activeTab
 
@@ -72,7 +73,7 @@ export class MyEventsModal implements OnInit {
 
         this.eventService.getSavedEvents(this.userId).subscribe({
             next: (events) => {
-                this.savedEvents = events;
+                this.savedEvents = events.filter(this.isFutureEvent);
                 this.loading = false;
             },
             error: (err) => {
@@ -81,6 +82,13 @@ export class MyEventsModal implements OnInit {
             }
         });
     }
+
+    private isFutureEvent = (event: Event): boolean => {
+        if (!event.date) return true;
+        const end = event.endTime || event.startTime || '23:59';
+        const eventDateTime = new Date(`${event.date}T${end}`);
+        return eventDateTime.getTime() >= Date.now();
+    };
 
     switchTab(tab: 'ORGANIZED' | 'JOINED' | 'SAVED') {
         this.activeTab = tab;
@@ -172,6 +180,10 @@ export class MyEventsModal implements OnInit {
 
     openShare(event: Event) {
         this.sharingEvent = event;
+    }
+
+    goToEvent(event: Event) {
+        this.focusLocal.emit(event);
     }
 
     formatDateTime(event: Event): string {

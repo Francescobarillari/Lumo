@@ -8,6 +8,7 @@ import { interval, Subscription, switchMap } from 'rxjs';
 import { MyEventsModal } from '../my-events-modal/my-events-modal.component';
 import { AccountModalComponent } from '../account-modal/account-modal.component';
 import { UserService } from '../../services/user-service/user-service';
+import { Event as LumoEvent } from '../../models/event';
 
 @Component({
     selector: 'app-action-bar',
@@ -21,6 +22,7 @@ export class ActionBarComponent implements OnInit, OnDestroy, OnChanges {
     @Output() action = new EventEmitter<string>();
     @Output() openProfile = new EventEmitter<string>();
     @Output() openChatFromNotification = new EventEmitter<number>();
+    @Output() focusEvent = new EventEmitter<LumoEvent>();
 
     showUserMenu = false;
     showNotifications = false;
@@ -114,13 +116,13 @@ export class ActionBarComponent implements OnInit, OnDestroy, OnChanges {
         });
     }
 
-    toggleUserMenu(event?: Event) {
+    toggleUserMenu(event?: MouseEvent) {
         if (event) event.stopPropagation();
         this.showUserMenu = !this.showUserMenu;
         this.showNotifications = false;
     }
 
-    toggleNotifications(event: Event) {
+    toggleNotifications(event: MouseEvent) {
         event.stopPropagation();
         this.showNotifications = !this.showNotifications;
         this.showUserMenu = false;
@@ -163,6 +165,11 @@ export class ActionBarComponent implements OnInit, OnDestroy, OnChanges {
     onOpenChatFromNotification(eventId: number) {
         this.showNotifications = false;
         this.openChatFromNotification.emit(eventId);
+    }
+
+    onFocusEvent(event: LumoEvent) {
+        this.showMyEventsModal = false;
+        this.focusEvent.emit(event);
     }
 
     onAddEvent() {

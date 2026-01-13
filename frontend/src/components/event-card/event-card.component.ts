@@ -24,6 +24,7 @@ export class EventCardComponent implements OnInit {
     showShare = input<boolean>(false);
     showOrganizerInfo = input<boolean>(true);
     showSavedCount = input<boolean>(true);
+    showLocationPin = input<boolean>(false);
 
     // Organizer Info
     organizerName = input<string>();
