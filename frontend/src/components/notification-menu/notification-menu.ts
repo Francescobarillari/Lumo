@@ -71,6 +71,14 @@ export class NotificationMenuComponent implements OnInit {
                 n.title = 'Request Rejected';
                 n.message = 'Your request to join the event has been rejected.';
                 break;
+            case 'PARTICIPATION_REMOVED':
+                n.title = 'Removed from Event';
+                if (eventName) {
+                    n.message = `You have been removed from the event '${eventName}'.`;
+                } else {
+                    n.message = 'You have been removed from the event.';
+                }
+                break;
             case 'REQUEST_ACCEPTED':
                 n.title = 'Request Accepted'; // Past tense decision
                 break;
@@ -147,6 +155,7 @@ export class NotificationMenuComponent implements OnInit {
             case 'PARTICIPATION_REQUEST': return 'person_add';
             case 'PARTICIPATION_ACCEPTED': return 'how_to_reg';
             case 'PARTICIPATION_REJECTED': return 'person_remove';
+            case 'PARTICIPATION_REMOVED': return 'person_remove';
             case 'REQUEST_ACCEPTED': return 'check_circle'; // Visual feedback for decision
             case 'REQUEST_REJECTED': return 'cancel'; // Visual feedback for decision
             case 'SUCCESS': return 'check_circle';
@@ -164,6 +173,7 @@ export class NotificationMenuComponent implements OnInit {
             case 'PARTICIPATION_REQUEST': return '#2196f3'; // Blue
             case 'PARTICIPATION_ACCEPTED': return '#4caf50';
             case 'PARTICIPATION_REJECTED': return '#ff4444';
+            case 'PARTICIPATION_REMOVED': return '#ff4444';
             default: return 'white';
         }
     }

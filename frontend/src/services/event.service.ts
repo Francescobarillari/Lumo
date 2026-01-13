@@ -65,6 +65,13 @@ export class EventService {
     return this.http.post<void>(`${this.baseUrl}/${eventId}/participants/${userId}/reject`, {});
   }
 
+  removeParticipant(eventId: number, participantId: string | number, organizerId: string | number): Observable<void> {
+    return this.http.post<void>(
+      `${this.baseUrl}/${eventId}/participants/${participantId}/remove?organizerId=${organizerId}`,
+      {}
+    );
+  }
+
   deleteEvent(eventId: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${eventId}`);
   }

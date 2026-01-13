@@ -77,4 +77,11 @@ public class EventController {
         eventService.leaveEvent(userId, id);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/{id}/participants/{userId}/remove")
+    public ResponseEntity<Void> removeParticipant(@PathVariable Long id, @PathVariable Long userId,
+            @RequestParam Long organizerId) {
+        eventService.removeParticipant(organizerId, userId, id);
+        return ResponseEntity.ok().build();
+    }
 }

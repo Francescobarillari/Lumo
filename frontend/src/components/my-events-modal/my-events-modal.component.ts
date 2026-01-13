@@ -142,6 +142,21 @@ export class MyEventsModal implements OnInit {
         });
     }
 
+    removeParticipant(event: Event, user: User) {
+        const confirmed = confirm(`Remove ${user.name} ${user.surname} from this event?`);
+        if (!confirmed) return;
+
+        this.eventService.removeParticipant(event.id, user.id, this.userId).subscribe({
+            next: () => {
+                if (event.acceptedUsersList) {
+                    event.acceptedUsersList = event.acceptedUsersList.filter(u => u.id !== user.id);
+                }
+                event.occupiedSpots = Math.max(0, (event.occupiedSpots || 0) - 1);
+            },
+            error: (err) => console.error('Error removing participant', err)
+        });
+    }
+
     openShare(event: Event) {
         this.sharingEvent = event;
     }

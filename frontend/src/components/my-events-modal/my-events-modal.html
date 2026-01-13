@@ -98,6 +98,10 @@
                                     <img [src]="user.profileImage || 'assets/placeholder-user.png'"
                                         class="participant-avatar">
                                     <span class="participant-name">{{ user.name }} {{ user.surname }}</span>
+                                    <button class="participant-remove-btn" type="button"
+                                        (click)="removeParticipant(event, user)" title="Remove participant">
+                                        <mat-icon>person_remove</mat-icon>
+                                    </button>
                                 </div>
                                 }
                             </div>

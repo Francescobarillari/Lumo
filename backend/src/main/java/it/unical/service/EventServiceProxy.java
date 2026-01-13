@@ -115,4 +115,11 @@ public class EventServiceProxy implements IEventService {
         System.out.println("[Proxy] User " + userId + " leaving Event " + eventId);
         realService.leaveEvent(userId, eventId);
     }
+
+    @Override
+    public void removeParticipant(Long organizerId, Long participantId, Long eventId) {
+        System.out.println("[Proxy] Organizer " + organizerId + " removing participant " + participantId
+                + " from Event " + eventId);
+        realService.removeParticipant(organizerId, participantId, eventId);
+    }
 }

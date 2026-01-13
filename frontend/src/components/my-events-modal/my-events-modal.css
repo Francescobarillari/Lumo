@@ -385,6 +385,34 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    flex: 1;
+    min-width: 0;
+}
+
+.participant-remove-btn {
+    margin-left: auto;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1px solid rgba(244, 67, 54, 0.3);
+    background: rgba(244, 67, 54, 0.15);
+    color: #f44336;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.participant-remove-btn mat-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+.participant-remove-btn:hover {
+    background: #f44336;
+    color: #fff;
 }
 
 .no-data-msg {

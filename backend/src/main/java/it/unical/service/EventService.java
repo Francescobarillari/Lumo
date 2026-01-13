@@ -418,6 +418,42 @@ public class EventService implements IEventService {
         }
     }
 
+    public void removeParticipant(Long organizerId, Long participantId, Long eventId) {
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new RuntimeException("Event not found"));
+        Long creatorId = event.getCreatorId();
+
+        if (organizerId == null || creatorId == null || !creatorId.equals(organizerId)) {
+            throw new RuntimeException("Not authorized to remove participants");
+        }
+        if (creatorId.equals(participantId)) {
+            throw new RuntimeException("Cannot remove event creator");
+        }
+
+        it.unical.model.User participant = userRepository.findById(participantId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        boolean removedParticipation = participant.getParticipatingEvents().remove(event);
+        boolean removedPending = participant.getPendingEvents().remove(event);
+        userRepository.save(participant);
+
+        if (removedParticipation && event.getParticipants() != null) {
+            event.getParticipants().remove(participant);
+        }
+        if (event.getPendingParticipants() != null) {
+            event.getPendingParticipants().remove(participant);
+        }
+
+        if (removedParticipation || removedPending) {
+            notificationService.createRichNotification(
+                    participantId,
+                    "Removed from Event",
+                    "You have been removed from the event '" + event.getTitle() + "'.",
+                    "PARTICIPATION_REMOVED",
+                    eventId,
+                    creatorId);
+        }
+    }
+
     private void notifyFollowersAboutEvent(it.unical.model.User creator, Event event, String title, String message,
             String type) {
         if (creator.getFollowers() == null || creator.getFollowers().isEmpty())
