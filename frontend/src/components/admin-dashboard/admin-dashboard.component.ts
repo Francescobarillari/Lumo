@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AdminService } from '../../services/admin.service';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
+import { Subscription, interval } from 'rxjs';
 
 @Component({
     selector: 'app-admin-dashboard',
@@ -12,7 +13,7 @@ import { FormsModule } from '@angular/forms';
     templateUrl: './admin-dashboard.component.html',
     styleUrl: './admin-dashboard.component.css'
 })
-export class AdminDashboardComponent implements OnInit {
+export class AdminDashboardComponent implements OnInit, OnDestroy {
     users: any[] = [];
     allEvents: any[] = []; // Store all events here
     recentRequests: any[] = [];
@@ -26,11 +27,31 @@ export class AdminDashboardComponent implements OnInit {
     searchTermUsers: string = '';
 
     expandedEventId: number | null = null;
+    private pollSubscription: Subscription | null = null;
 
     constructor(private router: Router, private adminService: AdminService) { }
 
     ngOnInit() {
         this.loadData();
+        this.startPolling();
+    }
+
+    ngOnDestroy() {
+        this.stopPolling();
+    }
+
+    startPolling() {
+        // Poll every 5 seconds
+        this.pollSubscription = interval(5000).subscribe(() => {
+            this.loadData();
+        });
+    }
+
+    stopPolling() {
+        if (this.pollSubscription) {
+            this.pollSubscription.unsubscribe();
+            this.pollSubscription = null;
+        }
     }
 
     setView(view: 'dashboard' | 'events' | 'users') {
