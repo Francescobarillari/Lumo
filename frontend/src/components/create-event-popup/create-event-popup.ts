@@ -2,7 +2,6 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { FormField } from '../form-field/form-field';
-import { CircleIcon } from '../circle-icon/circle-icon';
 import { HttpClient } from '@angular/common/http';
 
 import { MatIconModule } from '@angular/material/icon';
@@ -11,7 +10,7 @@ import { MapboxService } from '../../services/mapbox.service';
 @Component({
     selector: 'create-event-popup',
     standalone: true,
-    imports: [CommonModule, FormField, CircleIcon, ReactiveFormsModule, MatIconModule],
+    imports: [CommonModule, FormField, ReactiveFormsModule, MatIconModule],
     templateUrl: './create-event-popup.html',
     styleUrl: './create-event-popup.css'
 })

@@ -5,7 +5,9 @@
             <div class="title-wrap">
                 <h2 [class.yellow-title]="view !== 'profile'">{{ getViewTitle() }}</h2>
             </div>
-            <CircleIcon class="close tablet-desktop-only" [path]="'assets/icon/close.svg'" (click)="onClose()" />
+            <button class="close-btn close tablet-desktop-only" (click)="onClose()">
+                <mat-icon>close</mat-icon>
+            </button>
         </div>
 
         <div class="account-content" *ngIf="view === 'profile'">

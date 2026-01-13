@@ -82,7 +82,7 @@
 .close-btn {
     background: none;
     border: none;
-    color: #888;
+    color: #fff;
     cursor: pointer;
     padding: 4px;
     border-radius: 50%;
@@ -93,7 +93,6 @@
 
 .close-btn:hover {
     background: rgba(255, 255, 255, 0.1);
-    color: white;
 }
 
 /* Profile Content */

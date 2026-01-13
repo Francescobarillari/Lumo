@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { ResponsiveService } from '../../services/responsive-service';
-import { CircleIcon } from '../circle-icon/circle-icon';
 import { FormField } from '../../components/form-field/form-field';
 import { FormBuilder } from '@angular/forms';
 import { onlyLettersValidator, adultValidator, emailFormatValidator, strongPasswordValidator } from '../../validators/validators';
@@ -14,7 +13,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 @Component({
   selector: 'SignUpPopup',
   standalone: true,
-  imports: [CircleIcon, FormField, MatIconModule, CommonModule, ReactiveFormsModule],
+  imports: [FormField, MatIconModule, CommonModule, ReactiveFormsModule],
   templateUrl: './sign-up-popup.html',
   styleUrls: ['./sign-up-popup.css'],
 })
