@@ -31,17 +31,19 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
 
   messageText = '';
   pollQuestion = '';
-  pollOptionsText = '';
-  pollEndsAt = '';
+  pollOptions: string[] = ['', '', ''];
   pollSelections: Record<number, Set<number>> = {};
   pollError = '';
   showPollPopup = false;
-  pinnedMessageId: number | null = null;
-  pinnedMessage: ChatMessage | null = null;
-  activePinMessageId: number | null = null;
+  pinnedId: number | null = null;
+  pinnedType: 'message' | 'poll' | null = null;
+  pinnedItem: ChatMessage | ChatPoll | null = null;
+  activePinId: number | null = null;
+  activePinType: 'message' | 'poll' | null = null;
   bannedPatterns: RegExp[] = [];
   bannedRaw: string[] = [];
   messageError = '';
+  timelineItems: Array<{ type: 'message' | 'poll'; createdAt: string; message?: ChatMessage; poll?: ChatPoll }> = [];
   infoMessages: Array<{
     key: 'time' | 'place' | 'rules' | 'link';
     label: string;
@@ -74,12 +76,29 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   openPollPopup() {
+    this.pollQuestion = '';
+    this.pollOptions = ['', '', ''];
     this.pollError = '';
     this.showPollPopup = true;
   }
 
   closePollPopup() {
     this.showPollPopup = false;
+    this.pollError = '';
+  }
+
+  addPollOption() {
+    this.pollOptions.push('');
+  }
+
+  removePollOption(index: number) {
+    if (this.pollOptions.length > 2) {
+      this.pollOptions.splice(index, 1);
+    }
+  }
+
+  trackByIndex(index: number, obj: any): any {
+    return index;
   }
 
   sendMessage() {
@@ -119,31 +138,22 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
 
   createPoll() {
     if (!this.currentUserId || !this.pollQuestion.trim()) return;
-    const options = this.pollOptionsText
-      .split('\n')
+    const options = this.pollOptions
       .map(line => line.trim())
       .filter(Boolean);
     if (options.length < 2) {
       this.pollError = 'Inserisci almeno due opzioni.';
       return;
     }
-    if (!this.pollEndsAt) {
-      this.pollError = 'Seleziona una data di fine.';
-      return;
-    }
-    const endsAtIso = this.toIsoLocal(this.pollEndsAt);
-    if (!endsAtIso) {
-      this.pollError = 'Data fine non valida.';
-      return;
-    }
+    // Default distant future expiration since user removed the input
+    const endsAtIso = new Date(Date.now() + 1000 * 60 * 60 * 24 * 365 * 10).toISOString(); // 10 years
 
     this.chatService.createPoll(this.event.id, this.currentUserId, this.pollQuestion.trim(), options, endsAtIso)
       .subscribe({
         next: (poll) => {
           this.upsertPoll(poll);
           this.pollQuestion = '';
-          this.pollOptionsText = '';
-          this.pollEndsAt = '';
+          this.pollOptions = ['', '', ''];
           this.showPollPopup = false;
           this.pollError = '';
           this.loadPolls();
@@ -156,25 +166,15 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   toggleVote(poll: ChatPoll, optionId: number) {
-    if (poll.closed) return;
-    const selection = this.pollSelections[poll.id] || new Set<number>();
-    if (selection.has(optionId)) {
-      selection.delete(optionId);
-    } else {
-      selection.add(optionId);
-    }
-    this.pollSelections[poll.id] = selection;
-  }
-
-  submitVote(poll: ChatPoll) {
     if (!this.currentUserId || poll.closed) return;
-    const selection = this.pollSelections[poll.id] || new Set<number>();
-    const optionIds = Array.from(selection);
-    this.chatService.votePoll(this.event.id, poll.id, this.currentUserId, optionIds).subscribe({
+
+    // Immediate single-choice vote
+    this.chatService.votePoll(this.event.id, poll.id, this.currentUserId, [optionId]).subscribe({
       next: (updated) => this.upsertPoll(updated),
       error: (err) => console.error('Error voting poll', err)
     });
   }
+
 
   closePoll(poll: ChatPoll) {
     if (!this.currentUserId) return;
@@ -231,11 +231,11 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
     return option.voters.map(voter => voter.userName).join(', ');
   }
 
-  getTimelineItems(): Array<{ type: 'message' | 'poll'; createdAt: string; message?: ChatMessage; poll?: ChatPoll }> {
+  private rebuildTimelineItems() {
     const items: Array<{ type: 'message' | 'poll'; createdAt: string; message?: ChatMessage; poll?: ChatPoll }> = [];
     this.messages.forEach(message => items.push({ type: 'message', createdAt: message.createdAt, message }));
     this.polls.forEach(poll => items.push({ type: 'poll', createdAt: poll.createdAt, poll }));
-    return items.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+    this.timelineItems = items.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
   }
 
   getPollTotalVotes(poll: ChatPoll): number {
@@ -253,39 +253,56 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
     return `${Math.round((count / total) * 100)}%`;
   }
 
-  isPinned(messageId: number): boolean {
-    return this.pinnedMessageId === messageId;
+  getPinnedSenderName(): string {
+    if (!this.pinnedItem) return '';
+    if (this.pinnedType === 'poll') return 'Sondaggio';
+    return (this.pinnedItem as ChatMessage).senderName || 'Utente';
   }
 
-  openPinMenu(message: ChatMessage, event: MouseEvent) {
+  getPinnedDisplayText(): string {
+    if (!this.pinnedItem) return '';
+    if (this.pinnedType === 'poll') return (this.pinnedItem as ChatPoll).question;
+    return (this.pinnedItem as ChatMessage).content;
+  }
+
+  isPinned(id: number, type: 'message' | 'poll'): boolean {
+    return this.pinnedId === id && this.pinnedType === type;
+  }
+
+  openPinMenu(item: ChatMessage | ChatPoll, type: 'message' | 'poll', event: MouseEvent) {
     if (!this.isOrganizer) return;
     event.stopPropagation();
-    this.activePinMessageId = message.id;
+    this.activePinId = item.id;
+    this.activePinType = type;
   }
 
   closePinMenu() {
-    this.activePinMessageId = null;
+    this.activePinId = null;
+    this.activePinType = null;
   }
 
-  togglePinFromMenu(message: ChatMessage, event: MouseEvent) {
+  togglePinFromMenu(item: ChatMessage | ChatPoll, type: 'message' | 'poll', event: MouseEvent) {
     event.stopPropagation();
-    this.togglePin(message);
-    this.activePinMessageId = null;
+    this.togglePin(item, type);
+    this.activePinId = null;
+    this.activePinType = null;
   }
 
-  togglePin(message: ChatMessage) {
-    if (this.pinnedMessageId === message.id) {
-      this.pinnedMessageId = null;
-      this.pinnedMessage = null;
+  togglePin(item: ChatMessage | ChatPoll, type: 'message' | 'poll') {
+    if (this.pinnedId === item.id && this.pinnedType === type) {
+      this.pinnedId = null;
+      this.pinnedType = null;
+      this.pinnedItem = null;
     } else {
-      this.pinnedMessageId = message.id;
-      this.pinnedMessage = message;
+      this.pinnedId = item.id;
+      this.pinnedType = type;
+      this.pinnedItem = item;
     }
-    this.persistPinnedMessage();
+    this.persistPinnedItem();
   }
 
-  scrollToMessage(messageId: number) {
-    this.scrollToAnchor(this.getMessageAnchorId(messageId));
+  scrollToItem(id: number, type: 'message' | 'poll') {
+    this.scrollToAnchor(this.getItemAnchorId(id, type));
   }
 
   scrollToAnchor(anchorId: string) {
@@ -301,8 +318,13 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  getMessageAnchorId(messageId: number): string {
-    return `chat-message-${messageId}`;
+  getItemAnchorId(id: number, type: 'message' | 'poll'): string {
+    return `chat-${type}-${id}`;
+  }
+
+  // Keep for backward compatibility if needed in templates briefly
+  getMessageAnchorId(id: number): string {
+    return this.getItemAnchorId(id, 'message');
   }
 
   loadBannedWords() {
@@ -321,8 +343,9 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
           return;
         }
         this.messages = messages;
-        this.refreshPinnedMessage();
+        this.refreshPinnedItem();
         this.persistMessages();
+        this.rebuildTimelineItems();
         this.scrollToBottom();
       },
       error: (err) => console.error('Error loading messages', err)
@@ -376,6 +399,8 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
       next: (polls) => {
         this.polls = polls;
         polls.forEach(poll => this.syncPollSelections(poll));
+        this.rebuildTimelineItems();
+        this.scrollToBottom();
       },
       error: (err) => console.error('Error loading polls', err)
     });
@@ -393,14 +418,22 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
 
   private upsertPoll(updated: ChatPoll) {
     const existingIndex = this.polls.findIndex(p => p.id === updated.id);
-    if (existingIndex >= 0) {
+    const isNew = existingIndex < 0;
+
+    if (!isNew) {
       const next = [...this.polls];
       next[existingIndex] = updated;
       this.polls = next;
     } else {
       this.polls = [updated, ...this.polls];
     }
+
     this.syncPollSelections(updated);
+    this.rebuildTimelineItems();
+
+    if (isNew) {
+      this.scrollToBottom();
+    }
   }
 
   private syncPollSelections(poll: ChatPoll) {
@@ -418,8 +451,9 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
   private addMessage(message: ChatMessage) {
     if (!this.messages.some(existing => existing.id === message.id)) {
       this.messages = [...this.messages, message];
-      this.refreshPinnedMessage();
+      this.refreshPinnedItem();
       this.persistMessages();
+      this.rebuildTimelineItems();
       this.scrollToBottom();
     }
   }
@@ -427,9 +461,11 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
   private initializeChat() {
     if (!this.event) return;
     this.messages = this.getCachedMessages();
-    this.loadPinnedMessage();
+    this.loadPinnedItem();
     this.buildInfoMessages();
-    this.activePinMessageId = null;
+    this.rebuildTimelineItems();
+    this.activePinId = null;
+    this.activePinType = null;
     this.loadBannedWords();
     if (!this.currentUserId) return;
     this.isOrganizer = this.event.creatorId?.toString() === this.currentUserId;
@@ -482,46 +518,54 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
     return `chat-pins:${this.event.id}`;
   }
 
-  private loadPinnedMessage() {
+  private loadPinnedItem() {
     const key = this.pinnedStorageKey();
     if (!key) return;
     const raw = localStorage.getItem(key);
     if (!raw) {
-      this.pinnedMessageId = null;
-      this.pinnedMessage = null;
+      this.pinnedId = null;
+      this.pinnedType = null;
+      this.pinnedItem = null;
       return;
     }
     try {
-      const parsed = JSON.parse(raw) as number;
-      if (typeof parsed === 'number') {
-        this.pinnedMessageId = parsed;
-        this.refreshPinnedMessage();
+      const parsed = JSON.parse(raw) as { id: number; type: 'message' | 'poll' };
+      if (parsed && typeof parsed.id === 'number') {
+        this.pinnedId = parsed.id;
+        this.pinnedType = parsed.type;
+        this.refreshPinnedItem();
       } else {
-        this.pinnedMessageId = null;
-        this.pinnedMessage = null;
+        this.pinnedId = null;
+        this.pinnedType = null;
+        this.pinnedItem = null;
       }
     } catch {
-      this.pinnedMessageId = null;
-      this.pinnedMessage = null;
+      this.pinnedId = null;
+      this.pinnedType = null;
+      this.pinnedItem = null;
     }
   }
 
-  private persistPinnedMessage() {
+  private persistPinnedItem() {
     const key = this.pinnedStorageKey();
     if (!key) return;
-    if (this.pinnedMessageId !== null) {
-      localStorage.setItem(key, JSON.stringify(this.pinnedMessageId));
+    if (this.pinnedId !== null && this.pinnedType !== null) {
+      localStorage.setItem(key, JSON.stringify({ id: this.pinnedId, type: this.pinnedType }));
     } else {
       localStorage.removeItem(key);
     }
   }
 
-  private refreshPinnedMessage() {
-    if (this.pinnedMessageId === null) {
-      this.pinnedMessage = null;
+  private refreshPinnedItem() {
+    if (this.pinnedId === null || this.pinnedType === null) {
+      this.pinnedItem = null;
       return;
     }
-    this.pinnedMessage = this.messages.find(m => m.id === this.pinnedMessageId) || null;
+    if (this.pinnedType === 'message') {
+      this.pinnedItem = this.messages.find(m => m.id === this.pinnedId) || null;
+    } else {
+      this.pinnedItem = this.polls.find(p => p.id === this.pinnedId) || null;
+    }
   }
 
   private buildInfoMessages() {
@@ -596,11 +640,18 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private scrollToBottom() {
+    // Multiple frames to ensure DOM has settled, especially for list transitions and poll layouts
     requestAnimationFrame(() => {
-      const container = this.messagesContainer?.nativeElement;
-      if (!container) return;
-      container.scrollTop = container.scrollHeight;
+      this.doScrollToBottom();
+      setTimeout(() => this.doScrollToBottom(), 50);
+      setTimeout(() => this.doScrollToBottom(), 150);
     });
+  }
+
+  private doScrollToBottom() {
+    const container = this.messagesContainer?.nativeElement;
+    if (!container) return;
+    container.scrollTop = container.scrollHeight;
   }
 
   private buildBannedPatterns(words: string[]) {

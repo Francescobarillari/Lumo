@@ -17,15 +17,16 @@
 
     <div class="chat-body">
       <div class="chat-left">
-        <!-- Single Pinned Message Bar -->
-        @if (pinnedMessage) {
-        <div class="pinned-bar" (click)="scrollToMessage(pinnedMessage.id)">
+        <!-- Single Pinned Item Bar -->
+        @if (pinnedItem) {
+        <div class="pinned-bar" (click)="scrollToItem(pinnedId!, pinnedType!)">
           <mat-icon class="pin-icon">push_pin</mat-icon>
           <div class="pinned-content">
-            <span class="pinned-sender">{{ pinnedMessage.senderName }}</span>
-            <span class="pinned-text">{{ pinnedMessage.content }}</span>
+            <span class="pinned-sender">{{ getPinnedSenderName() }}</span>
+            <span class="pinned-text">{{ getPinnedDisplayText() }}</span>
           </div>
-          <button class="unpin-btn" *ngIf="isOrganizer" (click)="togglePin(pinnedMessage); $event.stopPropagation()">
+          <button class="unpin-btn" *ngIf="isOrganizer"
+            (click)="togglePin(pinnedItem, pinnedType!); $event.stopPropagation()">
             <mat-icon>close</mat-icon>
           </button>
         </div>
@@ -36,11 +37,11 @@
             <div class="info-content">{{ info.content }}</div>
             <a *ngIf="info.link" class="info-link" [href]="info.link" target="_blank" rel="noopener">Open link</a>
           </div>
-          <div class="timeline-item" *ngFor="let item of getTimelineItems()">
+          <div class="timeline-item" *ngFor="let item of timelineItems">
             @if (item.type === 'message' && item.message) {
-            <div class="message" [attr.id]="getMessageAnchorId(item.message.id)"
+            <div class="message" [attr.id]="getItemAnchorId(item.message.id, 'message')"
               [class.mine]="currentUserId && item.message.senderId.toString() === currentUserId"
-              [class.pin-enabled]="isOrganizer" (click)="openPinMenu(item.message, $event)">
+              [class.pin-enabled]="isOrganizer" (click)="openPinMenu(item.message, 'message', $event)">
               <div class="avatar">
                 <img *ngIf="item.message.senderImage" [src]="item.message.senderImage" alt="Avatar">
                 <div *ngIf="!item.message.senderImage" class="placeholder">
@@ -51,11 +52,13 @@
                 <div class="meta">
                   <span class="name">{{ item.message.senderName }}</span>
                   <span class="time">{{ formatTimestamp(item.message.createdAt) }}</span>
-                  @if (isOrganizer && activePinMessageId === item.message.id) {
+                  @if (isOrganizer && activePinId === item.message.id && activePinType === 'message') {
                   <div class="pin-menu" (click)="$event.stopPropagation()">
-                    <button class="pin-menu-btn" type="button" (click)="togglePinFromMenu(item.message, $event)"
-                      [class.active]="isPinned(item.message.id)" [class.unpin]="isPinned(item.message.id)"
-                      [attr.aria-label]="isPinned(item.message.id) ? 'Unpin' : 'Pin message'">
+                    <button class="pin-menu-btn" type="button"
+                      (click)="togglePinFromMenu(item.message, 'message', $event)"
+                      [class.active]="isPinned(item.message.id, 'message')"
+                      [class.unpin]="isPinned(item.message.id, 'message')"
+                      [attr.aria-label]="isPinned(item.message.id, 'message') ? 'Unpin' : 'Pin message'">
                       <mat-icon>push_pin</mat-icon>
                     </button>
                   </div>
@@ -66,14 +69,28 @@
             </div>
             }
             @if (item.type === 'poll' && item.poll) {
-            <div class="poll-message-card">
+            <div class="poll-message-card" [attr.id]="getItemAnchorId(item.poll.id, 'poll')"
+              [class.pin-enabled]="isOrganizer" (click)="openPinMenu(item.poll, 'poll', $event)">
               <div class="poll-message-header">
-                <span class="poll-tag">Sondaggio</span>
-                <span class="time">{{ formatTimestamp(item.poll.createdAt) }}</span>
+                <div class="header-main">
+                  <span class="poll-tag">Sondaggio</span>
+                  <span class="time">{{ formatTimestamp(item.poll.createdAt) }}</span>
+                </div>
+                @if (isOrganizer && activePinId === item.poll.id && activePinType === 'poll') {
+                <div class="pin-menu" (click)="$event.stopPropagation()">
+                  <button class="pin-menu-btn" type="button" (click)="togglePinFromMenu(item.poll, 'poll', $event)"
+                    [class.active]="isPinned(item.poll.id, 'poll')" [class.unpin]="isPinned(item.poll.id, 'poll')"
+                    [attr.aria-label]="isPinned(item.poll.id, 'poll') ? 'Unpin' : 'Pin poll'">
+                    <mat-icon>push_pin</mat-icon>
+                  </button>
+                </div>
+                }
               </div>
               <div class="poll-message-question">{{ item.poll.question }}</div>
               <div class="poll-bars">
-                <div class="poll-bar-row" *ngFor="let option of item.poll.options">
+                <div class="poll-bar-row" *ngFor="let option of item.poll.options"
+                  [class.selected]="pollSelections[item.poll.id]?.has(option.id)" [class.closed]="item.poll.closed"
+                  (click)="toggleVote(item.poll, option.id)">
                   <div class="poll-bar-label">
                     <span>{{ option.text }}</span>
                     <span class="poll-bar-count">{{ getPollOptionCount(option) }}</span>
@@ -83,25 +100,17 @@
                   </div>
                 </div>
               </div>
-              <div class="poll-choices">
-                <label class="poll-choice" *ngFor="let option of item.poll.options">
-                  <input type="checkbox" [checked]="pollSelections[item.poll.id]?.has(option.id)"
-                    [disabled]="item.poll.closed" (change)="toggleVote(item.poll, option.id)">
-                  <span class="choice-label">{{ option.text }}</span>
-                </label>
-              </div>
               <div class="poll-actions">
-                <button class="pill" (click)="submitVote(item.poll)" [disabled]="item.poll.closed">Vota</button>
                 <button *ngIf="isOrganizer" class="pill ghost" (click)="closePoll(item.poll)"
                   [disabled]="item.poll.closed">
-                  Chiudi
+                  Chiudi sondaggio
                 </button>
               </div>
               <div class="poll-total">Totale voti: {{ getPollTotalVotes(item.poll) }}</div>
             </div>
             }
           </div>
-          <div *ngIf="getTimelineItems().length === 0" class="empty-state">
+          <div *ngIf="timelineItems.length === 0" class="empty-state">
             Nessun messaggio ancora.
           </div>
         </div>
@@ -134,11 +143,24 @@
           </button>
         </div>
         <div class="poll-create">
-          <input [(ngModel)]="pollQuestion" placeholder="Domanda del sondaggio">
-          <textarea [(ngModel)]="pollOptionsText" rows="4" placeholder="Opzioni (una per riga)"></textarea>
-          <input type="datetime-local" [(ngModel)]="pollEndsAt">
+          <input [(ngModel)]="pollQuestion" placeholder="Domanda del sondaggio" class="poll-question-input">
+
+          <div class="poll-options-list">
+            <div class="poll-option-row" *ngFor="let option of pollOptions; let i = index; trackBy: trackByIndex">
+              <input [(ngModel)]="pollOptions[i]" [placeholder]="'Opzione ' + (i + 1)">
+              <button class="remove-option-btn" (click)="removePollOption(i)" *ngIf="pollOptions.length > 2">
+                <mat-icon>remove_circle_outline</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <button class="add-option-pill" (click)="addPollOption()">
+            <mat-icon>add</mat-icon>
+            Aggiungi opzione
+          </button>
+
           <div class="poll-error" *ngIf="pollError">{{ pollError }}</div>
-          <button class="pill" (click)="createPoll()">Crea</button>
+          <button class="pill create-poll-btn" (click)="createPoll()">Crea sondaggio</button>
         </div>
       </div>
     </div>
