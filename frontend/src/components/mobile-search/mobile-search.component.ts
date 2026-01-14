@@ -332,4 +332,22 @@ export class MobileSearchComponent {
         const next = Math.min(this.distanceMaxLimit, Math.max(Number(value), this.distanceMin));
         this.distanceMax = Number.isNaN(next) ? this.distanceMax : next;
     }
+
+    getPriceTrackStyle() {
+        const minPercent = (this.priceMin / this.priceMaxLimit) * 100;
+        const maxPercent = (this.priceMax / this.priceMaxLimit) * 100;
+        return {
+            left: minPercent + '%',
+            width: (maxPercent - minPercent) + '%'
+        };
+    }
+
+    getDistanceTrackStyle() {
+        const minPercent = (this.distanceMin / this.distanceMaxLimit) * 100;
+        const maxPercent = (this.distanceMax / this.distanceMaxLimit) * 100;
+        return {
+            left: minPercent + '%',
+            width: (maxPercent - minPercent) + '%'
+        };
+    }
 }

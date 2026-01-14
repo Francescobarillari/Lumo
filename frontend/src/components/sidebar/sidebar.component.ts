@@ -313,6 +313,24 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
         this.distanceMax = Number.isNaN(next) ? this.distanceMax : next;
     }
 
+    getPriceTrackStyle() {
+        const minPercent = (this.priceMin / this.priceMaxLimit) * 100;
+        const maxPercent = (this.priceMax / this.priceMaxLimit) * 100;
+        return {
+            left: minPercent + '%',
+            width: (maxPercent - minPercent) + '%'
+        };
+    }
+
+    getDistanceTrackStyle() {
+        const minPercent = (this.distanceMin / this.distanceMaxLimit) * 100;
+        const maxPercent = (this.distanceMax / this.distanceMaxLimit) * 100;
+        return {
+            left: minPercent + '%',
+            width: (maxPercent - minPercent) + '%'
+        };
+    }
+
     formatDateTime(event: Event): string {
         const date = event.date ? new Date(`${event.date}T00:00:00`) : null;
         const start = event.startTime ? event.startTime.slice(0, 5) : '';

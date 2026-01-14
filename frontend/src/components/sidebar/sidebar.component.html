@@ -21,6 +21,20 @@
         </div>
     </div>
 
+    @if (!collapsed && isSearching) {
+    <div class="tabs-header">
+        <button class="tab-btn" [class.active]="activeTab === 'events'" (click)="setActiveTab('events')">
+            EVENTS
+        </button>
+        <button class="tab-btn" [class.active]="activeTab === 'places'" (click)="setActiveTab('places')">
+            PLACES
+        </button>
+        <button class="tab-btn" [class.active]="activeTab === 'creators'" (click)="setActiveTab('creators')">
+            CREATORS
+        </button>
+    </div>
+    }
+
     <div class="filter-sort" *ngIf="!collapsed && showFilterOptions">
         <div class="filter-row">
             <div class="pill dropdown" (click)="filterMenuOpen = !filterMenuOpen; sortMenuOpen = false;">
@@ -66,10 +80,13 @@
                 <span class="range-value">€{{ priceMin.toFixed(0) }} - €{{ priceMax.toFixed(0) }}</span>
             </div>
             <div class="range-inputs">
-                <input type="range" [min]="0" [max]="priceMaxLimit" [step]="priceStep" [value]="priceMin"
-                    (input)="onPriceMinChange($any($event.target).value)">
-                <input type="range" [min]="priceMin" [max]="priceMaxLimit" [step]="priceStep" [value]="priceMax"
-                    (input)="onPriceMaxChange($any($event.target).value)">
+                <div class="slider-wrapper">
+                    <div class="slider-track" [ngStyle]="getPriceTrackStyle()"></div>
+                    <input type="range" [min]="0" [max]="priceMaxLimit" [step]="priceStep" [ngModel]="priceMin"
+                        (input)="onPriceMinChange($any($event.target).value)">
+                    <input type="range" [min]="0" [max]="priceMaxLimit" [step]="priceStep" [ngModel]="priceMax"
+                        (input)="onPriceMaxChange($any($event.target).value)">
+                </div>
             </div>
         </div>
 
@@ -79,10 +96,13 @@
                 <span class="range-value">{{ distanceMin.toFixed(1) }} - {{ distanceMax.toFixed(1) }} km</span>
             </div>
             <div class="range-inputs">
-                <input type="range" [min]="0" [max]="distanceMaxLimit" [step]="distanceStep" [value]="distanceMin"
-                    (input)="onDistanceMinChange($any($event.target).value)">
-                <input type="range" [min]="distanceMin" [max]="distanceMaxLimit" [step]="distanceStep"
-                    [value]="distanceMax" (input)="onDistanceMaxChange($any($event.target).value)">
+                <div class="slider-wrapper">
+                    <div class="slider-track" [ngStyle]="getDistanceTrackStyle()"></div>
+                    <input type="range" [min]="0" [max]="distanceMaxLimit" [step]="distanceStep" [ngModel]="distanceMin"
+                        (input)="onDistanceMinChange($any($event.target).value)">
+                    <input type="range" [min]="0" [max]="distanceMaxLimit" [step]="distanceStep" [ngModel]="distanceMax"
+                        (input)="onDistanceMaxChange($any($event.target).value)">
+                </div>
             </div>
         </div>
     </div>
@@ -90,18 +110,6 @@
     <div class="sections-container" *ngIf="!collapsed">
 
         @if (isSearching) {
-
-        <div class="tabs-header">
-            <button class="tab-btn" [class.active]="activeTab === 'events'" (click)="setActiveTab('events')">
-                EVENTS
-            </button>
-            <button class="tab-btn" [class.active]="activeTab === 'places'" (click)="setActiveTab('places')">
-                PLACES
-            </button>
-            <button class="tab-btn" [class.active]="activeTab === 'creators'" (click)="setActiveTab('creators')">
-                CREATORS
-            </button>
-        </div>
 
         @if (activeTab === 'events') {
         <div class="events-section">
@@ -186,7 +194,6 @@
                     [organizerName]="event.organizerName" [organizerImage]="event.organizerImage"
                     [creatorId]="event.creatorId" [currentUserId]="userId" (focusLocation)="goToEvent(event)"
                     (toggleFavorite)="toggleFavorite.emit(event)" (shareEvent)="shareEvent.emit(event)"
-                    [showOrganizerInfo]="false"
                     (openOrganizerProfile)="event.creatorId ? openUserProfile.emit(event.creatorId.toString()) : null" />
                 }
                 @if (foundEvents.length === 0) {
@@ -208,7 +215,6 @@
                     [organizerName]="event.organizerName" [organizerImage]="event.organizerImage"
                     [creatorId]="event.creatorId" [currentUserId]="userId" (focusLocation)="goToEvent(event)"
                     (toggleFavorite)="toggleFavorite.emit(event)" (shareEvent)="shareEvent.emit(event)"
-                    [showOrganizerInfo]="false"
                     (openOrganizerProfile)="event.creatorId ? openUserProfile.emit(event.creatorId.toString()) : null" />
                 }
                 @if (followUpEvents.length === 0) {
@@ -224,12 +230,10 @@
                 @for (event of getFiltered(savedEvents); track $index) {
                 <app-event-card [title]="event.title" [location]="event.city" [dateTime]="formatDateTime(event)"
                     [distance]="formatDistance(event.distanceKm)" [id]="event.id!" [isSaved]="!!event.isSaved"
-                    [savedCount]="event.savedCount" [showSavedCount]="false"
-                    [distance]="formatDistance(event.distanceKm)" [id]="event.id!" [isSaved]="!!event.isSaved"
-                    [isParticipating]="!!event.isParticipating" [organizerName]="event.organizerName"
-                    [organizerImage]="event.organizerImage" [creatorId]="event.creatorId" [currentUserId]="userId"
-                    (focusLocation)="goToEvent(event)" (toggleFavorite)="toggleFavorite.emit(event)"
-                    (shareEvent)="shareEvent.emit(event)" [showOrganizerInfo]="false"
+                    [savedCount]="event.savedCount" [showSavedCount]="false" [isParticipating]="!!event.isParticipating"
+                    [organizerName]="event.organizerName" [organizerImage]="event.organizerImage"
+                    [creatorId]="event.creatorId" [currentUserId]="userId" (focusLocation)="goToEvent(event)"
+                    (toggleFavorite)="toggleFavorite.emit(event)" (shareEvent)="shareEvent.emit(event)"
                     (openOrganizerProfile)="event.creatorId ? openUserProfile.emit(event.creatorId.toString()) : null" />
                 }
                 @if (savedEvents.length === 0) {
@@ -248,7 +252,7 @@
                     [savedCount]="event.savedCount" [showSavedCount]="false" [organizerName]="event.organizerName"
                     [organizerImage]="event.organizerImage" [creatorId]="event.creatorId" [currentUserId]="userId"
                     (focusLocation)="goToEvent(event)" (toggleFavorite)="toggleFavorite.emit(event)"
-                    (shareEvent)="shareEvent.emit(event)" [showOrganizerInfo]="false"
+                    (shareEvent)="shareEvent.emit(event)"
                     (openOrganizerProfile)="event.creatorId ? openUserProfile.emit(event.creatorId.toString()) : null" />
                 }
                 @if (discoverEvents.length === 0) {

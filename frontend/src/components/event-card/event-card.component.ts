@@ -22,7 +22,7 @@ export class EventCardComponent implements OnInit {
     showDistance = input<boolean>(true);
     showActions = input<boolean>(true);
     showShare = input<boolean>(false);
-    showOrganizerInfo = input<boolean>(true);
+    showOrganizerInfo = input<boolean>(false);
     showSavedCount = input<boolean>(true);
 
     // Organizer Info
