@@ -1,13 +1,14 @@
 import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Event } from '../../models/event';
 import * as QRCode from 'qrcode';
 
 @Component({
     selector: 'app-event-share-modal',
     standalone: true,
-    imports: [CommonModule, MatIconModule],
+    imports: [CommonModule, MatIconModule, MatSnackBarModule],
     templateUrl: './event-share-modal.html',
     styleUrl: './event-share-modal.css'
 })
@@ -25,6 +26,8 @@ export class EventShareModalComponent implements OnChanges {
     private readonly infoArea = { x: 50, y: 190, width: 590 };
     private readonly qrSquare = { x: 325, y: 831, size: 430 };
     private previewToken = 0;
+
+    constructor(private snackBar: MatSnackBar) { }
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes['event']) {
@@ -81,7 +84,7 @@ export class EventShareModalComponent implements OnChanges {
             setTimeout(() => URL.revokeObjectURL(link.href), 1000);
         } catch (error) {
             console.error('Failed to download poster', error);
-            alert('Unable to generate the poster. You can share the link instead.');
+            this.showToast('Unable to generate the poster. You can share the link instead.', 'error');
         } finally {
             this.downloading = false;
         }
@@ -112,10 +115,19 @@ export class EventShareModalComponent implements OnChanges {
         if (!link) return;
 
         navigator.clipboard.writeText(link).then(() => {
-            alert('Link copied to clipboard!');
+            this.showToast('Link copied to clipboard!');
         }).catch((err) => {
             console.error('Failed to copy link: ', err);
-            alert('Unable to copy the link.');
+            this.showToast('Unable to copy the link.', 'error');
+        });
+    }
+
+    private showToast(message: string, tone: 'default' | 'error' = 'default') {
+        this.snackBar.open(message, undefined, {
+            duration: tone === 'error' ? 1600 : 1000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+            panelClass: tone === 'error' ? ['toast-snackbar', 'toast-snackbar--error'] : ['toast-snackbar']
         });
     }
 

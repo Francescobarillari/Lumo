@@ -4,7 +4,8 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.7);
+    background: var(--modal-backdrop-color);
+    backdrop-filter: blur(var(--modal-backdrop-blur));
     display: flex;
     justify-content: center;
     align-items: center;
@@ -12,15 +13,14 @@
 }
 
 .modal-container {
-    background:
-        radial-gradient(circle at 15% 20%, rgba(252, 195, 36, 0.12), transparent 34%),
-        linear-gradient(160deg, #1a1a1a 0%, #0f0f0f 60%, #080808 100%);
+    background: var(--modal-surface);
     width: 90%;
     max-width: 400px;
-    border-radius: 16px;
+    border-radius: var(--modal-radius);
     padding: 24px;
     color: white;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    border: var(--modal-border);
+    box-shadow: var(--modal-shadow);
     max-height: 85vh;
     display: flex;
     flex-direction: column;
@@ -28,9 +28,7 @@
 }
 
 .modal-container.events-mode {
-    background:
-        radial-gradient(circle at 14% 18%, rgba(252, 195, 36, 0.18), transparent 42%),
-        linear-gradient(160deg, #1a1a1a 0%, #101010 55%, #060606 100%);
+    background: var(--modal-surface);
 }
 
 @media (max-width: 768px) {

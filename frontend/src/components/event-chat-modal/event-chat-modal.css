@@ -1,27 +1,25 @@
 .chat-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(6, 6, 8, 0.72);
+  background: var(--modal-backdrop-color);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2000;
   padding: 16px;
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(var(--modal-backdrop-blur));
 }
 
 .chat-container {
   width: min(760px, 96vw);
   max-height: 90vh;
-  background:
-    radial-gradient(circle at 15% 20%, rgba(252, 195, 36, 0.18), transparent 40%),
-    linear-gradient(160deg, #1a1a1a 0%, #101010 55%, #060606 100%);
-  border-radius: 20px;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+  background: var(--modal-surface);
+  border-radius: var(--modal-radius);
+  box-shadow: var(--modal-shadow);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: var(--modal-border);
   color: #f5f5f5;
 }
 
@@ -71,7 +69,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: var(--modal-header-border);
 }
 
 .header-left {
@@ -741,8 +739,8 @@
 .poll-popup-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(6, 6, 8, 0.75);
-  backdrop-filter: blur(6px);
+  background: var(--modal-backdrop-color);
+  backdrop-filter: blur(var(--modal-backdrop-blur));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -751,11 +749,11 @@
 
 .poll-popup {
   width: min(460px, 92vw);
-  background: linear-gradient(160deg, #1a1a1a 0%, #101010 55%, #060606 100%);
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--modal-surface);
+  border-radius: var(--modal-radius);
+  border: var(--modal-border);
   padding: 16px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--modal-shadow);
 }
 
 .poll-popup-header {

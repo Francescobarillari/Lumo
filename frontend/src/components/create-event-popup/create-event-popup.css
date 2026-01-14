@@ -1,8 +1,8 @@
 .backdrop {
     position: fixed;
     inset: 0;
-    background: var(--color-backdrop);
-    backdrop-filter: blur(5px);
+    background: var(--modal-backdrop-color);
+    backdrop-filter: blur(var(--modal-backdrop-blur));
     z-index: var(--z-backdrop);
 }
 
@@ -20,11 +20,9 @@
     align-items: center;
     width: 45%;
     max-height: 95vh;
-    background:
-        radial-gradient(circle at 50% 16%, rgba(252, 195, 36, 0.18), transparent 45%),
-        linear-gradient(160deg, #1a1a1a 0%, #101010 55%, #060606 100%);
-    border-radius: var(--radius-xl);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--modal-surface);
+    border-radius: var(--modal-radius);
+    border: var(--modal-border);
     display: flex;
     flex-direction: column;
     overflow: visible;
@@ -188,9 +186,7 @@
         border: none;
         /* Mobile padding */
         justify-content: flex-start;
-        background:
-            radial-gradient(circle at 50% 16%, rgba(252, 195, 36, 0.18), transparent 45%),
-            linear-gradient(160deg, #1a1a1a 0%, #101010 55%, #060606 100%);
+        background: var(--modal-surface);
         overflow-y: auto;
     }
 

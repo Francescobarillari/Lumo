@@ -4,6 +4,7 @@ import { ConfirmationService } from '../../services/confirmation.service';
 import { CircleIcon } from '../circle-icon/circle-icon';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormsModule } from '@angular/forms';
 
 import * as QRCode from 'qrcode';
@@ -11,7 +12,7 @@ import * as QRCode from 'qrcode';
 @Component({
     selector: 'app-account-modal',
     standalone: true,
-    imports: [CommonModule, MatIconModule, FormsModule],
+    imports: [CommonModule, MatIconModule, MatSnackBarModule, FormsModule],
     templateUrl: './account-modal.html',
     styleUrl: './account-modal.css'
 })
@@ -42,7 +43,8 @@ export class AccountModalComponent {
 
     constructor(
         private userService: UserService,
-        private confirmation: ConfirmationService
+        private confirmation: ConfirmationService,
+        private snackBar: MatSnackBar
     ) { }
 
     onClose() {
@@ -200,12 +202,12 @@ export class AccountModalComponent {
                     this.user.email = updatedUser.email;
                     this.user.description = updatedUser.description;
                 }
-                alert('Profile updated successfully');
+                this.showToast('Profile updated successfully');
                 this.userService.notifyUserUpdate();
             },
             error: (err) => {
                 console.error(err);
-                alert('Failed to update profile');
+                this.showToast('Failed to update profile', 'error');
             }
         });
     }
@@ -241,32 +243,42 @@ export class AccountModalComponent {
     copyShareLink() {
         const link = this.getShareLink();
         navigator.clipboard.writeText(link).then(() => {
-            alert('Link copied to clipboard!');
+            this.showToast('Link copied to clipboard!');
         }).catch(err => {
             console.error('Failed to copy: ', err);
+            this.showToast('Unable to copy the link.', 'error');
         });
     }
 
     onChangePassword() {
         if (!this.user) return;
         if (this.passwordData.new !== this.passwordData.confirm) {
-            alert('New passwords do not match');
+            this.showToast('New passwords do not match', 'error');
             return;
         }
         if (!this.passwordData.old || !this.passwordData.new) {
-            alert('Please fill in default fields');
+            this.showToast('Please fill in default fields', 'error');
             return;
         }
 
         this.userService.changePassword(this.user.id, this.passwordData.old, this.passwordData.new).subscribe({
             next: () => {
-                alert('Password changed successfully');
+                this.showToast('Password changed successfully');
                 this.passwordData = { old: '', new: '', confirm: '' };
             },
             error: (err) => {
                 console.error(err);
-                alert('Failed to change password. existing password may be incorrect.');
+                this.showToast('Failed to change password. Existing password may be incorrect.', 'error');
             }
+        });
+    }
+
+    private showToast(message: string, tone: 'default' | 'error' = 'default') {
+        this.snackBar.open(message, undefined, {
+            duration: tone === 'error' ? 700 : 700,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+            panelClass: tone === 'error' ? ['toast-snackbar', 'toast-snackbar--error'] : ['toast-snackbar']
         });
     }
 }

@@ -1,7 +1,8 @@
 .event-share-backdrop {
     position: fixed;
     inset: 0;
-    background: var(--color-backdrop);
+    background: var(--modal-backdrop-color);
+    backdrop-filter: blur(var(--modal-backdrop-blur));
     z-index: var(--z-popup);
     display: flex;
     align-items: center;
@@ -11,10 +12,10 @@
 
 .event-share-modal {
     width: min(560px, 94vw);
-    background: var(--color-dark-gray);
-    border: 1px solid var(--color-light-gray);
-    border-radius: 20px;
-    box-shadow: var(--shadow-lg);
+    background: var(--modal-surface);
+    border: var(--modal-border);
+    border-radius: var(--modal-radius);
+    box-shadow: var(--modal-shadow);
     padding: 14px 14px 18px;
     display: flex;
     flex-direction: column;

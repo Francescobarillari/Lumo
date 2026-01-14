@@ -1,7 +1,8 @@
 .backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: var(--modal-backdrop-color);
+  backdrop-filter: blur(var(--modal-backdrop-blur));
   z-index: 900;
 }
 
@@ -19,10 +20,10 @@
   align-items: center;
   width: 30%;
   height: auto;
-  background-color: var(--color-gray);
-  border-radius: 20px;
+  background: var(--modal-surface);
+  border-radius: var(--modal-radius);
   padding: 40px;
-  border: 2px solid var(--color-dark-gray);
+  border: var(--modal-border);
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -42,10 +43,10 @@
   align-items: center;
   width: 40%;
   height: auto;
-  background-color: var(--color-gray);
-  border-radius: 20px;
+  background: var(--modal-surface);
+  border-radius: var(--modal-radius);
   padding: 40px;
-  border: 2px solid var(--color-dark-gray);
+  border: var(--modal-border);
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -65,7 +66,7 @@
 
 .popup-container.mobile .popup-content {
   position: fixed;
-  background-color: var(--color-gray);
+  background: var(--modal-surface);
   display: flex;
   justify-content: center;
   align-items: center;

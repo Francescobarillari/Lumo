@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AdminService } from '../../services/admin.service';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormsModule } from '@angular/forms';
 import { Subscription, interval } from 'rxjs';
 import { ConfirmationService } from '../../services/confirmation.service';
@@ -10,7 +11,7 @@ import { ConfirmationService } from '../../services/confirmation.service';
 @Component({
     selector: 'app-admin-dashboard',
     standalone: true,
-    imports: [CommonModule, MatIconModule, FormsModule],
+    imports: [CommonModule, MatIconModule, MatSnackBarModule, FormsModule],
     templateUrl: './admin-dashboard.component.html',
     styleUrl: './admin-dashboard.component.css'
 })
@@ -33,7 +34,8 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     constructor(
         private router: Router,
         private adminService: AdminService,
-        private confirmation: ConfirmationService
+        private confirmation: ConfirmationService,
+        private snackBar: MatSnackBar
     ) { }
 
     ngOnInit() {
@@ -158,7 +160,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
             },
             error: (err) => {
                 console.error('Rejection failed:', err);
-                alert('Error while rejecting the event.');
+                this.showToast('Error while rejecting the event.', 'error');
             }
         });
     }
@@ -179,7 +181,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
             },
             error: (err) => {
                 console.error('Error deleting event', err);
-                alert('Error deleting the event.');
+                this.showToast('Error deleting the event.', 'error');
             }
         });
     }
@@ -187,5 +189,14 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     signOut() {
         localStorage.removeItem('user');
         this.router.navigate(['/']);
+    }
+
+    private showToast(message: string, tone: 'default' | 'error' = 'default') {
+        this.snackBar.open(message, undefined, {
+            duration: tone === 'error' ? 1600 : 1000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+            panelClass: tone === 'error' ? ['toast-snackbar', 'toast-snackbar--error'] : ['toast-snackbar']
+        });
     }
 }
