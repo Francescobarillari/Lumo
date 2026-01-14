@@ -4,7 +4,11 @@
     } @else {
     <div class="input-with-toggle" [class.with-toggle]="showToggle && type === 'password'">
         <input [formControl]="control!" [type]="inputType" [placeholder]="placeholder" class="input-field"
+            [class.date-input]="type === 'date'" [class.has-value]="type === 'date' && !!control?.value"
             [attr.min]="min" />
+        @if (type === 'date' && !control?.value) {
+        <span class="date-placeholder">{{ placeholder }}</span>
+        }
         @if (showToggle && type === 'password') {
         <button type="button" class="toggle-btn" (click)="togglePasswordVisibility($event)">
             <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>

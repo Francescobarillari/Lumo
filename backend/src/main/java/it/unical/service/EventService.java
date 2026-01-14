@@ -250,6 +250,7 @@ public class EventService implements IEventService {
             event.setnPartecipants(updatedEvent.getnPartecipants());
             event.setCity(updatedEvent.getCity());
             event.setDate(updatedEvent.getDate());
+            event.setEndDate(updatedEvent.getEndDate());
             event.setStartTime(updatedEvent.getStartTime());
             event.setEndTime(updatedEvent.getEndTime());
             if (updatedEvent.getCostPerPerson() != null && updatedEvent.getCostPerPerson() < 0) {

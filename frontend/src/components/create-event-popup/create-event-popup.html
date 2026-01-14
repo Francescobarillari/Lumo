@@ -27,9 +27,14 @@
             <FormField [error]="hasError('description')" [control]="$any(form.get('description'))" [type]="'textarea'"
                 placeholder="Description" customClass="tall-field" />
 
-            <div class="three-column">
+            <div class="two-column">
                 <FormField [error]="hasError('date')" [control]="$any(form.get('date'))" [type]="'date'"
-                    placeholder="Date" />
+                    placeholder="From" />
+                <FormField [error]="hasError('endDate')" [control]="$any(form.get('endDate'))" [type]="'date'"
+                    placeholder="To" />
+            </div>
+
+            <div class="two-column">
                 <FormField [error]="hasError('startTime')" [control]="$any(form.get('startTime'))" [type]="'time'"
                     placeholder="Start" />
                 <FormField [error]="hasError('endTime')" [control]="$any(form.get('endTime'))" [type]="'time'"
