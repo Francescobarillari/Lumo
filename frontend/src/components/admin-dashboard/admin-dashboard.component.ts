@@ -5,6 +5,7 @@ import { AdminService } from '../../services/admin.service';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { Subscription, interval } from 'rxjs';
+import { ConfirmationService } from '../../services/confirmation.service';
 
 @Component({
     selector: 'app-admin-dashboard',
@@ -29,7 +30,11 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     expandedEventId: number | null = null;
     private pollSubscription: Subscription | null = null;
 
-    constructor(private router: Router, private adminService: AdminService) { }
+    constructor(
+        private router: Router,
+        private adminService: AdminService,
+        private confirmation: ConfirmationService
+    ) { }
 
     ngOnInit() {
         this.loadData();
@@ -158,18 +163,25 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
         });
     }
 
-    deleteEvent(event: any) {
-        if (confirm(`Are you sure you want to permanently delete the event "${event.title}"? This action will remove the event from the map and all user lists. It cannot be undone.`)) {
-            this.adminService.deleteEvent(event.id).subscribe({
-                next: () => {
-                    this.loadData();
-                },
-                error: (err) => {
-                    console.error('Error deleting event', err);
-                    alert('Error deleting the event.');
-                }
-            });
-        }
+    async deleteEvent(event: any) {
+        const confirmed = await this.confirmation.confirm({
+            title: 'Delete event',
+            message: `Are you sure you want to permanently delete the event "${event.title}"? This action will remove the event from the map and all user lists. It cannot be undone.`,
+            confirmText: 'Delete',
+            cancelText: 'Cancel',
+            tone: 'danger'
+        });
+        if (!confirmed) return;
+
+        this.adminService.deleteEvent(event.id).subscribe({
+            next: () => {
+                this.loadData();
+            },
+            error: (err) => {
+                console.error('Error deleting event', err);
+                alert('Error deleting the event.');
+            }
+        });
     }
 
     signOut() {

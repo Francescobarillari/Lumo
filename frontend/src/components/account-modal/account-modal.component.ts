@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UserService } from '../../services/user-service/user-service';
+import { ConfirmationService } from '../../services/confirmation.service';
 import { CircleIcon } from '../circle-icon/circle-icon';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -26,7 +27,10 @@ export class AccountModalComponent {
     editData = { name: '', email: '', description: '' };
     passwordData = { old: '', new: '', confirm: '' };
 
-    constructor(private userService: UserService) { }
+    constructor(
+        private userService: UserService,
+        private confirmation: ConfirmationService
+    ) { }
 
     onClose() {
         if (this.view !== 'profile') {
@@ -123,28 +127,34 @@ export class AccountModalComponent {
         });
     }
 
-    onUnfollow(userToUnfollow: any) {
+    async onUnfollow(userToUnfollow: any) {
         if (!this.user) return;
-        if (confirm(`Are you sure you want to unfollow ${userToUnfollow.name}?`)) {
-            this.userService.unfollowUser(this.user.id, userToUnfollow.id).subscribe({
-                next: () => {
-                    // If in "following" view, remove from list
-                    if (this.view === 'following') {
-                        this.userList = this.userList.filter(u => u.id !== userToUnfollow.id);
-                    } else {
-                        // If in "followers" view (and unfollowing someone who follows me), just update state
-                        this.followingIds.delete(userToUnfollow.id.toString());
-                    }
+        const confirmed = await this.confirmation.confirm({
+            title: 'Unfollow user',
+            message: `Are you sure you want to unfollow ${userToUnfollow.name}?`,
+            confirmText: 'Unfollow',
+            cancelText: 'Cancel'
+        });
+        if (!confirmed) return;
 
-                    // Update local count optimistically
-                    if (this.user) {
-                        this.user.followingCount = (this.user.followingCount || 1) - 1;
-                    }
-                    this.userService.notifyUserUpdate();
-                },
-                error: (err) => console.error(err)
-            });
-        }
+        this.userService.unfollowUser(this.user.id, userToUnfollow.id).subscribe({
+            next: () => {
+                // If in "following" view, remove from list
+                if (this.view === 'following') {
+                    this.userList = this.userList.filter(u => u.id !== userToUnfollow.id);
+                } else {
+                    // If in "followers" view (and unfollowing someone who follows me), just update state
+                    this.followingIds.delete(userToUnfollow.id.toString());
+                }
+
+                // Update local count optimistically
+                if (this.user) {
+                    this.user.followingCount = (this.user.followingCount || 1) - 1;
+                }
+                this.userService.notifyUserUpdate();
+            },
+            error: (err) => console.error(err)
+        });
     }
 
     openProfileFromList(userToOpen: any) {

@@ -1,0 +1,17 @@
+<div class="confirm-backdrop" *ngIf="state$ | async as state" (click)="onCancel()">
+  <div class="confirm-modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+    <div class="confirm-header">
+      <h2>{{ state.title }}</h2>
+    </div>
+    <p class="confirm-message">{{ state.message }}</p>
+    <div class="confirm-actions">
+      <button class="button cancel-button" type="button" (click)="onCancel()">
+        {{ state.cancelText }}
+      </button>
+      <button class="button confirm-button" [class.danger]="state.tone === 'danger'" type="button"
+        (click)="onConfirm()">
+        {{ state.confirmText }}
+      </button>
+    </div>
+  </div>
+</div>

@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { UserService } from '../../services/user-service/user-service';
+import { ConfirmationService } from '../../services/confirmation.service';
 import { User } from '../../models/user';
 import { EventService } from '../../services/event.service';
 import { Event } from '../../models/event';
@@ -34,7 +35,11 @@ export class UserProfileModalComponent implements OnChanges {
     upcomingEvents: Event[] = [];
     pastEvents: Event[] = [];
 
-    constructor(private userService: UserService, private eventService: EventService) { }
+    constructor(
+        private userService: UserService,
+        private eventService: EventService,
+        private confirmation: ConfirmationService
+    ) { }
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['userId'] && this.userId) {
@@ -90,22 +95,28 @@ export class UserProfileModalComponent implements OnChanges {
         });
     }
 
-    toggleFollow() {
+    async toggleFollow() {
         if (!this.userId || !this.currentUserId) return;
 
         if (this.isFollowing) {
-            if (confirm('Are you sure you want to unfollow this user?')) {
-                this.userService.unfollowUser(this.currentUserId, this.userId).subscribe({
-                    next: () => {
-                        this.isFollowing = false;
-                        if (this.user) {
-                            this.user.followersCount = (this.user.followersCount || 1) - 1;
-                        }
-                        this.userService.notifyUserUpdate();
-                    },
-                    error: (err) => console.error(err)
-                });
-            }
+            const confirmed = await this.confirmation.confirm({
+                title: 'Unfollow user',
+                message: 'Are you sure you want to unfollow this user?',
+                confirmText: 'Unfollow',
+                cancelText: 'Cancel'
+            });
+            if (!confirmed) return;
+
+            this.userService.unfollowUser(this.currentUserId, this.userId).subscribe({
+                next: () => {
+                    this.isFollowing = false;
+                    if (this.user) {
+                        this.user.followersCount = (this.user.followersCount || 1) - 1;
+                    }
+                    this.userService.notifyUserUpdate();
+                },
+                error: (err) => console.error(err)
+            });
         } else {
             this.userService.followUser(this.currentUserId, this.userId).subscribe({
                 next: () => {
@@ -195,17 +206,23 @@ export class UserProfileModalComponent implements OnChanges {
         this.openProfile.emit(targetUser.id.toString());
     }
 
-    onListUnfollow(targetUser: User) {
+    async onListUnfollow(targetUser: User) {
         if (!this.currentUserId) return;
-        if (confirm(`Are you sure you want to unfollow ${targetUser.name}?`)) {
-            this.userService.unfollowUser(this.currentUserId, targetUser.id.toString()).subscribe({
-                next: () => {
-                    this.myFollowingIds.delete(targetUser.id.toString());
-                    this.userService.notifyUserUpdate();
-                },
-                error: (err) => console.error(err)
-            });
-        }
+        const confirmed = await this.confirmation.confirm({
+            title: 'Unfollow user',
+            message: `Are you sure you want to unfollow ${targetUser.name}?`,
+            confirmText: 'Unfollow',
+            cancelText: 'Cancel'
+        });
+        if (!confirmed) return;
+
+        this.userService.unfollowUser(this.currentUserId, targetUser.id.toString()).subscribe({
+            next: () => {
+                this.myFollowingIds.delete(targetUser.id.toString());
+                this.userService.notifyUserUpdate();
+            },
+            error: (err) => console.error(err)
+        });
     }
 
     showEvents() {

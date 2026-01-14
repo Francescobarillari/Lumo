@@ -17,6 +17,7 @@ import { UserProfileModalComponent } from '../../../components/user-profile-moda
 import { Event as LumoEvent } from '../../../models/event';
 import { EventService } from '../../../services/event.service';
 import { UserService } from '../../../services/user-service/user-service';
+import { ConfirmationService } from '../../../services/confirmation.service';
 
 @Component({
   selector: 'Home',
@@ -66,7 +67,8 @@ export class Home implements OnInit, AfterViewInit {
     private authService: AuthService,
     private http: HttpClient,
     private eventService: EventService,
-    private userService: UserService
+    private userService: UserService,
+    private confirmation: ConfirmationService
   ) { }
 
   ngOnInit() {
@@ -423,13 +425,18 @@ export class Home implements OnInit, AfterViewInit {
     });
   }
 
-  onLeaveEvent(event: LumoEvent) {
+  async onLeaveEvent(event: LumoEvent) {
     if (!this.loggedUser) {
       this.openSignIn();
       return;
     }
 
-    const confirmed = confirm('Are you sure you want to leave the event?');
+    const confirmed = await this.confirmation.confirm({
+      title: 'Leave event',
+      message: 'Are you sure you want to leave the event?',
+      confirmText: 'Leave',
+      cancelText: 'Cancel'
+    });
     if (!confirmed) return;
 
     this.eventService.leaveEvent(event.id, this.loggedUser.id).subscribe({
@@ -457,7 +464,7 @@ export class Home implements OnInit, AfterViewInit {
     });
   }
 
-  onDeleteEvent(event: LumoEvent) {
+  async onDeleteEvent(event: LumoEvent) {
     if (!this.loggedUser) {
       this.openSignIn();
       return;
@@ -468,7 +475,13 @@ export class Home implements OnInit, AfterViewInit {
       return;
     }
 
-    const confirmed = confirm('Are you sure you want to delete this event? This action cannot be undone.');
+    const confirmed = await this.confirmation.confirm({
+      title: 'Delete event',
+      message: 'Are you sure you want to delete this event? This action cannot be undone.',
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
+      tone: 'danger'
+    });
     if (!confirmed) return;
 
     this.eventService.deleteEvent(event.id).subscribe({

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { Event } from '../../models/event';
 import { EventService } from '../../services/event.service';
+import { ConfirmationService } from '../../services/confirmation.service';
 import { EventCardComponent } from '../event-card/event-card.component';
 import { EventShareModalComponent } from '../event-share-modal/event-share-modal.component';
 import { EventChatModalComponent } from '../event-chat-modal/event-chat-modal';
@@ -48,7 +49,10 @@ export class MyEventsModal implements OnInit {
     showChatModal = false;
     chatEvent: Event | null = null;
 
-    constructor(private eventService: EventService) { }
+    constructor(
+        private eventService: EventService,
+        private confirmation: ConfirmationService
+    ) { }
 
     ngOnInit() {
         this.loadData();
@@ -103,8 +107,14 @@ export class MyEventsModal implements OnInit {
         }
     }
 
-    deleteEvent(event: Event) {
-        const confirmed = confirm('Are you sure you want to delete this event?');
+    async deleteEvent(event: Event) {
+        const confirmed = await this.confirmation.confirm({
+            title: 'Delete event',
+            message: 'Are you sure you want to delete this event?',
+            confirmText: 'Delete',
+            cancelText: 'Cancel',
+            tone: 'danger'
+        });
         if (!confirmed) return;
 
         this.eventService.deleteEvent(event.id).subscribe({
@@ -163,8 +173,14 @@ export class MyEventsModal implements OnInit {
         });
     }
 
-    removeParticipant(event: Event, user: User) {
-        const confirmed = confirm(`Remove ${user.name} ${user.surname} from this event?`);
+    async removeParticipant(event: Event, user: User) {
+        const confirmed = await this.confirmation.confirm({
+            title: 'Remove participant',
+            message: `Remove ${user.name} ${user.surname} from this event?`,
+            confirmText: 'Remove',
+            cancelText: 'Cancel',
+            tone: 'danger'
+        });
         if (!confirmed) return;
 
         this.eventService.removeParticipant(event.id, user.id, this.userId).subscribe({
