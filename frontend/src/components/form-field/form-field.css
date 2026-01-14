@@ -47,6 +47,40 @@ input[type="date"] {
     align-items: center;
 }
 
+.date-input {
+    color: transparent;
+}
+
+.date-input:not(.has-value)::-webkit-datetime-edit,
+.date-input:not(.has-value)::-webkit-datetime-edit-text,
+.date-input:not(.has-value)::-webkit-datetime-edit-month-field,
+.date-input:not(.has-value)::-webkit-datetime-edit-day-field,
+.date-input:not(.has-value)::-webkit-datetime-edit-year-field {
+    color: transparent;
+}
+
+.date-input.has-value {
+    color: var(--color-white);
+}
+
+.date-input.has-value::-webkit-datetime-edit,
+.date-input.has-value::-webkit-datetime-edit-text,
+.date-input.has-value::-webkit-datetime-edit-month-field,
+.date-input.has-value::-webkit-datetime-edit-day-field,
+.date-input.has-value::-webkit-datetime-edit-year-field {
+    color: var(--color-white);
+}
+
+.date-placeholder {
+    position: absolute;
+    left: var(--spacing-md);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-light-gray);
+    font-weight: var(--font-weight-light);
+    pointer-events: none;
+}
+
 .input-with-toggle.with-toggle .input-field {
     padding-right: 42px;
 }

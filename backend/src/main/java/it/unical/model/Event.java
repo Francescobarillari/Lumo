@@ -18,6 +18,7 @@ public class Event {
     private int nPartecipants;
     private String city;
     private LocalDate date;
+    private LocalDate endDate;
     private LocalTime startTime;
     private LocalTime endTime;
     private LocalDateTime createdAt;
@@ -70,14 +71,15 @@ public class Event {
     }
 
     public Event(Long id, String title, String description, int nPartecipants, String city, LocalDate date,
-            LocalTime startTime, LocalTime endTime, LocalDateTime createdAt, Double latitude, Double longitude,
-            Double costPerPerson) {
+            LocalDate endDate, LocalTime startTime, LocalTime endTime, LocalDateTime createdAt, Double latitude,
+            Double longitude, Double costPerPerson) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.nPartecipants = nPartecipants;
         this.city = city;
         this.date = date;
+        this.endDate = endDate;
         this.startTime = startTime;
         this.endTime = endTime;
         this.createdAt = createdAt;
@@ -132,6 +134,14 @@ public class Event {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
     }
 
     public LocalTime getStartTime() {

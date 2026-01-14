@@ -5,6 +5,7 @@ export interface Event {
   nPartecipants: number;
   city: string;
   date: string;       // ISO date
+  endDate?: string;   // ISO date
   startTime: string;  // HH:mm:ss or HH:mm
   endTime: string;    // HH:mm:ss or HH:mm
   createdAt: string;
