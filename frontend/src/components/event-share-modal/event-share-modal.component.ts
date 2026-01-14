@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { Event } from '../../models/event';
+import * as QRCode from 'qrcode';
 
 @Component({
     selector: 'app-event-share-modal',
@@ -220,15 +221,29 @@ export class EventShareModalComponent implements OnChanges {
         const qrX = qrBgX + qrBorder;
         const qrY = qrBgY + qrBorder;
 
-        const qrImg = await this.loadImage(this.getQrCodeUrl(qrSize, event));
+        // GENERATE LOCAL QR CODE
+        const link = this.getShareLink(event);
+        let qrDataUrl = '';
+        try {
+            qrDataUrl = await QRCode.toDataURL(link, {
+                width: qrSize,
+                margin: 0,
+                color: { dark: '#000000', light: '#ffffff' }
+            });
+        } catch (e) {
+            console.error('Local QR generation failed', e);
+        }
 
-        ctx.save();
-        this.drawRoundedRect(ctx, qrBgX, qrBgY, qrBgSize, qrBgSize, qrRadius);
-        ctx.clip();
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fill();
-        ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
-        ctx.restore();
+        if (qrDataUrl) {
+            const qrImg = await this.loadImage(qrDataUrl);
+            ctx.save();
+            this.drawRoundedRect(ctx, qrBgX, qrBgY, qrBgSize, qrBgSize, qrRadius);
+            ctx.clip();
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fill();
+            ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
+            ctx.restore();
+        }
 
         return canvas;
     }

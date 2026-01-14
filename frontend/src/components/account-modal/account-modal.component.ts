@@ -6,6 +6,8 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 
+import * as QRCode from 'qrcode';
+
 @Component({
     selector: 'app-account-modal',
     standalone: true,
@@ -14,7 +16,18 @@ import { FormsModule } from '@angular/forms';
     styleUrl: './account-modal.css'
 })
 export class AccountModalComponent {
-    @Input() user: { id: string; name: string; email: string; description?: string; profileImage?: string; followersCount?: number; followingCount?: number } | null = null;
+    private _user: { id: string; name: string; email: string; description?: string; profileImage?: string; followersCount?: number; followingCount?: number } | null = null;
+    qrCodeUrl: string = '';
+
+    @Input()
+    set user(value: { id: string; name: string; email: string; description?: string; profileImage?: string; followersCount?: number; followingCount?: number } | null) {
+        this._user = value;
+        this.generateQrCode();
+    }
+    get user() {
+        return this._user;
+    }
+
     @Output() close = new EventEmitter<void>();
     @Output() changePhoto = new EventEmitter<void>();
     @Output() openProfile = new EventEmitter<string>();
@@ -205,11 +218,24 @@ export class AccountModalComponent {
         return `${protocol}//${host}/?user=${this.user.id}`;
     }
 
-    getQrCodeUrl(): string {
-        if (!this.user) return '';
+    generateQrCode() {
+        if (!this.user) {
+            this.qrCodeUrl = '';
+            return;
+        }
         const link = this.getShareLink();
-        // Using QR Server API
-        return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(link)}`;
+        QRCode.toDataURL(link, { width: 200, margin: 1, color: { dark: '#000000', light: '#ffffff' } })
+            .then(url => {
+                this.qrCodeUrl = url;
+            })
+            .catch(err => {
+                console.error('QR Code generation failed', err);
+                this.qrCodeUrl = '';
+            });
+    }
+
+    getQrCodeUrl(): string {
+        return this.qrCodeUrl;
     }
 
     copyShareLink() {
