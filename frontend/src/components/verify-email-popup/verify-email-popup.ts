@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ResponsiveService } from '../../services/responsive-service';
-import { CircleIcon } from '../circle-icon/circle-icon';
+import { MatIconModule } from '@angular/material/icon';
 @Component({
   selector: 'VerifyEmailPopup',
   standalone: true,
-  imports: [CircleIcon],
+  imports: [MatIconModule],
   templateUrl: './verify-email-popup.html',
   styleUrls: ['./verify-email-popup.css']
 })

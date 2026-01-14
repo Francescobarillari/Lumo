@@ -1,11 +1,17 @@
 <div class="modal-backdrop" (click)="onClose()">
     <div class="modal-container" (click)="$event.stopPropagation()">
         <div class="modal-header">
-            <mat-icon (click)="onClose()" class="mobile-only back-arrow">arrow_back</mat-icon>
+            @if (view !== 'profile') {
+            <button class="back-arrow" type="button" (click)="onBack()" aria-label="Back">
+                <mat-icon>arrow_back</mat-icon>
+            </button>
+            }
             <div class="title-wrap">
                 <h2 [class.yellow-title]="view !== 'profile'">{{ getViewTitle() }}</h2>
             </div>
-            <CircleIcon class="close tablet-desktop-only" [path]="'assets/icon/close.svg'" (click)="onClose()" />
+            <button class="close-btn close tablet-desktop-only" (click)="onClose()" aria-label="Close">
+                <mat-icon>close</mat-icon>
+            </button>
         </div>
 
         <div class="account-content" *ngIf="view === 'profile'">

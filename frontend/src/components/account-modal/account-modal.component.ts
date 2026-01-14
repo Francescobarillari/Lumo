@@ -9,7 +9,7 @@ import { FormsModule } from '@angular/forms';
 @Component({
     selector: 'app-account-modal',
     standalone: true,
-    imports: [CommonModule, MatIconModule, FormsModule, CircleIcon],
+    imports: [CommonModule, MatIconModule, FormsModule],
     templateUrl: './account-modal.html',
     styleUrl: './account-modal.css'
 })
@@ -33,10 +33,13 @@ export class AccountModalComponent {
     ) { }
 
     onClose() {
+        this.view = 'profile';
+        this.close.emit();
+    }
+
+    onBack() {
         if (this.view !== 'profile') {
             this.view = 'profile';
-        } else {
-            this.close.emit();
         }
     }
 

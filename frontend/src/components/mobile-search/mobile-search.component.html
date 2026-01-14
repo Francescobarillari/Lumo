@@ -68,11 +68,12 @@
                         <span>Price</span>
                         <span class="range-value">€{{ priceMin.toFixed(0) }} - €{{ priceMax.toFixed(0) }}</span>
                     </div>
-                    <div class="range-inputs">
-                        <input type="range" [min]="0" [max]="priceMaxLimit" [step]="priceStep" [value]="priceMin"
-                            (input)="onPriceMinChange($any($event.target).value)">
-                        <input type="range" [min]="priceMin" [max]="priceMaxLimit" [step]="priceStep" [value]="priceMax"
-                            (input)="onPriceMaxChange($any($event.target).value)">
+                    <div class="range-inputs dual" [style.--min-percent]="priceMinPercent"
+                        [style.--max-percent]="priceMaxPercent">
+                        <input class="min-range" type="range" [min]="0" [max]="priceMaxLimit" [step]="priceStep"
+                            [value]="priceMin" (input)="onPriceMinChange($any($event.target).value)">
+                        <input class="max-range" type="range" [min]="priceMin" [max]="priceMaxLimit"
+                            [step]="priceStep" [value]="priceMax" (input)="onPriceMaxChange($any($event.target).value)">
                     </div>
                 </div>
 
@@ -81,11 +82,14 @@
                         <span>Distance</span>
                         <span class="range-value">{{ distanceMin.toFixed(1) }} - {{ distanceMax.toFixed(1) }} km</span>
                     </div>
-                    <div class="range-inputs">
-                        <input type="range" [min]="0" [max]="distanceMaxLimit" [step]="distanceStep"
-                            [value]="distanceMin" (input)="onDistanceMinChange($any($event.target).value)">
-                        <input type="range" [min]="distanceMin" [max]="distanceMaxLimit" [step]="distanceStep"
-                            [value]="distanceMax" (input)="onDistanceMaxChange($any($event.target).value)">
+                    <div class="range-inputs dual" [style.--min-percent]="distanceMinPercent"
+                        [style.--max-percent]="distanceMaxPercent">
+                        <input class="min-range" type="range" [min]="0" [max]="distanceMaxLimit"
+                            [step]="distanceStep" [value]="distanceMin"
+                            (input)="onDistanceMinChange($any($event.target).value)">
+                        <input class="max-range" type="range" [min]="distanceMin" [max]="distanceMaxLimit"
+                            [step]="distanceStep" [value]="distanceMax"
+                            (input)="onDistanceMaxChange($any($event.target).value)">
                     </div>
                 </div>
             </div>

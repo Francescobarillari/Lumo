@@ -128,6 +128,26 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
             if (topAfter < topSafeMargin) {
                 y += topSafeMargin - topAfter;
             }
+
+            // Avoid overlapping the top action bar when they intersect
+            const actionBar = document.querySelector('.action-bar') as HTMLElement | null;
+            const actionBarRect = actionBar?.getBoundingClientRect();
+            if (actionBarRect) {
+                const cardLeft = x - width / 2;
+                const cardRight = x + width / 2;
+                const cardTop = y - height;
+                const cardBottom = y;
+                const overlapsX = cardRight > actionBarRect.left - margin && cardLeft < actionBarRect.right + margin;
+                const overlapsY = cardBottom > actionBarRect.top - margin && cardTop < actionBarRect.bottom + margin;
+
+                if (overlapsX && overlapsY) {
+                    const desiredTop = actionBarRect.bottom + margin;
+                    if (cardTop < desiredTop) {
+                        y += desiredTop - cardTop;
+                    }
+                }
+            }
+
             if (y > viewportH - margin) {
                 y = viewportH - margin;
             }

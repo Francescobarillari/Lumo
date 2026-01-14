@@ -12,7 +12,9 @@
 
     <div class="centered-content">
       <div class="popup-content">
-        <CircleIcon class="close" [path]="'assets/icon/close.svg'" (click)="closePopup()" />
+        <button class="close-btn close" (click)="closePopup()">
+          <mat-icon>close</mat-icon>
+        </button>
 
         <div class="header">
           <h1>Welcome back!</h1>

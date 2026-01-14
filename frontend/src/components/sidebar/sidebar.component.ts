@@ -293,6 +293,26 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
         this.filterMenuOpen = false;
     }
 
+    get priceMinPercent(): string {
+        if (!this.priceMaxLimit) return '0%';
+        return `${(this.priceMin / this.priceMaxLimit) * 100}%`;
+    }
+
+    get priceMaxPercent(): string {
+        if (!this.priceMaxLimit) return '100%';
+        return `${(this.priceMax / this.priceMaxLimit) * 100}%`;
+    }
+
+    get distanceMinPercent(): string {
+        if (!this.distanceMaxLimit) return '0%';
+        return `${(this.distanceMin / this.distanceMaxLimit) * 100}%`;
+    }
+
+    get distanceMaxPercent(): string {
+        if (!this.distanceMaxLimit) return '100%';
+        return `${(this.distanceMax / this.distanceMaxLimit) * 100}%`;
+    }
+
     onPriceMinChange(value: string) {
         const next = Math.max(0, Math.min(Number(value), this.priceMax));
         this.priceMin = Number.isNaN(next) ? this.priceMin : next;

@@ -36,17 +36,27 @@
     font-size: 16px;
 }
 
+.header-title::before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+}
+
 .close-btn {
-    background: transparent;
+    background: none;
     border: none;
-    color: var(--color-white);
+    color: #fff;
     cursor: pointer;
-    padding: 6px;
+    padding: 4px;
     border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .close-btn:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .event-share-content {
