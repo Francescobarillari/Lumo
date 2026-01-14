@@ -545,3 +545,22 @@
 .follow-icon.following mat-icon {
     color: var(--color-black);
 }
+
+.show-more-btn {
+    width: 100%;
+    padding: 10px;
+    background: transparent;
+    border: 1px solid var(--color-bit-gray);
+    color: var(--color-white);
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    margin-top: 8px;
+    transition: all 0.2s;
+}
+
+.show-more-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--color-light-gray);
+}

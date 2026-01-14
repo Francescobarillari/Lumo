@@ -239,6 +239,11 @@ export class MapView implements AfterViewInit, OnDestroy, OnChanges {
         this.mapInteract.emit();
       }
     });
+
+    // Optimization: Disable rendering markers for off-screen events
+    this.mapInstance.on('moveend', () => this.updateVisibleMarkers());
+    this.mapInstance.on('zoomend', () => this.updateVisibleMarkers());
+
     this.mapInstance.on('click', (e) => {
       if (e.originalEvent) {
         this.mapInteract.emit();
@@ -349,25 +354,54 @@ export class MapView implements AfterViewInit, OnDestroy, OnChanges {
   }
 
   private placeEventMarkers() {
-    this.eventMarkers.forEach((marker) => marker.remove());
-    this.eventMarkers.clear();
+    this.updateVisibleMarkers();
+  }
 
-    this.events.forEach((event) => {
-      if (event.latitude == null || event.longitude == null) return;
+  private updateVisibleMarkers() {
+    if (!this.mapInstance) return;
 
-      const markerEl = document.createElement('div');
-      markerEl.className = 'golden-pulse-marker';
+    const bounds = this.mapInstance.getBounds();
+    if (!bounds) return;
 
-      const marker = new mapboxgl.Marker({ element: markerEl })
-        .setLngLat([event.longitude, event.latitude])
-        .addTo(this.map);
+    // Filter events within bounds
+    let visibleEvents = this.events.filter(event => {
+      if (event.latitude == null || event.longitude == null) return false;
+      return bounds.contains([event.longitude, event.latitude]);
+    });
 
-      markerEl.addEventListener('click', (e) => {
-        e.stopPropagation();
-        this.flyToEvent(event);
-      });
+    // OPTIMIZATION: Hard Cap at 100 markers max to prevent DOM overload
+    if (visibleEvents.length > 100) {
+      // Sort by some criteria if needed (e.g., date?) so we don't show random ones.
+      // For now, let's show the ones closest to the center or just the first 100.
+      visibleEvents = visibleEvents.slice(0, 100);
+    }
 
-      if (typeof event.id === 'number') {
+    // 1. Remove markers that are no longer visible
+    const visibleEventIds = new Set(visibleEvents.map(e => e.id));
+    this.eventMarkers.forEach((marker, id) => {
+      if (!visibleEventIds.has(id)) {
+        marker.remove();
+        this.eventMarkers.delete(id);
+      }
+    });
+
+    // 2. Add markers for new visible events
+    visibleEvents.forEach(event => {
+      if (typeof event.id === 'number' && !this.eventMarkers.has(event.id)) {
+        if (event.latitude == null || event.longitude == null) return;
+
+        const markerEl = document.createElement('div');
+        markerEl.className = 'golden-pulse-marker';
+
+        const marker = new mapboxgl.Marker({ element: markerEl })
+          .setLngLat([event.longitude, event.latitude])
+          .addTo(this.map);
+
+        markerEl.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.flyToEvent(event);
+        });
+
         this.eventMarkers.set(event.id, marker);
       }
     });

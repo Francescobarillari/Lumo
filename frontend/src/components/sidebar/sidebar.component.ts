@@ -13,7 +13,7 @@ import { Subject, Subscription, debounceTime, distinctUntilChanged } from 'rxjs'
 @Component({
     selector: 'app-sidebar',
     standalone: true,
-    imports: [CommonModule, FormsModule, MatIconModule, EventCardComponent], // Added FormsModule
+    imports: [CommonModule, FormsModule, MatIconModule, EventCardComponent],
     templateUrl: './sidebar.component.html',
     styleUrl: './sidebar.component.css'
 })
@@ -24,8 +24,8 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
     @Input() userId: string | null = null;
     @Output() toggleSidebar = new EventEmitter<void>();
     @Output() toggleFavorite = new EventEmitter<Event>();
-    @Output() foundLocation = new EventEmitter<{ lat: number, lng: number }>(); // New output
-    @Output() openUserProfile = new EventEmitter<string>(); // New output for profile
+    @Output() foundLocation = new EventEmitter<{ lat: number, lng: number }>();
+    @Output() openUserProfile = new EventEmitter<string>();
     @Output() shareEvent = new EventEmitter<Event>();
 
     searchQuery: string = '';
@@ -37,37 +37,25 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
     followingMap: { [userId: number]: boolean } = {};
     showFilterOptions: boolean = false;
 
-
-    constructor(
-        private eventService: EventService,
-        private mapboxService: MapboxService,
-        private userService: UserService
-    ) { }
-
-    private searchInput$ = new Subject<string>();
-    private searchSub?: Subscription;
-
-    ngOnInit() {
-        this.searchSub = this.searchInput$
-            .pipe(debounceTime(300), distinctUntilChanged())
-            .subscribe((value) => {
-                const trimmed = value?.trim() || '';
-                if (!trimmed) {
-                    this.clearSearch();
-                    return;
-                }
-                this.onSearchInternal(trimmed);
-            });
-    }
-
-    ngOnDestroy() {
-        this.searchSub?.unsubscribe();
-    }
-
+    // Source Data Lists
     followUpEvents: Event[] = [];
     savedEvents: Event[] = [];
     discoverEvents: Event[] = [];
     foundEvents: Event[] = [];
+
+    // Filtered Lists (for display)
+    filteredFollowUpEvents: Event[] = [];
+    filteredSavedEvents: Event[] = [];
+    filteredDiscoverEvents: Event[] = [];
+    filteredFoundEvents: Event[] = [];
+    filteredSearchResults: Event[] = [];
+
+    // Pagination State
+    shownFollowUp = 3;
+    shownSaved = 3;
+    shownDiscover = 3;
+    shownFound = 3;
+    shownSearch = 3;
 
     // Filter/Sort state
     filterOption: 'all' | 'participating' | 'free' | 'available' = 'all';
@@ -96,6 +84,32 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
         name: 'Name'
     };
 
+    private searchInput$ = new Subject<string>();
+    private searchSub?: Subscription;
+
+    constructor(
+        private eventService: EventService,
+        private mapboxService: MapboxService,
+        private userService: UserService
+    ) { }
+
+    ngOnInit() {
+        this.searchSub = this.searchInput$
+            .pipe(debounceTime(300), distinctUntilChanged())
+            .subscribe((value) => {
+                const trimmed = value?.trim() || '';
+                if (!trimmed) {
+                    this.clearSearch();
+                    return;
+                }
+                this.onSearchInternal(trimmed);
+            });
+    }
+
+    ngOnDestroy() {
+        this.searchSub?.unsubscribe();
+    }
+
     get isFiltering(): boolean {
         return this.filterOption !== 'all';
     }
@@ -113,66 +127,81 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
         }
     }
 
-    private categorizeEvents() {
-        console.log('Sidebar received events:', this.events);
+    // Pagination Methods
+    showMoreFollowUp() { this.shownFollowUp += 3; }
+    showMoreSaved() { this.shownSaved += 3; }
+    showMoreDiscover() { this.shownDiscover += 3; }
+    showMoreFound() { this.shownFound += 3; }
+    showMoreSearch() { this.shownSearch += 3; }
 
-        // Reset all arrays
-        this.followUpEvents = [];
-        this.savedEvents = [];
-        this.discoverEvents = [];
-        this.foundEvents = [];
+
+    private categorizeEvents() {
+        // NOTE: We do NOT clear the arrays here to avoid flickering.
+        // We will build NEW arrays and swap them in atomic updates.
+
         this.updateRangeLimits();
 
         // Guest Mode
         if (!this.userId) {
             this.foundEvents = this.events.filter(this.isFutureEvent);
+            // Clear others for guest
+            this.followUpEvents = [];
+            this.savedEvents = [];
+            this.discoverEvents = [];
+            this.applyFilters();
             return;
         }
 
         // Logged In Logic
-        const now = new Date();
-        now.setHours(0, 0, 0, 0); // Normalize today
 
-        // 1. Fetch Follow Up Events (Directly from backend to ensure we get everything, including own events)
+        // 1. Fetch Follow Up Events (Async)
+        // We do NOT clear this.followUpEvents here. We wait for the new data to arrive.
         this.eventService.getJoinedEvents(this.userId).subscribe({
             next: (joined) => {
-                this.followUpEvents = joined.filter(this.isFutureEvent);
-
+                const newFollowUp = joined.filter(this.isFutureEvent);
                 // Sort by Date
-                this.followUpEvents.sort((a, b) => {
+                newFollowUp.sort((a, b) => {
                     const dateA = new Date(`${a.date}T${a.startTime || '00:00'}`);
                     const dateB = new Date(`${b.date}T${b.startTime || '00:00'}`);
                     return dateA.getTime() - dateB.getTime();
                 });
+
+                // Atomic update
+                this.followUpEvents = newFollowUp;
+                this.applyFilters();
             },
             error: (err) => console.error('Error fetching follow up events', err)
         });
 
-        // 2. Categorize Map Events for Saved and Discover
+        // 2. Categorize Map Events for Saved and Discover (Synchronous)
+        // Build new lists locally first
+        const newSavedEvents: Event[] = [];
+        const newDiscoverEvents: Event[] = [];
+
         this.events.filter(this.isFutureEvent).forEach(event => {
             let isSaved = false;
             const isParticipating = event.isParticipating || false;
 
-            // Check Saved
             if (event.isSaved && !isParticipating) {
                 isSaved = true;
             }
 
             if (isSaved) {
-                this.savedEvents.push(event);
+                newSavedEvents.push(event);
             }
 
-            // Discover: Not Participating AND Not Saved
             if (!isParticipating && !isSaved) {
-                this.discoverEvents.push(event);
+                newDiscoverEvents.push(event);
             }
         });
 
-        console.log('Categorized:', {
-            followUp: this.followUpEvents,
-            saved: this.savedEvents,
-            discover: this.discoverEvents
-        });
+        // Atomic update of synchronous lists
+        this.savedEvents = newSavedEvents;
+        this.discoverEvents = newDiscoverEvents;
+        // foundEvents is generally not used in logged-in mode for categorization per se, but let's clear it or keep it consistent
+        this.foundEvents = [];
+
+        this.applyFilters();
     }
 
     private updateRangeLimits() {
@@ -205,9 +234,19 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
         }
     }
 
-    private applyFilters(events: Event[]): Event[] {
-        let filtered = [...events];
+    // Optimization: Centralized Filter Function
+    applyFilters() {
+        this.filteredFoundEvents = this.filterAndSortList(this.foundEvents);
+        this.filteredFollowUpEvents = this.filterAndSortList(this.followUpEvents);
+        this.filteredSavedEvents = this.filterAndSortList(this.savedEvents);
+        this.filteredDiscoverEvents = this.filterAndSortList(this.discoverEvents);
+        this.filteredSearchResults = this.filterAndSortList(this.searchResults);
+    }
 
+    private filterAndSortList(list: Event[]): Event[] {
+        let filtered = [...list];
+
+        // 1. Filter by Option
         switch (this.filterOption) {
             case 'participating':
                 filtered = filtered.filter(e => !!e.isParticipating);
@@ -218,14 +257,33 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
             case 'available':
                 filtered = filtered.filter(e => {
                     if (e.nPartecipants == null || e.occupiedSpots == null) return true;
-                    const freeSpots = e.nPartecipants - e.occupiedSpots;
-                    return freeSpots > 0;
+                    return (e.nPartecipants - e.occupiedSpots) > 0;
                 });
                 break;
             default:
                 break;
         }
 
+        // 2. Filter by Price
+        const isPriceFiltering = this.priceMin > 0 || this.priceMax < this.priceMaxLimit;
+        if (isPriceFiltering) {
+            filtered = filtered.filter((e) => {
+                const price = e.costPerPerson ?? 0;
+                return price >= this.priceMin && price <= this.priceMax;
+            });
+        }
+
+        // 3. Filter by Distance
+        const isDistanceFiltering = this.distanceMin > 0 || this.distanceMax < this.distanceMaxLimit;
+        if (isDistanceFiltering) {
+            filtered = filtered.filter((e) => {
+                const distance = e.distanceKm;
+                if (distance == null) return false;
+                return distance >= this.distanceMin && distance <= this.distanceMax;
+            });
+        }
+
+        // 4. Sort
         switch (this.sortOption) {
             case 'distance':
                 filtered.sort((a, b) => {
@@ -247,50 +305,33 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
                 break;
         }
 
-        const isPriceFiltering = this.priceMin > 0 || this.priceMax < this.priceMaxLimit;
-        if (isPriceFiltering) {
-            filtered = filtered.filter((e) => {
-                const price = e.costPerPerson ?? 0;
-                return price >= this.priceMin && price <= this.priceMax;
-            });
-        }
-
-        const isDistanceFiltering = this.distanceMin > 0 || this.distanceMax < this.distanceMaxLimit;
-        if (isDistanceFiltering) {
-            filtered = filtered.filter((e) => {
-                const distance = e.distanceKm;
-                if (distance == null) return false;
-                return distance >= this.distanceMin && distance <= this.distanceMax;
-            });
-        }
-
         return filtered;
-    }
-
-    getFiltered(list: Event[]): Event[] {
-        return this.applyFilters(list);
     }
 
     cycleFilter() {
         const idx = this.filterOrder.indexOf(this.filterOption);
         this.filterOption = this.filterOrder[(idx + 1) % this.filterOrder.length];
+        this.applyFilters();
     }
 
     cycleSort() {
         const idx = this.sortOrder.indexOf(this.sortOption);
         this.sortOption = this.sortOrder[(idx + 1) % this.sortOrder.length];
+        this.applyFilters();
     }
 
     selectFilter(option: typeof this.filterOption) {
         this.filterOption = option;
         this.filterMenuOpen = false;
         this.sortMenuOpen = false;
+        this.applyFilters();
     }
 
     selectSort(option: typeof this.sortOption) {
         this.sortOption = option;
         this.sortMenuOpen = false;
         this.filterMenuOpen = false;
+        this.applyFilters();
     }
 
     get priceMinPercent(): string {
@@ -316,21 +357,25 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
     onPriceMinChange(value: string) {
         const next = Math.max(0, Math.min(Number(value), this.priceMax));
         this.priceMin = Number.isNaN(next) ? this.priceMin : next;
+        this.applyFilters();
     }
 
     onPriceMaxChange(value: string) {
         const next = Math.min(this.priceMaxLimit, Math.max(Number(value), this.priceMin));
         this.priceMax = Number.isNaN(next) ? this.priceMax : next;
+        this.applyFilters();
     }
 
     onDistanceMinChange(value: string) {
         const next = Math.max(0, Math.min(Number(value), this.distanceMax));
         this.distanceMin = Number.isNaN(next) ? this.distanceMin : next;
+        this.applyFilters();
     }
 
     onDistanceMaxChange(value: string) {
         const next = Math.min(this.distanceMaxLimit, Math.max(Number(value), this.distanceMin));
         this.distanceMax = Number.isNaN(next) ? this.distanceMax : next;
+        this.applyFilters();
     }
 
     formatDateTime(event: Event): string {
@@ -380,6 +425,7 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
         // 1. Search Events (Backend)
         this.eventService.searchEvents(query).subscribe(results => {
             this.searchResults = results.filter(this.isFutureEvent);
+            this.applyFilters();
         });
 
         // 2. Search City (Mapbox)
@@ -401,7 +447,6 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
         if (!this.userId) return;
         this.userResults.forEach(user => {
             this.userService.isFollowing(this.userId!, user.id.toString()).subscribe(res => {
-                console.log(`Checking follow status for ${user.id} (me: ${this.userId}):`, res);
                 this.followingMap[user.id] = res.isFollowing;
             });
         });
@@ -441,6 +486,7 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
         this.cityResults = [];
         this.userResults = [];
         this.activeTab = 'events';
+        this.applyFilters();
     }
 
     isMobileOrTablet(): boolean {
