@@ -58,6 +58,14 @@ export class AccountModalComponent {
         }
     }
 
+    onBackOrClose() {
+        if (this.view !== 'profile') {
+            this.onBack();
+            return;
+        }
+        this.onClose();
+    }
+
     getViewTitle(): string {
         switch (this.view) {
             case 'edit-profile': return 'Edit Profile';
@@ -151,7 +159,8 @@ export class AccountModalComponent {
             title: 'Unfollow user',
             message: `Are you sure you want to unfollow ${userToUnfollow.name}?`,
             confirmText: 'Unfollow',
-            cancelText: 'Cancel'
+            cancelText: 'Cancel',
+            confirmClass: 'white-text'
         });
         if (!confirmed) return;
 

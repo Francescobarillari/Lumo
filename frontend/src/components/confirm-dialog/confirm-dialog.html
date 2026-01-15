@@ -8,7 +8,8 @@
       <button class="button cancel-button" type="button" (click)="onCancel()">
         {{ state.cancelText }}
       </button>
-      <button class="button confirm-button" [class.danger]="state.tone === 'danger'" type="button"
+      <button class="button confirm-button" [class.danger]="state.tone === 'danger'"
+        [class.confirm-white-text]="state.confirmClass === 'white-text'" type="button"
         (click)="onConfirm()">
         {{ state.confirmText }}
       </button>

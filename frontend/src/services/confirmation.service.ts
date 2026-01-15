@@ -9,6 +9,7 @@ export interface ConfirmDialogOptions {
   confirmText?: string;
   cancelText?: string;
   tone?: ConfirmTone;
+  confirmClass?: 'white-text';
 }
 
 export interface ConfirmDialogState {
@@ -17,6 +18,7 @@ export interface ConfirmDialogState {
   confirmText: string;
   cancelText: string;
   tone: ConfirmTone;
+  confirmClass?: 'white-text';
 }
 
 @Injectable({
@@ -43,7 +45,8 @@ export class ConfirmationService {
         message: options.message,
         confirmText: options.confirmText ?? 'Confirm',
         cancelText: options.cancelText ?? 'Cancel',
-        tone: options.tone ?? 'accent'
+        tone: options.tone ?? 'accent',
+        confirmClass: options.confirmClass
       });
     });
   }

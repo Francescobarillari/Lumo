@@ -1,11 +1,10 @@
 <div class="modal-backdrop" (click)="onClose()">
     <div class="modal-container" (click)="$event.stopPropagation()">
         <div class="modal-header">
-            @if (view !== 'profile') {
-            <button class="back-arrow" type="button" (click)="onBack()" aria-label="Back">
+            <button class="back-arrow" [class.back-arrow--profile]="view === 'profile'" type="button"
+                (click)="onBackOrClose()" [attr.aria-label]="view === 'profile' ? 'Close' : 'Back'">
                 <mat-icon>arrow_back</mat-icon>
             </button>
-            }
             <div class="title-wrap">
                 <h2 [class.yellow-title]="view !== 'profile'">{{ getViewTitle() }}</h2>
             </div>

@@ -106,7 +106,8 @@ export class UserProfileModalComponent implements OnChanges {
                 title: 'Unfollow user',
                 message: 'Are you sure you want to unfollow this user?',
                 confirmText: 'Unfollow',
-                cancelText: 'Cancel'
+                cancelText: 'Cancel',
+                confirmClass: 'white-text'
             });
             if (!confirmed) return;
 
@@ -215,7 +216,8 @@ export class UserProfileModalComponent implements OnChanges {
             title: 'Unfollow user',
             message: `Are you sure you want to unfollow ${targetUser.name}?`,
             confirmText: 'Unfollow',
-            cancelText: 'Cancel'
+            cancelText: 'Cancel',
+            confirmClass: 'white-text'
         });
         if (!confirmed) return;
 
