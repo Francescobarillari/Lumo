@@ -343,6 +343,20 @@
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
 }
 
+.event-card.clickable {
+    cursor: pointer;
+    transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.1s ease;
+}
+
+.event-card.clickable:hover {
+    border-color: rgba(252, 195, 36, 0.4);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.event-card.clickable:active {
+    transform: translateY(1px);
+}
+
 .event-card.past {
     opacity: 0.85;
 }

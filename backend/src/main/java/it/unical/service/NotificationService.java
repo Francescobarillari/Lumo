@@ -92,6 +92,7 @@ public class NotificationService implements INotificationService {
         if (user == null)
             return;
 
+        List<Notification> existingNotifications = notificationRepo.findByUserIdOrderByCreatedAtDesc(userId);
         LocalDate today = LocalDate.now();
         LocalDate threeDaysFromNow = today.plusDays(3);
 
@@ -116,15 +117,23 @@ public class NotificationService implements INotificationService {
                 // user with title containing event title.
 
                 String expectedTitle = "Upcoming event: " + event.getTitle();
-                boolean alreadyNotified = notificationRepo.findByUserIdOrderByCreatedAtDesc(userId).stream()
-                        .anyMatch(n -> "FOLLOWUP".equals(n.getType()) && n.getTitle().equals(expectedTitle));
+                Notification existingNotification = existingNotifications.stream()
+                        .filter(n -> "FOLLOWUP".equals(n.getType()) && n.getTitle().equals(expectedTitle))
+                        .findFirst()
+                        .orElse(null);
 
-                if (!alreadyNotified) {
-                    createNotification(userId, expectedTitle,
-                            "The event '" + event.getTitle() + "' is about to start (" + event.getDate()
-                                    + ")! Get ready.",
-                            "FOLLOWUP");
+                if (existingNotification != null) {
+                    if (existingNotification.getRelatedEventId() == null) {
+                        existingNotification.setRelatedEventId(event.getId());
+                        notificationRepo.save(existingNotification);
+                    }
+                    continue;
                 }
+
+                createRichNotification(userId, expectedTitle,
+                        "The event '" + event.getTitle() + "' is about to start (" + event.getDate()
+                                + ")! Get ready.",
+                        "FOLLOWUP", event.getId(), null);
             }
         }
     }

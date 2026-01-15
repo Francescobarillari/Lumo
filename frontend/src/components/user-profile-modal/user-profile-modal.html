@@ -124,7 +124,7 @@
                 <div class="empty-list">No upcoming events.</div>
                 } @else {
                 @for (ev of upcomingEvents; track ev.id) {
-                <div class="event-card">
+                <div class="event-card clickable" (click)="focusEventOnMap(ev)">
                     <div class="event-card-header">
                         <p class="event-title">{{ ev.title }}</p>
                         <p class="event-sub">

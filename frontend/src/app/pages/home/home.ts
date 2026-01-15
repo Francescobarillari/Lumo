@@ -344,6 +344,19 @@ export class Home implements OnInit, AfterViewInit {
     });
   }
 
+  onUpcomingEventNotification(eventId: number) {
+    const currentUserId = this.loggedUser ? this.loggedUser.id : undefined;
+    this.eventService.getEventById(eventId, currentUserId).subscribe({
+      next: (event) => {
+        this.closeAll();
+        if (this.mapView) {
+          this.mapView.flyToEvent(event);
+        }
+      },
+      error: (err) => console.error('Error opening event from notification', err)
+    });
+  }
+
   closeChat() {
     this.showChatModal = false;
     this.chatEvent = null;
@@ -613,6 +626,13 @@ export class Home implements OnInit, AfterViewInit {
   }
 
   onFocusEventFromMenu(event: LumoEvent) {
+    if (this.mapView) {
+      this.mapView.flyToEvent(event);
+    }
+  }
+
+  onFocusEventFromProfile(event: LumoEvent) {
+    this.closeAll();
     if (this.mapView) {
       this.mapView.flyToEvent(event);
     }

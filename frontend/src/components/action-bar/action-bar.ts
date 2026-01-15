@@ -22,6 +22,7 @@ export class ActionBarComponent implements OnInit, OnDestroy, OnChanges {
     @Output() action = new EventEmitter<string>();
     @Output() openProfile = new EventEmitter<string>();
     @Output() openChatFromNotification = new EventEmitter<number>();
+    @Output() openEventFromNotification = new EventEmitter<number>();
     @Output() focusEvent = new EventEmitter<LumoEvent>();
 
     showUserMenu = false;
@@ -165,6 +166,11 @@ export class ActionBarComponent implements OnInit, OnDestroy, OnChanges {
     onOpenChatFromNotification(eventId: number) {
         this.showNotifications = false;
         this.openChatFromNotification.emit(eventId);
+    }
+
+    onOpenEventFromNotification(eventId: number) {
+        this.showNotifications = false;
+        this.openEventFromNotification.emit(eventId);
     }
 
     onFocusEvent(event: LumoEvent) {

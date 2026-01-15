@@ -20,6 +20,7 @@ export class UserProfileModalComponent implements OnChanges {
     @Input() currentUserId: string | null = null;
     @Output() close = new EventEmitter<void>();
     @Output() openProfile = new EventEmitter<string>();
+    @Output() focusEvent = new EventEmitter<Event>();
 
     user: User | null = null;
     isFollowing: boolean = false;
@@ -256,6 +257,10 @@ export class UserProfileModalComponent implements OnChanges {
                 this.loadingEvents = false;
             }
         });
+    }
+
+    focusEventOnMap(event: Event) {
+        this.focusEvent.emit(event);
     }
 
     formatEventDate(ev: Event): string {

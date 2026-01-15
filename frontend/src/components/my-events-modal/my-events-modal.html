@@ -148,11 +148,23 @@
         @if (!loading && activeTab === 'JOINED') {
         <div class="events-grid">
             @for (event of joinedEvents; track event.id) {
-            <app-event-card [title]="event.title" [location]="event.city" [dateTime]="formatDateTime(event)"
-                [id]="event.id!" [isSaved]="!!event.isSaved" [savedCount]="event.savedCount"
-                [isParticipating]="!!event.isParticipating" [showDistance]="false" [showActions]="false"
-                (shareEvent)="openShare(event)">
-            </app-event-card>
+            <div class="joined-event-item">
+                <div class="joined-action-btns">
+                    <button class="joined-action-btn joined-pin-btn" (click)="goToEvent(event); $event.stopPropagation()"
+                        title="View on map">
+                        <mat-icon>place</mat-icon>
+                    </button>
+                    <button class="joined-chat-btn" (click)="openChat(event); $event.stopPropagation()"
+                        title="Open chat">
+                        <mat-icon>chat</mat-icon>
+                    </button>
+                </div>
+                <app-event-card [title]="event.title" [location]="event.city" [dateTime]="formatDateTime(event)"
+                    [id]="event.id!" [isSaved]="!!event.isSaved" [savedCount]="event.savedCount"
+                    [isParticipating]="!!event.isParticipating" [showDistance]="false" [showActions]="false"
+                    (shareEvent)="openShare(event)" [showLocationPin]="false">
+                </app-event-card>
+            </div>
             }
             @empty {
             <div class="empty-state">You haven't joined any events yet.</div>

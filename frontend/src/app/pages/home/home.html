@@ -7,6 +7,7 @@
   } @else {
   <app-action-bar [loggedUser]="loggedUser" (action)="onMenuAction($event)" (openProfile)="openUserProfile($event)"
     (openChatFromNotification)="onChatNotification($event)"
+    (openEventFromNotification)="onUpcomingEventNotification($event)"
     (focusEvent)="onFocusEventFromMenu($event)"></app-action-bar>
 
   <!-- Hidden input for file selection triggered by menu -->
@@ -30,7 +31,7 @@
   @if (showUserProfile) {
   <app-user-profile-modal [userId]="selectedUserProfileId"
     [currentUserId]="loggedUser ? (loggedUser.id.toString()) : null" (close)="closeAll()"
-    (openProfile)="openUserProfile($event)"></app-user-profile-modal>
+    (openProfile)="openUserProfile($event)" (focusEvent)="onFocusEventFromProfile($event)"></app-user-profile-modal>
   }
 
   <map-view [userId]="loggedUser ? loggedUser.id || '' : null" (eventSelected)="openEventPopup($event)"
