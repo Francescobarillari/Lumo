@@ -25,6 +25,7 @@ export class SignInPopup {
   form: any;
   errors: { [key: string]: string } = {};
   generalError: string | null = null;
+  infoMessage: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -49,6 +50,7 @@ export class SignInPopup {
   onSubmit() {
     this.errors = {};
     this.generalError = null;
+    this.infoMessage = null;
 
     const controls = this.form.controls;
 
@@ -125,9 +127,50 @@ export class SignInPopup {
     });
   }
 
+  onForgotPassword() {
+    this.errors = {};
+    this.generalError = null;
+    this.infoMessage = null;
+
+    const controls = this.form.controls;
+    const emailErr = emailFormatValidator(controls['email']);
+    if (emailErr) {
+      this.errors['email'] = 'Email non valida.';
+      return;
+    }
+
+    const payload = { email: this.form.value.email };
+    this.auth.requestPasswordReset(payload).subscribe({
+      next: () => {
+        this.infoMessage = 'If the email exists, a reset link has been sent.';
+      },
+      error: (err) => {
+        const body = err?.error;
+        if (body?.data && typeof body.data === 'object') {
+          this.errors = body.data;
+          return;
+        }
+        if (typeof body?.error === 'string') {
+          this.generalError = body.error;
+          return;
+        }
+        if (typeof err?.error === 'string') {
+          this.generalError = err.error;
+          return;
+        }
+        if (typeof err === 'string') {
+          this.generalError = err;
+          return;
+        }
+        this.generalError = 'Unable to send reset email.';
+      }
+    });
+  }
+
   async signInWithGoogle() {
     this.errors = {};
     this.generalError = null;
+    this.infoMessage = null;
 
     try {
       const code = await this.googleIdentity.getAuthCode();

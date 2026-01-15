@@ -81,6 +81,13 @@
   width: 100%;
 }
 
+.text-link {
+  background: transparent;
+  border: none;
+  padding: 0;
+  font: inherit;
+}
+
 .close-btn {
   background: none;
   border: none;
@@ -133,6 +140,10 @@
 
 .error {
   color: var(--color-error);
+}
+
+.info {
+  color: var(--color-accent);
 }
 
 .mobile-back,

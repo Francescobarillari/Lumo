@@ -35,6 +35,14 @@ export class AuthService {
     );
   }
 
+  requestPasswordReset(payload: { email: string }): Observable<ApiResponse<null>> {
+    return this.http.post<ApiResponse<null>>(`${this.baseUrl}/password-reset/request`, payload);
+  }
+
+  confirmPasswordReset(payload: { token: string; newPassword: string }): Observable<ApiResponse<null>> {
+    return this.http.post<ApiResponse<null>>(`${this.baseUrl}/password-reset/confirm`, payload);
+  }
+
   verifyEmail(token: string): Observable<ApiResponse<{ id: string; name: string; email: string; profileImage?: string }>> {
     return this.http.get<ApiResponse<{ id: string; name: string; email: string; profileImage?: string }>>(`${this.baseUrl}/verify?token=${token}`);
   }

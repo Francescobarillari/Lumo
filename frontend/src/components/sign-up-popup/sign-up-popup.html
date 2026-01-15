@@ -26,7 +26,7 @@
           @else {<p>Start joining events</p>}
         </div>
 
-        <form class="form">
+        <form class="form" [formGroup]="form" (ngSubmit)="onSubmit()">
           <FormField [error]="hasError('name')" [control]="form.get('name')!" [type]="'text'" placeholder="Full name">
           </FormField>
           <FormField [error]="hasError('birthdate')" [control]="form.get('birthdate')!" [type]="'date'"
@@ -35,7 +35,7 @@
           </FormField>
           <FormField [error]="hasError('password')" [control]="form.get('password')!" [type]="'password'"
             placeholder="Password" [showToggle]="true"></FormField>
-          <button type="button" class="button" (click)="onSubmit()">Sign Up</button>
+          <button type="submit" class="button">Sign Up</button>
         </form>
 
         <div class="other-sign-up-methods">

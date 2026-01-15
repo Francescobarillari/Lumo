@@ -21,18 +21,19 @@
           @if(generalError) { <p class="error">{{ generalError }}</p> }
           @else if(errors['email']) { <p class="error">{{ errors['email'] }}</p> }
           @else if(errors['password']) { <p class="error">{{ errors['password'] }}</p> }
+          @else if(infoMessage) { <p class="info">{{ infoMessage }}</p> }
           @else{<p>Sign in to LUMO</p>}
         </div>
 
-        <form class="form">
+        <form class="form" [formGroup]="form" (ngSubmit)="onSubmit()">
           <FormField [error]="hasError('email')" [control]="form.get('email')!" placeholder="Email" [type]="'text'"
             [title]="'Email'"></FormField>
           <FormField [error]="hasError('password')" [control]="form.get('password')!" placeholder="Password"
             [type]="'password'" [title]="'Password'" [showToggle]="true"></FormField>
           <p>
-            <span class="click-text">Forgot password?</span>
+            <button type="button" class="click-text text-link" (click)="onForgotPassword()">Forgot password?</button>
           </p>
-          <button type="button" class="button" (click)="onSubmit()">Sign In</button>
+          <button type="submit" class="button">Sign In</button>
         </form>
 
         <div class="other-sign-up-methods">
