@@ -68,7 +68,7 @@ userMarkerEl.style.boxShadow = '0 0 3px rgba(0,0,0,0.3)';
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    border: none;
+    border: 1px solid var(--color-light-gray);
     background: var(--color-dark-gray);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
     display: grid;

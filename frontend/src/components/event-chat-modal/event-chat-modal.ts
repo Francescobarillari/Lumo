@@ -88,7 +88,9 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   addPollOption() {
-    this.pollOptions.push('');
+    if (this.pollOptions.length < 5) {
+      this.pollOptions.push('');
+    }
   }
 
   removePollOption(index: number) {
@@ -145,8 +147,14 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
       this.pollError = 'Inserisci almeno due opzioni.';
       return;
     }
+    if (options.length > 5) {
+      this.pollError = 'Massimo 5 opzioni consentite.';
+      return;
+    }
     // Default distant future expiration since user removed the input
-    const endsAtIso = new Date(Date.now() + 1000 * 60 * 60 * 24 * 365 * 10).toISOString(); // 10 years
+    // Format: yyyy-MM-ddTHH:mm:ss for LocalDateTime.parse compatibility
+    const futureDate = new Date(Date.now() + 1000 * 60 * 60 * 24 * 365 * 10);
+    const endsAtIso = futureDate.toISOString().split('.')[0]; // Removes .SSSZ
 
     this.chatService.createPoll(this.event.id, this.currentUserId, this.pollQuestion.trim(), options, endsAtIso)
       .subscribe({

@@ -2,9 +2,7 @@
   <div class="chat-container" (click)="$event.stopPropagation()">
     <div class="chat-header">
       <div class="header-left">
-        <button class="icon-btn back-btn mobile-only" (click)="onClose()" aria-label="Back">
-          <mat-icon>arrow_back</mat-icon>
-        </button>
+        <mat-icon (click)="onClose()" class="back-arrow">arrow_back</mat-icon>
         <div class="header-text">
           <span class="title">Event Chat</span>
           <span class="subtitle">{{ event.title }}</span>
@@ -130,6 +128,7 @@
           </button>
         </div>
         <div class="message-error" *ngIf="messageError">{{ messageError }}</div>
+
       </div>
     </div>
 
@@ -154,7 +153,7 @@
             </div>
           </div>
 
-          <button class="add-option-pill" (click)="addPollOption()">
+          <button class="add-option-pill" (click)="addPollOption()" *ngIf="pollOptions.length < 5">
             <mat-icon>add</mat-icon>
             Aggiungi opzione
           </button>
