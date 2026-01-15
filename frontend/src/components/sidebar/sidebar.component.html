@@ -89,7 +89,7 @@
         </div>
     </div>
 
-    <div class="sections-container" *ngIf="!collapsed">
+    <div class="sections-container" [class.search-mode]="isSearching" *ngIf="!collapsed">
 
         @if (isSearching) {
 
@@ -116,6 +116,7 @@
                     [organizerName]="event.organizerName" [organizerImage]="event.organizerImage"
                     [creatorId]="event.creatorId" [currentUserId]="userId" (focusLocation)="goToEvent(event)"
                     (toggleFavorite)="toggleFavorite.emit(event)" (shareEvent)="shareEvent.emit(event)"
+                    [showOrganizerInfo]="false"
                     (openOrganizerProfile)="event.creatorId ? openUserProfile.emit(event.creatorId.toString()) : null" />
                 }
 

@@ -27,13 +27,16 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 10px;
+  gap: 10px 12px;
+  flex-wrap: wrap;
 }
 
 .title-block {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  flex: 1 1 220px;
+  min-width: 0;
 }
 
 .title {
@@ -45,6 +48,7 @@
   text-transform: uppercase;
   letter-spacing: 0.4px;
   word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .subtitle {
@@ -80,6 +84,11 @@
   display: flex;
   align-items: flex-start;
   gap: 8px;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  margin-left: auto;
+  max-width: 100%;
 }
 
 .action-icon {

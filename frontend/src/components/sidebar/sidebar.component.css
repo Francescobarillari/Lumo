@@ -399,6 +399,21 @@
     display: none;
 }
 
+.sections-container.search-mode {
+    overflow: hidden;
+}
+
+.sections-container.search-mode .tabs-header {
+    flex: 0 0 auto;
+}
+
+.sections-container.search-mode .events-section {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
 .events-section {
     display: flex;
     flex-direction: column;
