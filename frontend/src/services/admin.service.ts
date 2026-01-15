@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Event } from '../models/event';
+import { ReportItem } from '../models/report';
 
 @Injectable({
     providedIn: 'root'
@@ -29,5 +30,9 @@ export class AdminService {
 
     deleteEvent(id: number): Observable<void> {
         return this.http.delete<void>(`${this.baseUrl}/events/${id}`);
+    }
+
+    getReports(): Observable<ReportItem[]> {
+        return this.http.get<ReportItem[]>(`${this.baseUrl}/reports`);
     }
 }

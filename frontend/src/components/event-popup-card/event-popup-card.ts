@@ -4,11 +4,12 @@ import { Event } from '../../models/event';
 
 import { MatIconModule } from '@angular/material/icon';
 import { UserService } from '../../services/user-service/user-service';
+import { ReportModalComponent } from '../report-modal/report-modal.component';
 
 @Component({
     selector: 'event-popup-card',
     standalone: true,
-    imports: [CommonModule, MatIconModule],
+    imports: [CommonModule, MatIconModule, ReportModalComponent],
     templateUrl: './event-popup-card.html',
     styleUrl: './event-popup-card.css'
 })
@@ -33,6 +34,7 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
     isLoadingFollowStatus = true; // Add loading state to prevent flicker
     notificationsEnabled = false;
     notificationsLoading = false;
+    showReportModal = false;
 
     constructor(private elementRef: ElementRef, private userService: UserService) { }
 
@@ -330,6 +332,15 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
             event: this.event
         });
         this.openOrganizerProfile.emit(organizerId);
+    }
+
+    openReportModal() {
+        if (!this.currentUserId || this.isOrganizer()) return;
+        this.showReportModal = true;
+    }
+
+    closeReportModal() {
+        this.showReportModal = false;
     }
 
     private loadNotificationPreference(targetCreatorId: string) {

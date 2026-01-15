@@ -36,6 +36,12 @@
           aria-label="Share event">
           <mat-icon>share</mat-icon>
         </button>
+        @if (currentUserId && !isOrganizer()) {
+        <button class="action-icon report-icon" (click)="openReportModal(); $event.stopPropagation()"
+          aria-label="Report event">
+          <mat-icon>flag</mat-icon>
+        </button>
+        }
       </div>
     </div>
 
@@ -109,3 +115,9 @@
     }
   </div>
 </div>
+
+@if (showReportModal && event) {
+<app-report-modal [reporterId]="currentUserId" [targetType]="'EVENT'" [targetId]="event.id ? event.id.toString() : null"
+  [targetLabel]="event.title" (close)="closeReportModal()" (submitted)="closeReportModal()">
+</app-report-modal>
+}
