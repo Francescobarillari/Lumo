@@ -5,11 +5,12 @@ import { UserService } from '../../services/user-service/user-service';
 import { User } from '../../models/user';
 import { EventService } from '../../services/event.service';
 import { Event } from '../../models/event';
+import { ReportModalComponent } from '../report-modal/report-modal.component';
 
 @Component({
     selector: 'app-user-profile-modal',
     standalone: true,
-    imports: [CommonModule, MatIconModule],
+    imports: [CommonModule, MatIconModule, ReportModalComponent],
     templateUrl: './user-profile-modal.html',
     styleUrl: './user-profile-modal.css'
 })
@@ -33,6 +34,7 @@ export class UserProfileModalComponent implements OnChanges {
     loadingEvents: boolean = false;
     upcomingEvents: Event[] = [];
     pastEvents: Event[] = [];
+    showReportModal = false;
 
     constructor(private userService: UserService, private eventService: EventService) { }
 
@@ -278,6 +280,16 @@ export class UserProfileModalComponent implements OnChanges {
                 this.notificationsLoading = false;
             }
         });
+    }
+
+    openReportModal() {
+        if (!this.user || !this.currentUserId) return;
+        if (this.user.id.toString() === this.currentUserId) return;
+        this.showReportModal = true;
+    }
+
+    closeReportModal() {
+        this.showReportModal = false;
     }
 
     private loadNotificationPreference() {

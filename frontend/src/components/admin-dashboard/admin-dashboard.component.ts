@@ -5,6 +5,7 @@ import { AdminService } from '../../services/admin.service';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { Subscription, interval } from 'rxjs';
+import { ReportItem } from '../../models/report';
 
 @Component({
     selector: 'app-admin-dashboard',
@@ -21,7 +22,11 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     totalEvents: number = 0;
     pendingEventsCount: number = 0;
 
-    currentView: 'dashboard' | 'events' | 'users' = 'dashboard';
+    currentView: 'dashboard' | 'events' | 'users' | 'reports' = 'dashboard';
+
+    reports: ReportItem[] = [];
+    selectedReport: ReportItem | null = null;
+    loadingReports = false;
 
     searchTermEvents: string = '';
     searchTermUsers: string = '';
@@ -54,9 +59,12 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
         }
     }
 
-    setView(view: 'dashboard' | 'events' | 'users') {
+    setView(view: 'dashboard' | 'events' | 'users' | 'reports') {
         this.currentView = view;
         this.expandedEventId = null;
+        if (view === 'reports') {
+            this.loadReports();
+        }
     }
 
     get filteredEvents() {
@@ -94,6 +102,8 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
             this.allEvents = events;
             this.calculateStats();
         });
+
+        this.loadReports();
     }
 
     calculateStats() {
@@ -170,6 +180,29 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
                 }
             });
         }
+    }
+
+    loadReports() {
+        if (this.loadingReports) return;
+        this.loadingReports = true;
+        this.adminService.getReports().subscribe({
+            next: (reports) => {
+                this.reports = reports;
+                if (this.selectedReport) {
+                    const updated = reports.find(r => r.id === this.selectedReport?.id) || null;
+                    this.selectedReport = updated;
+                }
+                this.loadingReports = false;
+            },
+            error: (err) => {
+                console.error('Error loading reports', err);
+                this.loadingReports = false;
+            }
+        });
+    }
+
+    selectReport(report: ReportItem) {
+        this.selectedReport = report;
     }
 
     signOut() {

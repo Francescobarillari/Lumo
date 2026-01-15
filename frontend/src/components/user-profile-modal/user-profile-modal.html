@@ -44,6 +44,10 @@
                 </button>
                 }
             </div>
+            <button class="report-btn" type="button" (click)="openReportModal()">
+                <mat-icon>flag</mat-icon>
+                Segnala
+            </button>
             }
 
             <div class="stats-container">
@@ -185,3 +189,9 @@
         }
     </div>
 </div>
+
+@if (showReportModal && user) {
+<app-report-modal [reporterId]="currentUserId" [targetType]="'USER'" [targetId]="user.id.toString()"
+    [targetLabel]="user.name" (close)="closeReportModal()" (submitted)="closeReportModal()">
+</app-report-modal>
+}

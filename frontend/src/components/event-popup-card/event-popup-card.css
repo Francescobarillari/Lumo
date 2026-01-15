@@ -135,6 +135,15 @@
   height: 22px;
 }
 
+.report-icon {
+  color: #ff8b8b;
+}
+
+.report-icon:hover {
+  border-color: rgba(255, 139, 139, 0.5);
+  background: rgba(255, 139, 139, 0.12);
+}
+
 .brand-pill {
   align-self: flex-start;
   padding: 6px 10px;
