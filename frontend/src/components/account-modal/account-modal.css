@@ -102,6 +102,10 @@
     justify-content: center;
 }
 
+.back-arrow--profile {
+    display: none;
+}
+
 .back-arrow mat-icon {
     font-size: 24px;
     width: 24px;
@@ -158,6 +162,10 @@
         z-index: 10;
         height: 100%;
         top: 0;
+    }
+
+    .back-arrow.back-arrow--profile {
+        display: flex !important;
     }
 
     .close {
@@ -593,7 +601,7 @@
 .unfollow-btn {
     background: transparent;
     border: 1px solid var(--color-error, #ff4444);
-    color: var(--color-error, #ff4444);
+    color: #ffffff;
     padding: 6px 12px;
     border-radius: 4px;
     font-size: 12px;

@@ -29,6 +29,8 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     reports: ReportItem[] = [];
     selectedReport: ReportItem | null = null;
     loadingReports = false;
+    showAllReports = false;
+    reportsPreviewLimit = 6;
 
     searchTermEvents: string = '';
     searchTermUsers: string = '';
@@ -70,6 +72,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
         this.currentView = view;
         this.expandedEventId = null;
         if (view === 'reports') {
+            this.showAllReports = false;
             this.loadReports();
         }
     }
@@ -213,6 +216,32 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
                 this.loadingReports = false;
             }
         });
+    }
+
+    get visibleReports() {
+        return this.showAllReports ? this.reports : this.reports.slice(0, this.reportsPreviewLimit);
+    }
+
+    get hasMoreReports() {
+        return this.reports.length > this.reportsPreviewLimit;
+    }
+
+    get reportTypeCounts() {
+        const counts = { USER: 0, EVENT: 0, OTHER: 0 };
+        for (const report of this.reports) {
+            if (report.targetType === 'USER') {
+                counts.USER += 1;
+            } else if (report.targetType === 'EVENT') {
+                counts.EVENT += 1;
+            } else {
+                counts.OTHER += 1;
+            }
+        }
+        return counts;
+    }
+
+    toggleReportsExpanded() {
+        this.showAllReports = !this.showAllReports;
     }
 
     selectReport(report: ReportItem) {

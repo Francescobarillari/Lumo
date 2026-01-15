@@ -15,6 +15,7 @@ export class NotificationMenuComponent implements OnInit {
     @Input() userId!: number | string;
     @Output() close = new EventEmitter<void>();
     @Output() openChat = new EventEmitter<number>();
+    @Output() openEvent = new EventEmitter<number>();
     notifications: Notification[] = [];
     expandedId: number | null = null;
 
@@ -152,15 +153,24 @@ export class NotificationMenuComponent implements OnInit {
     }
 
     onNotificationClick(n: Notification) {
-        if (n.type !== 'CHAT_MESSAGE') {
+        if (n.type === 'CHAT_MESSAGE') {
+            if (!n.relatedEventId) {
+                console.error('Missing relatedEventId in chat notification:', n);
+                return;
+            }
+            this.openChat.emit(n.relatedEventId);
+            this.close.emit();
             return;
         }
-        if (!n.relatedEventId) {
-            console.error('Missing relatedEventId in chat notification:', n);
-            return;
+
+        if (n.type === 'FOLLOWUP') {
+            if (!n.relatedEventId) {
+                console.error('Missing relatedEventId in followup notification:', n);
+                return;
+            }
+            this.openEvent.emit(n.relatedEventId);
+            this.close.emit();
         }
-        this.openChat.emit(n.relatedEventId);
-        this.close.emit();
     }
 
     getIcon(type: string): string {

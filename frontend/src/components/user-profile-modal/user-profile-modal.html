@@ -1,10 +1,10 @@
 <div class="modal-backdrop" (click)="onClose()">
     <div class="modal-container" [class.events-mode]="view === 'events'" (click)="$event.stopPropagation()">
         <div class="modal-header">
-            <button class="back-btn mobile-only" (click)="onClose()">
+            <button class="back-btn header-back-btn mobile-only" (click)="onClose()">
                 <mat-icon>arrow_back</mat-icon>
             </button>
-            <h2 [class.yellow-title]="view !== 'profile'">{{ getViewTitle() }}</h2>
+            <h2 class="yellow-title">{{ getViewTitle() }}</h2>
             <button class="close-btn tablet-desktop-only" (click)="onClose()">
                 <mat-icon>close</mat-icon>
             </button>
@@ -124,7 +124,7 @@
                 <div class="empty-list">No upcoming events.</div>
                 } @else {
                 @for (ev of upcomingEvents; track ev.id) {
-                <div class="event-card">
+                <div class="event-card clickable" (click)="focusEventOnMap(ev)">
                     <div class="event-card-header">
                         <p class="event-title">{{ ev.title }}</p>
                         <p class="event-sub">

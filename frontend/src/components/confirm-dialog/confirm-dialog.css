@@ -58,6 +58,10 @@ button.button.confirm-button {
   color: var(--color-black);
 }
 
+button.button.confirm-button.confirm-white-text {
+  color: #ffffff;
+}
+
 button.button.confirm-button.danger {
   background: var(--color-error);
   color: var(--color-white);

@@ -8,7 +8,8 @@
         }
         @if (showNotifications) {
         <notification-menu [userId]="loggedUser?.id || 0" (click)="$event.stopPropagation()"
-            (openChat)="onOpenChatFromNotification($event)" (close)="showNotifications = false"></notification-menu>
+            (openChat)="onOpenChatFromNotification($event)" (openEvent)="onOpenEventFromNotification($event)"
+            (close)="showNotifications = false"></notification-menu>
         }
     </div>
 
