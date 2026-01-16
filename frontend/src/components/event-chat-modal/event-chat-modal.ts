@@ -21,7 +21,6 @@ import { User } from '../../models/user';
 export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
   @Input() event!: LumoEvent;
   @Input() currentUserId: string | null = null;
-  @Input() showBackArrow = true;
   @Output() close = new EventEmitter<void>();
   @ViewChild('messagesContainer') messagesContainer?: ElementRef<HTMLDivElement>;
 

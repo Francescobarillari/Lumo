@@ -2,9 +2,7 @@
   <div class="chat-container" (click)="$event.stopPropagation()">
     <div class="chat-header">
       <div class="header-left">
-        @if (showBackArrow) {
         <mat-icon (click)="onClose()" class="back-arrow">arrow_back</mat-icon>
-        }
         <div class="header-text">
           <span class="title">Event Chat</span>
           <span class="subtitle">{{ event.title }}</span>
