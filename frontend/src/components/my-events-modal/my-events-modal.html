@@ -194,6 +194,7 @@
 }
 
 @if (showChatModal && chatEvent) {
-<event-chat-modal [event]="chatEvent" [currentUserId]="userId.toString()" (close)="closeChat()">
+<event-chat-modal [event]="chatEvent" [currentUserId]="userId.toString()" [showBackArrow]="false"
+    (close)="closeChat()">
 </event-chat-modal>
 }

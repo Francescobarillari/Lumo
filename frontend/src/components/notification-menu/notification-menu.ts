@@ -33,7 +33,8 @@ export class NotificationMenuComponent implements OnInit {
     }
 
     translateNotification(n: Notification): Notification {
-        const quotedParts = (n.message || '').match(/["']([^"']+)["']/g)?.map((m) => m.slice(1, -1)) || [];
+        const originalMessage = n.message || '';
+        const quotedParts = originalMessage.match(/["']([^"']+)["']/g)?.map((m) => m.slice(1, -1)) || [];
         const eventName = quotedParts.length ? quotedParts[quotedParts.length - 1] : '';
         const firstQuoted = quotedParts[0] || '';
 
@@ -48,7 +49,9 @@ export class NotificationMenuComponent implements OnInit {
                 break;
             case 'REJECTED':
                 n.title = 'Event Rejected';
-                if (eventName) {
+                if (originalMessage.toLowerCase().includes('reason:')) {
+                    n.message = originalMessage;
+                } else if (eventName) {
                     n.message = `Your event '${eventName}' has been rejected.`;
                 } else {
                     n.message = 'Your event has been rejected.';

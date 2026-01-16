@@ -58,6 +58,13 @@
                     <span class="stat-label">Total Events</span>
                 </div>
             </div>
+            <div class="stat-card" (click)="setView('reports')">
+                <div class="stat-icon reports-icon"><mat-icon>flag</mat-icon></div>
+                <div class="stat-info">
+                    <span class="stat-value">{{ reports.length }}</span>
+                    <span class="stat-label">Reports</span>
+                </div>
+            </div>
             <div class="stat-card">
                 <div class="stat-icon pending-icon"><mat-icon>assignment</mat-icon></div>
                 <div class="stat-info">

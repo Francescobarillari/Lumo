@@ -64,11 +64,12 @@
     [currentUserId]="loggedUser ? (loggedUser.id ? loggedUser.id.toString() : null) : null"
     [creatorId]="selectedEvent.creatorId" (openOrganizerProfile)="openUserProfile($event)"
     (leave)="onLeaveEvent($event)" (deleteEvent)="onDeleteEvent($event)" (shareEvent)="openShare($event)"
-    (openChat)="openChat($event)" />
+    (openChat)="openChat($event, false)" />
   }
 
   @if (showChatModal && chatEvent) {
-  <event-chat-modal [event]="chatEvent" [currentUserId]="loggedUser?.id?.toString() || null" (close)="closeChat()">
+  <event-chat-modal [event]="chatEvent" [currentUserId]="loggedUser?.id?.toString() || null"
+    [showBackArrow]="showChatBackArrow" (close)="closeChat()">
   </event-chat-modal>
   }
 </div>

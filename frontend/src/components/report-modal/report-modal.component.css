@@ -10,7 +10,7 @@
 }
 
 .report-modal {
-    background: rgba(20, 20, 20, 0.95);
+    background: #141414;
     color: #fff;
     border-radius: 20px;
     width: min(520px, 100%);
@@ -159,6 +159,20 @@
     display: flex;
     justify-content: flex-end;
     gap: 12px;
+}
+
+.report-actions .button.link {
+    background: transparent;
+    border: none;
+    padding: 0;
+    color: var(--color-accent, #f4c12a);
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: none;
+}
+
+.report-actions .button.link:hover {
+    opacity: 0.85;
 }
 
 @media (max-width: 600px) {

@@ -39,6 +39,7 @@ export class Home implements OnInit, AfterViewInit {
 
   showCreateEventPopup = false;
   showChatModal = false;
+  showChatBackArrow = true;
   showLocationSelector = false;
   selectedEvent: LumoEvent | null = null;
   chatEvent: LumoEvent | null = null;
@@ -252,6 +253,7 @@ export class Home implements OnInit, AfterViewInit {
     this.showCropPopup = false;
     this.showCreateEventPopup = false;
     this.showChatModal = false;
+    this.showChatBackArrow = true;
     this.chatEvent = null;
     this.previousSelectedEvent = null;
     this.showLocationSelector = false;
@@ -296,7 +298,7 @@ export class Home implements OnInit, AfterViewInit {
     }, 0);
   }
 
-  openChat(event: LumoEvent) {
+  openChat(event: LumoEvent, showBackArrow = false) {
     if (!this.loggedUser) {
       this.openSignIn();
       return;
@@ -306,6 +308,7 @@ export class Home implements OnInit, AfterViewInit {
       this.closeEventPopup();
     }
     this.chatEvent = event;
+    this.showChatBackArrow = showBackArrow;
     this.showChatModal = true;
   }
 
@@ -317,7 +320,7 @@ export class Home implements OnInit, AfterViewInit {
     this.eventService.getEventById(eventId, this.loggedUser.id).subscribe({
       next: (event) => {
         this.closeAll();
-        this.openChat(event);
+        this.openChat(event, true);
       },
       error: (err) => console.error('Error opening chat from notification', err)
     });
@@ -339,6 +342,7 @@ export class Home implements OnInit, AfterViewInit {
   closeChat() {
     this.showChatModal = false;
     this.chatEvent = null;
+    this.showChatBackArrow = true;
     if (this.previousSelectedEvent) {
       const eventToRestore = this.previousSelectedEvent;
       this.previousSelectedEvent = null;
