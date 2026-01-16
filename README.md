@@ -1,4 +1,4 @@
-# Lumo
+![Lumo](docs/cover.png)
 
 Lumo e una app per creare, scoprire e partecipare a eventi sociali nella tua citta e non solo.
 
