@@ -21,10 +21,10 @@ public class Notification {
 
     private String type;
 
-    @Column(nullable = true)
+    @Column()
     private Long relatedEventId;
 
-    @Column(nullable = true)
+    @Column()
     private Long relatedUserId;
 
     private boolean isRead = false;
