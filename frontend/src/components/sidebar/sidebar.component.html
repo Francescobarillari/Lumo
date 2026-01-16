@@ -157,11 +157,8 @@
                 @for (user of userResults; track $index) {
                 <div class="location-item clickable" (click)="openUserProfile.emit(user.id.toString())">
                     <div class="icon-circle small"
-                        [style.background-image]="user.profileImage ? 'url(' + user.profileImage + ')' : ''"
+                        [style.background-image]="'url(' + (user.profileImage || 'assets/img/default-avatar.png') + ')'"
                         [style.background-size]="'cover'">
-                        @if (!user.profileImage) {
-                        <mat-icon>person</mat-icon>
-                        }
                     </div>
                     <div class="loc-info">
                         <span class="loc-name">{{ user.name }}</span>

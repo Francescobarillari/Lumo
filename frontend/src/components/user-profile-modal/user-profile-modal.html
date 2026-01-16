@@ -18,11 +18,7 @@
         @if (view === 'profile') {
         <div class="profile-content">
             <div class="avatar-container">
-                @if (user.profileImage) {
-                <img [src]="user.profileImage" alt="Profile" class="profile-image">
-                } @else {
-                <div class="profile-placeholder">{{ getInitials(user.name) }}</div>
-                }
+                <img [src]="user.profileImage || 'assets/img/default-avatar.png'" alt="Profile" class="profile-image">
             </div>
 
             <h3 class="user-name">{{ user.name }}</h3>

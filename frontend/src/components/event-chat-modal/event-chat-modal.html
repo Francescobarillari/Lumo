@@ -32,8 +32,17 @@
         <div class="messages" #messagesContainer (click)="closePinMenu()">
           <div class="info-message" *ngFor="let info of infoMessages" [attr.id]="info.anchorId">
             <div class="info-label">{{ info.label }}</div>
-            <div class="info-content">{{ info.content }}</div>
-            <a *ngIf="info.link" class="info-link" [href]="info.link" target="_blank" rel="noopener">Open link</a>
+            <div *ngIf="!info.link" class="info-content">{{ info.content }}</div>
+            <div *ngIf="info.link" class="info-actions">
+              <button class="info-action-btn" (click)="copyLink(info.link)">
+                <mat-icon>content_copy</mat-icon>
+                <span>Copia Link</span>
+              </button>
+              <a class="info-action-btn" [href]="info.link" target="_blank" rel="noopener">
+                <mat-icon>open_in_new</mat-icon>
+                <span>Apri Link</span>
+              </a>
+            </div>
           </div>
           <div class="timeline-item" *ngFor="let item of timelineItems">
             @if (item.type === 'message' && item.message) {
@@ -41,10 +50,7 @@
               [class.mine]="currentUserId && item.message.senderId.toString() === currentUserId"
               [class.pin-enabled]="isOrganizer" (click)="openPinMenu(item.message, 'message', $event)">
               <div class="avatar">
-                <img *ngIf="item.message.senderImage" [src]="item.message.senderImage" alt="Avatar">
-                <div *ngIf="!item.message.senderImage" class="placeholder">
-                  {{ item.message.senderName.slice(0, 1) || '?' }}
-                </div>
+                <img [src]="item.message.senderImage || 'assets/img/default-avatar.png'" alt="Avatar">
               </div>
               <div class="content">
                 <div class="meta">

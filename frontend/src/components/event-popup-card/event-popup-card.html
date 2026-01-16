@@ -65,11 +65,7 @@
     <div class="eventer-section">
       <div class="eventer-info">
         <button class="eventer-hit" type="button" (click)="onOrganizerClick(); $event.stopPropagation()">
-          @if (organizerImage) {
-          <img [src]="organizerImage" alt="Eventer" class="organizer-avatar">
-          } @else {
-          <div class="organizer-avatar placeholder">{{ getInitials(organizerName) }}</div>
-          }
+          <img [src]="organizerImage || 'assets/img/default-avatar.png'" alt="Eventer" class="organizer-avatar">
           <div class="eventer-text">
             <span class="eventer-label">Eventer</span>
             <span class="eventer-name">{{ organizerName }}</span>

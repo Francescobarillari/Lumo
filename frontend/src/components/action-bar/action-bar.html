@@ -14,11 +14,7 @@
     </div>
 
     <div class="profile-trigger" (click)="toggleUserMenu($event)">
-        @if (loggedUser?.profileImage) {
-        <img [src]="loggedUser?.profileImage" alt="Profile" class="profile-image">
-        } @else {
-        <div class="profile-placeholder">{{ getInitials(loggedUser?.name || loggedUser?.email || '') }}</div>
-        }
+        <img [src]="loggedUser?.profileImage || 'assets/img/default-avatar.png'" alt="Profile" class="profile-image">
         @if (showUserMenu) {
         <UserMenu (click)="$event.stopPropagation()" (close)="showUserMenu = false" (action)="onMenuAction($event)">
         </UserMenu>

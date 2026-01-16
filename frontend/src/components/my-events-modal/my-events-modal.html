@@ -99,7 +99,7 @@
                             <div class="participants-grid">
                                 @for (user of event.acceptedUsersList; track user.id) {
                                 <div class="participant-chip">
-                                    <img [src]="user.profileImage || 'assets/placeholder-user.png'"
+                                    <img [src]="user.profileImage || 'assets/img/default-avatar.png'"
                                         class="participant-avatar">
                                     <span class="participant-name">{{ user.name }} {{ user.surname }}</span>
                                     <button class="participant-remove-btn" type="button"
@@ -122,7 +122,7 @@
                         @for (user of event.pendingUsersList; track user.id) {
                         <div class="request-item">
                             <div class="user-info">
-                                <img [src]="user.profileImage || 'assets/placeholder-user.png'" class="user-avatar">
+                                <img [src]="user.profileImage || 'assets/img/default-avatar.png'" class="user-avatar">
                                 <span>{{ user.name }} {{ user.surname }}</span>
                             </div>
                             <div class="request-actions">
@@ -150,8 +150,8 @@
             @for (event of joinedEvents; track event.id) {
             <div class="joined-event-item">
                 <div class="joined-action-btns">
-                    <button class="joined-action-btn joined-pin-btn" (click)="goToEvent(event); $event.stopPropagation()"
-                        title="View on map">
+                    <button class="joined-action-btn joined-pin-btn"
+                        (click)="goToEvent(event); $event.stopPropagation()" title="View on map">
                         <mat-icon>place</mat-icon>
                     </button>
                     <button class="joined-chat-btn" (click)="openChat(event); $event.stopPropagation()"

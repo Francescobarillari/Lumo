@@ -72,8 +72,8 @@
                         [style.--max-percent]="priceMaxPercent">
                         <input class="min-range" type="range" [min]="0" [max]="priceMaxLimit" [step]="priceStep"
                             [value]="priceMin" (input)="onPriceMinChange($any($event.target).value)">
-                        <input class="max-range" type="range" [min]="priceMin" [max]="priceMaxLimit"
-                            [step]="priceStep" [value]="priceMax" (input)="onPriceMaxChange($any($event.target).value)">
+                        <input class="max-range" type="range" [min]="priceMin" [max]="priceMaxLimit" [step]="priceStep"
+                            [value]="priceMax" (input)="onPriceMaxChange($any($event.target).value)">
                     </div>
                 </div>
 
@@ -84,9 +84,8 @@
                     </div>
                     <div class="range-inputs dual" [style.--min-percent]="distanceMinPercent"
                         [style.--max-percent]="distanceMaxPercent">
-                        <input class="min-range" type="range" [min]="0" [max]="distanceMaxLimit"
-                            [step]="distanceStep" [value]="distanceMin"
-                            (input)="onDistanceMinChange($any($event.target).value)">
+                        <input class="min-range" type="range" [min]="0" [max]="distanceMaxLimit" [step]="distanceStep"
+                            [value]="distanceMin" (input)="onDistanceMinChange($any($event.target).value)">
                         <input class="max-range" type="range" [min]="distanceMin" [max]="distanceMaxLimit"
                             [step]="distanceStep" [value]="distanceMax"
                             (input)="onDistanceMaxChange($any($event.target).value)">
@@ -214,9 +213,8 @@
                     @for (user of userResults; track user.id) {
                     <div class="location-item clickable" (click)="openProfile(user)">
                         <div class="icon-circle"
-                            [style.background-image]="user.profileImage ? 'url(' + user.profileImage + ')' : ''"
+                            [style.background-image]="'url(' + (user.profileImage || 'assets/img/default-avatar.png') + ')'"
                             [style.background-size]="'cover'">
-                            <mat-icon *ngIf="!user.profileImage">person</mat-icon>
                         </div>
                         <div class="loc-info">
                             <span class="loc-name">{{ user.name }}</span>

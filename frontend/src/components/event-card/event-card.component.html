@@ -39,10 +39,8 @@
 @if (organizerName() && showOrganizerInfo()) {
 <div class="organizer-info">
     <div class="organizer-details clickable" (click)="openOrganizerProfile.emit(); $event.stopPropagation()">
-        <div class="organizer-img" [style.background-image]="organizerImage() ? 'url(' + organizerImage() + ')' : ''">
-            @if (!organizerImage()) {
-            <mat-icon>person</mat-icon>
-            }
+        <div class="organizer-img"
+            [style.background-image]="'url(' + (organizerImage() || 'assets/img/default-avatar.png') + ')'">
         </div>
         <span class="organizer-name">{{ organizerName() }}</span>
     </div>

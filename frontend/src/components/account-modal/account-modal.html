@@ -18,11 +18,8 @@
                 <div class="content-col left-col">
                     <div class="profile-section">
                         <div class="avatar-container">
-                            @if (user?.profileImage) {
-                            <img [src]="user?.profileImage" alt="Profile" class="profile-image">
-                            } @else {
-                            <div class="profile-placeholder">{{ getInitials(user?.name || '') }}</div>
-                            }
+                            <img [src]="user?.profileImage || 'assets/img/default-avatar.png'" alt="Profile"
+                                class="profile-image">
                             <button class="edit-photo-btn" (click)="onChangePhoto()">
                                 <mat-icon>edit</mat-icon>
                             </button>
@@ -124,8 +121,7 @@
             <div class="user-list" *ngIf="!loadingList; else loadingTemplate">
                 <div class="user-item" *ngFor="let u of userList">
                     <div class="user-info" (click)="openProfileFromList(u)">
-                        <img *ngIf="u.profileImage" [src]="u.profileImage" class="list-avatar">
-                        <div *ngIf="!u.profileImage" class="list-avatar-placeholder">{{ getInitials(u.name) }}</div>
+                        <img [src]="u.profileImage || 'assets/img/default-avatar.png'" class="list-avatar">
                         <span class="list-username">{{ u.name }}</span>
                     </div>
 

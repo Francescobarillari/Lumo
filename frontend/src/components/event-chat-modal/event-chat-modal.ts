@@ -2,6 +2,8 @@ import { Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnIni
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { Clipboard } from '@angular/cdk/clipboard';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ChatService } from '../../services/chat.service';
 import { ChatMessage } from '../../models/chat-message';
 import { ChatPoll, ChatPollOption } from '../../models/chat-poll';
@@ -12,7 +14,7 @@ import { User } from '../../models/user';
 @Component({
   selector: 'event-chat-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule],
+  imports: [CommonModule, FormsModule, MatIconModule, MatSnackBarModule],
   templateUrl: './event-chat-modal.html',
   styleUrl: './event-chat-modal.css'
 })
@@ -54,7 +56,11 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
 
   private eventSource: EventSource | null = null;
 
-  constructor(private chatService: ChatService) { }
+  constructor(
+    private chatService: ChatService,
+    private clipboard: Clipboard,
+    private snackBar: MatSnackBar
+  ) { }
 
   ngOnInit(): void {
     this.initializeChat();
@@ -99,7 +105,18 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  trackByIndex(index: number, obj: any): any {
+  copyLink(url: string) {
+    if (this.clipboard.copy(url)) {
+      this.snackBar.open('Link copiato negli appunti', 'OK', {
+        duration: 2500,
+        panelClass: ['toast-snackbar'],
+        horizontalPosition: 'center',
+        verticalPosition: 'bottom'
+      });
+    }
+  }
+
+  trackByIndex(index: number, item: any): number {
     return index;
   }
 
