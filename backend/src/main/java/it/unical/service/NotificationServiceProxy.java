@@ -32,7 +32,7 @@ public class NotificationServiceProxy implements INotificationService {
 
     @Override
     public void createRichNotification(Long userId, String title, String message, String type, Long relatedEventId,
-            Long relatedUserId) {
+                                       Long relatedUserId) {
         System.out.println("[NotificationProxy] Sending RICH notification to user " + userId + ": " + title);
         realService.createRichNotification(userId, title, message, type, relatedEventId, relatedUserId);
     }

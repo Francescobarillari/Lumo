@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/environment/environment.ts"],
+  "sourcesContent": ["export const Environment = {\n  mapboxToken: 'pk.eyJ1IjoiZm5zYnJsIiwiYSI6ImNtaHhqbGUwbDAxeGcyanNjazVybGJtdHYifQ.YxqJwN9S4EposFmNb7igWA',\n  googleClientId: '177987336410-qse83le4nl3i65oat3g2b32kk5sji7sq.apps.googleusercontent.com',\n  // Con ux_mode=popup usiamo \"postmessage\".\n  googleRedirectUri: 'postmessage'\n};\n"],
+  "mappings": ";;;;;AAAA,IAAa;AAAb;;;AAAO,IAAM,cAAc;MACzB,aAAa;MACb,gBAAgB;;MAEhB,mBAAmB;;;;",
+  "names": []
+}

@@ -1,6 +1,7 @@
 package it.unical.model;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -42,7 +43,7 @@ public class Notification {
     }
 
     public Notification(Long userId, String title, String message, String type, Long relatedEventId,
-            Long relatedUserId) {
+                        Long relatedUserId) {
         this.userId = userId;
         this.title = title;
         this.message = message;

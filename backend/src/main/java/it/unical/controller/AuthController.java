@@ -1,17 +1,15 @@
 package it.unical.controller;
 
 import it.unical.api.ApiResponse;
-import it.unical.dto.SignInRequest;
-import it.unical.dto.SignUpRequest;
-import it.unical.dto.GoogleLoginRequest;
-import it.unical.dto.GoogleCodeLoginRequest;
-import it.unical.dto.PasswordResetRequest;
-import it.unical.dto.PasswordResetConfirmRequest;
+import it.unical.dto.*;
 import it.unical.service.AuthService;
 import it.unical.service.PasswordResetService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 

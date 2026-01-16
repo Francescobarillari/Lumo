@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/pages/home/home.css"],
+  "sourcesContent": [".top-bar {\n  display: flex;\n  flex-direction: row;\n  position: absolute;\n  top: 20px;\n  right: 20px;\n  gap: 8px;\n  z-index: 1000;\n  background: var(--color-dark-gray);\n  padding: 8px;\n  border-radius: 16px;\n  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);\n  box-sizing: border-box;\n  border: 1px solid var(--color-light-gray);\n  align-items: center;\n}\n\n@media (max-width: 768px) {\n  .top-bar {\n    top: 20px;\n    bottom: auto;\n    right: auto;\n    left: 50%;\n    transform: translateX(-50%);\n    width: 90%;\n    justify-content: center;\n    background: rgba(26, 26, 26, 0.95);\n    backdrop-filter: blur(10px);\n  }\n\n  .top-bar .button {\n    flex: 1;\n    font-size: 14px;\n    height: 44px;\n  }\n}\n"],
+  "mappings": ";AAAA,CAAC;AACC,WAAS;AACT,kBAAgB;AAChB,YAAU;AACV,OAAK;AACL,SAAO;AACP,OAAK;AACL,WAAS;AACT,cAAY,IAAI;AAChB,WAAS;AACT,iBAAe;AACf,cAAY,EAAE,IAAI,KAAK,KAAK,CAAC,EAAE,CAAC,EAAE,CAAC,EAAE;AACrC,cAAY;AACZ,UAAQ,IAAI,MAAM,IAAI;AACtB,eAAa;AACf;AAEA,OAAO,CAAC,SAAS,EAAE;AACjB,GAlBD;AAmBG,SAAK;AACL,YAAQ;AACR,WAAO;AACP,UAAM;AACN,eAAW,WAAW;AACtB,WAAO;AACP,qBAAiB;AACjB,gBAAY,KAAK,EAAE,EAAE,EAAE,EAAE,EAAE,EAAE;AAC7B,6BAAiB,KAAK;AAAtB,qBAAiB,KAAK;AACxB;AAEA,GA9BD,QA8BU,CAAC;AACR,UAAM;AACN,eAAW;AACX,YAAQ;AACV;AACF;",
+  "names": []
+}

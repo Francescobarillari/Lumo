@@ -1,19 +1,12 @@
 package it.unical.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "chat_poll_vote", uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "poll_id", "user_id", "option_id" })
+        @UniqueConstraint(columnNames = {"poll_id", "user_id", "option_id"})
 })
 public class ChatPollVote {
     @Id

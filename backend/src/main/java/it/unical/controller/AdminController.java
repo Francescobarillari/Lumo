@@ -8,7 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -61,7 +64,7 @@ public class AdminController {
 
     @PostMapping("/events/{id}/reject")
     public ResponseEntity<Void> rejectEvent(@PathVariable Long id,
-            @RequestBody(required = false) Map<String, String> body) {
+                                            @RequestBody(required = false) Map<String, String> body) {
         String reason = (body != null) ? body.get("reason") : null;
         eventService.rejectEvent(id, reason);
         return ResponseEntity.ok().build();

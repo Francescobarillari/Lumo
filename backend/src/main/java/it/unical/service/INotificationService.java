@@ -1,6 +1,7 @@
 package it.unical.service;
 
 import it.unical.model.Notification;
+
 import java.util.List;
 
 public interface INotificationService {
@@ -9,7 +10,7 @@ public interface INotificationService {
     void createNotification(Long userId, String title, String message, String type);
 
     void createRichNotification(Long userId, String title, String message, String type, Long relatedEventId,
-            Long relatedUserId);
+                                Long relatedUserId);
 
     void markAsRead(Long notificationId);
 

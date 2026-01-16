@@ -1,6 +1,7 @@
 package it.unical.service;
 
 import it.unical.model.User;
+
 import java.util.List;
 
 public interface IUserService {
