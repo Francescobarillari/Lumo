@@ -445,58 +445,63 @@
             </div>
 
             <div class="report-detail">
-                @if (selectedReport) {
-                <div class="detail-card">
-                    <div class="detail-header">
-                        <div>
-                            <span class="detail-kicker">Report details</span>
-                            <h3>{{ selectedReport.reason }}</h3>
+                <div class="report-detail-scroll">
+                    @if (selectedReport) {
+                    <div class="detail-card">
+                        <div class="detail-header">
+                            <div>
+                                <span class="detail-kicker">Report details</span>
+                                <h3>{{ selectedReport.reason }}</h3>
+                            </div>
+                            <span class="report-type" [class.user]="selectedReport.targetType === 'USER'"
+                                [class.event]="selectedReport.targetType === 'EVENT'">
+                                {{ selectedReport.targetType === 'USER' ? 'User' : 'Event' }}
+                            </span>
                         </div>
-                        <span class="report-type" [class.user]="selectedReport.targetType === 'USER'"
-                            [class.event]="selectedReport.targetType === 'EVENT'">
-                            {{ selectedReport.targetType === 'USER' ? 'User' : 'Event' }}
-                        </span>
-                    </div>
 
-                    <div class="detail-grid">
-                        <div class="detail-row">
-                            <span class="report-detail-label">Reported:</span>
-                            <span class="report-detail-value">{{ selectedReport.targetName }}</span>
+                        <div class="detail-grid">
+                            <div class="detail-row">
+                                <span class="report-detail-label">Reported:</span>
+                                <span class="report-detail-value">{{ selectedReport.targetName }}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="report-detail-label">Type:</span>
+                                <span class="report-detail-value">{{ selectedReport.targetType }}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="report-detail-label">Reporter:</span>
+                                <span class="report-detail-value">{{ selectedReport.reporterName }}</span>
+                            </div>
+                            @if (selectedReport.createdAt) {
+                            <div class="detail-row">
+                                <span class="report-detail-label">Created:</span>
+                                <span class="report-detail-value">{{ selectedReport.createdAt | date:'medium' }}</span>
+                            </div>
+                            }
+                            <div class="detail-row full">
+                                <span class="report-detail-label">Details:</span>
+                                <span class="report-detail-value">{{ selectedReport.details || 'No details provided.' }}</span>
+                            </div>
                         </div>
-                        <div class="detail-row">
-                            <span class="report-detail-label">Type:</span>
-                            <span class="report-detail-value">{{ selectedReport.targetType }}</span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="report-detail-label">Reporter:</span>
-                            <span class="report-detail-value">{{ selectedReport.reporterName }}</span>
-                        </div>
-                        @if (selectedReport.createdAt) {
-                        <div class="detail-row">
-                            <span class="report-detail-label">Created:</span>
-                            <span class="report-detail-value">{{ selectedReport.createdAt | date:'medium' }}</span>
-                        </div>
-                        }
-                        <div class="detail-row full">
-                            <span class="report-detail-label">Details:</span>
-                            <span class="report-detail-value">{{ selectedReport.details || 'No details provided.' }}</span>
-                        </div>
-                    </div>
 
-                    <div class="detail-actions">
-                        @if (selectedReport.hasImage && selectedReport.imageUrl) {
-                        <a class="button download-btn" [href]="selectedReport.imageUrl" download>
-                            <mat-icon>download</mat-icon>
-                            Download image
-                        </a>
-                        } @else {
-                        <div class="no-data">No image attached.</div>
-                        }
+                        <div class="detail-actions">
+                            @if (selectedReport.hasImage && selectedReport.imageUrl) {
+                            <div class="report-image">
+                                <img [src]="selectedReport.imageUrl" alt="Report attachment" loading="lazy">
+                            </div>
+                            <a class="button download-btn" [href]="selectedReport.imageUrl" download>
+                                <mat-icon>download</mat-icon>
+                                Download image
+                            </a>
+                            } @else {
+                            <div class="no-data">No image attached.</div>
+                            }
+                        </div>
                     </div>
+                    } @else {
+                    <div class="no-data">Select a report to see details.</div>
+                    }
                 </div>
-                } @else {
-                <div class="no-data">Select a report to see details.</div>
-                }
             </div>
         </div>
         }

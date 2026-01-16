@@ -146,15 +146,15 @@
 .icon-btn.chat {
     background: rgba(252, 195, 36, 0.14);
     color: var(--color-accent);
-    border: 1px solid rgba(252, 195, 36, 0.3);
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
 }
 
 .icon-btn.chat:hover {
-    background: rgba(252, 195, 36, 0.3);
-    color: #0b0b0b;
+    background: rgba(252, 195, 36, 0.5);
+    color: #ffffff;
 }
 
 .event-info {
@@ -164,12 +164,12 @@
 }
 
 .icon-btn.danger {
-    background: rgba(234, 67, 53, 0.1);
-    color: var(--color-danger);
-    border: 1px solid rgba(234, 67, 53, 0.2);
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
+    background: rgba(229, 57, 53, 0.1);
+    color: var(--color-error);
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -177,14 +177,14 @@
 }
 
 .icon-btn.danger:hover {
-    background: var(--color-danger);
+    background: var(--color-error);
     color: white;
 }
 
 .icon-btn.danger mat-icon {
-    font-size: 20px;
-    width: 20px;
-    height: 20px;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
 }
 
 .event-info h3 {

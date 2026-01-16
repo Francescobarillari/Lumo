@@ -655,7 +655,6 @@ tr:last-child td {
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 18px;
-    padding: 18px;
     min-height: 300px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     height: 100%;
@@ -845,8 +844,35 @@ tr:last-child td {
 }
 
 .report-detail {
-    overflow: auto;
+    overflow: hidden;
     min-height: 0;
+}
+
+.report-detail-scroll {
+    height: 100%;
+    overflow: auto;
+    padding: 18px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(252, 195, 36, 0.45) rgba(255, 255, 255, 0.06);
+}
+
+.report-detail-scroll::-webkit-scrollbar {
+    width: 8px;
+}
+
+.report-detail-scroll::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 999px;
+}
+
+.report-detail-scroll::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgba(252, 195, 36, 0.65), rgba(252, 195, 36, 0.35));
+    border-radius: 999px;
+    border: 2px solid rgba(255, 255, 255, 0.04);
+}
+
+.report-detail-scroll::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, rgba(252, 195, 36, 0.85), rgba(252, 195, 36, 0.5));
 }
 
 .detail-header {
@@ -897,6 +923,24 @@ tr:last-child td {
 
 .detail-actions {
     margin-top: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.report-image {
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.03);
+    max-height: 320px;
+}
+
+.report-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
 }
 
 .download-btn {
