@@ -18,7 +18,6 @@ public interface IUserService {
 
     List<it.unical.model.Event> getSavedEvents(Long userId);
 
-    // New methods to replace Controller logic
     String updateProfileImage(Long userId, byte[] imageData);
 
     byte[] getProfileImage(Long userId);

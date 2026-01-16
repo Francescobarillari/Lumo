@@ -47,7 +47,6 @@ export class SignUpPopup {
 
     const controls = this.form.controls;
 
-    // Validazioni frontend
     const nameErr = onlyLettersValidator(controls['name']);
     if (nameErr) this.errors['name'] = 'Il nome deve contenere solo lettere.';
 
@@ -64,7 +63,6 @@ export class SignUpPopup {
 
     if (Object.keys(this.errors).length > 0) return;
 
-    // Payload
     const payload = {
       name: this.form.value.name,
       birthdate: this.form.value.birthdate,
@@ -143,7 +141,6 @@ export class SignUpPopup {
       const code = await this.googleIdentity.getAuthCode();
       this.auth.loginWithGoogleCode({ code }).subscribe({
         next: (res) => {
-          // Consideriamo l'utente autenticato con Google.
           this.signInSuccess.emit({
             id: res?.data?.id || '',
             name: res?.data?.name || '',
@@ -166,7 +163,7 @@ export class SignUpPopup {
       });
     } catch (e: any) {
       if (e?.code === 'google_cancelled') {
-        return; // User dismissed the prompt: no error, can retry.
+        return;
       }
       this.generalError = e?.message || 'Google sign-in failed.';
     }

@@ -34,13 +34,11 @@ export class MobileSearchComponent {
     userResults: User[] = [];
     followingMap: { [userId: number]: boolean } = {};
 
-    // Restore desktop sections for mobile
     followUpEvents: Event[] = [];
     savedEvents: Event[] = [];
     discoverEvents: Event[] = [];
     foundEvents: Event[] = [];
 
-    // Filter/Sort state
     filterOption: 'all' | 'participating' | 'free' | 'available' = 'all';
     sortOption: 'date' | 'distance' | 'name' = 'date';
     priceMin = 0;
@@ -94,12 +92,10 @@ export class MobileSearchComponent {
 
         this.isSearching = true;
 
-        // 1. Search Events
         this.eventService.searchEvents(this.searchQuery).subscribe(results => {
             this.searchResults = results;
         });
 
-        // 2. Search City
         this.mapboxService.searchCity(this.searchQuery).subscribe(features => {
             this.cityResults = features.map(f => ({
                 name: f.place_name,
@@ -107,7 +103,6 @@ export class MobileSearchComponent {
             }));
         });
 
-        // 3. Search Users
         this.userService.searchUsers(this.searchQuery).subscribe(users => {
             this.userResults = users;
             this.checkFollowingStatuses();

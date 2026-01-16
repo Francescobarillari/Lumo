@@ -184,17 +184,17 @@
         max-height: none;
         border-radius: 0;
         border: none;
-        /* Mobile padding */
+        
         justify-content: flex-start;
         background: var(--modal-surface);
         overflow-y: auto;
     }
 
-    /* Tablet: 3 columns for date/time section if needed */
+    
     .three-column {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
-        /* Tablet: 3 columns, minmax(0, 1fr) allows shrinking */
+        
         gap: var(--spacing-md);
     }
 

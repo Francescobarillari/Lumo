@@ -29,10 +29,9 @@ public class EventService implements IEventService {
     @Autowired
     private EventChatRepository chatRepository;
 
-    // ✅ Crea un nuovo evento (In attesa di approvazione)
     public Event createEvent(Event event, Long userId) {
         event.setCreatedAt(LocalDateTime.now());
-        event.setIsApproved(false); // Default pending
+        event.setIsApproved(false);
         if (event.getCostPerPerson() != null && event.getCostPerPerson() < 0) {
             event.setCostPerPerson(0.0);
         }
@@ -40,25 +39,16 @@ public class EventService implements IEventService {
 
         if (userId != null) {
             userRepository.findById(userId).ifPresent(user -> {
-                event.setCreator(user); // Fix: Set creator explicitly
-                // Determine if we should add to participating?
-                // Usually creator is automatically participating?
-                // Let's assume creator IS participating.
-                user.getParticipatingEvents().add(savedEvent); // Keep this for consistency with participants logic
+                event.setCreator(user);
+                user.getParticipatingEvents().add(savedEvent);
                 userRepository.save(user);
 
-                // IMPORTANT: Set relationship in Event side if bidirectional logical link
-                // needed immediately
-                // But JPA handles it via User side owning the relationship (mappedBy in Event)
-
-                // Notify followers who enabled notifications for this creator
                 notifyFollowersAboutEvent(user,
                         savedEvent,
                         "New event",
                         user.getName() + " published a new event: '" + savedEvent.getTitle() + "'.",
                         "NEW_EVENT");
             });
-            // Save again to persist creator FK
             Event finalEvent = eventRepository.save(event);
             ensureChat(finalEvent);
             return finalEvent;
@@ -71,8 +61,7 @@ public class EventService implements IEventService {
     public List<Event> getOrganizedEvents(Long userId) {
         List<Event> events = eventRepository.findByCreator_Id(userId);
 
-        // Populate transient pendingUsersList from persistent pendingParticipants for
-        // UI
+        // Allinea liste transitorie per la UI.
         for (Event event : events) {
             if (event.getPendingParticipants() != null) {
                 event.setPendingUsersList(new java.util.ArrayList<>(event.getPendingParticipants()));
@@ -98,7 +87,6 @@ public class EventService implements IEventService {
                 .orElse(new java.util.ArrayList<>());
     }
 
-    // ✅ Restituisce tutti gli eventi APPROVATI e NON CREATI dall'utente corrente
     public List<Event> getAllEvents(Long userId) {
         List<Event> events = eventRepository.findByIsApprovedTrueOrderByDateAscStartTimeAsc();
 
@@ -107,7 +95,7 @@ public class EventService implements IEventService {
             if (userOpt.isPresent()) {
                 it.unical.model.User user = userOpt.get();
                 for (Event event : events) {
-                    processEventParticipants(event); // Centralized logic
+                    processEventParticipants(event);
 
                     if (user.getParticipatingEvents().stream().anyMatch(e -> e.getId().equals(event.getId()))) {
                         event.setIsParticipating(true);
@@ -124,7 +112,6 @@ public class EventService implements IEventService {
                 }
             }
         } else {
-            // Even if no user logged in, we want occupied spots
             for (Event event : events) {
                 processEventParticipants(event);
             }
@@ -132,21 +119,19 @@ public class EventService implements IEventService {
         return events;
     }
 
-    // Helper method to process participants (exclude creator + sort)
     private void processEventParticipants(Event event) {
         if (event.getParticipants() != null) {
             Long creatorId = event.getCreatorId();
             List<it.unical.model.User> realParticipants = new java.util.ArrayList<>();
 
             for (it.unical.model.User p : event.getParticipants()) {
-                if (creatorId == null || !p.getId().equals(creatorId)) {
+                if (!p.getId().equals(creatorId)) {
                     realParticipants.add(p);
                 }
             }
 
             event.setOccupiedSpots(realParticipants.size());
             event.setAcceptedUsersList(realParticipants);
-            // Sort by name for consistency
             event.getAcceptedUsersList().sort((u1, u2) -> u1.getName().compareToIgnoreCase(u2.getName()));
         } else {
             event.setOccupiedSpots(0);
@@ -160,7 +145,6 @@ public class EventService implements IEventService {
         }
     }
 
-    // ✅ Restituisce eventi IN ATTESA (Per Admin)
     public List<Event> getPendingEvents() {
         List<Event> events = eventRepository.findByIsApprovedFalseOrderByDateAscStartTimeAsc();
         events.forEach(this::processEventParticipants);
@@ -174,14 +158,12 @@ public class EventService implements IEventService {
         return events;
     }
 
-    // ✅ Approva evento
     public Event approveEvent(Long id) {
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Evento non trovato con ID: " + id));
         event.setIsApproved(true);
         Event saved = eventRepository.save(event);
 
-        // Notify Creator
         if (event.getParticipants() != null && !event.getParticipants().isEmpty()) {
             it.unical.model.User creator = event.getParticipants().iterator().next();
             notificationService.createNotification(creator.getId(),
@@ -192,12 +174,10 @@ public class EventService implements IEventService {
         return saved;
     }
 
-    // ✅ Rifiuta evento (Elimina) con motivazione opzionale
     public void rejectEvent(Long id, String reason) {
         Optional<Event> eventOpt = eventRepository.findById(id);
         if (eventOpt.isPresent()) {
             Event event = eventOpt.get();
-            // Notify Creator BEFORE reject
             if (event.getParticipants() != null && !event.getParticipants().isEmpty()) {
                 it.unical.model.User creator = event.getParticipants().iterator().next();
 
@@ -215,8 +195,6 @@ public class EventService implements IEventService {
         deleteEvent(id);
     }
 
-    // ✅ Trova un evento per ID
-    // ✅ Trova un evento per ID (con contesto utente)
     public Optional<Event> getEventById(Long id, Long userId) {
         return eventRepository.findById(id).map(event -> {
             processEventParticipants(event);
@@ -242,7 +220,6 @@ public class EventService implements IEventService {
         });
     }
 
-    // ✅ Aggiorna un evento
     public Event updateEvent(Long id, Event updatedEvent) {
         return eventRepository.findById(id).map(event -> {
             event.setTitle(updatedEvent.getTitle());
@@ -262,14 +239,12 @@ public class EventService implements IEventService {
         }).orElseThrow(() -> new RuntimeException("Evento non trovato con ID: " + id));
     }
 
-    // ✅ Elimina un evento (Risolve FK Constraint)
     public void deleteEvent(long id) {
         Optional<Event> eventOpt = eventRepository.findById(id);
         if (eventOpt.isPresent()) {
             Event event = eventOpt.get();
             it.unical.model.User creator = event.getCreator();
 
-            // Notify Creator
             if (creator != null) {
                 notificationService.createNotification(creator.getId(),
                         "Event Deleted",
@@ -277,11 +252,8 @@ public class EventService implements IEventService {
                         "EVENT_CANCELLED");
             }
 
-            // Notify Participants
             if (event.getParticipants() != null) {
                 for (it.unical.model.User participant : event.getParticipants()) {
-                    // Avoid notifying creator again if they are in participants list (logic depends
-                    // on model)
                     if (creator == null || !participant.getId().equals(creator.getId())) {
                         notificationService.createNotification(participant.getId(),
                                 "Event Cancelled",
@@ -291,19 +263,15 @@ public class EventService implements IEventService {
                 }
             }
 
-            // Remove event from all participants
+            // Rimuove relazioni per evitare vincoli FK.
             if (event.getParticipants() != null) {
-                // Must iterate a copy or use iterator to avoid concurrent modification if
-                // modifying collection
-                // Actually here we modify User side, which cascades? No.
                 for (it.unical.model.User user : event.getParticipants()) {
                     user.getParticipatingEvents().remove(event);
-                    userRepository.save(user); // Update user side
+                    userRepository.save(user);
                 }
                 event.getParticipants().clear();
             }
 
-            // Remove event from pending participants
             if (event.getPendingParticipants() != null) {
                 for (it.unical.model.User user : event.getPendingParticipants()) {
                     user.getPendingEvents().remove(event);
@@ -312,9 +280,7 @@ public class EventService implements IEventService {
                 event.getPendingParticipants().clear();
             }
 
-            // Remove event from all saved users
             if (event.getUsersWhoSaved() != null) {
-                // Iterate copy to avoid ConcurrentModificationException
                 for (it.unical.model.User user : new java.util.ArrayList<>(event.getUsersWhoSaved())) {
                     user.getSavedEvents().remove(event);
                     userRepository.save(user);
@@ -322,7 +288,6 @@ public class EventService implements IEventService {
                 event.getUsersWhoSaved().clear();
             }
 
-            // Notify followers who enabled notifications for this creator
             if (creator != null) {
                 notifyFollowersAboutEvent(creator,
                         event,
@@ -339,14 +304,11 @@ public class EventService implements IEventService {
         }
     }
 
-    // ✅ Cerca eventi
     public List<Event> searchEvents(String query) {
         List<Event> events = eventRepository.searchEvents(query);
         events.forEach(this::processEventParticipants);
         return events;
     }
-
-    // --- Participation Flow ---
 
     public void requestParticipation(Long userId, Long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new RuntimeException("Event not found"));
@@ -357,9 +319,8 @@ public class EventService implements IEventService {
             user.getPendingEvents().add(event);
             userRepository.save(user);
 
-            // Notify Creator
-            Long creatorId = event.getCreatorId(); // Use smart getter with fallback
-            if (creatorId != null && !creatorId.equals(userId)) { // Don't notify self
+            Long creatorId = event.getCreatorId();
+            if (creatorId != null && !creatorId.equals(userId)) {
                 notificationService.createRichNotification(creatorId,
                         "Participation Request",
                         user.getName() + " wants to participate in your event '" + event.getTitle() + "'",
@@ -397,8 +358,6 @@ public class EventService implements IEventService {
             System.out.println("ERROR: User NOT found in pending list for this event. Current pending events IDs: ");
             requester.getPendingEvents().forEach(e -> System.out.println(e.getId()));
 
-            // Fallback: If not in pending but trying to accept, maybe assume valid?
-            // Or maybe it was already accepted?
             if (requester.getParticipatingEvents().contains(event)) {
                 System.out.println("User is already participating.");
             }
@@ -433,7 +392,6 @@ public class EventService implements IEventService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         boolean removed = user.getParticipatingEvents().remove(event);
-        // Clean up any stale pending link as well
         user.getPendingEvents().remove(event);
         userRepository.save(user);
 
@@ -449,7 +407,7 @@ public class EventService implements IEventService {
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new RuntimeException("Event not found"));
         Long creatorId = event.getCreatorId();
 
-        if (organizerId == null || creatorId == null || !creatorId.equals(organizerId)) {
+        if (creatorId == null || !creatorId.equals(organizerId)) {
             throw new RuntimeException("Not authorized to remove participants");
         }
         if (creatorId.equals(participantId)) {

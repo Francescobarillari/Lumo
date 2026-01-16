@@ -21,8 +21,6 @@ public class NotificationServiceProxy implements INotificationService {
 
     @Override
     public List<Notification> getUserNotifications(Long userId) {
-        // System.out.println("[NotificationProxy] Fetching notifications for user: " +
-        // userId);
         return realService.getUserNotifications(userId);
     }
 

@@ -15,27 +15,25 @@ import java.util.List;
 @Configuration
 public class SecurityConfig {
 
-    // Bean per criptare le password
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // Configurazione sicurezza
+    // Regole aperte per sviluppo; restringere in produzione.
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors() // abilita CORS con il bean corsConfigurationSource
+                .cors()
                 .and()
-                .csrf().disable() // disabilita CSRF per sviluppo
+                .csrf().disable()
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll() // permette tutte le richieste, niente login richiesto
+                        .anyRequest().permitAll()
                 );
 
         return http.build();
     }
 
-    // Configurazione CORS
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

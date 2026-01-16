@@ -10,6 +10,6 @@ import { ResponsiveService } from '../../services/responsive-service';
 export class CircleIcon {
   constructor(public responsive: ResponsiveService) { }
 
-  path = input(''); // percorso di default dell'icona
-  iconAlt = input('icon'); // alt di default per l'icona
+  path = input('');
+  iconAlt = input('icon');
 }

@@ -37,7 +37,6 @@ export class NotificationMenuComponent implements OnInit {
         const eventName = quotedParts.length ? quotedParts[quotedParts.length - 1] : '';
         const firstQuoted = quotedParts[0] || '';
 
-        // Translate Title
         switch (n.type) {
             case 'APPROVED':
                 n.title = 'Event Approved';
@@ -82,7 +81,7 @@ export class NotificationMenuComponent implements OnInit {
                 }
                 break;
             case 'REQUEST_ACCEPTED':
-                n.title = 'Request Accepted'; // Past tense decision
+                n.title = 'Request Accepted';
                 break;
             case 'REQUEST_REJECTED':
                 n.title = 'Request Rejected';
@@ -182,8 +181,8 @@ export class NotificationMenuComponent implements OnInit {
             case 'PARTICIPATION_ACCEPTED': return 'how_to_reg';
             case 'PARTICIPATION_REJECTED': return 'person_remove';
             case 'PARTICIPATION_REMOVED': return 'person_remove';
-            case 'REQUEST_ACCEPTED': return 'check_circle'; // Visual feedback for decision
-            case 'REQUEST_REJECTED': return 'cancel'; // Visual feedback for decision
+            case 'REQUEST_ACCEPTED': return 'check_circle';
+            case 'REQUEST_REJECTED': return 'cancel';
             case 'CHAT_MESSAGE': return 'chat';
             case 'SUCCESS': return 'check_circle';
             case 'ERROR': return 'error';
@@ -194,10 +193,10 @@ export class NotificationMenuComponent implements OnInit {
 
     getIconColor(type: string): string {
         switch (type) {
-            case 'APPROVED': return 'var(--color-accent)'; // Yellow/Gold
-            case 'REJECTED': return '#ff4444'; // Red
-            case 'FOLLOWUP': return '#4caf50'; // Green
-            case 'PARTICIPATION_REQUEST': return '#2196f3'; // Blue
+            case 'APPROVED': return 'var(--color-accent)';
+            case 'REJECTED': return '#ff4444';
+            case 'FOLLOWUP': return '#4caf50';
+            case 'PARTICIPATION_REQUEST': return '#2196f3';
             case 'PARTICIPATION_ACCEPTED': return '#4caf50';
             case 'PARTICIPATION_REJECTED': return '#ff4444';
             case 'PARTICIPATION_REMOVED': return '#ff4444';

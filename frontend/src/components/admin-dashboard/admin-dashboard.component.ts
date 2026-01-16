@@ -18,7 +18,7 @@ import { ReportItem } from '../../models/report';
 })
 export class AdminDashboardComponent implements OnInit, OnDestroy {
     users: any[] = [];
-    allEvents: any[] = []; // Store all events here
+    allEvents: any[] = [];
     recentRequests: any[] = [];
     totalUsers: number = 0;
     totalEvents: number = 0;
@@ -55,7 +55,6 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     }
 
     startPolling() {
-        // Poll every 5 seconds
         this.pollSubscription = interval(5000).subscribe(() => {
             this.loadData();
         });
@@ -101,13 +100,11 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     }
 
     loadData() {
-        // Load Users
         this.adminService.getUsers().subscribe(data => {
             this.users = data;
             this.calculateStats();
         });
 
-        // Load All Events
         this.adminService.getAllEvents().subscribe(events => {
             this.allEvents = events;
             this.calculateStats();
@@ -120,15 +117,9 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
         this.totalUsers = this.users.length;
         if (this.allEvents) {
             this.totalEvents = this.allEvents.length;
-            // Recalculate pending from allEvents if possible, or stick to user-based if accurate
-            // Ideally allEvents contains everything. Let's filter pending from allEvents for accuracy
-            // Assuming 'isApproved' is boolean.
             const pending = this.allEvents.filter(e => e.isApproved === false);
             this.pendingEventsCount = pending.length;
 
-            // Re-map recentRequests from allEvents pending list to have consistency
-            // We need organizer info. Event object has organizerName/Image or creator relation?
-            // Backend sends 'creator' or 'organizerName'.
             this.recentRequests = pending.map(e => ({
                 ...e,
                 organizer: e.organizerName || 'Unknown',
@@ -151,7 +142,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
         });
     }
 
-    eventsCurrentlyRejecting: number[] = []; // Track IDs of events being rejected
+    eventsCurrentlyRejecting: number[] = [];
 
     rejectEvent(event: any) {
         if (!this.eventsCurrentlyRejecting.includes(event.id)) {

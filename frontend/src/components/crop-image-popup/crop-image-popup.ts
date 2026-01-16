@@ -19,7 +19,6 @@ export class CropImagePopup implements AfterViewInit {
     private ctx!: CanvasRenderingContext2D;
     private image = new Image();
 
-    // State for pan and zoom
     scale = 1;
     offsetX = 0;
     offsetY = 0;
@@ -27,7 +26,6 @@ export class CropImagePopup implements AfterViewInit {
     lastX = 0;
     lastY = 0;
 
-    // Viewport size (the crop area)
     readonly VIEWPORT_SIZE = 300;
     readonly OUTPUT_SIZE = 128;
 
@@ -35,7 +33,6 @@ export class CropImagePopup implements AfterViewInit {
         const canvas = this.canvasRef.nativeElement;
         this.ctx = canvas.getContext('2d')!;
 
-        // Load image
         const reader = new FileReader();
         reader.onload = (e: any) => {
             this.image.src = e.target.result;
@@ -48,12 +45,10 @@ export class CropImagePopup implements AfterViewInit {
     }
 
     resetView() {
-        // Fit image to viewport initially
         const scaleX = this.VIEWPORT_SIZE / this.image.width;
         const scaleY = this.VIEWPORT_SIZE / this.image.height;
-        this.scale = Math.max(scaleX, scaleY); // Cover strategy
+        this.scale = Math.max(scaleX, scaleY);
 
-        // Center image
         this.offsetX = (this.VIEWPORT_SIZE - this.image.width * this.scale) / 2;
         this.offsetY = (this.VIEWPORT_SIZE - this.image.height * this.scale) / 2;
     }
@@ -61,14 +56,11 @@ export class CropImagePopup implements AfterViewInit {
     draw() {
         if (!this.ctx) return;
 
-        // Clear canvas
         this.ctx.clearRect(0, 0, this.VIEWPORT_SIZE, this.VIEWPORT_SIZE);
 
-        // Draw background (dark)
         this.ctx.fillStyle = '#000';
         this.ctx.fillRect(0, 0, this.VIEWPORT_SIZE, this.VIEWPORT_SIZE);
 
-        // Draw image with transforms
         this.ctx.save();
         this.ctx.translate(this.offsetX, this.offsetY);
         this.ctx.scale(this.scale, this.scale);
@@ -107,8 +99,6 @@ export class CropImagePopup implements AfterViewInit {
         const newScale = this.scale - e.deltaY * zoomSpeed;
 
         if (newScale > 0.1) {
-            // Zoom towards center logic could be added here, but simple zoom is fine for now
-            // Adjust offset to keep center roughly stable or just zoom
             this.scale = newScale;
             this.draw();
         }
@@ -130,28 +120,12 @@ export class CropImagePopup implements AfterViewInit {
     }
 
     crop() {
-        // Create a temporary canvas for the final output
         const outputCanvas = document.createElement('canvas');
         outputCanvas.width = this.OUTPUT_SIZE;
         outputCanvas.height = this.OUTPUT_SIZE;
         const outputCtx = outputCanvas.getContext('2d')!;
 
-        // Draw the visible portion of the image into the output canvas
-        // We need to map the viewport coordinates to the image coordinates
-
-        // The viewport shows a 300x300 area. We want to capture exactly what's in there, 
-        // but scaled down to 128x128.
-
-        // Easier approach: Draw exactly what we see on the main canvas (300x300) into the output canvas (128x128)
-        // But we must redraw it at high quality.
-
-        // Actually, we can just use the draw logic but with a different scale factor.
-        // Let's calculate the source rectangle on the image that corresponds to the viewport.
-
-        // Inverse transform:
-        // ScreenX = ImageX * scale + offsetX
-        // ImageX = (ScreenX - offsetX) / scale
-
+        // Mappa la finestra di ritaglio da coordinate schermo a coordinate immagine.
         const sourceX = (0 - this.offsetX) / this.scale;
         const sourceY = (0 - this.offsetY) / this.scale;
         const sourceWidth = this.VIEWPORT_SIZE / this.scale;
@@ -159,8 +133,8 @@ export class CropImagePopup implements AfterViewInit {
 
         outputCtx.drawImage(
             this.image,
-            sourceX, sourceY, sourceWidth, sourceHeight, // Source rect
-            0, 0, this.OUTPUT_SIZE, this.OUTPUT_SIZE     // Dest rect
+            sourceX, sourceY, sourceWidth, sourceHeight,
+            0, 0, this.OUTPUT_SIZE, this.OUTPUT_SIZE
         );
 
         outputCanvas.toBlob((blob) => {

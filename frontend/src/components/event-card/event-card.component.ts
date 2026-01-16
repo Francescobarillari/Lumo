@@ -1,12 +1,12 @@
 import { Component, EventEmitter, Input, Output, input, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; // Import CommonModule
+import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { UserService } from '../../services/user-service/user-service';
 
 @Component({
     selector: 'app-event-card',
     standalone: true,
-    imports: [CommonModule, MatIconModule], // Add CommonModule
+    imports: [CommonModule, MatIconModule],
     templateUrl: './event-card.component.html',
     styleUrl: './event-card.component.css'
 })
@@ -26,16 +26,13 @@ export class EventCardComponent implements OnInit {
     showSavedCount = input<boolean>(true);
     showLocationPin = input<boolean>(false);
 
-    // Organizer Info
     organizerName = input<string>();
     organizerImage = input<string>();
     creatorId = input<number>();
 
-    // Spots Info
     occupiedSpots = input<number>();
     maxParticipants = input<number>();
 
-    // User Context
     currentUserId = input<string | null>(null);
 
     isFollowing = false;
@@ -52,11 +49,6 @@ export class EventCardComponent implements OnInit {
     }
 
     checkIfFollowing() {
-        // Logic to check if already following ?
-        // Ideally we should pass 'isFollowing' as input, or check logic here.
-        // For now let's assume we might need to fetch it or pass it.
-        // Let's rely on basic initial state false, or maybe fetch it?
-        // Optimally, backend Event should return "isOrganizerFollowed".
     }
 
     followOrganizer(event: Event) {

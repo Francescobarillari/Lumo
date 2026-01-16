@@ -27,7 +27,6 @@ public class AdminController {
         return eventService.getAllEventsForAdmin();
     }
 
-    // View All Users with their pending events
     @GetMapping("/users")
     public ResponseEntity<List<Map<String, Object>>> getUsersWithPendingEvents() {
         List<User> users = userRepository.findAll();
@@ -43,21 +42,10 @@ public class AdminController {
             userMap.put("profileImage", user.getProfileImage());
             userMap.put("isAdmin", user.getIsAdmin());
 
-            // Filter pending events created by this user
-            // Problem: Event does not store creator explicitly in simplified model?
-            // User.participatingEvents store participation.
-            // Usually the creator is the first participant? Or we scan participations.
-            // Assuming for now we list ALL pending events under a "General Requests" or
-            // matching logic if possible.
-            // If we lack 'creator' relation, we can't key them by user accurately unless we
-            // check who is participating in the pending event?
-            // "Participating" in a Pending event = Creator (usually).
-
             List<Event> userPending = allPending.stream()
                     .filter(e -> user.getParticipatingEvents().stream().anyMatch(pe -> pe.getId().equals(e.getId())))
                     .collect(Collectors.toList());
 
-            // Only add if user has pending events OR we want to show all users
             userMap.put("pendingEvents", userPending);
 
             result.add(userMap);

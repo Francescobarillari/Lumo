@@ -135,7 +135,6 @@ public class AuthService {
     private Map<String, String> handleGoogleIdToken(String idTokenString) {
         GoogleIdToken idToken;
         try {
-            // Trust token from Google Code Exchange
             idToken = GoogleIdToken.parse(com.google.api.client.json.gson.GsonFactory.getDefaultInstance(),
                     idTokenString);
         } catch (Exception e) {
@@ -189,7 +188,7 @@ public class AuthService {
             User u = new User();
             u.setEmail(email);
             u.setName(fallbackName);
-            u.setPasswordHash(""); // accesso tramite Google, nessuna password locale
+            u.setPasswordHash("");
 
             String googleImgUrl = (String) payload.get("picture");
             if (googleImgUrl != null) {
@@ -216,13 +215,11 @@ public class AuthService {
             emailVerificationService.sendWelcomeEmail(user);
         }
 
-        // Se l'utente esiste ma non ha nome, aggiorniamolo con il nome di Google
         if ((user.getName() == null || user.getName().isBlank()) && fallbackName != null) {
             user.setName(fallbackName);
             userRepo.save(user);
         }
 
-        // Se l'utente non ha immagine profilo (o dati), proviamo a prenderla da Google
         if (user.getProfileImageData() == null) {
             String googleImgUrl = (String) payload.get("picture");
             if (googleImgUrl != null) {
@@ -246,7 +243,6 @@ public class AuthService {
         String profileImageUrl = user.getProfileImage();
         if (profileImageUrl == null && user.getProfileImageData() != null) {
             profileImageUrl = "http://localhost:8080/api/users/" + user.getId() + "/image";
-            // Opzionale: aggiorniamo anche il DB per il futuro
             user.setProfileImage(profileImageUrl);
             userRepo.save(user);
         }

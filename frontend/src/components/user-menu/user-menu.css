@@ -109,9 +109,9 @@
   .menu-item {
     width: 100%;
     padding: 24px 30px;
-    /* Larger */
+    
     font-size: 28px;
-    /* Much larger for tablet/mobile space consumption */
+    
     border-bottom: 1px solid var(--color-bit-gray);
     justify-content: center;
   }

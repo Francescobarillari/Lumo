@@ -37,27 +37,23 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
     followingMap: { [userId: number]: boolean } = {};
     showFilterOptions: boolean = false;
 
-    // Source Data Lists
     followUpEvents: Event[] = [];
     savedEvents: Event[] = [];
     discoverEvents: Event[] = [];
     foundEvents: Event[] = [];
 
-    // Filtered Lists (for display)
     filteredFollowUpEvents: Event[] = [];
     filteredSavedEvents: Event[] = [];
     filteredDiscoverEvents: Event[] = [];
     filteredFoundEvents: Event[] = [];
     filteredSearchResults: Event[] = [];
 
-    // Pagination State
     shownFollowUp = 3;
     shownSaved = 3;
     shownDiscover = 3;
     shownFound = 3;
     shownSearch = 3;
 
-    // Filter/Sort state
     filterOption: 'all' | 'participating' | 'free' | 'available' = 'all';
     sortOption: 'date' | 'distance' | 'name' = 'date';
     priceMin = 0;
@@ -127,7 +123,6 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
         }
     }
 
-    // Pagination Methods
     showMoreFollowUp() { this.shownFollowUp += 3; }
     showMoreSaved() { this.shownSaved += 3; }
     showMoreDiscover() { this.shownDiscover += 3; }
@@ -136,15 +131,12 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
 
 
     private categorizeEvents() {
-        // NOTE: We do NOT clear the arrays here to avoid flickering.
-        // We will build NEW arrays and swap them in atomic updates.
+        // Aggiorna liste in blocco per evitare flicker.
 
         this.updateRangeLimits();
 
-        // Guest Mode
         if (!this.userId) {
             this.foundEvents = this.events.filter(this.isFutureEvent);
-            // Clear others for guest
             this.followUpEvents = [];
             this.savedEvents = [];
             this.discoverEvents = [];
@@ -152,29 +144,21 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
             return;
         }
 
-        // Logged In Logic
-
-        // 1. Fetch Follow Up Events (Async)
-        // We do NOT clear this.followUpEvents here. We wait for the new data to arrive.
         this.eventService.getJoinedEvents(this.userId).subscribe({
             next: (joined) => {
                 const newFollowUp = joined.filter(this.isFutureEvent);
-                // Sort by Date
                 newFollowUp.sort((a, b) => {
                     const dateA = new Date(`${a.date}T${a.startTime || '00:00'}`);
                     const dateB = new Date(`${b.date}T${b.startTime || '00:00'}`);
                     return dateA.getTime() - dateB.getTime();
                 });
 
-                // Atomic update
                 this.followUpEvents = newFollowUp;
                 this.applyFilters();
             },
             error: (err) => console.error('Error fetching follow up events', err)
         });
 
-        // 2. Categorize Map Events for Saved and Discover (Synchronous)
-        // Build new lists locally first
         const newSavedEvents: Event[] = [];
         const newDiscoverEvents: Event[] = [];
 
@@ -195,10 +179,8 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
             }
         });
 
-        // Atomic update of synchronous lists
         this.savedEvents = newSavedEvents;
         this.discoverEvents = newDiscoverEvents;
-        // foundEvents is generally not used in logged-in mode for categorization per se, but let's clear it or keep it consistent
         this.foundEvents = [];
 
         this.applyFilters();
@@ -234,7 +216,6 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
         }
     }
 
-    // Optimization: Centralized Filter Function
     applyFilters() {
         this.filteredFoundEvents = this.filterAndSortList(this.foundEvents);
         this.filteredFollowUpEvents = this.filterAndSortList(this.followUpEvents);
@@ -246,7 +227,6 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
     private filterAndSortList(list: Event[]): Event[] {
         let filtered = [...list];
 
-        // 1. Filter by Option
         switch (this.filterOption) {
             case 'participating':
                 filtered = filtered.filter(e => !!e.isParticipating);
@@ -264,7 +244,6 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
                 break;
         }
 
-        // 2. Filter by Price
         const isPriceFiltering = this.priceMin > 0 || this.priceMax < this.priceMaxLimit;
         if (isPriceFiltering) {
             filtered = filtered.filter((e) => {
@@ -273,7 +252,6 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
             });
         }
 
-        // 3. Filter by Distance
         const isDistanceFiltering = this.distanceMin > 0 || this.distanceMax < this.distanceMaxLimit;
         if (isDistanceFiltering) {
             filtered = filtered.filter((e) => {
@@ -283,7 +261,6 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
             });
         }
 
-        // 4. Sort
         switch (this.sortOption) {
             case 'distance':
                 filtered.sort((a, b) => {
@@ -422,13 +399,11 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
     private onSearchInternal(query: string) {
         this.isSearching = true;
 
-        // 1. Search Events (Backend)
         this.eventService.searchEvents(query).subscribe(results => {
             this.searchResults = results.filter(this.isFutureEvent);
             this.applyFilters();
         });
 
-        // 2. Search City (Mapbox)
         this.mapboxService.searchCity(query).subscribe(features => {
             this.cityResults = features.map(f => ({
                 name: f.place_name,
@@ -436,7 +411,6 @@ export class SidebarComponent implements OnChanges, OnInit, OnDestroy {
             }));
         });
 
-        // 3. Search Users (Backend)
         this.userService.searchUsers(query).subscribe(users => {
             this.userResults = users;
             this.checkFollowingStatuses();

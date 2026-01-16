@@ -31,13 +31,12 @@ export class MapLocationSelector implements AfterViewInit, OnDestroy {
             accessToken: Environment.mapboxToken,
             container: 'location-map',
             style: 'mapbox://styles/fnsbrl/cmhxy97pz004e01qx08c0gc44',
-            center: [12.4964, 41.9028], // Rome as default
-            zoom: 12, // Zoomed out a bit
+            center: [12.4964, 41.9028],
+            zoom: 12,
             pitch: 0,
             bearing: 0,
         });
 
-        // Get user location if available
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
@@ -56,16 +55,13 @@ export class MapLocationSelector implements AfterViewInit, OnDestroy {
             );
         }
 
-        // Handle map clicks
         this.map.on('click', (e) => {
             this.selectedCoords = [e.lngLat.lng, e.lngLat.lat];
 
-            // Remove previous marker if exists
             if (this.selectedMarker) {
                 this.selectedMarker.remove();
             }
 
-            // Create marker element
             const markerEl = document.createElement('div');
             markerEl.style.width = '30px';
             markerEl.style.height = '30px';
@@ -74,7 +70,6 @@ export class MapLocationSelector implements AfterViewInit, OnDestroy {
             markerEl.style.border = '3px solid white';
             markerEl.style.boxShadow = '0 2px 8px rgba(0,0,0,0.3)';
 
-            // Add marker to map
             this.selectedMarker = new mapboxgl.Marker({ element: markerEl })
                 .setLngLat(this.selectedCoords)
                 .addTo(this.map);
@@ -101,8 +96,8 @@ export class MapLocationSelector implements AfterViewInit, OnDestroy {
             zoom: 16,
             essential: true
         });
-        this.searchQuery = ''; // Clear search after selection
-        this.cityResults = []; // Hide results
+        this.searchQuery = '';
+        this.cityResults = [];
     }
 
     ngOnDestroy(): void {

@@ -13,8 +13,9 @@ public class WebConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")            // tutte le rotte
-                        .allowedOrigins("http://localhost:4200") // Angular
+                // CORS per il frontend locale.
+                registry.addMapping("/**")
+                        .allowedOrigins("http://localhost:4200")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowCredentials(true);
             }

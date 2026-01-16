@@ -25,7 +25,7 @@ public class Report {
     private Long reportedEventId;
 
     @Column(nullable = false)
-    private String targetType; // USER or EVENT
+    private String targetType; // USER o EVENT
 
     @Column(nullable = false, length = 200)
     private String reason;

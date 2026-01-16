@@ -32,7 +32,7 @@
     margin: 0;
     font-size: 10px;
     color: #888888;
-    /* Consider adding --color-text-muted if common */
+    
 }
 
 .distance {
@@ -82,7 +82,7 @@
 
 .icon-circle:hover {
     background-color: #555555;
-    /* Maybe add var(--color-bit-gray-hover) */
+    
 }
 
 .icon-circle:active {

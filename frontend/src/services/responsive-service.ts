@@ -8,9 +8,9 @@ export class ResponsiveService {
 
   constructor(private bp: BreakpointObserver) {
     this.bp.observe([
-      '(max-width: 979px)',     // mobile
-      '(min-width: 980px) and (max-width: 1399px)', // tablet
-      '(min-width: 1400px)'     // desktop
+      '(max-width: 979px)',
+      '(min-width: 980px) and (max-width: 1399px)',
+      '(min-width: 1400px)'
     ]).subscribe(state => {
 
       if (state.breakpoints['(max-width: 979px)']) {

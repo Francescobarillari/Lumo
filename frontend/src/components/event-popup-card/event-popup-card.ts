@@ -17,7 +17,7 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
     @Input() event!: Event;
     @Input() organizerName: string = 'Eventer';
     @Input() organizerImage?: string;
-    @Input() eventPosition?: { x: number, y: number }; // Screen coordinates for positioning
+    @Input() eventPosition?: { x: number, y: number };
     @Input() currentUserId: string | null = null;
     @Input() creatorId?: number;
 
@@ -31,7 +31,7 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
     @Output() openChat = new EventEmitter<Event>();
 
     isFollowing = false;
-    isLoadingFollowStatus = true; // Add loading state to prevent flicker
+    isLoadingFollowStatus = true;
     notificationsEnabled = false;
     notificationsLoading = false;
     showReportModal = false;
@@ -52,7 +52,6 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
     }
 
     checkIfFollowing() {
-        // Use input creatorId or fallback to event.creatorId
         const targetCreatorId = this.creatorId || (this.event ? this.event.creatorId : null);
 
         if (!this.currentUserId || !targetCreatorId || this.currentUserId === targetCreatorId.toString()) {
@@ -62,11 +61,11 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
             return;
         }
 
-        this.isLoadingFollowStatus = true; // Start loading
+        this.isLoadingFollowStatus = true;
         this.userService.isFollowing(this.currentUserId, targetCreatorId.toString()).subscribe({
             next: (res) => {
                 this.isFollowing = res.isFollowing;
-                this.isLoadingFollowStatus = false; // Stop loading
+                this.isLoadingFollowStatus = false;
                 if (this.isFollowing) {
                     this.loadNotificationPreference(targetCreatorId.toString());
                 } else {
@@ -75,7 +74,7 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
             },
             error: (err) => {
                 console.error('Error checking follow status', err);
-                this.isLoadingFollowStatus = false; // Stop loading on error
+                this.isLoadingFollowStatus = false;
                 this.notificationsEnabled = false;
             }
         });
@@ -112,11 +111,10 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
             const viewportW = window.innerWidth;
             const viewportH = window.innerHeight;
 
-            const offsetY = -20; // px above marker
+            const offsetY = -20;
             let x = this.eventPosition.x;
             let y = this.eventPosition.y + offsetY;
 
-            // Adjust horizontally to keep within viewport once translate(-50%) is applied
             const leftAfter = x - width / 2;
             const rightAfter = x + width / 2;
             if (leftAfter < leftSafeMargin) {
@@ -125,13 +123,11 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
                 x -= rightAfter - (viewportW - margin);
             }
 
-            // Adjust vertically to avoid clipping top/bottom (translateY(-100%) pulls it up by its height)
             const topAfter = y - height;
             if (topAfter < topSafeMargin) {
                 y += topSafeMargin - topAfter;
             }
 
-            // Avoid overlapping the top action bar when they intersect
             const actionBar = document.querySelector('.action-bar') as HTMLElement | null;
             const actionBarRect = actionBar?.getBoundingClientRect();
             if (actionBarRect) {
@@ -210,7 +206,6 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
         const rawId =
             this.creatorId ??
             this.event?.creatorId ??
-            // Fallback if backend sent embedded creator object
             (this.event as any)?.creator?.id;
         return rawId !== undefined && rawId !== null ? String(rawId) : null;
     }
@@ -218,7 +213,6 @@ export class EventPopupCard implements AfterViewInit, OnChanges {
     formatHeroDate(): string {
         const date = this.event.date ? new Date(`${this.event.date}T00:00:00`) : null;
         const start = this.event.startTime ? this.event.startTime.slice(0, 5) : null;
-        // Use 'en-US' or default browser locale for English
         const weekday = date ? date.toLocaleDateString('en-US', { weekday: 'short' }) : '';
         const dayMonth = date ? date.toLocaleDateString('en-US', { day: '2-digit', month: 'short' }) : '';
 

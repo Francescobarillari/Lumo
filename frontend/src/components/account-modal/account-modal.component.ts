@@ -88,7 +88,7 @@ export class AccountModalComponent {
         if (!email) return '';
         if (email.length <= 25) return email;
         const parts = email.split('@');
-        if (parts.length !== 2) return email; // Fallback for weird formats
+        if (parts.length !== 2) return email;
         const [user, domain] = parts;
         return `...${user.slice(-3)}@${domain}`;
     }
@@ -99,12 +99,10 @@ export class AccountModalComponent {
         this.view = 'followers';
         this.loadingList = true;
 
-        // Fetch followers AND following to know relationship
         this.userService.getFollowers(userId).subscribe({
             next: (followers) => {
                 this.userList = followers;
 
-                // Fetch following to check who we already follow
                 this.userService.getFollowing(userId).subscribe({
                     next: (following) => {
                         this.followingIds = new Set(following.map((u: any) => u.id.toString()));
@@ -166,15 +164,12 @@ export class AccountModalComponent {
 
         this.userService.unfollowUser(this.user.id, userToUnfollow.id).subscribe({
             next: () => {
-                // If in "following" view, remove from list
                 if (this.view === 'following') {
                     this.userList = this.userList.filter(u => u.id !== userToUnfollow.id);
                 } else {
-                    // If in "followers" view (and unfollowing someone who follows me), just update state
                     this.followingIds.delete(userToUnfollow.id.toString());
                 }
 
-                // Update local count optimistically
                 if (this.user) {
                     this.user.followingCount = (this.user.followingCount || 1) - 1;
                 }
@@ -205,7 +200,6 @@ export class AccountModalComponent {
         if (!this.user) return;
         this.userService.updateUser(this.user.id, this.editData).subscribe({
             next: (updatedUser) => {
-                // Update local data
                 if (this.user) {
                     this.user.name = updatedUser.name;
                     this.user.email = updatedUser.email;
@@ -223,7 +217,6 @@ export class AccountModalComponent {
 
     getShareLink(): string {
         if (!this.user) return '';
-        // Assuming the app is hosted at root or we construct the full URL
         const protocol = window.location.protocol;
         const host = window.location.host;
         return `${protocol}//${host}/?user=${this.user.id}`;

@@ -21,7 +21,7 @@ public class EmailVerificationService {
     private final EmailVerificationRepository verificationRepo;
     private final UserRepository userRepo;
     private final JavaMailSender mailSender;
-    private final PasswordEncoder passwordEncoder; // per cautela, ma password già hashata in EmailVerification
+    private final PasswordEncoder passwordEncoder;
     private static final long TOKEN_TTL_HOURS = 24;
     private final String frontendVerifyBaseUrl;
     private final String fromAddress;

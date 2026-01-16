@@ -1,7 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Stack+Sans+Headline:wght@200..700&display=swap');
 @import url('mapbox-gl/dist/mapbox-gl.css');
 
-/* Reset CSS */
 * {
     margin: 0;
     padding: 0;
@@ -9,12 +8,10 @@
     font-family: var(--font-stack-headline);
 }
 
-/* Custom SnackBar Styles */
 .login-snackbar {
     --mdc-snackbar-container-color: #333333;
     --mdc-snackbar-supporting-text-color: #ffffff;
     --mat-snack-bar-button-color: #fbbc04;
-    /* Accent color */
 }
 
 .login-snackbar .mdc-snackbar__label {
@@ -25,7 +22,6 @@
 .login-snackbar .mat-mdc-snack-bar-action {
     font-weight: 700;
     text-decoration: underline;
-    /* Mimic "click-text" class user requested */
 }
 
 .toast-snackbar .mdc-snackbar__surface {
@@ -82,8 +78,8 @@
     background: rgba(229, 57, 53, 0.12);
 }
 
+/* Variabili tema */
 :root {
-    /* Colori */
     --color-accent: #FCC324;
     --color-white: #FFFFFF;
     --color-dark-gray: #1a1a1a;
@@ -94,7 +90,6 @@
     --color-black: #000000;
     --color-backdrop: rgba(0, 0, 0, 0.45);
 
-    /* Font e Pesi */
     --font-stack-headline: 'Stack Sans Headline',
         Arial,
         sans-serif;
@@ -104,7 +99,6 @@
     --font-weight-semibold: 600;
     --font-weight-bold: 700;
 
-    /* Spacing System */
     --spacing-xs: 4px;
     --spacing-sm: 8px;
     --spacing-md: 16px;
@@ -112,7 +106,6 @@
     --spacing-xl: 32px;
     --spacing-2xl: 40px;
 
-    /* Border Radius */
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 16px;
@@ -120,7 +113,6 @@
     --radius-2xl: 24px;
     --radius-full: 50%;
 
-    /* Z-Index Layers */
     --z-base: 1;
     --z-map: 10;
     --z-sidebar: 1000;
@@ -131,7 +123,6 @@
     --z-popup: 10050;
     --z-toast: 120000;
 
-    /* Shadows */
     --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
     --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.2);
     --shadow-lg: 0 4px 20px rgba(0, 0, 0, 0.3);
@@ -147,7 +138,7 @@
     --modal-header-border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Utilities */
+/* Utility layout */
 .flex {
     display: flex;
 }
@@ -215,7 +206,6 @@
     display: none;
 }
 
-/* Mobile Header for Popups (Unification) */
 .mobile-header {
     display: none;
     position: sticky;
@@ -248,7 +238,6 @@
     padding: 0;
 }
 
-/* Mobile Popup Layout Utilities */
 .mobile-popup-container {
     display: flex;
     flex-direction: column;
@@ -295,8 +284,6 @@
     display: none !important;
 }
 
-/*stili di base per il body*/
-
 body {
     color: var(--color-white);
     background-color: var(--color-dark-gray);
@@ -313,7 +300,6 @@ html {
     z-index: var(--z-toast) !important;
 }
 
-/* titoli */
 h1 {
     font-size: 36px;
     font-weight: var(--font-weight-bold);
@@ -322,7 +308,6 @@ h1 {
     padding-bottom: 12px;
 }
 
-/* paragrafi */
 p,
 span,
 div,
@@ -333,7 +318,6 @@ label {
     line-height: 1.5;
 }
 
-/*testi cliccabili*/
 .click-text {
     font-size: 16px;
     font-weight: var(--font-weight-semibold);
@@ -341,8 +325,6 @@ label {
     text-decoration: underline;
     cursor: pointer;
 }
-
-/* bottoni */
 
 a.button,
 button.button {

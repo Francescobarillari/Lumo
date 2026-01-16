@@ -159,7 +159,7 @@
 @media (max-width: 767px) {
   .popup-container.desktop {
     display: none;
-    /* Desktop styles hidden on tablet/mobile */
+    
   }
 
   .popup-container.tablet,

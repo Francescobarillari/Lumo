@@ -205,7 +205,7 @@ export class SignInPopup {
       });
     } catch (e: any) {
       if (e?.code === 'google_cancelled') {
-        return; // User dismissed the prompt: no error, can retry.
+        return;
       }
       this.generalError = e?.message || 'Google sign-in failed.';
     }

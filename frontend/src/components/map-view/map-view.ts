@@ -11,7 +11,6 @@ import { interval, Subscription, switchMap } from 'rxjs';
 import { MobileSearchComponent } from '../mobile-search/mobile-search.component';
 import { EventShareModalComponent } from '../event-share-modal/event-share-modal.component';
 
-// crea l'elemento HTML per il marker della posizione utente
 const userMarkerEl = document.createElement('div');
 userMarkerEl.style.width = '20px';
 userMarkerEl.style.height = '20px';
@@ -120,7 +119,6 @@ userMarkerEl.style.boxShadow = '0 0 3px rgba(0,0,0,0.3)';
     border-top-color: var(--color-dark-gray);
   }
 
-  /* Golden Pulse Core Marker Styles */
   :host ::ng-deep .golden-pulse-marker {
     width: 40px;
     height: 40px;
@@ -131,7 +129,6 @@ userMarkerEl.style.boxShadow = '0 0 3px rgba(0,0,0,0.3)';
     background: transparent;
   }
 
-  /* The Diamond Core */
   :host ::ng-deep .golden-pulse-marker::after {
     content: '';
     position: absolute;
@@ -146,7 +143,6 @@ userMarkerEl.style.boxShadow = '0 0 3px rgba(0,0,0,0.3)';
     animation: corePulse 3s infinite ease-in-out;
   }
 
-  /* The Soft Glow Halo */
   :host ::ng-deep .golden-pulse-marker::before {
     content: '';
     position: absolute;
@@ -176,8 +172,8 @@ export class MapView implements AfterViewInit, OnDestroy, OnChanges {
   @Input() userId: string | null = null;
   @Output() eventSelected = new EventEmitter<Event>();
   @Output() mapInteract = new EventEmitter<void>();
-  @Output() eventsUpdated = new EventEmitter<Event[]>(); // Emit when events list updates
-  @Output() openUserProfile = new EventEmitter<string>(); // Emit when user profile requested
+  @Output() eventsUpdated = new EventEmitter<Event[]>();
+  @Output() openUserProfile = new EventEmitter<string>();
 
   private mapInstance!: mapboxgl.Map;
   private eventMarkers = new Map<number, mapboxgl.Marker>();
@@ -233,14 +229,12 @@ export class MapView implements AfterViewInit, OnDestroy, OnChanges {
     this.mapInstance.touchZoomRotate.disableRotation();
     this.mapInstance.touchZoomRotate.enable();
 
-    // Listen for interactions to verify close popups only on USER interaction
     this.mapInstance.on('move', (e) => {
-      if (e.originalEvent) { // Check if movement was caused by user (mouse/touch)
+      if (e.originalEvent) {
         this.mapInteract.emit();
       }
     });
 
-    // Optimization: Disable rendering markers for off-screen events
     this.mapInstance.on('moveend', () => this.updateVisibleMarkers());
     this.mapInstance.on('zoomend', () => this.updateVisibleMarkers());
 
@@ -284,8 +278,8 @@ export class MapView implements AfterViewInit, OnDestroy, OnChanges {
   }
 
   private startPolling() {
-    this.stopPolling(); // Clear existing
-    this.pollSubscription = interval(10000).pipe( // Poll every 10s
+    this.stopPolling();
+    this.pollSubscription = interval(10000).pipe(
       switchMap(() => this.eventService.getEvents(this.userId || undefined))
     ).subscribe({
       next: (events) => {
@@ -312,11 +306,6 @@ export class MapView implements AfterViewInit, OnDestroy, OnChanges {
   private handleEventsUpdate(events: Event[]) {
     const filteredEvents = events.filter((e) => this.isFutureEvent(e));
 
-    // Check for changes (lazy check by length or deep compare if needed)
-    // For now, update if length differs OR map markers check
-    // To properly support "status change" (e.g. participation), we should probably deep check or just update.
-    // Updating always might flicker but ensures data freshness.
-    // Let's implement a simple check: if JSON stringify is different.
     const currentEventsJson = JSON.stringify(this.events.map(e => ({
       id: e.id,
       status: e.participationStatus,
@@ -330,12 +319,11 @@ export class MapView implements AfterViewInit, OnDestroy, OnChanges {
       savedCount: e.savedCount
     })));
 
-    // If we only care about participation status or new events:
     if (this.events.length !== filteredEvents.length || currentEventsJson !== newEventsJson) {
       this.events = filteredEvents;
       this.updateDistancesAndSort();
       this.placeEventMarkers();
-      this.eventsUpdated.emit(this.events); // Emit update
+      this.eventsUpdated.emit(this.events);
     }
   }
 
@@ -363,20 +351,15 @@ export class MapView implements AfterViewInit, OnDestroy, OnChanges {
     const bounds = this.mapInstance.getBounds();
     if (!bounds) return;
 
-    // Filter events within bounds
     let visibleEvents = this.events.filter(event => {
       if (event.latitude == null || event.longitude == null) return false;
       return bounds.contains([event.longitude, event.latitude]);
     });
 
-    // OPTIMIZATION: Hard Cap at 100 markers max to prevent DOM overload
     if (visibleEvents.length > 100) {
-      // Sort by some criteria if needed (e.g., date?) so we don't show random ones.
-      // For now, let's show the ones closest to the center or just the first 100.
       visibleEvents = visibleEvents.slice(0, 100);
     }
 
-    // 1. Remove markers that are no longer visible
     const visibleEventIds = new Set(visibleEvents.map(e => e.id));
     this.eventMarkers.forEach((marker, id) => {
       if (!visibleEventIds.has(id)) {
@@ -385,7 +368,6 @@ export class MapView implements AfterViewInit, OnDestroy, OnChanges {
       }
     });
 
-    // 2. Add markers for new visible events
     visibleEvents.forEach(event => {
       if (typeof event.id === 'number' && !this.eventMarkers.has(event.id)) {
         if (event.latitude == null || event.longitude == null) return;
@@ -484,7 +466,7 @@ export class MapView implements AfterViewInit, OnDestroy, OnChanges {
 
   private computeDistanceKm(lat1: number, lon1: number, lat2?: number, lon2?: number): number | undefined {
     if (lat2 == null || lon2 == null) return undefined;
-    const R = 6371; // km
+    const R = 6371;
     const dLat = this.deg2rad(lat2 - lat1);
     const dLon = this.deg2rad(lon2 - lon1);
     const a =
@@ -532,7 +514,6 @@ export class MapView implements AfterViewInit, OnDestroy, OnChanges {
       next: (res) => {
         const wasSaved = !!event.isSaved;
         const previousCount = typeof event.savedCount === 'number' ? event.savedCount : 0;
-        // Aggiorna lo stato locale dell'evento
         event.isSaved = res.isSaved;
         if (res.isSaved && !wasSaved) {
           event.savedCount = previousCount + 1;
@@ -548,10 +529,8 @@ export class MapView implements AfterViewInit, OnDestroy, OnChanges {
           matchingEvent.savedCount = event.savedCount;
         }
 
-        // Forza l'aggiornamento della Sidebar (che usa OnChanges) ricreando l'array
+        // Forza il refresh dei componenti collegati.
         this.events = [...this.events];
-
-        // Se necessario, aggiorniamo anche i marker o altro (ma i marker non cambiano per 'saved')
       },
       error: (err) => console.error('Error toggling favorite', err)
     });

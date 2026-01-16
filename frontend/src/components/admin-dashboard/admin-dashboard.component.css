@@ -9,7 +9,7 @@
     overflow: hidden;
 }
 
-/* Sidebar */
+
 .sidebar {
     width: 250px;
     background: transparent;
@@ -61,7 +61,7 @@
 .nav-item.active,
 .nav-item:hover {
     background-color: rgba(252, 195, 36, 0.1);
-    /* derived from accent #FCC324 */
+    
     color: var(--color-accent);
 }
 
@@ -69,7 +69,7 @@
     border-left: 3px solid var(--color-accent);
 }
 
-/* Logout Button */
+
 .btn-logout {
     display: flex;
     align-items: center;
@@ -91,7 +91,7 @@
     color: var(--color-white);
 }
 
-/* Main Content */
+
 .main-content {
     flex-grow: 1;
     padding: 30px 40px;
@@ -107,10 +107,10 @@
     margin: 0 0 30px 0;
     font-weight: var(--font-weight-semibold);
     color: var(--color-white);
-    /* Override global h1 accent color if needed, or stick to white for dashboard header */
+    
 }
 
-/* Stats Grid */
+
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -150,7 +150,7 @@
     color: var(--color-white);
 }
 
-/* Specific icon bg colors */
+
 .users-icon {
     background: rgba(255, 255, 255, 0.1);
 }
@@ -183,14 +183,14 @@
     color: var(--color-light-gray);
 }
 
-/* Dashboard Grid (Table + Actions) */
+
 .dashboard-grid {
     display: grid;
     grid-template-columns: 2fr 1fr;
     gap: 20px;
 }
 
-/* Requests Table Section */
+
 .requests-section {
     background: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(10px);
@@ -252,7 +252,7 @@ tr:last-child td {
     border-bottom: none;
 }
 
-/* Table Cells */
+
 .ev-cell-title {
     display: flex;
     flex-direction: column;
@@ -323,7 +323,7 @@ tr:last-child td {
     white-space: pre-wrap;
 }
 
-/* Buttons */
+
 .action-buttons {
     display: flex;
     gap: 8px;
@@ -351,17 +351,15 @@ tr:last-child td {
 .approve {
     background: rgba(16, 185, 129, 0.1);
     color: var(--success);
-    /* Assuming success var or hardcoded if not in global */
+    
 }
 
-/* If success/danger not in global, we define or fallback. styles.css only has error. 
-   Let's check styles.css again. It has --color-error (#E53935). No success. 
-   We will strictly use variables where possible, or define local fallbacks consistent with palette */
+
 
 .approve {
     background: rgba(76, 175, 80, 0.1);
     color: #4caf50;
-    /* Green */
+    
 }
 
 .approve:hover {
@@ -371,7 +369,7 @@ tr:last-child td {
 
 .reject {
     background: rgba(229, 57, 53, 0.1);
-    /* derived from error */
+    
     color: var(--color-error);
 }
 
@@ -400,7 +398,7 @@ tr:last-child td {
     color: white;
 }
 
-/* Inline Reject Form */
+
 .inline-reject {
     display: flex;
     gap: 5px;
@@ -423,7 +421,7 @@ tr:last-child td {
     border-color: var(--color-accent);
 }
 
-/* Actions Section */
+
 .actions-section {
     display: flex;
     flex-direction: column;
@@ -591,7 +589,7 @@ tr:last-child td {
     }
 }
 
-/* Enhanced Search Bar Styling */
+
 .search-container {
     position: relative;
     display: flex;
@@ -638,7 +636,7 @@ tr:last-child td {
     }
 }
 
-/* Reports */
+
 .reports-grid {
     display: grid;
     grid-template-columns: minmax(320px, 0.9fr) minmax(360px, 1.2fr);

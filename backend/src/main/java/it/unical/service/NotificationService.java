@@ -26,7 +26,6 @@ public class NotificationService implements INotificationService {
     private it.unical.repository.EventRepository eventRepo;
 
     public List<Notification> getUserNotifications(Long userId) {
-        // Trigger check for Follow Up events logic here (lazy check)
         checkAndCreateFollowUpNotifications(userId);
         return notificationRepo.findByUserIdOrderByCreatedAtDesc(userId);
     }
@@ -86,7 +85,7 @@ public class NotificationService implements INotificationService {
                 "PARTICIPATION_REQUEST");
     }
 
-    // Check for events starting within 3 days that the user follows/participates in
+    // Notifiche di follow-up per eventi imminenti.
     private void checkAndCreateFollowUpNotifications(Long userId) {
         User user = userRepo.findById(userId).orElse(null);
         if (user == null)
@@ -97,8 +96,6 @@ public class NotificationService implements INotificationService {
         LocalDate threeDaysFromNow = today.plusDays(3);
 
         for (Event event : user.getParticipatingEvents()) {
-            // Skip follow-up for events created by the user (owner shouldn't be treated as
-            // a participant)
             if (event.getCreatorId() != null && event.getCreatorId().equals(userId)) {
                 continue;
             }
@@ -106,22 +103,13 @@ public class NotificationService implements INotificationService {
             if (event.getDate() != null && !event.getDate().isBefore(today)
                     && !event.getDate().isAfter(threeDaysFromNow)) {
 
-                // Check if we already notified this event as "Follow Up"
-                // This is a naive check. Ideally we store "notifiedEvents" table or check
-                // existing notifications text.
-                // For simplicity, we assume if a notification with this title exists recently,
-                // we skip.
-                // Or proper way: Add 'relatedEventId' to Notification entity.
-                // For now, let's just create it if we haven't done so today?
-                // Let's create it only if NO notification of type 'FOLLOWUP' exists for this
-                // user with title containing event title.
-
                 String expectedTitle = "Upcoming event: " + event.getTitle();
                 Notification existingNotification = existingNotifications.stream()
                         .filter(n -> "FOLLOWUP".equals(n.getType()) && n.getTitle().equals(expectedTitle))
                         .findFirst()
                         .orElse(null);
 
+                // Evita duplicati per lo stesso evento.
                 if (existingNotification != null) {
                     if (existingNotification.getRelatedEventId() == null) {
                         existingNotification.setRelatedEventId(event.getId());

@@ -44,7 +44,7 @@ public class Event {
     private int savedCount = 0;
 
     @Transient
-    private String participationStatus = "NONE"; // NONE, PENDING, ACCEPTED
+    private String participationStatus = "NONE";
 
     @Transient
     private java.util.List<User> pendingUsersList;
@@ -263,8 +263,7 @@ public class Event {
         return null;
     }
 
-    // Questi metodi verranno serializzati nel JSON come "organizerName" e
-    // "organizerImage"
+    // Campi derivati esposti nel JSON.
     public String getOrganizerName() {
         if (creator != null) {
             return creator.getName();
@@ -283,9 +282,8 @@ public class Event {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof Event))
+        if (!(o instanceof Event event))
             return false;
-        Event event = (Event) o;
         return id != null && id.equals(event.getId());
     }
 

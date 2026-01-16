@@ -116,7 +116,7 @@
     padding: 24px;
 }
 
-/* Organized Events List */
+
 .events-list {
     display: flex;
     flex-direction: column;
@@ -248,7 +248,7 @@
     color: var(--color-white);
 }
 
-/* Requests Panel */
+
 .requests-panel {
     margin-top: 16px;
     padding-top: 16px;
@@ -329,7 +329,7 @@
     font-style: italic;
 }
 
-/* Event Overview Styles */
+
 .event-overview-section {
     margin-bottom: 24px;
     padding-bottom: 24px;
@@ -445,7 +445,7 @@
     font-style: italic;
 }
 
-/* Joined Events Grid */
+
 .events-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -527,7 +527,7 @@
     margin-top: 40px;
 }
 
-/* Custom Scrollbar */
+
 .modal-content::-webkit-scrollbar {
     width: 8px;
 }
@@ -546,7 +546,7 @@
     background: #444;
 }
 
-/* Mobile Responsive */
+
 @media (max-width: 768px) {
     .backdrop {
         backdrop-filter: none;
@@ -621,7 +621,7 @@
         padding: 16px;
     }
 
-    /* Sub-section logic: when managing requests on mobile, hide other events */
+    
     .has-expanded-requests .organized-event-item:not(.expanded) {
         display: none;
     }
@@ -643,7 +643,7 @@
     }
 }
 
-/* Mobile Tab Bar - added outside media query, uses .mobile-only for visibility */
+
 .mobile-tabs {
     display: none;
     justify-content: space-around;

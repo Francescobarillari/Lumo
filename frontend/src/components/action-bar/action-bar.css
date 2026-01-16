@@ -1,4 +1,4 @@
-/* Action Bar (Top Bubble) */
+
 .action-bar {
     height: 72px;
     position: absolute;
@@ -107,10 +107,10 @@ notification-menu {
     z-index: var(--z-dropdown);
 }
 
-/* Responsive Styles */
+
 @media (max-width: 768px) {
 
-    /* Mobile styles for action-bar container only */
+    
     .action-bar {
         top: 20px;
         bottom: auto;

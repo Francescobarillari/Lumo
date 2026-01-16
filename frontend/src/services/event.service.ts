@@ -33,8 +33,6 @@ export class EventService {
     return this.http.get<Event[]>(`http://localhost:8080/api/users/${userId}/saved-events`);
   }
 
-  // Utility per futuro: ottenere singolo evento
-  // Utility per futuro: ottenere singolo evento
   getEventById(id: number, userId?: string): Observable<Event> {
     let url = `${this.baseUrl}/${id}`;
     if (userId) {
@@ -43,8 +41,6 @@ export class EventService {
     return this.http.get<Event>(url);
   }
 
-  // ✅ Ricerca eventi
-  // ✅ Ricerca eventi
   searchEvents(query: string): Observable<Event[]> {
     return this.http.get<Event[]>(`${this.baseUrl}/search?q=${query}`);
   }

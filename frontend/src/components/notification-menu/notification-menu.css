@@ -39,9 +39,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Center on desktop too if needed, but user specifically asked for mobile */
+    
     flex: 1;
-    /* Take space for centering */
+    
     height: 40px;
     color: var(--color-white);
 }
@@ -86,7 +86,7 @@
     padding: 8px 4px 10px;
 }
 
-/* Scrollbar Customization */
+
 .notif-list::-webkit-scrollbar {
     width: 6px;
 }
@@ -208,7 +208,7 @@
     align-items: center;
     padding-left: var(--spacing-sm);
     margin-top: 8px;
-    /* Added spacing from text */
+    
 }
 
 .btn-approve,
@@ -225,7 +225,7 @@
 
 .btn-approve {
     background-color: rgba(76, 175, 80, 0.2);
-    /* Custom Success Green */
+    
     color: #4caf50;
 }
 
@@ -236,7 +236,7 @@
 
 .btn-reject {
     background-color: rgba(244, 67, 54, 0.2);
-    /* Custom Error Red */
+    
     color: #f44336;
 }
 
@@ -262,7 +262,7 @@
     padding-left: var(--spacing-sm);
     white-space: nowrap;
     margin-top: 5px;
-    /* Added spacing from text */
+    
 }
 
 .status-msg mat-icon {
@@ -358,23 +358,23 @@
 
     .notif-item {
         padding: var(--spacing-lg);
-        /* Larger padding */
+        
     }
 
     .notif-title {
         font-size: 18px;
-        /* Larger text */
+        
     }
 
     .notif-msg {
         font-size: 16px;
-        /* Larger text */
+        
     }
 
     .btn-approve,
     .btn-reject {
         width: 44px;
-        /* Larger tap targets */
+        
         height: 44px;
     }
 

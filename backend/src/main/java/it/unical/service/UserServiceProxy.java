@@ -27,8 +27,6 @@ public class UserServiceProxy implements IUserService {
 
     @Override
     public User getUserById(Long id) {
-        // System.out.println("[UserServiceProxy] Fetching user ID: " + id); // Too
-        // noisy usually
         return realService.getUserById(id);
     }
 

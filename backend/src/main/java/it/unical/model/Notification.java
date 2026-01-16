@@ -18,8 +18,7 @@ public class Notification {
     @Column(length = 1000)
     private String message;
 
-    private String type; // 'INFO', 'SUCCESS', 'WARNING', 'ERROR' or 'APPROVED', 'REJECTED', 'FOLLOWUP',
-                         // 'PARTICIPATION_REQUEST', 'PARTICIPATION_ACCEPTED', 'PARTICIPATION_REJECTED'
+    private String type;
 
     @Column(nullable = true)
     private Long relatedEventId;

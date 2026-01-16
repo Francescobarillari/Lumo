@@ -18,7 +18,6 @@ public class VerificationController {
         this.emailVerificationService = emailVerificationService;
     }
 
-    // endpoint che il frontend chiama dopo il click sul link
     @GetMapping("/verify")
     public ResponseEntity<ApiResponse> verifyEmail(@RequestParam("token") String token) {
         try {

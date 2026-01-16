@@ -4,10 +4,10 @@ export interface Event {
   description: string;
   nPartecipants: number;
   city: string;
-  date: string;       // ISO date
-  endDate?: string;   // ISO date
-  startTime: string;  // HH:mm:ss or HH:mm
-  endTime: string;    // HH:mm:ss or HH:mm
+  date: string;
+  endDate?: string;
+  startTime: string;
+  endTime: string;
   createdAt: string;
   latitude: number;
   longitude: number;

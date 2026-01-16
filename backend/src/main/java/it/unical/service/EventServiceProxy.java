@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Primary // Takes precedence for injection
+@Primary
 public class EventServiceProxy implements IEventService {
 
     private final IEventService realService;
@@ -82,8 +82,7 @@ public class EventServiceProxy implements IEventService {
     @Override
     public void deleteEvent(long id) {
         System.out.println("[Proxy] SECURITY CHECK: Deleting event ID: " + id);
-        // Here we could add logic like checking if user is admin, etc.
-        // For now, we log and proceed.
+        // Punto per aggiungere controlli di autorizzazione.
         realService.deleteEvent(id);
     }
 

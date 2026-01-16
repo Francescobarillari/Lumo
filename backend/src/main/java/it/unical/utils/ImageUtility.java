@@ -14,7 +14,7 @@ public class ImageUtility {
         BufferedImage originalImage = ImageIO.read(bais);
 
         if (originalImage == null) {
-            return inputImage; // Non è un'immagine valida o formato non supportato
+            return inputImage;
         }
 
         Image resultingImage = originalImage.getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH);
@@ -25,7 +25,6 @@ public class ImageUtility {
         g2d.dispose();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        // Salviamo sempre come JPEG per uniformità e compressione
         ImageIO.write(outputImage, "jpg", baos);
         return baos.toByteArray();
     }

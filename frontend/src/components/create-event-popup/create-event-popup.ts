@@ -99,20 +99,18 @@ export class CreateEventPopup {
 
     onSubmit() {
         this.submitAttempted = true;
-        this.errors = {}; // Clear previous errors
+        this.errors = {};
         this.generalError = '';
 
         Object.keys(this.form.controls).forEach(key => {
             this.form.get(key)?.markAsTouched();
         });
 
-        // Collect all field errors
         const controls = this.form.controls;
         if (controls['title'].invalid) this.errors.title = 'Title is required.';
         if (controls['description'].invalid) this.errors.description = 'Description is required.';
         if (controls['date'].invalid) this.errors.date = 'Date is required.';
         if (controls['startTime'].invalid) this.errors.startTime = 'Start time is required.';
-        // endTime is optional
         if (controls['nPartecipants'].invalid) {
             if (controls['nPartecipants'].errors?.['required']) {
                 this.errors.nPartecipants = 'Number of participants is required.';
@@ -128,7 +126,6 @@ export class CreateEventPopup {
             }
         }
 
-        // Check cross-field validation
         if (this.form.errors?.['timeOrder']) {
             this.errors.time = 'Start time must be before end time.';
         } else if (this.form.errors?.['minDuration']) {

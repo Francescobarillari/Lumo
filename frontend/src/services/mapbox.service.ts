@@ -16,8 +16,8 @@ export class MapboxService {
         const url = `${this.apiUrl}/${encodeURIComponent(query)}.json`;
         const params = {
             access_token: Environment.mapboxToken,
-            types: 'place,locality', // Restrict to cities/localities
-            limit: '5', // Increase limit as requested
+            types: 'place,locality',
+            limit: '5',
             language: 'it'
         };
 

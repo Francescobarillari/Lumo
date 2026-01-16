@@ -203,7 +203,7 @@
   transform: rotate(180deg);
 }
 
-/* Single Pinned Message Bar (WhatsApp style) */
+
 .pinned-bar {
   display: flex;
   align-items: center;

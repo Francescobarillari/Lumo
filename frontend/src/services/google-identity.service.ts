@@ -101,7 +101,6 @@ export class GoogleIdentityService {
             finish({ message: 'Google sign-in cancelled.', code: 'google_cancelled' });
           }
         },
-        // Modal popup: avoids One Tap suppression due to cookies/3rd-party blocking.
         ux_mode: 'popup',
         use_fedcm_for_prompt: true,
         itp_support: true,

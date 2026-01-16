@@ -28,11 +28,10 @@ export class UserProfileModalComponent implements OnChanges {
     notificationsEnabled: boolean = false;
     notificationsLoading: boolean = false;
 
-    // Followers/Following lists
     view: 'profile' | 'followers' | 'following' | 'events' = 'profile';
     userList: User[] = [];
     loadingList: boolean = false;
-    myFollowingIds: Set<string> = new Set(); // To knowing if I follow the people in the lists
+    myFollowingIds: Set<string> = new Set();
     loadingEvents: boolean = false;
     upcomingEvents: Event[] = [];
     pastEvents: Event[] = [];
@@ -141,7 +140,6 @@ export class UserProfileModalComponent implements OnChanges {
         return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
     }
 
-    // List Logic (Copy-Paste adapted from AccountModal but Read-Only mainly)
     showFollowers() {
         if (!this.userId) return;
         this.view = 'followers';
@@ -150,7 +148,7 @@ export class UserProfileModalComponent implements OnChanges {
         this.userService.getFollowers(this.userId).subscribe({
             next: (followers) => {
                 this.userList = followers;
-                this.fetchMyFollowing(); // To show follow/unfollow buttons in the list if desired
+                this.fetchMyFollowing();
             },
             error: (err) => {
                 console.error(err);
@@ -192,7 +190,6 @@ export class UserProfileModalComponent implements OnChanges {
         });
     }
 
-    // Follow logic for the list items
     onListFollow(targetUser: User) {
         if (!this.currentUserId) return;
         this.userService.followUser(this.currentUserId, targetUser.id.toString()).subscribe({

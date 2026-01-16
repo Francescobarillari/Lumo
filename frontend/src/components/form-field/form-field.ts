@@ -14,7 +14,7 @@ export class FormField {
   @Input() type: string = 'text';
   @Input() placeholder: string = '';
   @Input() error: boolean = false;
-  @Input() customClass: string = ''; // For custom styling
+  @Input() customClass: string = '';
   @Input() showToggle: boolean = false;
   @Input() min: number | null = null;
 

@@ -99,7 +99,7 @@
     background: rgba(255, 255, 255, 0.1);
 }
 
-/* Profile Content */
+
 .profile-content {
     display: flex;
     flex-direction: column;
@@ -189,13 +189,13 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    /* Spread items */
+    
     gap: 0;
-    /* Remove fixed gap */
+    
     margin-top: 16px;
     background: rgba(255, 255, 255, 0.05);
     padding: 16px 12px;
-    /* Slightly reduced side padding */
+    
     border-radius: 12px;
     width: 100%;
 }
@@ -206,7 +206,7 @@
     align-items: center;
     gap: 4px;
     flex: 1;
-    /* Force equal width */
+    
 }
 
 .stat-item.clickable {
@@ -225,7 +225,7 @@
 
 .stat-label {
     font-size: 11px;
-    /* Slightly smaller to fit */
+    
     color: #888;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -234,13 +234,13 @@
 .stat-divider {
     width: 1px;
     height: 30px;
-    /* adjusted height */
+    
     background: rgba(255, 255, 255, 0.1);
     flex-shrink: 0;
-    /* Don't shrink */
+    
 }
 
-/* Actions */
+
 .follow-main-btn {
     width: 100%;
     max-width: 220px;
@@ -248,8 +248,7 @@
     color: #ffffff !important;
 }
 
-/* Ensure background is accent (yellow) by default via .button, 
-   but specific override here using var/color just in case of specificity issues */
+
 .follow-main-btn:not(.following) {
     background-color: var(--color-accent);
 }
@@ -292,7 +291,7 @@
     cursor: not-allowed;
 }
 
-/* Events View */
+
 .events-view {
     display: flex;
     flex-direction: column;
@@ -302,7 +301,7 @@
     scrollbar-width: thin;
     scrollbar-color: var(--color-bit-gray) transparent;
     max-height: 500px;
-    /* Limit height to prevent stretching entire modal */
+    
 }
 
 .events-section {
@@ -316,7 +315,7 @@
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 
-/* Scrollbar styling similar to sidebar */
+
 .events-view::-webkit-scrollbar {
     width: 6px;
 }
@@ -426,13 +425,13 @@
     flex-shrink: 0;
 }
 
-/* List View */
+
 .list-view {
     display: flex;
     flex-direction: column;
     flex: 1;
     overflow: hidden;
-    /* For inner scroll */
+    
 }
 
 .list-header {
@@ -480,7 +479,7 @@
     padding-right: 4px;
 }
 
-/* User Item Style */
+
 .user-item {
     display: flex;
     align-items: center;

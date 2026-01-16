@@ -3,8 +3,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-//il file del servizio per la tabella degli eventi
-
 export interface Event {
   id?: number;
   title: string;

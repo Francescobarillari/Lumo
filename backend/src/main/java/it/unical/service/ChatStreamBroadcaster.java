@@ -42,11 +42,7 @@ public class ChatStreamBroadcaster {
                         .data(payload, MediaType.APPLICATION_JSON));
             } catch (IOException ex) {
                 Long userId = emitterUsers.get(emitter);
-                if (userId != null) {
-                    removeEmitter(eventId, userId, emitter);
-                } else {
-                    removeEmitter(eventId, null, emitter);
-                }
+                removeEmitter(eventId, userId, emitter);
             }
         }
     }

@@ -17,8 +17,7 @@ public class AdminSeeder {
 
             admin.setName("Lumo Admin");
             admin.setEmail("admin@lumo.com");
-            // Password must satisfy >8 chars, uppercase, number, symbol
-            // "LumoAdmin123!" fits this criteria.
+            // Password di seed, da cambiare in produzione.
             admin.setPasswordHash(passwordEncoder.encode("LumoAdmin123!"));
             admin.setIsAdmin(true);
 

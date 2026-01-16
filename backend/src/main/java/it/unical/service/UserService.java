@@ -8,7 +8,6 @@ import java.util.List;
 
 @Service("realUserService")
 public class UserService implements IUserService {
-    // hei hei
     private final UserRepository userRepository;
 
     private final it.unical.repository.EventRepository eventRepository;
@@ -56,7 +55,6 @@ public class UserService implements IUserService {
         userRepository.deleteById(id);
     }
 
-    // ✅ Aggiunge o Rimuove un evento dai preferiti (Saved Events)
     @Override
     public boolean toggleSavedEvent(Long userId, Long eventId) {
         User user = userRepository.findById(userId)
@@ -65,7 +63,6 @@ public class UserService implements IUserService {
         it.unical.model.Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new RuntimeException("Evento non trovato con ID: " + eventId));
 
-        // Verifica se l'evento è già nei salvati
         boolean isAlreadySaved = user.getSavedEvents().stream().anyMatch(e -> e.getId().equals(eventId));
 
         if (isAlreadySaved) {
@@ -123,11 +120,9 @@ public class UserService implements IUserService {
 
         if (!follower.getFollowing().contains(followed)) {
             follower.getFollowing().add(followed);
-            // Enable notifications by default on follow
             follower.getFollowNotifications().add(followed);
             userRepository.save(follower);
 
-            // Notify Followed User
             notificationService.createRichNotification(followedId,
                     "New Follower",
                     follower.getName() + " started following you!",
@@ -213,9 +208,6 @@ public class UserService implements IUserService {
             user.setName(name);
         }
         if (email != null && !email.trim().isEmpty()) {
-            // Check if email already exists if different? Assuming simple update for now.
-            // In a real app we might want to check unique constraint or handle exception
-            // from DB.
             user.setEmail(email);
         }
         if (description != null) {

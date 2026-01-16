@@ -233,7 +233,6 @@ export class EventShareModalComponent implements OnChanges {
         const qrX = qrBgX + qrBorder;
         const qrY = qrBgY + qrBorder;
 
-        // GENERATE LOCAL QR CODE
         const link = this.getShareLink(event);
         let qrDataUrl = '';
         try {

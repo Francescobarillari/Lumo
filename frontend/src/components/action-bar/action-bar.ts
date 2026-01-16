@@ -39,7 +39,6 @@ export class ActionBarComponent implements OnInit, OnDestroy, OnChanges {
     ) { }
 
     ngOnInit() {
-        // Poll for notifications every 5 seconds if user is logged in
         this.startPolling();
     }
 
@@ -57,7 +56,7 @@ export class ActionBarComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     private startPolling() {
-        if (this.pollSubscription) return; // Already polling
+        if (this.pollSubscription) return;
         if (!this.loggedUser) return;
 
         this.pollSubscription = interval(5000).pipe(
@@ -68,22 +67,17 @@ export class ActionBarComponent implements OnInit, OnDestroy, OnChanges {
                     requests.push(this.notificationService.getNotifications(this.loggedUser.id));
                 }
 
-                // Always poll for user data updates (counters etc)
                 if (this.loggedUser) {
-                    this.userService.notifyUserUpdate(); // Trigger global refresh via service subject
+                    this.userService.notifyUserUpdate();
                 }
 
                 if (requests.length > 0) {
-                    // We can't return array of observables directly in switchMap to get array of results easily without forkJoin
-                    // But here we are mixing notification polling (returns array) with user update trigger (void)
-                    // Best approach: Just trigger user update, and continue notification polling if needed. 
                     return this.notificationService.getNotifications(this.loggedUser!.id);
                 }
                 return [];
             })
         ).subscribe({
             next: (notifications) => {
-                // If notifications returned (array), check unread
                 if (Array.isArray(notifications)) {
                     this.hasUnread = notifications.some(n => !n.isRead);
                 }
@@ -129,15 +123,13 @@ export class ActionBarComponent implements OnInit, OnDestroy, OnChanges {
         this.showUserMenu = false;
 
         if (this.showNotifications && this.loggedUser) {
-            // Mark all as read when opening
             this.notificationService.markAllAsRead(this.loggedUser.id).subscribe({
                 next: () => {
-                    this.hasUnread = false; // Clear indicator immediately
+                    this.hasUnread = false;
                 },
                 error: (err) => console.error('Error marking read', err)
             });
         } else if (!this.showNotifications && this.loggedUser) {
-            // Optional: Re-fetch status if needed, but local optimisic update is fine
             this.checkUnreadNotifications();
         }
     }
@@ -159,7 +151,7 @@ export class ActionBarComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     onChangePhotoFromAccount() {
-        this.showAccountModal = false; // Close modal during image selection
+        this.showAccountModal = false;
         this.action.emit('change-photo');
     }
 

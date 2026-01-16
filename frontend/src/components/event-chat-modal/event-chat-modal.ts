@@ -151,10 +151,8 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
       this.pollError = 'Massimo 5 opzioni consentite.';
       return;
     }
-    // Default distant future expiration since user removed the input
-    // Format: yyyy-MM-ddTHH:mm:ss for LocalDateTime.parse compatibility
     const futureDate = new Date(Date.now() + 1000 * 60 * 60 * 24 * 365 * 10);
-    const endsAtIso = futureDate.toISOString().split('.')[0]; // Removes .SSSZ
+    const endsAtIso = futureDate.toISOString().split('.')[0];
 
     this.chatService.createPoll(this.event.id, this.currentUserId, this.pollQuestion.trim(), options, endsAtIso)
       .subscribe({
@@ -176,7 +174,6 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
   toggleVote(poll: ChatPoll, optionId: number) {
     if (!this.currentUserId || poll.closed) return;
 
-    // Immediate single-choice vote
     this.chatService.votePoll(this.event.id, poll.id, this.currentUserId, [optionId]).subscribe({
       next: (updated) => this.upsertPoll(updated),
       error: (err) => console.error('Error voting poll', err)
@@ -330,7 +327,6 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
     return `chat-${type}-${id}`;
   }
 
-  // Keep for backward compatibility if needed in templates briefly
   getMessageAnchorId(id: number): string {
     return this.getItemAnchorId(id, 'message');
   }
@@ -648,7 +644,7 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private scrollToBottom() {
-    // Multiple frames to ensure DOM has settled, especially for list transitions and poll layouts
+    // Attende più frame per evitare layout incompleti.
     requestAnimationFrame(() => {
       this.doScrollToBottom();
       setTimeout(() => this.doScrollToBottom(), 50);

@@ -21,7 +21,7 @@ export class MyEventsModal implements OnInit {
     @Output() close = new EventEmitter<void>();
     @Output() focusLocal = new EventEmitter<Event>();
 
-    view: 'organized' | 'joined' = 'organized'; // Simplified/restored if needed, or keep activeTab
+    view: 'organized' | 'joined' = 'organized';
 
     getViewTitle(): string {
         if (this.expandedEventRequestsId) return 'Manage Requests';
@@ -44,7 +44,7 @@ export class MyEventsModal implements OnInit {
     loading = false;
     sharingEvent: Event | null = null;
 
-    // For expanding requests view for a specific event
+    // Stato per la vista richieste partecipazione.
     expandedEventRequestsId: number | null = null;
     showChatModal = false;
     chatEvent: Event | null = null;
@@ -60,7 +60,6 @@ export class MyEventsModal implements OnInit {
 
     loadData() {
         this.loading = true;
-        // Load both or just active? Let's load both to have counts
         this.eventService.getOrganizedEvents(this.userId).subscribe({
             next: (events) => this.organizedEvents = events,
             error: (err) => console.error('Error loading organized events', err)
@@ -96,7 +95,7 @@ export class MyEventsModal implements OnInit {
 
     switchTab(tab: 'ORGANIZED' | 'JOINED' | 'SAVED') {
         this.activeTab = tab;
-        this.expandedEventRequestsId = null; // Reset expansion
+        this.expandedEventRequestsId = null;
     }
 
     toggleRequests(eventId: number) {
@@ -141,21 +140,17 @@ export class MyEventsModal implements OnInit {
     acceptRequest(event: Event, user: User) {
         this.eventService.acceptParticipation(event.id, user.id).subscribe({
             next: () => {
-                // Remove user from processed list locally
                 if (event.pendingUsersList) {
                     event.pendingUsersList = event.pendingUsersList.filter(u => u.id !== user.id);
                 }
 
-                // Add to accepted list immediately
                 if (!event.acceptedUsersList) {
                     event.acceptedUsersList = [];
                 }
                 event.acceptedUsersList.push(user);
 
-                // Sort by name
                 event.acceptedUsersList.sort((u1, u2) => (u1.name || '').localeCompare(u2.name || ''));
 
-                // Increment occupied spots
                 event.occupiedSpots = (event.occupiedSpots || 0) + 1;
             },
             error: (err) => console.error('Error accepting', err)
