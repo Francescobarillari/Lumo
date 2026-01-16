@@ -30,7 +30,15 @@ public class ApiResponse {
         return new ApiResponse(false, fieldErrors, null);
     }
 
-    public boolean isSuccess() { return success; }
-    public Map<String, String> getData() { return data; }
-    public String getError() { return error; }
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public Map<String, String> getData() {
+        return data;
+    }
+
+    public String getError() {
+        return error;
+    }
 }

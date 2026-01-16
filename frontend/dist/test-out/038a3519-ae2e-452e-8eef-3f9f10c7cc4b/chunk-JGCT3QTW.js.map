@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/services/responsive-service.ts"],
+  "sourcesContent": ["import { Injectable, signal } from '@angular/core';\nimport { BreakpointObserver } from '@angular/cdk/layout';\n\n@Injectable({ providedIn: 'root' })\nexport class ResponsiveService {\n\n  screen = signal<'mobile' | 'tablet' | 'desktop'>('desktop');\n\n  constructor(private bp: BreakpointObserver) {\n    this.bp.observe([\n      '(max-width: 979px)',\n      '(min-width: 980px) and (max-width: 1399px)',\n      '(min-width: 1400px)'\n    ]).subscribe(state => {\n\n      if (state.breakpoints['(max-width: 979px)']) {\n        this.screen.set('mobile');\n\n      } else if (state.breakpoints['(min-width: 980px) and (max-width: 1399px)']) {\n        this.screen.set('tablet');\n\n      } else {\n        this.screen.set('desktop');\n      }\n    });\n  }\n}\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;IAIa;;;;;AAJb;AACA;AAGO,IAAM,oBAAN,MAAMA,mBAAiB;MAIR;MAFpB,SAAS,OAAwC,SAAS;MAE1D,YAAoB,IAAsB;AAAtB,aAAA,KAAA;AAClB,aAAK,GAAG,QAAQ;UACd;UACA;UACA;SACD,EAAE,UAAU,WAAQ;AAEnB,cAAI,MAAM,YAAY,oBAAoB,GAAG;AAC3C,iBAAK,OAAO,IAAI,QAAQ;UAE1B,WAAW,MAAM,YAAY,4CAA4C,GAAG;AAC1E,iBAAK,OAAO,IAAI,QAAQ;UAE1B,OAAO;AACL,iBAAK,OAAO,IAAI,SAAS;UAC3B;QACF,CAAC;MACH;;;;;AArBW,wBAAiB,WAAA;MAD7B,WAAW,EAAE,YAAY,OAAM,CAAE;OACrB,iBAAiB;;;",
+  "names": ["ResponsiveService"]
+}

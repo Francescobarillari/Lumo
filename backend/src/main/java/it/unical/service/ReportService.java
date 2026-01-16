@@ -32,7 +32,7 @@ public class ReportService {
     }
 
     public ReportResponse createReport(Long reporterId, String targetType, Long targetId, String reason,
-            String details, MultipartFile image) {
+                                       String details, MultipartFile image) {
         String normalizedType = normalizeTargetType(targetType);
         User reporter = userRepository.findById(reporterId)
                 .orElseThrow(() -> new IllegalArgumentException("Reporter not found"));

@@ -1,37 +1,16 @@
 package it.unical.service;
 
-import it.unical.dto.chat.ChatMessageResponse;
-import it.unical.dto.chat.ChatMuteResponse;
-import it.unical.dto.chat.ChatPollOptionResponse;
-import it.unical.dto.chat.ChatPollResponse;
-import it.unical.dto.chat.ChatPollVoterResponse;
+import it.unical.dto.chat.*;
 import it.unical.exception.FieldException;
-import it.unical.model.ChatMessage;
-import it.unical.model.ChatMute;
-import it.unical.model.ChatPoll;
-import it.unical.model.ChatPollOption;
-import it.unical.model.ChatPollVote;
-import it.unical.model.Event;
-import it.unical.model.EventChat;
-import it.unical.model.User;
-import it.unical.repository.ChatMessageRepository;
-import it.unical.repository.ChatMuteRepository;
-import it.unical.repository.ChatPollRepository;
-import it.unical.repository.ChatPollVoteRepository;
-import it.unical.repository.EventChatRepository;
-import it.unical.repository.EventRepository;
-import it.unical.repository.UserRepository;
+import it.unical.model.*;
+import it.unical.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional
@@ -203,7 +182,7 @@ public class ChatService {
     }
 
     public ChatPollResponse createPoll(Long eventId, Long adminId, String question, List<String> options,
-            LocalDateTime endsAt) {
+                                       LocalDateTime endsAt) {
         Event event = requireEvent(eventId);
         User admin = requireUser(adminId);
         assertUserCanAccess(event, admin);

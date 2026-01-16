@@ -17,8 +17,8 @@ public class UserService implements IUserService {
     private final INotificationService notificationService;
 
     public UserService(UserRepository userRepository, it.unical.repository.EventRepository eventRepository,
-            org.springframework.security.crypto.password.PasswordEncoder passwordEncoder,
-            INotificationService notificationService) {
+                       org.springframework.security.crypto.password.PasswordEncoder passwordEncoder,
+                       INotificationService notificationService) {
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;
         this.passwordEncoder = passwordEncoder;

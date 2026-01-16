@@ -71,8 +71,8 @@ public class Event {
     }
 
     public Event(Long id, String title, String description, int nPartecipants, String city, LocalDate date,
-            LocalDate endDate, LocalTime startTime, LocalTime endTime, LocalDateTime createdAt, Double latitude,
-            Double longitude, Double costPerPerson) {
+                 LocalDate endDate, LocalTime startTime, LocalTime endTime, LocalDateTime createdAt, Double latitude,
+                 Double longitude, Double costPerPerson) {
         this.id = id;
         this.title = title;
         this.description = description;

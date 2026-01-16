@@ -2,17 +2,17 @@ package it.unical.service;
 
 import it.unical.model.BannedWord;
 import it.unical.repository.BannedWordRepository;
-import org.springframework.stereotype.Service;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
-import java.nio.charset.StandardCharsets;
 
 @Service
 public class ContentFilterService {

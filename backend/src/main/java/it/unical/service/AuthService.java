@@ -1,28 +1,28 @@
 package it.unical.service;
 
-import it.unical.dto.SignInRequest;
-import it.unical.dto.SignUpRequest;
-import it.unical.dto.GoogleLoginRequest;
-import it.unical.dto.GoogleCodeLoginRequest;
-import it.unical.exception.FieldException;
-import it.unical.model.User;
-import it.unical.repository.UserRepository;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
+import it.unical.dto.GoogleCodeLoginRequest;
+import it.unical.dto.GoogleLoginRequest;
+import it.unical.dto.SignInRequest;
+import it.unical.dto.SignUpRequest;
+import it.unical.exception.FieldException;
+import it.unical.model.User;
+import it.unical.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import org.springframework.transaction.annotation.Transactional;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 @Service
 @Transactional
@@ -37,12 +37,12 @@ public class AuthService {
     private final String googleRedirectUri;
 
     public AuthService(UserRepository userRepo,
-            PasswordEncoder passwordEncoder,
-            EmailVerificationService emailVerificationService,
-            GoogleIdTokenVerifier googleIdTokenVerifier,
-            @Value("${app.google.client-id}") String googleClientId,
-            @Value("${app.google.client-secret}") String googleClientSecret,
-            @Value("${app.google.redirect-uri}") String googleRedirectUri) {
+                       PasswordEncoder passwordEncoder,
+                       EmailVerificationService emailVerificationService,
+                       GoogleIdTokenVerifier googleIdTokenVerifier,
+                       @Value("${app.google.client-id}") String googleClientId,
+                       @Value("${app.google.client-secret}") String googleClientSecret,
+                       @Value("${app.google.redirect-uri}") String googleRedirectUri) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
         this.emailVerificationService = emailVerificationService;

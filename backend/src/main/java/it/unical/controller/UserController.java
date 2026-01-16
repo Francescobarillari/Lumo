@@ -1,12 +1,11 @@
 package it.unical.controller;
 
 import it.unical.model.User;
-import it.unical.repository.UserRepository;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -27,7 +26,7 @@ public class UserController {
     @PostMapping("/{id}/image")
     @Transactional
     public ResponseEntity<Map<String, String>> uploadProfileImage(@PathVariable Long id,
-            @RequestParam("file") MultipartFile file) {
+                                                                  @RequestParam("file") MultipartFile file) {
         try {
             byte[] resizedImage = it.unical.utils.ImageUtility.resizeImage(file.getBytes(), 128, 128);
             String fileUrl = userService.updateProfileImage(id, resizedImage);

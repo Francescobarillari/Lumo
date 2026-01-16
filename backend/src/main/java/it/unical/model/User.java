@@ -2,9 +2,6 @@ package it.unical.model;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
 @Entity
 @Table(name = "users")
 public class User {

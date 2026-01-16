@@ -1,13 +1,13 @@
 package it.unical.service;
 
-import it.unical.repository.EventRepository;
-import it.unical.repository.EventChatRepository;
 import it.unical.model.Event;
 import it.unical.model.EventChat;
+import it.unical.repository.EventChatRepository;
+import it.unical.repository.EventRepository;
+import it.unical.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import it.unical.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -440,7 +440,7 @@ public class EventService implements IEventService {
     }
 
     private void notifyFollowersAboutEvent(it.unical.model.User creator, Event event, String title, String message,
-            String type) {
+                                           String type) {
         if (creator.getFollowers() == null || creator.getFollowers().isEmpty())
             return;
 

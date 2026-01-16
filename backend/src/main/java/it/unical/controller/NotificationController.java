@@ -1,7 +1,6 @@
 package it.unical.controller;
 
 import it.unical.model.Notification;
-import it.unical.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service("realNotificationService")
@@ -36,7 +35,7 @@ public class NotificationService implements INotificationService {
     }
 
     public void createRichNotification(Long userId, String title, String message, String type, Long relatedEventId,
-            Long relatedUserId) {
+                                       Long relatedUserId) {
         Notification n = new Notification(userId, title, message, type, relatedEventId, relatedUserId);
         notificationRepo.save(n);
     }

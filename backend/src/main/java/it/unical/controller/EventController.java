@@ -2,12 +2,11 @@ package it.unical.controller;
 
 import it.unical.model.Event;
 import it.unical.service.IEventService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-
-import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/api/events")
@@ -80,7 +79,7 @@ public class EventController {
 
     @PostMapping("/{id}/participants/{userId}/remove")
     public ResponseEntity<Void> removeParticipant(@PathVariable Long id, @PathVariable Long userId,
-            @RequestParam Long organizerId) {
+                                                  @RequestParam Long organizerId) {
         eventService.removeParticipant(organizerId, userId, id);
         return ResponseEntity.ok().build();
     }
