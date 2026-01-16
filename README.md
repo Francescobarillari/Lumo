@@ -29,16 +29,17 @@ Lumo e una app per creare, scoprire e partecipare a eventi sociali nella tua cit
 
 - Database usato: PostgreSQL
 - Config di default: `jdbc:postgresql://localhost:5432/lumo_db`, utente `lumo_user`, password `123456`
-- Override tramite env: `DB_URL`, `DB_USERNAME`, `DB_PASSWORD` (oppure file `.env` letto da Spring)
-- Dati di esempio: importa `dump_updated.sql` con `psql -U lumo_user -d lumo_db -f dump_updated.sql`
-- Nota: credenziali nel repo solo per far partire l app; in un ambiente reale vanno gestite come segreti
+- Dati di esempio: importa `dump_updated.sql` con `psql -U lumo_user -d lumo_db -f dump_updated.sql` (in alternativa usa un client grafico come DBeaver)
+- Nota: credenziali presenti per avviare l app subito dopo il clone, senza passare variabili d ambiente; in un ambiente reale vanno spostate in env o segreti e non versionate
+
+## Account di test
+
+- IMPORTANTE: PER USARE QUESTE CREDENZIALI DEVI IMPORTARE LA QUERY DI ESEMPIO/TEST (`dump_updated.sql`).
+- Utente demo: email `user@lumo.test`, password `User123!`
+- Utente admin: email `admin@lumo.test`, password `LumoTest123!`
 
 ## Buone pratiche
 
 - Fornisci dettagli precisi su luogo e orari
 - Rispetta le regole dell evento e gli altri partecipanti
 - Se noti comportamenti scorretti, usa la funzione di segnalazione
-
-## Supporto
-
-Per dubbi o problemi, contatta chi ti ha fornito l app o il referente del progetto.
