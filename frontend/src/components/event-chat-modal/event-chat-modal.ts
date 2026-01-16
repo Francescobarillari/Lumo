@@ -108,7 +108,7 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
 
   copyLink(url: string) {
     if (this.clipboard.copy(url)) {
-      this.snackBar.open('Link copiato negli appunti', 'OK', {
+      this.snackBar.open('Link copied to clipboard', 'OK', {
         duration: 2500,
         panelClass: ['toast-snackbar'],
         horizontalPosition: 'center',
@@ -150,7 +150,7 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
         });
       },
       error: (err) => {
-        this.messageError = 'Messaggio non consentito.';
+        this.messageError = 'Message not allowed.';
         console.error('Error checking message', err);
       }
     });
@@ -162,11 +162,11 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
       .map(line => line.trim())
       .filter(Boolean);
     if (options.length < 2) {
-      this.pollError = 'Inserisci almeno due opzioni.';
+      this.pollError = 'Please enter at least two options.';
       return;
     }
     if (options.length > 5) {
-      this.pollError = 'Massimo 5 opzioni consentite.';
+      this.pollError = 'Maximum 5 options allowed.';
       return;
     }
     const futureDate = new Date(Date.now() + 1000 * 60 * 60 * 24 * 365 * 10);
@@ -184,7 +184,7 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
         },
         error: (err) => {
           console.error('Error creating poll', err);
-          this.pollError = 'Errore nella creazione del sondaggio.';
+          this.pollError = 'Error creating poll.';
         }
       });
   }
