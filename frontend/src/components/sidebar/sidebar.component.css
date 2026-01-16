@@ -23,10 +23,10 @@
 .sidebar-container.collapsed {
     width: auto;
     height: 72px;
-    
+
     overflow: hidden;
     padding: 24px;
-    
+
     justify-content: center;
     border-radius: 24px;
 }
@@ -67,7 +67,7 @@
     justify-content: space-between;
     width: 100%;
     margin: 0;
-    
+
 }
 
 .sidebar-container.collapsed .logo {
@@ -395,8 +395,27 @@
     gap: 24px;
 }
 
+.sections-container {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(252, 195, 36, 0.45) rgba(255, 255, 255, 0.06);
+}
+
 .sections-container::-webkit-scrollbar {
-    display: none;
+    width: 6px;
+}
+
+.sections-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 10px;
+}
+
+.sections-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgba(252, 195, 36, 0.6), rgba(252, 195, 36, 0.3));
+    border-radius: 10px;
+}
+
+.sections-container::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, rgba(252, 195, 36, 0.8), rgba(252, 195, 36, 0.5));
 }
 
 .sections-container.search-mode {
@@ -465,9 +484,9 @@
     .sidebar-container.collapsed {
         width: fit-content;
         height: 72px;
-        
+
         padding: 24px;
-        
+
         border-radius: 24px;
         justify-content: center;
         align-items: center;
@@ -480,7 +499,7 @@
         justify-content: center;
         align-items: center;
         margin: 0;
-        
+
     }
 
     .sidebar-container.collapsed .logo {

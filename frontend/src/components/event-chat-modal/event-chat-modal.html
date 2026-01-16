@@ -79,7 +79,7 @@
               [class.pin-enabled]="isOrganizer" (click)="openPinMenu(item.poll, 'poll', $event)">
               <div class="poll-message-header">
                 <div class="header-main">
-                  <span class="poll-tag">Sondaggio</span>
+                  <span class="poll-tag">Poll</span>
                   <span class="time">{{ formatTimestamp(item.poll.createdAt) }}</span>
                 </div>
                 @if (isOrganizer && activePinId === item.poll.id && activePinType === 'poll') {
@@ -109,24 +109,24 @@
               <div class="poll-actions">
                 <button *ngIf="isOrganizer" class="pill ghost" (click)="closePoll(item.poll)"
                   [disabled]="item.poll.closed">
-                  Chiudi sondaggio
+                  Close poll
                 </button>
               </div>
-              <div class="poll-total">Totale voti: {{ getPollTotalVotes(item.poll) }}</div>
+              <div class="poll-total">Total votes: {{ getPollTotalVotes(item.poll) }}</div>
             </div>
             }
           </div>
           <div *ngIf="timelineItems.length === 0" class="empty-state">
-            Nessun messaggio ancora.
+            No messages yet.
           </div>
         </div>
 
         <div class="mute-banner" *ngIf="isMuted">
-          Sei stato mutato: puoi leggere ma non inviare messaggi.
+          You have been muted: you can read but not send messages.
         </div>
 
         <div class="message-input">
-          <input [(ngModel)]="messageText" placeholder="Scrivi un messaggio..." (input)="messageError = ''"
+          <input [(ngModel)]="messageText" placeholder="Write a message..." (input)="messageError = ''"
             [disabled]="isMuted" (keydown.enter)="sendMessage()">
           <button *ngIf="currentUserId" class="add-btn" (click)="openPollPopup()" [disabled]="isMuted">
             <mat-icon>add</mat-icon>
@@ -144,17 +144,17 @@
     <div class="poll-popup-backdrop" (click)="closePollPopup()">
       <div class="poll-popup" (click)="$event.stopPropagation()">
         <div class="poll-popup-header">
-          <span>Crea sondaggio</span>
+          <span>Create poll</span>
           <button class="icon-btn" (click)="closePollPopup()">
             <mat-icon>close</mat-icon>
           </button>
         </div>
         <div class="poll-create">
-          <input [(ngModel)]="pollQuestion" placeholder="Domanda del sondaggio" class="poll-question-input">
+          <input [(ngModel)]="pollQuestion" placeholder="Poll question" class="poll-question-input">
 
           <div class="poll-options-list">
             <div class="poll-option-row" *ngFor="let option of pollOptions; let i = index; trackBy: trackByIndex">
-              <input [(ngModel)]="pollOptions[i]" [placeholder]="'Opzione ' + (i + 1)">
+              <input [(ngModel)]="pollOptions[i]" [placeholder]="'Option ' + (i + 1)">
               <button class="remove-option-btn" (click)="removePollOption(i)" *ngIf="pollOptions.length > 2">
                 <mat-icon>remove_circle_outline</mat-icon>
               </button>
@@ -163,11 +163,11 @@
 
           <button class="add-option-pill" (click)="addPollOption()" *ngIf="pollOptions.length < 5">
             <mat-icon>add</mat-icon>
-            Aggiungi opzione
+            Add option
           </button>
 
           <div class="poll-error" *ngIf="pollError">{{ pollError }}</div>
-          <button class="pill create-poll-btn" (click)="createPoll()">Crea sondaggio</button>
+          <button class="pill create-poll-btn" (click)="createPoll()">Create poll</button>
         </div>
       </div>
     </div>
