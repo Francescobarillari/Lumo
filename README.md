@@ -1,6 +1,6 @@
 ![Lumo](frontend/src/assets/img/cover.png)
 
-Lumo e una app per creare, scoprire e partecipare a eventi sociali nella tua citta e non solo.
+Lumo è una app per creare, scoprire e partecipare a eventi sociali nella tua citta e non solo.
 
 ## Cosa puoi fare
 
@@ -12,7 +12,7 @@ Lumo e una app per creare, scoprire e partecipare a eventi sociali nella tua cit
 
 ## Come iniziare (per utenti)
 
-1. Apri l app dal link che ti ha fornito il team
+1. Apri l' app dal link che ti ha fornito il team
 2. Crea un account e conferma l email se richiesto
 3. Completa il profilo con le informazioni essenziali
 4. Esplora gli eventi disponibili o creane uno tuo
