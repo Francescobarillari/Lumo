@@ -42,21 +42,31 @@ export class CreateEventPopup {
     }
 
     private timeRangeValidator(group: FormGroup) {
-        const start = group.get('startTime')?.value;
-        const end = group.get('endTime')?.value;
+        const startDateValue = group.get('date')?.value;
+        const endDateValue = group.get('endDate')?.value;
+        const startTimeValue = group.get('startTime')?.value;
+        const endTimeValue = group.get('endTime')?.value;
 
-        if (start && end) {
-            const [h1, m1] = start.split(':').map(Number);
-            const [h2, m2] = end.split(':').map(Number);
+        if (startDateValue && startTimeValue && endTimeValue) {
+            // Use startDate for end if endDate is not provided
+            const endD = endDateValue || startDateValue;
 
-            const startMinutes = h1 * 60 + m1;
-            const endMinutes = h2 * 60 + m2;
+            const startStr = `${startDateValue}T${startTimeValue}`;
+            const endStr = `${endD}T${endTimeValue}`;
 
-            if (endMinutes <= startMinutes) {
+            const start = new Date(startStr);
+            const end = new Date(endStr);
+
+            if (isNaN(start.getTime()) || isNaN(end.getTime())) return null;
+
+            const diffMs = end.getTime() - start.getTime();
+
+            if (diffMs <= 0) {
                 return { timeOrder: true };
             }
 
-            if (endMinutes - startMinutes < 60) {
+            // Minimum 1 hour duration
+            if (diffMs < 60 * 60 * 1000) {
                 return { minDuration: true };
             }
         }
@@ -127,7 +137,7 @@ export class CreateEventPopup {
         }
 
         if (this.form.errors?.['timeOrder']) {
-            this.errors.time = 'Start time must be before end time.';
+            this.errors.time = 'End must be after start (check both date and time).';
         } else if (this.form.errors?.['minDuration']) {
             this.errors.time = 'Event must last at least one hour.';
         }
