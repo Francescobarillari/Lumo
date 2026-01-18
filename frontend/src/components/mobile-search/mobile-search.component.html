@@ -20,7 +20,7 @@
                 <button class="tab-btn" [class.active]="activeTab === 'places'"
                     (click)="setActiveTab('places')">PLACES</button>
                 <button class="tab-btn" [class.active]="activeTab === 'creators'"
-                    (click)="setActiveTab('creators')">CREATORS</button>
+                    (click)="setActiveTab('creators')">EVENTER</button>
             </div>
 
             @if (activeTab === 'events' && showFilterOptions) {
@@ -222,7 +222,7 @@
                     </div>
                     }
                     @if (isSearching && userResults.length === 0) {
-                    <div class="empty-state">No creators found.</div>
+                    <div class="empty-state">No eventers found.</div>
                     }
                 </div>
                 }

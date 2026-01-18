@@ -81,6 +81,10 @@
     .header-back-btn {
         display: inline-flex !important;
     }
+
+    .back-btn--profile {
+        display: inline-flex !important;
+    }
 }
 
 .close-btn {
@@ -189,13 +193,13 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    
+
     gap: 0;
-    
+
     margin-top: 16px;
     background: rgba(255, 255, 255, 0.05);
     padding: 16px 12px;
-    
+
     border-radius: 12px;
     width: 100%;
 }
@@ -206,7 +210,7 @@
     align-items: center;
     gap: 4px;
     flex: 1;
-    
+
 }
 
 .stat-item.clickable {
@@ -225,7 +229,7 @@
 
 .stat-label {
     font-size: 11px;
-    
+
     color: #888;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -234,10 +238,10 @@
 .stat-divider {
     width: 1px;
     height: 30px;
-    
+
     background: rgba(255, 255, 255, 0.1);
     flex-shrink: 0;
-    
+
 }
 
 
@@ -301,7 +305,7 @@
     scrollbar-width: thin;
     scrollbar-color: var(--color-bit-gray) transparent;
     max-height: 500px;
-    
+
 }
 
 .events-section {
@@ -431,14 +435,7 @@
     flex-direction: column;
     flex: 1;
     overflow: hidden;
-    
-}
 
-.list-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 16px;
 }
 
 .back-btn {
@@ -461,6 +458,10 @@
     top: 50%;
     transform: translateY(-50%);
     z-index: 2;
+}
+
+.back-btn--profile {
+    display: none;
 }
 
 .modal-header .close-btn {

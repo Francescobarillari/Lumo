@@ -1,7 +1,7 @@
 <div class="modal-backdrop" (click)="onClose()">
     <div class="modal-container" [class.events-mode]="view === 'events'" (click)="$event.stopPropagation()">
         <div class="modal-header">
-            <button class="back-btn header-back-btn mobile-only" (click)="onClose()">
+            <button class="back-btn header-back-btn" [class.back-btn--profile]="view === 'profile'" (click)="onClose()">
                 <mat-icon>arrow_back</mat-icon>
             </button>
             <h2 class="yellow-title">{{ getViewTitle() }}</h2>
@@ -25,7 +25,8 @@
             <p class="user-email" *ngIf="user.email && currentUserId && user.id.toString() === currentUserId">
                 {{ user.email }}
             </p>
-            <p class="user-description" *ngIf="user.description">{{ user.description }}</p>
+            <p class="user-description" *ngIf="user.description && user.description.trim() !== ''">{{ user.description
+                }}</p>
 
             <!-- FOLLOW ACTION -->
             @if (currentUserId && user.id.toString() !== currentUserId) {
@@ -68,22 +69,12 @@
         <!-- LIST VIEW (Followers/Following) -->
         @if (view === 'followers' || view === 'following') {
         <div class="list-view">
-            <div class="list-header">
-                <button class="back-btn" (click)="onClose()"> <!-- onClose resets to profile if view != profile -->
-                    <mat-icon>arrow_back</mat-icon>
-                </button>
-                <h3>{{ view === 'followers' ? 'Followers' : 'Following' }}</h3>
-            </div>
 
             <div class="user-list" *ngIf="!loadingList; else loadingTemplate">
                 @for (u of userList; track u.id) {
                 <div class="user-item">
                     <div class="user-info" (click)="onOpenProfileFromList(u)">
-                        @if (u.profileImage) {
-                        <img [src]="u.profileImage" class="list-avatar">
-                        } @else {
-                        <div class="list-avatar-placeholder">{{ getInitials(u.name) }}</div>
-                        }
+                        <img [src]="u.profileImage || 'assets/img/default-avatar.png'" class="list-avatar">
                         <span class="list-username">{{ u.name }}</span>
                     </div>
 

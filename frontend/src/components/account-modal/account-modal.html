@@ -29,7 +29,7 @@
                             <mat-icon>mail_outline</mat-icon>
                             {{ getDiscreteEmail(user?.email) }}
                         </p>
-                        <p class="user-description">{{ user?.description || 'Find The Glow' }}</p>
+                        <p class="user-description" *ngIf="user?.description">{{ user?.description }}</p>
 
                         <div class="stats-container">
                             <div class="stat-item clickable" (click)="showFollowers()">
