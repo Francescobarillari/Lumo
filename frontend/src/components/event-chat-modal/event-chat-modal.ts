@@ -112,7 +112,7 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
         duration: 2500,
         panelClass: ['toast-snackbar'],
         horizontalPosition: 'center',
-        verticalPosition: 'bottom'
+        verticalPosition: 'top'
       });
     }
   }

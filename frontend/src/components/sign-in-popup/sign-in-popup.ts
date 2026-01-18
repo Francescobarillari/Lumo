@@ -9,11 +9,12 @@ import { GoogleIdentityService } from '../../services/google-identity.service';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'SignInPopup',
   standalone: true,
-  imports: [FormField, MatIconModule, CommonModule, ReactiveFormsModule],
+  imports: [FormField, MatIconModule, CommonModule, ReactiveFormsModule, MatSnackBarModule],
   templateUrl: './sign-in-popup.html',
   styleUrls: ['./sign-in-popup.css'],
 })
@@ -32,7 +33,8 @@ export class SignInPopup {
     private auth: AuthService,
     private googleIdentity: GoogleIdentityService,
     private router: Router,
-    public responsive: ResponsiveService
+    public responsive: ResponsiveService,
+    private snackBar: MatSnackBar
   ) {
     this.form = this.fb.group({
       email: ['', [emailFormatValidator]],
@@ -62,6 +64,8 @@ export class SignInPopup {
       'La password deve avere almeno 8 caratteri, una maiuscola, un numero e un simbolo.';
 
     if (Object.keys(this.errors).length > 0) return;
+
+    this.showToast('Request in progress...');
 
     const payload = {
       email: this.form.value.email,
@@ -102,26 +106,31 @@ export class SignInPopup {
           if (body && typeof body === 'object') {
             if (body.data && typeof body.data === 'object') {
               this.errors = body.data;
+              this.showToast('Login failed. Please check your credentials.', 'error');
               return;
             }
             if (body.error && typeof body.error === 'string') {
               this.generalError = body.error;
+              this.showToast(this.generalError || 'Login failed', 'error');
               return;
             }
           }
 
           if (typeof err.error === 'string') {
             this.generalError = err.error;
+            this.showToast(this.generalError || 'Error', 'error');
             return;
           }
         }
 
         if (typeof err === 'string') {
           this.generalError = err;
+          this.showToast(this.generalError || 'Error', 'error');
           return;
         }
 
         this.generalError = 'Unexpected error.';
+        this.showToast(this.generalError || 'Error', 'error');
         console.warn('Unhandled error shape', err);
       }
     });
@@ -174,6 +183,7 @@ export class SignInPopup {
 
     try {
       const code = await this.googleIdentity.getAuthCode();
+      this.showToast('Request in progress...');
       this.auth.loginWithGoogleCode({ code }).subscribe({
         next: (res) => {
           this.signInSuccess.emit({
@@ -194,13 +204,16 @@ export class SignInPopup {
           const body = err?.error;
           if (body?.data && typeof body.data === 'object') {
             this.errors = body.data;
+            this.showToast('Google sign-in failed.', 'error');
             return;
           }
           if (typeof body?.error === 'string') {
             this.generalError = body.error;
+            this.showToast(this.generalError || 'Error', 'error');
             return;
           }
           this.generalError = 'Google sign-in failed.';
+          this.showToast(this.generalError || 'Error', 'error');
         }
       });
     } catch (e: any) {
@@ -208,10 +221,20 @@ export class SignInPopup {
         return;
       }
       this.generalError = e?.message || 'Google sign-in failed.';
+      this.showToast(this.generalError || 'Error', 'error');
     }
   }
 
   hasError(field: string): boolean {
     return !!this.errors[field];
+  }
+
+  private showToast(message: string, tone: 'default' | 'error' = 'default') {
+    this.snackBar.open(message, undefined, {
+      duration: 2500,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+      panelClass: tone === 'error' ? ['toast-snackbar', 'toast-snackbar--error'] : ['toast-snackbar']
+    });
   }
 }

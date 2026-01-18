@@ -9,11 +9,12 @@ import { GoogleIdentityService } from '../../services/google-identity.service';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'SignUpPopup',
   standalone: true,
-  imports: [FormField, MatIconModule, CommonModule, ReactiveFormsModule],
+  imports: [FormField, MatIconModule, CommonModule, ReactiveFormsModule, MatSnackBarModule],
   templateUrl: './sign-up-popup.html',
   styleUrls: ['./sign-up-popup.css'],
 })
@@ -31,7 +32,8 @@ export class SignUpPopup {
     private fb: FormBuilder,
     private auth: AuthService,
     private googleIdentity: GoogleIdentityService,
-    public responsive: ResponsiveService
+    public responsive: ResponsiveService,
+    private snackBar: MatSnackBar
   ) {
     this.form = this.fb.group({
       name: ['', [onlyLettersValidator]],
@@ -63,6 +65,8 @@ export class SignUpPopup {
 
     if (Object.keys(this.errors).length > 0) return;
 
+    this.showToast('Request in progress...');
+
     const payload = {
       name: this.form.value.name,
       birthdate: this.form.value.birthdate,
@@ -77,6 +81,7 @@ export class SignUpPopup {
 
         if (!res?.success) {
           this.generalError = res?.error || 'Registrazione non riuscita.';
+          this.showToast(this.generalError, 'error');
           return;
         }
 
@@ -96,26 +101,31 @@ export class SignUpPopup {
           if (body && typeof body === 'object') {
             if (body.data && typeof body.data === 'object') {
               this.errors = body.data;
+              this.showToast('Registration failed. Please check your data.', 'error');
               return;
             }
             if (body.error && typeof body.error === 'string') {
               this.generalError = body.error;
+              this.showToast(this.generalError || 'Registration failed', 'error');
               return;
             }
           }
 
           if (typeof err.error === 'string') {
             this.generalError = err.error;
+            this.showToast(this.generalError || 'Error', 'error');
             return;
           }
         }
 
         if (typeof err === 'string') {
           this.generalError = err;
+          this.showToast(this.generalError || 'Error', 'error');
           return;
         }
 
         this.generalError = 'Unexpected error.';
+        this.showToast(this.generalError || 'Error', 'error');
         console.warn('Unhandled error shape', err);
       }
     });
@@ -139,6 +149,7 @@ export class SignUpPopup {
 
     try {
       const code = await this.googleIdentity.getAuthCode();
+      this.showToast('Request in progress...');
       this.auth.loginWithGoogleCode({ code }).subscribe({
         next: (res) => {
           this.signInSuccess.emit({
@@ -152,13 +163,16 @@ export class SignUpPopup {
           const body = err?.error;
           if (body?.data && typeof body.data === 'object') {
             this.errors = body.data;
+            this.showToast('Google sign-in failed.', 'error');
             return;
           }
           if (typeof body?.error === 'string') {
             this.generalError = body.error;
+            this.showToast(this.generalError || 'Error', 'error');
             return;
           }
           this.generalError = 'Google sign-in failed.';
+          this.showToast(this.generalError || 'Error', 'error');
         }
       });
     } catch (e: any) {
@@ -166,6 +180,16 @@ export class SignUpPopup {
         return;
       }
       this.generalError = e?.message || 'Google sign-in failed.';
+      this.showToast(this.generalError || 'Error', 'error');
     }
+  }
+
+  private showToast(message: string, tone: 'default' | 'error' = 'default') {
+    this.snackBar.open(message, undefined, {
+      duration: 2500,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+      panelClass: tone === 'error' ? ['toast-snackbar', 'toast-snackbar--error'] : ['toast-snackbar']
+    });
   }
 }

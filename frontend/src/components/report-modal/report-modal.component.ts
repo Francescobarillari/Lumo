@@ -89,7 +89,7 @@ export class ReportModalComponent {
 
     private showToast(message: string, tone: 'default' | 'error' = 'default') {
         this.snackBar.open(message, undefined, {
-            duration: tone === 'error' ? 1400 : 1000,
+            duration: 2500,
             horizontalPosition: 'center',
             verticalPosition: 'top',
             panelClass: tone === 'error' ? ['toast-snackbar', 'toast-snackbar--error'] : ['toast-snackbar']

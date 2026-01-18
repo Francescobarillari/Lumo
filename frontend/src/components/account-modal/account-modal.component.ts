@@ -272,7 +272,7 @@ export class AccountModalComponent {
 
     private showToast(message: string, tone: 'default' | 'error' = 'default') {
         this.snackBar.open(message, undefined, {
-            duration: tone === 'error' ? 700 : 700,
+            duration: 2500,
             horizontalPosition: 'center',
             verticalPosition: 'top',
             panelClass: tone === 'error' ? ['toast-snackbar', 'toast-snackbar--error'] : ['toast-snackbar']

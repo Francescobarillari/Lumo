@@ -6,11 +6,12 @@ import { HttpClient } from '@angular/common/http';
 
 import { MatIconModule } from '@angular/material/icon';
 import { MapboxService } from '../../services/mapbox.service';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
     selector: 'create-event-popup',
     standalone: true,
-    imports: [CommonModule, FormField, ReactiveFormsModule, MatIconModule],
+    imports: [CommonModule, FormField, ReactiveFormsModule, MatIconModule, MatSnackBarModule],
     templateUrl: './create-event-popup.html',
     styleUrl: './create-event-popup.css'
 })
@@ -28,7 +29,12 @@ export class CreateEventPopup {
     locationText = 'Select position on map';
     selectedCity: string | null = null;
 
-    constructor(private fb: FormBuilder, private http: HttpClient, private mapboxService: MapboxService) {
+    constructor(
+        private fb: FormBuilder,
+        private http: HttpClient,
+        private mapboxService: MapboxService,
+        private snackBar: MatSnackBar
+    ) {
         this.form = this.fb.group({
             title: ['', Validators.required],
             description: ['', Validators.required],
@@ -174,13 +180,24 @@ export class CreateEventPopup {
 
         this.http.post(`http://localhost:8080/api/events?userId=${userId}`, eventData).subscribe({
             next: (response) => {
+                this.showToast('Event created! It will be visible after administrator approval.');
                 this.eventCreated.emit(response);
                 this.onClose();
             },
             error: (err) => {
                 console.error('Error creating event:', err);
+                this.showToast('Error creating event', 'error');
                 this.generalError = 'Error creating event';
             }
+        });
+    }
+
+    private showToast(message: string, tone: 'default' | 'error' = 'default') {
+        this.snackBar.open(message, undefined, {
+            duration: 2500,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+            panelClass: tone === 'error' ? ['toast-snackbar', 'toast-snackbar--error'] : ['toast-snackbar']
         });
     }
 }
