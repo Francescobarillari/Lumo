@@ -194,7 +194,7 @@
 }
 
 @if (showChatModal && chatEvent) {
-<event-chat-modal [event]="chatEvent" [currentUserId]="userId.toString()" [showBackArrow]="false"
+<event-chat-modal [event]="chatEvent" [currentUserId]="userId.toString()" [showBackArrow]="responsive.screen() === 'mobile'"
     (close)="closeChat()">
 </event-chat-modal>
 }

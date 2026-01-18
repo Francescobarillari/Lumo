@@ -8,6 +8,7 @@ import { EventCardComponent } from '../event-card/event-card.component';
 import { EventShareModalComponent } from '../event-share-modal/event-share-modal.component';
 import { EventChatModalComponent } from '../event-chat-modal/event-chat-modal';
 import { User } from '../../models/user';
+import { ResponsiveService } from '../../services/responsive-service';
 
 @Component({
     selector: 'app-my-events-modal',
@@ -51,7 +52,8 @@ export class MyEventsModal implements OnInit {
 
     constructor(
         private eventService: EventService,
-        private confirmation: ConfirmationService
+        private confirmation: ConfirmationService,
+        public responsive: ResponsiveService
     ) { }
 
     ngOnInit() {
