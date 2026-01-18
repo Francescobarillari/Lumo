@@ -39,6 +39,18 @@ export class MobileSearchComponent {
     discoverEvents: Event[] = [];
     foundEvents: Event[] = [];
 
+    filteredSearchResults: Event[] = [];
+    filteredFoundEvents: Event[] = [];
+    filteredFollowUpEvents: Event[] = [];
+    filteredSavedEvents: Event[] = [];
+    filteredDiscoverEvents: Event[] = [];
+
+    shownSearch = 3;
+    shownFound = 3;
+    shownFollowUp = 3;
+    shownSaved = 3;
+    shownDiscover = 3;
+
     filterOption: 'all' | 'participating' | 'free' | 'available' = 'all';
     sortOption: 'date' | 'distance' | 'name' = 'date';
     priceMin = 0;
@@ -94,6 +106,7 @@ export class MobileSearchComponent {
 
         this.eventService.searchEvents(this.searchQuery).subscribe(results => {
             this.searchResults = results;
+            this.applyFilters();
         });
 
         this.mapboxService.searchCity(this.searchQuery).subscribe(features => {
@@ -164,6 +177,7 @@ export class MobileSearchComponent {
         this.searchResults = [];
         this.cityResults = [];
         this.userResults = [];
+        this.applyFilters();
     }
 
     closeSearch() {
@@ -206,11 +220,13 @@ export class MobileSearchComponent {
 
         if (!this.userId) {
             this.foundEvents = this.events.filter(this.isFutureEvent);
+            this.applyFilters();
             return;
         }
 
         this.eventService.getJoinedEvents(this.userId).subscribe(joined => {
             this.followUpEvents = joined.filter(this.isFutureEvent);
+            this.applyFilters();
         });
 
         this.events.filter(this.isFutureEvent).forEach(event => {
@@ -220,6 +236,8 @@ export class MobileSearchComponent {
             if (isSaved) this.savedEvents.push(event);
             if (!isParticipating && !isSaved) this.discoverEvents.push(event);
         });
+
+        this.applyFilters();
     }
 
     private updateRangeLimits() {
@@ -252,7 +270,15 @@ export class MobileSearchComponent {
         }
     }
 
-    private applyFilters(events: Event[]): Event[] {
+    applyFilters() {
+        this.filteredFoundEvents = this.filterAndSortList(this.foundEvents);
+        this.filteredFollowUpEvents = this.filterAndSortList(this.followUpEvents);
+        this.filteredSavedEvents = this.filterAndSortList(this.savedEvents);
+        this.filteredDiscoverEvents = this.filterAndSortList(this.discoverEvents);
+        this.filteredSearchResults = this.filterAndSortList(this.searchResults);
+    }
+
+    private filterAndSortList(events: Event[]): Event[] {
         let filtered = [...events];
         switch (this.filterOption) {
             case 'participating': filtered = filtered.filter(e => !!e.isParticipating); break;
@@ -260,15 +286,6 @@ export class MobileSearchComponent {
             case 'available': filtered = filtered.filter(e => {
                 if (e.nPartecipants == null || e.occupiedSpots == null) return true;
                 return (e.nPartecipants - e.occupiedSpots) > 0;
-            }); break;
-        }
-        switch (this.sortOption) {
-            case 'distance': filtered.sort((a, b) => (a.distanceKm ?? 999) - (b.distanceKm ?? 999)); break;
-            case 'name': filtered.sort((a, b) => (a.title || '').localeCompare(b.title || '')); break;
-            case 'date': default: filtered.sort((a, b) => {
-                const aTime = new Date(`${a.date}T${a.startTime || '00:00'}`).getTime();
-                const bTime = new Date(`${b.date}T${b.startTime || '00:00'}`).getTime();
-                return aTime - bTime;
             }); break;
         }
 
@@ -289,23 +306,37 @@ export class MobileSearchComponent {
             });
         }
 
+        switch (this.sortOption) {
+            case 'distance': filtered.sort((a, b) => (a.distanceKm ?? 999) - (b.distanceKm ?? 999)); break;
+            case 'name': filtered.sort((a, b) => (a.title || '').localeCompare(b.title || '')); break;
+            case 'date': default: filtered.sort((a, b) => {
+                const aTime = new Date(`${a.date}T${a.startTime || '00:00'}`).getTime();
+                const bTime = new Date(`${b.date}T${b.startTime || '00:00'}`).getTime();
+                return aTime - bTime;
+            }); break;
+        }
+
         return filtered;
     }
 
-    getFiltered(list: Event[]): Event[] {
-        return this.applyFilters(list);
-    }
+    showMoreSearch() { this.shownSearch += 3; }
+    showMoreFound() { this.shownFound += 3; }
+    showMoreFollowUp() { this.shownFollowUp += 3; }
+    showMoreSaved() { this.shownSaved += 3; }
+    showMoreDiscover() { this.shownDiscover += 3; }
 
     selectFilter(opt: any) {
         this.filterOption = opt;
         this.filterMenuOpen = false;
         this.sortMenuOpen = false;
+        this.applyFilters();
     }
 
     selectSort(opt: any) {
         this.sortOption = opt;
         this.sortMenuOpen = false;
         this.filterMenuOpen = false;
+        this.applyFilters();
     }
 
     get priceMinPercent(): string {
@@ -331,20 +362,24 @@ export class MobileSearchComponent {
     onPriceMinChange(value: string) {
         const next = Math.max(0, Math.min(Number(value), this.priceMax));
         this.priceMin = Number.isNaN(next) ? this.priceMin : next;
+        this.applyFilters();
     }
 
     onPriceMaxChange(value: string) {
         const next = Math.min(this.priceMaxLimit, Math.max(Number(value), this.priceMin));
         this.priceMax = Number.isNaN(next) ? this.priceMax : next;
+        this.applyFilters();
     }
 
     onDistanceMinChange(value: string) {
         const next = Math.max(0, Math.min(Number(value), this.distanceMax));
         this.distanceMin = Number.isNaN(next) ? this.distanceMin : next;
+        this.applyFilters();
     }
 
     onDistanceMaxChange(value: string) {
         const next = Math.min(this.distanceMaxLimit, Math.max(Number(value), this.distanceMin));
         this.distanceMax = Number.isNaN(next) ? this.distanceMax : next;
+        this.applyFilters();
     }
 }

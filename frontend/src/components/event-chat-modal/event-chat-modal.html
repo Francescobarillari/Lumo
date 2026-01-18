@@ -129,7 +129,7 @@
           <input [(ngModel)]="messageText" placeholder="Write a message..." (input)="messageError = ''"
             [disabled]="isMuted" (keydown.enter)="sendMessage()">
           <button *ngIf="currentUserId" class="add-btn" (click)="openPollPopup()" [disabled]="isMuted">
-            <mat-icon>add</mat-icon>
+            <mat-icon>ballot</mat-icon>
           </button>
           <button class="send-btn" (click)="sendMessage()" [disabled]="isMuted || !messageText.trim()">
             <mat-icon>send</mat-icon>

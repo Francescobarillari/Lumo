@@ -61,7 +61,7 @@
 .nav-item.active,
 .nav-item:hover {
     background-color: rgba(252, 195, 36, 0.1);
-    
+
     color: var(--color-accent);
 }
 
@@ -107,7 +107,7 @@
     margin: 0 0 30px 0;
     font-weight: var(--font-weight-semibold);
     color: var(--color-white);
-    
+
 }
 
 
@@ -355,7 +355,7 @@ tr:last-child td {
 .approve {
     background: rgba(16, 185, 129, 0.1);
     color: var(--success);
-    
+
 }
 
 
@@ -363,7 +363,7 @@ tr:last-child td {
 .approve {
     background: rgba(76, 175, 80, 0.1);
     color: #4caf50;
-    
+
 }
 
 .approve:hover {
@@ -373,7 +373,7 @@ tr:last-child td {
 
 .reject {
     background: rgba(229, 57, 53, 0.1);
-    
+
     color: var(--color-error);
 }
 
@@ -658,6 +658,8 @@ tr:last-child td {
     min-height: 300px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     height: 100%;
+    padding: 24px;
+    box-sizing: border-box;
 }
 
 .reports-list {

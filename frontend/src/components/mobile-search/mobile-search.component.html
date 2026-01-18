@@ -98,7 +98,7 @@
                 @if (activeTab === 'events') {
                 @if (isSearching && hasSearchQuery) {
                 <div class="list-view">
-                    @for (event of getFiltered(searchResults); track event.id) {
+                    @for (event of filteredSearchResults | slice:0:shownSearch; track event.id) {
                     <app-event-card [title]="event.title" [location]="event.city" [dateTime]="formatDateTime(event)"
                         [distance]="formatDistance(event.distanceKm)" [id]="event.id!" [isSaved]="!!event.isSaved"
                         [savedCount]="event.savedCount" [showSavedCount]="false"
@@ -106,6 +106,9 @@
                         [organizerImage]="event.organizerImage" [creatorId]="event.creatorId" [currentUserId]="userId"
                         (focusLocation)="goToEvent(event)" (toggleFavorite)="toggleFavorite.emit(event)"
                         (shareEvent)="shareEvent.emit(event)" />
+                    }
+                    @if (filteredSearchResults.length > shownSearch) {
+                    <button class="show-more-btn" (click)="showMoreSearch()">Show more</button>
                     }
                     @if (searchResults.length === 0) {
                     <div class="empty-state">No events found.</div>
@@ -116,7 +119,7 @@
                 <div class="mobile-section">
                     <div class="section-title">FOUND EVENTS</div>
                     <div class="list-view">
-                        @for (event of getFiltered(foundEvents); track $index) {
+                        @for (event of filteredFoundEvents | slice:0:shownFound; track $index) {
                         <app-event-card [title]="event.title" [location]="event.city" [dateTime]="formatDateTime(event)"
                             [distance]="formatDistance(event.distanceKm)" [id]="event.id!" [isSaved]="!!event.isSaved"
                             [savedCount]="event.savedCount" [showSavedCount]="false"
@@ -125,6 +128,9 @@
                             [currentUserId]="userId" (focusLocation)="goToEvent(event)"
                             (toggleFavorite)="toggleFavorite.emit(event)" (shareEvent)="shareEvent.emit(event)"
                             [showOrganizerInfo]="false" />
+                        }
+                        @if (filteredFoundEvents.length > shownFound) {
+                        <button class="show-more-btn" (click)="showMoreFound()">Show more</button>
                         }
                         @if (foundEvents.length === 0) {
                         <div class="empty-state">No events found in your area.</div>
@@ -135,7 +141,7 @@
                 <div class="mobile-section">
                     <div class="section-title">FOLLOW UP EVENTS</div>
                     <div class="list-view">
-                        @for (event of getFiltered(followUpEvents); track $index) {
+                        @for (event of filteredFollowUpEvents | slice:0:shownFollowUp; track $index) {
                         <app-event-card [title]="event.title" [location]="event.city" [dateTime]="formatDateTime(event)"
                             [distance]="formatDistance(event.distanceKm)" [id]="event.id!" [isSaved]="!!event.isSaved"
                             [savedCount]="event.savedCount" [showSavedCount]="false" [isParticipating]="true"
@@ -143,6 +149,9 @@
                             [creatorId]="event.creatorId" [currentUserId]="userId" (focusLocation)="goToEvent(event)"
                             (toggleFavorite)="toggleFavorite.emit(event)" (shareEvent)="shareEvent.emit(event)"
                             [showOrganizerInfo]="false" />
+                        }
+                        @if (filteredFollowUpEvents.length > shownFollowUp) {
+                        <button class="show-more-btn" (click)="showMoreFollowUp()">Show more</button>
                         }
                         @if (followUpEvents.length === 0) {
                         <div class="empty-state">No upcoming events you are participating in.</div>
@@ -153,7 +162,7 @@
                 <div class="mobile-section">
                     <div class="section-title">SAVED EVENTS</div>
                     <div class="list-view">
-                        @for (event of getFiltered(savedEvents); track $index) {
+                        @for (event of filteredSavedEvents | slice:0:shownSaved; track $index) {
                         <app-event-card [title]="event.title" [location]="event.city" [dateTime]="formatDateTime(event)"
                             [distance]="formatDistance(event.distanceKm)" [id]="event.id!" [isSaved]="!!event.isSaved"
                             [savedCount]="event.savedCount" [showSavedCount]="false"
@@ -162,6 +171,9 @@
                             [currentUserId]="userId" (focusLocation)="goToEvent(event)"
                             (toggleFavorite)="toggleFavorite.emit(event)" (shareEvent)="shareEvent.emit(event)"
                             [showOrganizerInfo]="false" />
+                        }
+                        @if (filteredSavedEvents.length > shownSaved) {
+                        <button class="show-more-btn" (click)="showMoreSaved()">Show more</button>
                         }
                         @if (savedEvents.length === 0) {
                         <div class="empty-state">You haven't saved any events yet.</div>
@@ -172,7 +184,7 @@
                 <div class="mobile-section">
                     <div class="section-title">DISCOVER EVENTS</div>
                     <div class="list-view">
-                        @for (event of getFiltered(discoverEvents); track $index) {
+                        @for (event of filteredDiscoverEvents | slice:0:shownDiscover; track $index) {
                         <app-event-card [title]="event.title" [location]="event.city" [dateTime]="formatDateTime(event)"
                             [distance]="formatDistance(event.distanceKm)" [id]="event.id!" [isSaved]="!!event.isSaved"
                             [savedCount]="event.savedCount" [showSavedCount]="false"
@@ -180,6 +192,9 @@
                             [creatorId]="event.creatorId" [currentUserId]="userId" (focusLocation)="goToEvent(event)"
                             (toggleFavorite)="toggleFavorite.emit(event)" (shareEvent)="shareEvent.emit(event)"
                             [showOrganizerInfo]="false" />
+                        }
+                        @if (filteredDiscoverEvents.length > shownDiscover) {
+                        <button class="show-more-btn" (click)="showMoreDiscover()">Show more</button>
                         }
                         @if (discoverEvents.length === 0) {
                         <div class="empty-state">No new events to discover at the moment.</div>

@@ -502,13 +502,13 @@
 .info-action-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 3px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 999px;
-  padding: 6px 12px;
+  padding: 2px 6px;
   color: #f5f5f5;
-  font-size: 12px;
+  font-size: 9px;
   cursor: pointer;
   text-decoration: none;
   transition: background-color 0.2s, color 0.2s, border-color 0.2s;
@@ -521,9 +521,9 @@
 }
 
 .info-action-btn mat-icon {
-  font-size: 16px;
-  width: 16px;
-  height: 16px;
+  font-size: 10px;
+  width: 10px;
+  height: 10px;
 }
 
 .poll-message-card {
