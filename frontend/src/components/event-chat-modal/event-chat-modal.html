@@ -46,16 +46,18 @@
               </a>
             </div>
           </div>
-          <div class="timeline-item" *ngFor="let item of timelineItems">
+          <div class="timeline-item" *ngFor="let item of timelineItems; let i = index"
+            [class.continuation]="shouldHideSender(i)">
             @if (item.type === 'message' && item.message) {
             <div class="message" [attr.id]="getItemAnchorId(item.message.id, 'message')"
               [class.mine]="currentUserId && item.message.senderId.toString() === currentUserId"
               [class.pin-enabled]="isOrganizer" (click)="openPinMenu(item.message, 'message', $event)">
               <div class="avatar">
-                <img [src]="item.message.senderImage || 'assets/img/default-avatar.png'" alt="Avatar">
+                <img *ngIf="!shouldHideSender(i)" [src]="item.message.senderImage || 'assets/img/default-avatar.png'"
+                  alt="Avatar">
               </div>
               <div class="content">
-                <div class="meta">
+                <div class="meta" *ngIf="!shouldHideSender(i)">
                   <span class="name">{{ item.message.senderName }}</span>
                   <span class="time">{{ formatTimestamp(item.message.createdAt) }}</span>
                   @if (isOrganizer && activePinId === item.message.id && activePinType === 'message') {
@@ -79,7 +81,10 @@
               [class.pin-enabled]="isOrganizer" (click)="openPinMenu(item.poll, 'poll', $event)">
               <div class="poll-message-header">
                 <div class="header-main">
-                  <span class="poll-tag">Poll</span>
+                  <div class="poll-tags">
+                    <span class="poll-tag">Poll</span>
+                    <span class="poll-closed-tag" *ngIf="item.poll.closed">Closed</span>
+                  </div>
                   <span class="time">{{ formatTimestamp(item.poll.createdAt) }}</span>
                 </div>
                 @if (isOrganizer && activePinId === item.poll.id && activePinType === 'poll') {

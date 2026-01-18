@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UserService } from '../../services/user-service/user-service';
 import { ConfirmationService } from '../../services/confirmation.service';
-import { CircleIcon } from '../circle-icon/circle-icon';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormsModule } from '@angular/forms';
+import { censorEmail } from '../../utils/utils';
 
 import * as QRCode from 'qrcode';
 
@@ -85,12 +85,7 @@ export class AccountModalComponent {
     }
 
     getDiscreteEmail(email: string | undefined): string {
-        if (!email) return '';
-        if (email.length <= 25) return email;
-        const parts = email.split('@');
-        if (parts.length !== 2) return email;
-        const [user, domain] = parts;
-        return `...${user.slice(-3)}@${domain}`;
+        return censorEmail(email);
     }
 
     showFollowers() {

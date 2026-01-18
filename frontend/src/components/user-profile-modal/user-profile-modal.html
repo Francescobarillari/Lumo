@@ -22,8 +22,8 @@
             </div>
 
             <h3 class="user-name">{{ user.name }}</h3>
-            <p class="user-email" *ngIf="user.email && currentUserId && user.id.toString() === currentUserId">
-                {{ user.email }}
+            <p class="user-email" *ngIf="user.email">
+                {{ censorEmail(user.email) }}
             </p>
             <p class="user-description" *ngIf="user.description && user.description.trim() !== ''">{{ user.description
                 }}</p>

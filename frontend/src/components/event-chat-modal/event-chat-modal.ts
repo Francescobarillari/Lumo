@@ -254,6 +254,17 @@ export class EventChatModalComponent implements OnInit, OnChanges, OnDestroy {
     return option.voters.map(voter => voter.userName).join(', ');
   }
 
+  shouldHideSender(index: number): boolean {
+    if (index === 0) return false;
+    const curr = this.timelineItems[index];
+    const prev = this.timelineItems[index - 1];
+
+    if (curr.type !== 'message' || !curr.message) return false;
+    if (prev.type !== 'message' || !prev.message) return false;
+
+    return curr.message.senderId === prev.message.senderId;
+  }
+
   private rebuildTimelineItems() {
     const items: Array<{ type: 'message' | 'poll'; createdAt: string; message?: ChatMessage; poll?: ChatPoll }> = [];
     this.messages.forEach(message => items.push({ type: 'message', createdAt: message.createdAt, message }));

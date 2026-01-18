@@ -559,6 +559,12 @@
   gap: 2px;
 }
 
+.poll-tags {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .poll-tag {
   background: rgba(252, 195, 36, 0.2);
   color: var(--color-accent);
@@ -566,6 +572,27 @@
   border-radius: 999px;
   font-weight: 600;
   font-size: 11px;
+}
+
+.poll-closed-tag {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.timeline-item.continuation {
+  margin-top: -10px;
+}
+
+.timeline-item.continuation .message {
+  margin-bottom: 4px;
+}
+
+.timeline-item.continuation .avatar {
+  visibility: hidden;
 }
 
 .poll-message-question {

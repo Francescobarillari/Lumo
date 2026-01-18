@@ -7,6 +7,7 @@ import { User } from '../../models/user';
 import { EventService } from '../../services/event.service';
 import { Event } from '../../models/event';
 import { ReportModalComponent } from '../report-modal/report-modal.component';
+import { censorEmail } from '../../utils/utils';
 
 @Component({
     selector: 'app-user-profile-modal',
@@ -42,6 +43,8 @@ export class UserProfileModalComponent implements OnChanges {
         private eventService: EventService,
         private confirmation: ConfirmationService
     ) { }
+
+    censorEmail = censorEmail;
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['userId'] && this.userId) {

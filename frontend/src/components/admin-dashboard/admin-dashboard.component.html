@@ -113,8 +113,10 @@
                                 <td>{{ ev.date }}</td>
                                 <td>
                                     <div class="action-buttons">
-                                        <button class="btn-icon info" (click)="toggleDetails(ev.id)" title="View details">
-                                            <mat-icon>{{ expandedEventId === ev.id ? 'expand_less' : 'info' }}</mat-icon>
+                                        <button class="btn-icon info" (click)="toggleDetails(ev.id)"
+                                            title="View details">
+                                            <mat-icon>{{ expandedEventId === ev.id ? 'expand_less' : 'info'
+                                                }}</mat-icon>
                                         </button>
                                         @if (!eventsCurrentlyRejecting.includes(ev.id)) {
                                         <button class="btn-icon approve" (click)="approveEvent(ev)" title="Approve">
@@ -145,7 +147,8 @@
                                     <div class="event-details">
                                         <div class="detail-item full">
                                             <span class="detail-label">Description</span>
-                                            <span class="detail-value description">{{ ev.description || 'No description provided.' }}</span>
+                                            <span class="detail-value description">{{ ev.description || 'No description
+                                                provided.' }}</span>
                                         </div>
                                         <div class="detail-item">
                                             <span class="detail-label">Date</span>
@@ -153,7 +156,8 @@
                                         </div>
                                         <div class="detail-item">
                                             <span class="detail-label">Time</span>
-                                            <span class="detail-value">{{ ev.startTime || '-' }} - {{ ev.endTime || '-' }}</span>
+                                            <span class="detail-value">{{ ev.startTime || '-' }} - {{ ev.endTime || '-'
+                                                }}</span>
                                         </div>
                                         <div class="detail-item">
                                             <span class="detail-label">City</span>
@@ -165,11 +169,13 @@
                                         </div>
                                         <div class="detail-item">
                                             <span class="detail-label">Cost</span>
-                                            <span class="detail-value">{{ ev.costPerPerson != null ? (ev.costPerPerson + ' EUR') : 'Free' }}</span>
+                                            <span class="detail-value">{{ ev.costPerPerson != null ? (ev.costPerPerson +
+                                                ' EUR') : 'Free' }}</span>
                                         </div>
                                         <div class="detail-item">
                                             <span class="detail-label">Coordinates</span>
-                                            <span class="detail-value">{{ ev.latitude != null && ev.longitude != null ? (ev.latitude + ', ' + ev.longitude) : '-' }}</span>
+                                            <span class="detail-value">{{ ev.latitude != null && ev.longitude != null ?
+                                                (ev.latitude + ', ' + ev.longitude) : '-' }}</span>
                                         </div>
                                         <div class="detail-item">
                                             <span class="detail-label">Created</span>
@@ -177,7 +183,8 @@
                                         </div>
                                         <div class="detail-item">
                                             <span class="detail-label">Organizer</span>
-                                            <span class="detail-value">{{ ev.organizerName || ev.organizer || 'Unknown' }}</span>
+                                            <span class="detail-value">{{ ev.organizerName || ev.organizer || 'Unknown'
+                                                }}</span>
                                         </div>
                                         <div class="detail-item">
                                             <span class="detail-label">Event ID</span>
@@ -302,7 +309,8 @@
                                 <div class="event-details">
                                     <div class="detail-item full">
                                         <span class="detail-label">Description</span>
-                                        <span class="detail-value description">{{ ev.description || 'No description provided.' }}</span>
+                                        <span class="detail-value description">{{ ev.description || 'No description
+                                            provided.' }}</span>
                                     </div>
                                     <div class="detail-item">
                                         <span class="detail-label">Date</span>
@@ -310,7 +318,8 @@
                                     </div>
                                     <div class="detail-item">
                                         <span class="detail-label">Time</span>
-                                        <span class="detail-value">{{ ev.startTime || '-' }} - {{ ev.endTime || '-' }}</span>
+                                        <span class="detail-value">{{ ev.startTime || '-' }} - {{ ev.endTime || '-'
+                                            }}</span>
                                     </div>
                                     <div class="detail-item">
                                         <span class="detail-label">City</span>
@@ -322,11 +331,13 @@
                                     </div>
                                     <div class="detail-item">
                                         <span class="detail-label">Cost</span>
-                                        <span class="detail-value">{{ ev.costPerPerson != null ? (ev.costPerPerson + ' EUR') : 'Free' }}</span>
+                                        <span class="detail-value">{{ ev.costPerPerson != null ? (ev.costPerPerson + '
+                                            EUR') : 'Free' }}</span>
                                     </div>
                                     <div class="detail-item">
                                         <span class="detail-label">Coordinates</span>
-                                        <span class="detail-value">{{ ev.latitude != null && ev.longitude != null ? (ev.latitude + ', ' + ev.longitude) : '-' }}</span>
+                                        <span class="detail-value">{{ ev.latitude != null && ev.longitude != null ?
+                                            (ev.latitude + ', ' + ev.longitude) : '-' }}</span>
                                     </div>
                                     <div class="detail-item">
                                         <span class="detail-label">Created</span>
@@ -334,7 +345,8 @@
                                     </div>
                                     <div class="detail-item">
                                         <span class="detail-label">Organizer</span>
-                                        <span class="detail-value">{{ ev.organizerName || ev.organizer || 'Unknown' }}</span>
+                                        <span class="detail-value">{{ ev.organizerName || ev.organizer || 'Unknown'
+                                            }}</span>
                                     </div>
                                     <div class="detail-item">
                                         <span class="detail-label">Event ID</span>
@@ -380,7 +392,7 @@
                                     <span>{{ u.name }}</span>
                                 </div>
                             </td>
-                            <td>{{ u.email }}</td>
+                            <td>{{ censorEmail(u.email) }}</td>
                             <td>
                                 @if(u.isAdmin) {
                                 <span class="status-badge admin">Admin</span>
@@ -480,7 +492,8 @@
                             }
                             <div class="detail-row full">
                                 <span class="report-detail-label">Details:</span>
-                                <span class="report-detail-value">{{ selectedReport.details || 'No details provided.' }}</span>
+                                <span class="report-detail-value">{{ selectedReport.details || 'No details provided.'
+                                    }}</span>
                             </div>
                         </div>
 

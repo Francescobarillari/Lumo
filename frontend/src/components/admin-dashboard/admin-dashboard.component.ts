@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { Subscription, interval } from 'rxjs';
 import { ConfirmationService } from '../../services/confirmation.service';
 import { ReportItem } from '../../models/report';
+import { censorEmail } from '../../utils/utils';
 
 @Component({
     selector: 'app-admin-dashboard',
@@ -44,6 +45,8 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
         private confirmation: ConfirmationService,
         private snackBar: MatSnackBar
     ) { }
+
+    censorEmail = censorEmail;
 
     ngOnInit() {
         this.loadData();
