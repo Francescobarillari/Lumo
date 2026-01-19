@@ -3,7 +3,6 @@ package it.unical.controller;
 import it.unical.model.User;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,7 +23,6 @@ public class UserController {
     }
 
     @PostMapping("/{id}/image")
-    @Transactional
     public ResponseEntity<Map<String, String>> uploadProfileImage(@PathVariable Long id,
                                                                   @RequestParam("file") MultipartFile file) {
         try {
@@ -55,7 +53,6 @@ public class UserController {
     }
 
     @GetMapping("/{id}/image")
-    @Transactional
     public ResponseEntity<byte[]> serveFile(@PathVariable Long id) {
         byte[] imageData = userService.getProfileImage(id);
         if (imageData == null || imageData.length == 0) {
@@ -163,3 +160,4 @@ public class UserController {
         }
     }
 }
+

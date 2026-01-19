@@ -46,7 +46,7 @@ public class AdminController {
             userMap.put("isAdmin", user.getIsAdmin());
 
             List<Event> userPending = allPending.stream()
-                    .filter(e -> user.getParticipatingEvents().stream().anyMatch(pe -> pe.getId().equals(e.getId())))
+                    .filter(e -> e.getCreatorId() != null && e.getCreatorId().equals(user.getId()))
                     .collect(Collectors.toList());
 
             userMap.put("pendingEvents", userPending);

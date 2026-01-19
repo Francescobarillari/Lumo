@@ -6,14 +6,12 @@ import it.unical.model.*;
 import it.unical.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
-@Transactional
 public class ChatService {
     @Autowired
     private EventRepository eventRepository;
@@ -417,3 +415,4 @@ public class ChatService {
         }
     }
 }
+

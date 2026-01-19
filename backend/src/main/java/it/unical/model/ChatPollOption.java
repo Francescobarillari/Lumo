@@ -1,16 +1,6 @@
 package it.unical.model;
-
-import jakarta.persistence.*;
-
-@Entity
-@Table(name = "chat_poll_option")
 public class ChatPollOption {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "poll_id")
     @com.fasterxml.jackson.annotation.JsonIgnore
     private ChatPoll poll;
 
@@ -40,3 +30,4 @@ public class ChatPollOption {
         this.text = text;
     }
 }
+

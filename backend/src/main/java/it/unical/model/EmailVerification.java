@@ -1,36 +1,13 @@
 package it.unical.model;
-
-import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
-
-@Entity
-@Table(name = "email_verification")
 public class EmailVerification {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false)
     private String email;
-
-    @Column(nullable = false)
     private String name;
-
-    @Column(nullable = false)
     private String birthdate;
-
-    @Column(nullable = false)
     private String passwordHash;
-
-    @Column(nullable = false, unique = true)
     private String token;
-
-    @Column(nullable = false)
     private LocalDateTime expiresAt;
-
-    @Column(nullable = false)
     private boolean used = false;
 
     public Long getId() {
@@ -97,3 +74,4 @@ public class EmailVerification {
         this.used = used;
     }
 }
+

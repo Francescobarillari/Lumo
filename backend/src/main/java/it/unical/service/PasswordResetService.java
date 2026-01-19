@@ -9,13 +9,10 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
-@Transactional
 public class PasswordResetService {
 
     private static final long TOKEN_TTL_HOURS = 2;
@@ -114,3 +111,4 @@ public class PasswordResetService {
         mailSender.send(msg);
     }
 }
+

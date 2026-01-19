@@ -7,14 +7,11 @@ import it.unical.repository.EventRepository;
 import it.unical.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Service("realEventService")
-@Transactional
 public class EventService implements IEventService {
 
     @Autowired
@@ -35,31 +32,30 @@ public class EventService implements IEventService {
         if (event.getCostPerPerson() != null && event.getCostPerPerson() < 0) {
             event.setCostPerPerson(0.0);
         }
-        Event savedEvent = eventRepository.save(event);
 
         if (userId != null) {
-            userRepository.findById(userId).ifPresent(user -> {
-                event.setCreator(user);
-                user.getParticipatingEvents().add(savedEvent);
-                userRepository.save(user);
-
-                notifyFollowersAboutEvent(user,
-                        savedEvent,
-                        "New event",
-                        user.getName() + " published a new event: '" + savedEvent.getTitle() + "'.",
-                        "NEW_EVENT");
-            });
-            Event finalEvent = eventRepository.save(event);
-            ensureChat(finalEvent);
-            return finalEvent;
+            userRepository.findById(userId).ifPresent(event::setCreator);
         }
+
+        Event savedEvent = eventRepository.save(event);
+
+        if (userId != null && event.getCreator() != null) {
+            notifyFollowersAboutEvent(event.getCreator(),
+                    savedEvent,
+                    "New event",
+                    event.getCreator().getName() + " published a new event: '" + savedEvent.getTitle() + "'.",
+                    "NEW_EVENT");
+        }
+
         ensureChat(savedEvent);
         return savedEvent;
     }
 
     @Override
     public List<Event> getOrganizedEvents(Long userId) {
-        List<Event> events = eventRepository.findByCreator_Id(userId);
+        List<Event> events = eventRepository.findByCreator_Id(userId).stream()
+                .filter(event -> Boolean.TRUE.equals(event.getIsApproved()))
+                .toList();
 
         // Allinea liste transitorie per la UI.
         for (Event event : events) {
@@ -164,8 +160,11 @@ public class EventService implements IEventService {
         event.setIsApproved(true);
         Event saved = eventRepository.save(event);
 
-        if (event.getParticipants() != null && !event.getParticipants().isEmpty()) {
-            it.unical.model.User creator = event.getParticipants().iterator().next();
+        it.unical.model.User creator = event.getCreator();
+        if (creator == null && event.getCreatorId() != null) {
+            creator = userRepository.findById(event.getCreatorId()).orElse(null);
+        }
+        if (creator != null) {
             notificationService.createNotification(creator.getId(),
                     "Event Approved",
                     "Your event '" + event.getTitle() + "' has been approved and is now visible!",
@@ -178,8 +177,11 @@ public class EventService implements IEventService {
         Optional<Event> eventOpt = eventRepository.findById(id);
         if (eventOpt.isPresent()) {
             Event event = eventOpt.get();
-            if (event.getParticipants() != null && !event.getParticipants().isEmpty()) {
-                it.unical.model.User creator = event.getParticipants().iterator().next();
+            it.unical.model.User creator = event.getCreator();
+            if (creator == null && event.getCreatorId() != null) {
+                creator = userRepository.findById(event.getCreatorId()).orElse(null);
+            }
+            if (creator != null) {
 
                 String message = "Your event '" + event.getTitle() + "' has been rejected.";
                 if (reason != null && !reason.trim().isEmpty()) {
@@ -469,3 +471,4 @@ public class EventService implements IEventService {
         });
     }
 }
+

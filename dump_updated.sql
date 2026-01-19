@@ -284,6 +284,18 @@ WHERE NOT EXISTS (
   WHERE upp.user_id = u.id AND upp.event_id = e.id
 );
 
+-- Rimuove i creator dalle partecipazioni (coerente con il nuovo backend)
+DELETE FROM user_participations up
+USING "event" e
+WHERE up.event_id = e.id
+  AND up.user_id = e.creator_id;
+
+-- Rimuove i creator dalle pending (se presenti)
+DELETE FROM user_pending_participations upp
+USING "event" e
+WHERE upp.event_id = e.id
+  AND upp.user_id = e.creator_id;
+
 -- Eventi salvati (3 per utente)
 INSERT INTO user_saved (user_id, event_id)
 SELECT u.id, e.id

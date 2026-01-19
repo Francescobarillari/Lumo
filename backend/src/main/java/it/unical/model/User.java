@@ -1,21 +1,9 @@
 package it.unical.model;
-
-import jakarta.persistence.*;
-
-@Entity
-@Table(name = "users")
 public class User {
-
-    @Column(name = "is_admin")
     private Boolean isAdmin = false;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
-
-    @Column(unique = true)
     private String email;
 
     private String passwordHash;
@@ -25,40 +13,19 @@ public class User {
     private String profileImage;
 
     private byte[] profileImageData;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_participations", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "event_id"))
     @com.fasterxml.jackson.annotation.JsonIgnore
     private java.util.Set<Event> participatingEvents = new java.util.HashSet<>();
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_saved", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "event_id"))
     @com.fasterxml.jackson.annotation.JsonIgnore
     private java.util.Set<Event> savedEvents = new java.util.HashSet<>();
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_pending_participations", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "event_id"))
     @com.fasterxml.jackson.annotation.JsonIgnore
     private java.util.Set<Event> pendingEvents = new java.util.HashSet<>();
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_follows", joinColumns = @JoinColumn(name = "follower_id"), inverseJoinColumns = @JoinColumn(name = "followed_id"))
     @com.fasterxml.jackson.annotation.JsonIgnore
     private java.util.Set<User> following = new java.util.HashSet<>();
-
-    @ManyToMany(mappedBy = "following", fetch = FetchType.LAZY)
     @com.fasterxml.jackson.annotation.JsonIgnore
     private java.util.Set<User> followers = new java.util.HashSet<>();
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_follow_notifications", joinColumns = @JoinColumn(name = "follower_id"), inverseJoinColumns = @JoinColumn(name = "followed_id"))
     @com.fasterxml.jackson.annotation.JsonIgnore
     private java.util.Set<User> followNotifications = new java.util.HashSet<>();
-
-    @Column(length = 500)
     private String description;
-
-    @Transient
     private int approvedEventsCount = 0;
 
     public String getDescription() {
@@ -212,3 +179,4 @@ public class User {
     }
 
 }
+

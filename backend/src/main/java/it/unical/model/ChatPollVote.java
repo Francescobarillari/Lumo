@@ -1,29 +1,14 @@
 package it.unical.model;
 
-import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "chat_poll_vote", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"poll_id", "user_id", "option_id"})
-})
 public class ChatPollVote {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "poll_id")
     @com.fasterxml.jackson.annotation.JsonIgnore
     private ChatPoll poll;
 
-    @ManyToOne
-    @JoinColumn(name = "option_id")
     private ChatPollOption option;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
     private User user;
 
     private LocalDateTime createdAt;

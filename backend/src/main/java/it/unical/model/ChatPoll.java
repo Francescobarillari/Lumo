@@ -1,20 +1,9 @@
 package it.unical.model;
-
-import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-@Entity
-@Table(name = "chat_poll")
 public class ChatPoll {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "chat_id")
     @com.fasterxml.jackson.annotation.JsonIgnore
     private EventChat chat;
 
@@ -25,16 +14,9 @@ public class ChatPoll {
     private LocalDateTime endsAt;
 
     private Boolean isClosed = false;
-
-    @ManyToOne
-    @JoinColumn(name = "created_by")
     private User createdBy;
-
-    @OneToMany(mappedBy = "poll", cascade = CascadeType.ALL, orphanRemoval = true)
     @com.fasterxml.jackson.annotation.JsonIgnore
     private List<ChatPollOption> options = new ArrayList<>();
-
-    @OneToMany(mappedBy = "poll", cascade = CascadeType.ALL, orphanRemoval = true)
     @com.fasterxml.jackson.annotation.JsonIgnore
     private List<ChatPollVote> votes = new ArrayList<>();
 
@@ -110,3 +92,4 @@ public class ChatPoll {
         this.votes = votes;
     }
 }
+

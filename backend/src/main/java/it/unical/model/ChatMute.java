@@ -1,32 +1,15 @@
 package it.unical.model;
 
-import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "chat_mute", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"chat_id", "user_id"})
-})
 public class ChatMute {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "chat_id")
     @com.fasterxml.jackson.annotation.JsonIgnore
     private EventChat chat;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
     private User user;
-
-    @ManyToOne
-    @JoinColumn(name = "muted_by")
     private User mutedBy;
-
-    @Column(length = 300)
     private String reason;
 
     private LocalDateTime createdAt;

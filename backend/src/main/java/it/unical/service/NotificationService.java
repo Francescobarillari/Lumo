@@ -6,13 +6,10 @@ import it.unical.model.User;
 import it.unical.repository.NotificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDate;
 import java.util.List;
 
 @Service("realNotificationService")
-@Transactional
 public class NotificationService implements INotificationService {
 
     @Autowired
@@ -125,3 +122,4 @@ public class NotificationService implements INotificationService {
         }
     }
 }
+

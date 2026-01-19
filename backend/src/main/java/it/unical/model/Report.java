@@ -1,40 +1,20 @@
 package it.unical.model;
-
-import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
-
-@Entity
-@Table(name = "reports")
 public class Report {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false)
     private Long reporterId;
 
     private Long reportedUserId;
     private Long reportedEventId;
-
-    @Column(nullable = false)
     private String targetType; // USER o EVENT
-
-    @Column(nullable = false, length = 200)
     private String reason;
-
-    @Column(length = 2000)
     private String details;
-
-    @Lob
     private byte[] imageData;
 
     private String imageContentType;
     private String imageFileName;
 
     private LocalDateTime createdAt;
-
-    @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
     }
@@ -127,3 +107,4 @@ public class Report {
         this.createdAt = createdAt;
     }
 }
+

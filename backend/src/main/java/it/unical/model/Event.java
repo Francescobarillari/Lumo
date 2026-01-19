@@ -1,16 +1,8 @@
 package it.unical.model;
-
-import jakarta.persistence.*;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-
-@Entity
-@Table(name = "event")
 public class Event {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String title;
@@ -25,45 +17,20 @@ public class Event {
     private Double latitude;
     private Double longitude;
     private Double costPerPerson;
-
-    @Column(columnDefinition = "boolean default false")
     private Boolean isApproved = false;
-
-    @ManyToOne
-    @JoinColumn(name = "creator_id")
     @com.fasterxml.jackson.annotation.JsonIgnore
     private User creator;
-
-    @Transient
     private boolean isParticipating;
-
-    @Transient
     private boolean isSaved;
-
-    @Transient
     private int savedCount = 0;
-
-    @Transient
     private String participationStatus = "NONE";
-
-    @Transient
     private java.util.List<User> pendingUsersList;
-
-    @Transient
     private java.util.List<User> acceptedUsersList;
-
-    @Transient
     private Integer occupiedSpots;
-
-    @ManyToMany(mappedBy = "participatingEvents")
     @com.fasterxml.jackson.annotation.JsonIgnore
     private java.util.Set<User> participants = new java.util.HashSet<>();
-
-    @ManyToMany(mappedBy = "pendingEvents")
     @com.fasterxml.jackson.annotation.JsonIgnore
     private java.util.Set<User> pendingParticipants = new java.util.HashSet<>();
-
-    @ManyToMany(mappedBy = "savedEvents")
     @com.fasterxml.jackson.annotation.JsonIgnore
     private java.util.Set<User> usersWhoSaved = new java.util.HashSet<>();
 
@@ -324,3 +291,4 @@ public class Event {
         this.usersWhoSaved = usersWhoSaved;
     }
 }
+

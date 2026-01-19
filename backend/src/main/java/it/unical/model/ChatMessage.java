@@ -1,26 +1,10 @@
 package it.unical.model;
-
-import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
-
-@Entity
-@Table(name = "chat_message")
 public class ChatMessage {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "chat_id")
     @com.fasterxml.jackson.annotation.JsonIgnore
     private EventChat chat;
-
-    @ManyToOne
-    @JoinColumn(name = "sender_id")
     private User sender;
-
-    @Column(length = 2000)
     private String content;
 
     private LocalDateTime createdAt;
@@ -65,3 +49,4 @@ public class ChatMessage {
         this.createdAt = createdAt;
     }
 }
+

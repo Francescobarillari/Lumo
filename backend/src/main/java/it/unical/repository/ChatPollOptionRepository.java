@@ -1,10 +1,91 @@
 package it.unical.repository;
 
+import it.unical.model.ChatPoll;
 import it.unical.model.ChatPollOption;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
-public interface ChatPollOptionRepository extends JpaRepository<ChatPollOption, Long> {
-    List<ChatPollOption> findByPoll_Id(Long pollId);
+@Repository
+public class ChatPollOptionRepository {
+    private final DataSource dataSource;
+
+    public ChatPollOptionRepository(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    public List<ChatPollOption> findByPoll_Id(Long pollId) {
+        String sql = "SELECT id, poll_id, text FROM chat_poll_option WHERE poll_id = ?";
+        List<ChatPollOption> options = new ArrayList<>();
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setLong(1, pollId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    options.add(mapOption(rs));
+                }
+            }
+            return options;
+        } catch (SQLException ex) {
+            throw new DaoException("ChatPollOptionRepository.findByPoll_Id failed", ex);
+        }
+    }
+
+    public ChatPollOption save(ChatPollOption option) {
+        if (option == null) {
+            throw new IllegalArgumentException("ChatPollOptionRepository.save option is null");
+        }
+        if (option.getId() == null) {
+            insertOption(option);
+        } else {
+            updateOption(option);
+        }
+        return option;
+    }
+
+    private void insertOption(ChatPollOption option) {
+        String sql = "INSERT INTO chat_poll_option (poll_id, text) VALUES (?, ?)";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setObject(1, option.getPoll() != null ? option.getPoll().getId() : null);
+            stmt.setString(2, option.getText());
+            stmt.executeUpdate();
+            try (ResultSet keys = stmt.getGeneratedKeys()) {
+                if (keys.next()) {
+                    option.setId(keys.getLong(1));
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DaoException("ChatPollOptionRepository.insertOption failed", ex);
+        }
+    }
+
+    private void updateOption(ChatPollOption option) {
+        String sql = "UPDATE chat_poll_option SET poll_id = ?, text = ? WHERE id = ?";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setObject(1, option.getPoll() != null ? option.getPoll().getId() : null);
+            stmt.setString(2, option.getText());
+            stmt.setLong(3, option.getId());
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            throw new DaoException("ChatPollOptionRepository.updateOption failed", ex);
+        }
+    }
+
+    private ChatPollOption mapOption(ResultSet rs) throws SQLException {
+        ChatPollOption option = new ChatPollOption();
+        option.setId(rs.getLong("id"));
+        option.setText(rs.getString("text"));
+        Long pollId = (Long) rs.getObject("poll_id");
+        if (pollId != null) {
+            ChatPoll poll = new ChatPoll();
+            poll.setId(pollId);
+            option.setPoll(poll);
+        }
+        return option;
+    }
 }
