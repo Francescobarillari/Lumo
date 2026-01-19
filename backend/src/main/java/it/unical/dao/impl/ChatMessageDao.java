@@ -5,6 +5,8 @@ import it.unical.dao.base.DaoException;
 import it.unical.model.ChatMessage;
 import it.unical.model.EventChat;
 import it.unical.model.User;
+import it.unical.proxy.EventChatProxy;
+import it.unical.proxy.UserProxy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -155,14 +157,14 @@ public class ChatMessageDao {
 
         Long chatId = (Long) rs.getObject("chat_id");
         if (chatId != null) {
-            EventChat chat = new EventChat();
+            EventChat chat = new EventChatProxy(dataSource);
             chat.setId(chatId);
             message.setChat(chat);
         }
 
         Long senderId = (Long) rs.getObject("sender_id");
         if (senderId != null) {
-            User sender = new User();
+            User sender = new UserProxy(dataSource);
             sender.setId(senderId);
             sender.setName(rs.getString("name"));
             sender.setProfileImage(rs.getString("profile_image"));

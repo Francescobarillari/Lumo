@@ -5,6 +5,8 @@ import it.unical.dao.base.DaoException;
 import it.unical.model.ChatMute;
 import it.unical.model.EventChat;
 import it.unical.model.User;
+import it.unical.proxy.EventChatProxy;
+import it.unical.proxy.UserProxy;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -141,14 +143,14 @@ public class ChatMuteDao {
 
         Long chatId = (Long) rs.getObject("chat_id");
         if (chatId != null) {
-            EventChat chat = new EventChat();
+            EventChat chat = new EventChatProxy(dataSource);
             chat.setId(chatId);
             mute.setChat(chat);
         }
 
         Long userId = (Long) rs.getObject("user_id");
         if (userId != null) {
-            User user = new User();
+            User user = new UserProxy(dataSource);
             user.setId(userId);
             user.setName(rs.getString("user_name"));
             mute.setUser(user);
@@ -156,7 +158,7 @@ public class ChatMuteDao {
 
         Long mutedById = (Long) rs.getObject("muted_by");
         if (mutedById != null) {
-            User mutedBy = new User();
+            User mutedBy = new UserProxy(dataSource);
             mutedBy.setId(mutedById);
             mutedBy.setName(rs.getString("muted_by_name"));
             mute.setMutedBy(mutedBy);

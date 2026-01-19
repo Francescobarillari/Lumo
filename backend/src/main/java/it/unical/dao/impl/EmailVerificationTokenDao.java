@@ -4,6 +4,7 @@ import it.unical.dao.base.DaoException;
 
 import it.unical.model.EmailVerificationToken;
 import it.unical.model.User;
+import it.unical.proxy.UserProxy;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -147,7 +148,7 @@ public class EmailVerificationTokenDao {
 
         Long userId = (Long) rs.getObject("user_id");
         if (userId != null) {
-            User user = new User();
+            User user = new UserProxy(dataSource);
             user.setId(userId);
             user.setName(rs.getString("name"));
             user.setEmail(rs.getString("email"));

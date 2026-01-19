@@ -4,6 +4,8 @@ import it.unical.dao.base.DaoException;
 
 import it.unical.model.Event;
 import it.unical.model.EventChat;
+import it.unical.proxy.EventChatProxy;
+import it.unical.proxy.EventProxy;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -96,11 +98,11 @@ public class EventChatDao {
     }
 
     private EventChat mapChat(ResultSet rs) throws SQLException {
-        EventChat chat = new EventChat();
+        EventChat chat = new EventChatProxy(dataSource);
         chat.setId(rs.getLong("id"));
         Long eventId = (Long) rs.getObject("event_id");
         if (eventId != null) {
-            Event event = new Event();
+            Event event = new EventProxy(dataSource);
             event.setId(eventId);
             chat.setEvent(event);
         }

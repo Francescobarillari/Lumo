@@ -6,6 +6,8 @@ import it.unical.model.ChatPoll;
 import it.unical.model.ChatPollOption;
 import it.unical.model.ChatPollVote;
 import it.unical.model.User;
+import it.unical.proxy.ChatPollProxy;
+import it.unical.proxy.UserProxy;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -107,7 +109,7 @@ public class ChatPollVoteDao {
 
         Long pollId = (Long) rs.getObject("poll_id");
         if (pollId != null) {
-            ChatPoll poll = new ChatPoll();
+            ChatPoll poll = new ChatPollProxy(dataSource);
             poll.setId(pollId);
             vote.setPoll(poll);
         }
@@ -121,7 +123,7 @@ public class ChatPollVoteDao {
 
         Long userId = (Long) rs.getObject("user_id");
         if (userId != null) {
-            User user = new User();
+            User user = new UserProxy(dataSource);
             user.setId(userId);
             user.setName(rs.getString("name"));
             user.setProfileImage(rs.getString("profile_image"));

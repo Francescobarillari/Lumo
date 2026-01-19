@@ -7,6 +7,9 @@ import it.unical.model.ChatPollOption;
 import it.unical.model.ChatPollVote;
 import it.unical.model.EventChat;
 import it.unical.model.User;
+import it.unical.proxy.ChatPollProxy;
+import it.unical.proxy.EventChatProxy;
+import it.unical.proxy.UserProxy;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -34,8 +37,6 @@ public class ChatPollDao {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     ChatPoll poll = mapPoll(rs);
-                    poll.setOptions(loadOptions(conn, poll.getId()));
-                    poll.setVotes(loadVotes(conn, poll.getId()));
                     polls.add(poll);
                 }
             }
@@ -55,8 +56,6 @@ public class ChatPollDao {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     ChatPoll poll = mapPoll(rs);
-                    poll.setOptions(loadOptions(conn, poll.getId()));
-                    poll.setVotes(loadVotes(conn, poll.getId()));
                     return Optional.of(poll);
                 }
                 return Optional.empty();
@@ -173,71 +172,12 @@ public class ChatPollDao {
         }
     }
 
-    private List<ChatPollOption> loadOptions(Connection conn, Long pollId) throws SQLException {
-        String sql = "SELECT id, poll_id, text FROM chat_poll_option WHERE poll_id = ?";
-        List<ChatPollOption> options = new ArrayList<>();
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setLong(1, pollId);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    ChatPollOption option = new ChatPollOption();
-                    option.setId(rs.getLong("id"));
-                    option.setText(rs.getString("text"));
-                    ChatPoll poll = new ChatPoll();
-                    poll.setId((Long) rs.getObject("poll_id"));
-                    option.setPoll(poll);
-                    options.add(option);
-                }
-            }
-        }
-        return options;
-    }
-
-    private List<ChatPollVote> loadVotes(Connection conn, Long pollId) throws SQLException {
-        String sql = "SELECT v.id, v.poll_id, v.option_id, v.user_id, v.created_at, u.name, u.profile_image "
-                + "FROM chat_poll_vote v LEFT JOIN users u ON v.user_id = u.id WHERE v.poll_id = ?";
-        List<ChatPollVote> votes = new ArrayList<>();
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setLong(1, pollId);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    ChatPollVote vote = new ChatPollVote();
-                    vote.setId(rs.getLong("id"));
-
-                    ChatPoll poll = new ChatPoll();
-                    poll.setId((Long) rs.getObject("poll_id"));
-                    vote.setPoll(poll);
-
-                    Long optionId = (Long) rs.getObject("option_id");
-                    if (optionId != null) {
-                        ChatPollOption option = new ChatPollOption();
-                        option.setId(optionId);
-                        vote.setOption(option);
-                    }
-
-                    Long userId = (Long) rs.getObject("user_id");
-                    if (userId != null) {
-                        User user = new User();
-                        user.setId(userId);
-                        user.setName(rs.getString("name"));
-                        user.setProfileImage(rs.getString("profile_image"));
-                        vote.setUser(user);
-                    }
-
-                    vote.setCreatedAt(rs.getObject("created_at", LocalDateTime.class));
-                    votes.add(vote);
-                }
-            }
-        }
-        return votes;
-    }
-
     private ChatPoll mapPoll(ResultSet rs) throws SQLException {
-        ChatPoll poll = new ChatPoll();
+        ChatPoll poll = new ChatPollProxy(dataSource);
         poll.setId(rs.getLong("id"));
         Long chatId = (Long) rs.getObject("chat_id");
         if (chatId != null) {
-            EventChat chat = new EventChat();
+            EventChat chat = new EventChatProxy(dataSource);
             chat.setId(chatId);
             poll.setChat(chat);
         }
@@ -247,7 +187,7 @@ public class ChatPollDao {
         poll.setIsClosed(rs.getBoolean("is_closed"));
         Long creatorId = (Long) rs.getObject("created_by");
         if (creatorId != null) {
-            User creator = new User();
+            User creator = new UserProxy(dataSource);
             creator.setId(creatorId);
             poll.setCreatedBy(creator);
         }

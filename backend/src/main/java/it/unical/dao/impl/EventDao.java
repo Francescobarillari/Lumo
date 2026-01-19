@@ -4,6 +4,8 @@ import it.unical.dao.base.DaoException;
 
 import it.unical.model.Event;
 import it.unical.model.User;
+import it.unical.proxy.EventProxy;
+import it.unical.proxy.UserProxy;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -180,7 +182,6 @@ public class EventDao {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     Event event = mapEvent(rs);
-                    loadEventRelations(conn, event);
                     events.add(event);
                 }
             }
@@ -191,7 +192,7 @@ public class EventDao {
     }
 
     private Event mapEvent(ResultSet rs) throws SQLException {
-        Event event = new Event();
+        Event event = new EventProxy(dataSource);
         event.setId(rs.getLong("e_id"));
         event.setTitle(rs.getString("e_title"));
         event.setDescription(rs.getString("e_description"));
@@ -209,7 +210,7 @@ public class EventDao {
 
         Long creatorId = (Long) rs.getObject("c_id");
         if (creatorId != null) {
-            User creator = new User();
+            User creator = new UserProxy(dataSource);
             creator.setId(creatorId);
             creator.setName(rs.getString("c_name"));
             creator.setEmail(rs.getString("c_email"));
@@ -223,45 +224,6 @@ public class EventDao {
         }
 
         return event;
-    }
-
-    private void loadEventRelations(Connection conn, Event event) throws SQLException {
-        if (event.getId() == null) {
-            return;
-        }
-        event.setParticipants(loadEventUsers(conn, "user_participations", event.getId()));
-        event.setPendingParticipants(loadEventUsers(conn, "user_pending_participations", event.getId()));
-        event.setUsersWhoSaved(loadEventUsers(conn, "user_saved", event.getId()));
-    }
-
-    private Set<User> loadEventUsers(Connection conn, String joinTable, Long eventId) throws SQLException {
-        String sql = "SELECT u.id, u.name, u.email, u.password_hash, u.birthdate, u.profile_image, "
-                + "u.profile_image_data, u.description, u.is_admin FROM users u "
-                + "JOIN " + joinTable + " j ON j.user_id = u.id WHERE j.event_id = ?";
-        Set<User> users = new HashSet<>();
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setLong(1, eventId);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    users.add(mapUser(rs));
-                }
-            }
-        }
-        return users;
-    }
-
-    private User mapUser(ResultSet rs) throws SQLException {
-        User user = new User();
-        user.setId(rs.getLong("id"));
-        user.setName(rs.getString("name"));
-        user.setEmail(rs.getString("email"));
-        user.setPasswordHash(rs.getString("password_hash"));
-        user.setBirthdate(rs.getString("birthdate"));
-        user.setProfileImage(rs.getString("profile_image"));
-        user.setProfileImageData(rs.getBytes("profile_image_data"));
-        user.setDescription(rs.getString("description"));
-        user.setIsAdmin(rs.getBoolean("is_admin"));
-        return user;
     }
 
     private LocalDate parseLocalDate(String value) {

@@ -4,13 +4,12 @@ import it.unical.dao.base.DaoException;
 
 import it.unical.model.Event;
 import it.unical.model.User;
+import it.unical.proxy.UserProxy;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.*;
 
 @Repository
@@ -45,7 +44,6 @@ public class UserDao {
                     return Optional.empty();
                 }
                 User user = mapUserBase(rs, "");
-                loadUserRelations(conn, user);
                 return Optional.of(user);
             }
         } catch (SQLException ex) {
@@ -63,7 +61,6 @@ public class UserDao {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     User user = mapUserBase(rs, "");
-                    loadUserRelations(conn, user);
                     users.add(user);
                 }
             }
@@ -84,7 +81,6 @@ public class UserDao {
                     return Optional.empty();
                 }
                 User user = mapUserBase(rs, "");
-                loadUserRelations(conn, user);
                 return Optional.of(user);
             }
         } catch (SQLException ex) {
@@ -101,7 +97,6 @@ public class UserDao {
              ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 User user = mapUserBase(rs, "");
-                loadUserRelations(conn, user);
                 users.add(user);
             }
             return users;
@@ -282,65 +277,8 @@ public class UserDao {
         }
     }
 
-    private void loadUserRelations(Connection conn, User user) throws SQLException {
-        Long userId = user.getId();
-        if (userId == null) {
-            return;
-        }
-        user.setParticipatingEvents(loadUserEvents(conn, "user_participations", userId));
-        user.setPendingEvents(loadUserEvents(conn, "user_pending_participations", userId));
-        user.setSavedEvents(loadUserEvents(conn, "user_saved", userId));
-        user.setFollowing(loadUserUsers(conn, "user_follows", "follower_id", "followed_id", userId));
-        user.setFollowNotifications(loadUserUsers(conn, "user_follow_notifications", "follower_id", "followed_id", userId));
-        user.setFollowers(loadUserUsers(conn, "user_follows", "followed_id", "follower_id", userId));
-    }
-
-    private Set<Event> loadUserEvents(Connection conn, String joinTable, Long userId) throws SQLException {
-        String sql = "SELECT "
-                + "e.id as e_id, e.title as e_title, e.description as e_description, e.n_partecipants as e_n_partecipants, "
-                + "e.city as e_city, e.date as e_date, e.end_date as e_end_date, e.start_time as e_start_time, "
-                + "e.end_time as e_end_time, e.created_at as e_created_at, e.latitude as e_latitude, "
-                + "e.longitude as e_longitude, e.cost_per_person as e_cost_per_person, e.is_approved as e_is_approved, "
-                + "e.creator_id as e_creator_id, "
-                + "u.id as c_id, u.name as c_name, u.email as c_email, u.password_hash as c_password_hash, "
-                + "u.birthdate as c_birthdate, u.profile_image as c_profile_image, "
-                + "u.profile_image_data as c_profile_image_data, u.description as c_description, u.is_admin as c_is_admin "
-                + "FROM \"event\" e "
-                + "LEFT JOIN users u ON e.creator_id = u.id "
-                + "JOIN " + joinTable + " j ON j.event_id = e.id "
-                + "WHERE j.user_id = ?";
-        Set<Event> events = new HashSet<>();
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setLong(1, userId);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    events.add(mapEvent(rs));
-                }
-            }
-        }
-        return events;
-    }
-
-    private Set<User> loadUserUsers(Connection conn, String joinTable, String leftColumn, String rightColumn, Long userId)
-            throws SQLException {
-        String sql = "SELECT u.id, u.name, u.email, u.password_hash, u.birthdate, u.profile_image, "
-                + "u.profile_image_data, u.description, u.is_admin FROM users u "
-                + "JOIN " + joinTable + " j ON j." + rightColumn + " = u.id "
-                + "WHERE j." + leftColumn + " = ?";
-        Set<User> users = new HashSet<>();
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setLong(1, userId);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    users.add(mapUserBase(rs, ""));
-                }
-            }
-        }
-        return users;
-    }
-
     private User mapUserBase(ResultSet rs, String prefix) throws SQLException {
-        User user = new User();
+        User user = new UserProxy(dataSource);
         user.setId(rs.getLong(prefix + "id"));
         user.setName(rs.getString(prefix + "name"));
         user.setEmail(rs.getString(prefix + "email"));
@@ -353,50 +291,4 @@ public class UserDao {
         return user;
     }
 
-    private Event mapEvent(ResultSet rs) throws SQLException {
-        Event event = new Event();
-        event.setId(rs.getLong("e_id"));
-        event.setTitle(rs.getString("e_title"));
-        event.setDescription(rs.getString("e_description"));
-        event.setnPartecipants(rs.getInt("e_n_partecipants"));
-        event.setCity(rs.getString("e_city"));
-        event.setDate(parseLocalDate(rs.getString("e_date")));
-        event.setEndDate(parseLocalDate(rs.getString("e_end_date")));
-        event.setStartTime(rs.getObject("e_start_time", LocalTime.class));
-        event.setEndTime(rs.getObject("e_end_time", LocalTime.class));
-        event.setCreatedAt(rs.getObject("e_created_at", LocalDateTime.class));
-        event.setLatitude((Double) rs.getObject("e_latitude"));
-        event.setLongitude((Double) rs.getObject("e_longitude"));
-        event.setCostPerPerson((Double) rs.getObject("e_cost_per_person"));
-        event.setIsApproved(rs.getBoolean("e_is_approved"));
-
-        Long creatorId = (Long) rs.getObject("c_id");
-        if (creatorId != null) {
-            User creator = new User();
-            creator.setId(creatorId);
-            creator.setName(rs.getString("c_name"));
-            creator.setEmail(rs.getString("c_email"));
-            creator.setPasswordHash(rs.getString("c_password_hash"));
-            creator.setBirthdate(rs.getString("c_birthdate"));
-            creator.setProfileImage(rs.getString("c_profile_image"));
-            creator.setProfileImageData(rs.getBytes("c_profile_image_data"));
-            creator.setDescription(rs.getString("c_description"));
-            creator.setIsAdmin(rs.getBoolean("c_is_admin"));
-            event.setCreator(creator);
-        }
-
-        return event;
-    }
-
-    private LocalDate parseLocalDate(String value) {
-        if (value == null || value.isBlank()) {
-            return null;
-        }
-        return LocalDate.parse(value);
-    }
 }
-
-
-
-
-

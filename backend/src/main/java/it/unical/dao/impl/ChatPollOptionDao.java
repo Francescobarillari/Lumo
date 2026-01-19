@@ -2,8 +2,8 @@ package it.unical.dao.impl;
 
 import it.unical.dao.base.DaoException;
 
-import it.unical.model.ChatPoll;
 import it.unical.model.ChatPollOption;
+import it.unical.proxy.ChatPollProxy;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -84,7 +84,7 @@ public class ChatPollOptionDao {
         option.setText(rs.getString("text"));
         Long pollId = (Long) rs.getObject("poll_id");
         if (pollId != null) {
-            ChatPoll poll = new ChatPoll();
+            ChatPollProxy poll = new ChatPollProxy(dataSource);
             poll.setId(pollId);
             option.setPoll(poll);
         }
