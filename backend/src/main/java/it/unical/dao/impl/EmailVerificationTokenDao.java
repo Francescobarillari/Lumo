@@ -1,4 +1,6 @@
-package it.unical.repository;
+package it.unical.dao.impl;
+
+import it.unical.dao.base.DaoException;
 
 import it.unical.model.EmailVerificationToken;
 import it.unical.model.User;
@@ -12,10 +14,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class EmailVerificationTokenRepository {
+public class EmailVerificationTokenDao {
     private final DataSource dataSource;
 
-    public EmailVerificationTokenRepository(DataSource dataSource) {
+    public EmailVerificationTokenDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -34,7 +36,7 @@ public class EmailVerificationTokenRepository {
                 return null;
             }
         } catch (SQLException ex) {
-            throw new DaoException("EmailVerificationTokenRepository.findByToken failed", ex);
+            throw new DaoException("EmailVerificationTokenDao.findByToken failed", ex);
         }
     }
 
@@ -53,7 +55,7 @@ public class EmailVerificationTokenRepository {
                 return Optional.empty();
             }
         } catch (SQLException ex) {
-            throw new DaoException("EmailVerificationTokenRepository.findById failed", ex);
+            throw new DaoException("EmailVerificationTokenDao.findById failed", ex);
         }
     }
 
@@ -71,13 +73,13 @@ public class EmailVerificationTokenRepository {
             }
             return tokens;
         } catch (SQLException ex) {
-            throw new DaoException("EmailVerificationTokenRepository.findAll failed", ex);
+            throw new DaoException("EmailVerificationTokenDao.findAll failed", ex);
         }
     }
 
     public EmailVerificationToken save(EmailVerificationToken token) {
         if (token == null) {
-            throw new IllegalArgumentException("EmailVerificationTokenRepository.save token is null");
+            throw new IllegalArgumentException("EmailVerificationTokenDao.save token is null");
         }
         if (token.getId() == null) {
             insertToken(token);
@@ -94,7 +96,7 @@ public class EmailVerificationTokenRepository {
             stmt.setLong(1, id);
             stmt.executeUpdate();
         } catch (SQLException ex) {
-            throw new DaoException("EmailVerificationTokenRepository.deleteById failed", ex);
+            throw new DaoException("EmailVerificationTokenDao.deleteById failed", ex);
         }
     }
 
@@ -110,7 +112,7 @@ public class EmailVerificationTokenRepository {
                 }
             }
         } catch (SQLException ex) {
-            throw new DaoException("EmailVerificationTokenRepository.insertToken failed", ex);
+            throw new DaoException("EmailVerificationTokenDao.insertToken failed", ex);
         }
     }
 
@@ -122,7 +124,7 @@ public class EmailVerificationTokenRepository {
             bindToken(stmt, token, true);
             stmt.executeUpdate();
         } catch (SQLException ex) {
-            throw new DaoException("EmailVerificationTokenRepository.updateToken failed", ex);
+            throw new DaoException("EmailVerificationTokenDao.updateToken failed", ex);
         }
     }
 

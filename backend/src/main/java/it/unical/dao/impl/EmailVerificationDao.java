@@ -1,4 +1,6 @@
-package it.unical.repository;
+package it.unical.dao.impl;
+
+import it.unical.dao.base.DaoException;
 
 import it.unical.model.EmailVerification;
 import org.springframework.stereotype.Repository;
@@ -11,10 +13,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class EmailVerificationRepository {
+public class EmailVerificationDao {
     private final DataSource dataSource;
 
-    public EmailVerificationRepository(DataSource dataSource) {
+    public EmailVerificationDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -30,7 +32,7 @@ public class EmailVerificationRepository {
                 return Optional.empty();
             }
         } catch (SQLException ex) {
-            throw new DaoException("EmailVerificationRepository.findByToken failed", ex);
+            throw new DaoException("EmailVerificationDao.findByToken failed", ex);
         }
     }
 
@@ -46,7 +48,7 @@ public class EmailVerificationRepository {
                 return Optional.empty();
             }
         } catch (SQLException ex) {
-            throw new DaoException("EmailVerificationRepository.findByEmailAndUsedFalse failed", ex);
+            throw new DaoException("EmailVerificationDao.findByEmailAndUsedFalse failed", ex);
         }
     }
 
@@ -62,7 +64,7 @@ public class EmailVerificationRepository {
                 return Optional.empty();
             }
         } catch (SQLException ex) {
-            throw new DaoException("EmailVerificationRepository.findById failed", ex);
+            throw new DaoException("EmailVerificationDao.findById failed", ex);
         }
     }
 
@@ -77,13 +79,13 @@ public class EmailVerificationRepository {
             }
             return results;
         } catch (SQLException ex) {
-            throw new DaoException("EmailVerificationRepository.findAll failed", ex);
+            throw new DaoException("EmailVerificationDao.findAll failed", ex);
         }
     }
 
     public EmailVerification save(EmailVerification verification) {
         if (verification == null) {
-            throw new IllegalArgumentException("EmailVerificationRepository.save verification is null");
+            throw new IllegalArgumentException("EmailVerificationDao.save verification is null");
         }
         if (verification.getId() == null) {
             insertVerification(verification);
@@ -107,7 +109,7 @@ public class EmailVerificationRepository {
             stmt.setLong(1, id);
             stmt.executeUpdate();
         } catch (SQLException ex) {
-            throw new DaoException("EmailVerificationRepository.deleteById failed", ex);
+            throw new DaoException("EmailVerificationDao.deleteById failed", ex);
         }
     }
 
@@ -124,7 +126,7 @@ public class EmailVerificationRepository {
                 }
             }
         } catch (SQLException ex) {
-            throw new DaoException("EmailVerificationRepository.insertVerification failed", ex);
+            throw new DaoException("EmailVerificationDao.insertVerification failed", ex);
         }
     }
 
@@ -136,7 +138,7 @@ public class EmailVerificationRepository {
             bindVerification(stmt, verification, true);
             stmt.executeUpdate();
         } catch (SQLException ex) {
-            throw new DaoException("EmailVerificationRepository.updateVerification failed", ex);
+            throw new DaoException("EmailVerificationDao.updateVerification failed", ex);
         }
     }
 

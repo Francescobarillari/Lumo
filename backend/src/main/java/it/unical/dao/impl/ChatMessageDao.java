@@ -1,4 +1,6 @@
-package it.unical.repository;
+package it.unical.dao.impl;
+
+import it.unical.dao.base.DaoException;
 
 import it.unical.model.ChatMessage;
 import it.unical.model.EventChat;
@@ -15,10 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class ChatMessageRepository {
+public class ChatMessageDao {
     private final DataSource dataSource;
 
-    public ChatMessageRepository(DataSource dataSource) {
+    public ChatMessageDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -41,7 +43,7 @@ public class ChatMessageRepository {
                 }
             }
         } catch (SQLException ex) {
-            throw new DaoException("ChatMessageRepository.findByChat_IdOrderByCreatedAtDesc failed", ex);
+            throw new DaoException("ChatMessageDao.findByChat_IdOrderByCreatedAtDesc failed", ex);
         }
         return new PageImpl<>(messages, pageable, total);
     }
@@ -67,7 +69,7 @@ public class ChatMessageRepository {
 
     public ChatMessage save(ChatMessage message) {
         if (message == null) {
-            throw new IllegalArgumentException("ChatMessageRepository.save message is null");
+            throw new IllegalArgumentException("ChatMessageDao.save message is null");
         }
         if (message.getId() == null) {
             insertMessage(message);
@@ -92,7 +94,7 @@ public class ChatMessageRepository {
                 }
             }
         } catch (SQLException ex) {
-            throw new DaoException("ChatMessageRepository.insertMessage failed", ex);
+            throw new DaoException("ChatMessageDao.insertMessage failed", ex);
         }
     }
 
@@ -107,7 +109,7 @@ public class ChatMessageRepository {
             stmt.setLong(5, message.getId());
             stmt.executeUpdate();
         } catch (SQLException ex) {
-            throw new DaoException("ChatMessageRepository.updateMessage failed", ex);
+            throw new DaoException("ChatMessageDao.updateMessage failed", ex);
         }
     }
 
@@ -127,7 +129,7 @@ public class ChatMessageRepository {
             }
             return messages;
         } catch (SQLException ex) {
-            throw new DaoException("ChatMessageRepository.fetchMessages failed", ex);
+            throw new DaoException("ChatMessageDao.fetchMessages failed", ex);
         }
     }
 
@@ -143,7 +145,7 @@ public class ChatMessageRepository {
                 return 0;
             }
         } catch (SQLException ex) {
-            throw new DaoException("ChatMessageRepository.countByChatId failed", ex);
+            throw new DaoException("ChatMessageDao.countByChatId failed", ex);
         }
     }
 

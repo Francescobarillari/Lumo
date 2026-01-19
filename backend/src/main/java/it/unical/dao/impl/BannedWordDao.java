@@ -1,4 +1,6 @@
-package it.unical.repository;
+package it.unical.dao.impl;
+
+import it.unical.dao.base.DaoException;
 
 import it.unical.model.BannedWord;
 import org.springframework.stereotype.Repository;
@@ -10,10 +12,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class BannedWordRepository {
+public class BannedWordDao {
     private final DataSource dataSource;
 
-    public BannedWordRepository(DataSource dataSource) {
+    public BannedWordDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -29,7 +31,7 @@ public class BannedWordRepository {
                 return Optional.empty();
             }
         } catch (SQLException ex) {
-            throw new DaoException("BannedWordRepository.findByPhrase failed", ex);
+            throw new DaoException("BannedWordDao.findByPhrase failed", ex);
         }
     }
 
@@ -44,13 +46,13 @@ public class BannedWordRepository {
             }
             return words;
         } catch (SQLException ex) {
-            throw new DaoException("BannedWordRepository.findAll failed", ex);
+            throw new DaoException("BannedWordDao.findAll failed", ex);
         }
     }
 
     public BannedWord save(BannedWord word) {
         if (word == null) {
-            throw new IllegalArgumentException("BannedWordRepository.save word is null");
+            throw new IllegalArgumentException("BannedWordDao.save word is null");
         }
         if (word.getId() == null) {
             insertWord(word);
@@ -72,7 +74,7 @@ public class BannedWordRepository {
                 }
             }
         } catch (SQLException ex) {
-            throw new DaoException("BannedWordRepository.insertWord failed", ex);
+            throw new DaoException("BannedWordDao.insertWord failed", ex);
         }
     }
 
@@ -84,7 +86,7 @@ public class BannedWordRepository {
             stmt.setLong(2, word.getId());
             stmt.executeUpdate();
         } catch (SQLException ex) {
-            throw new DaoException("BannedWordRepository.updateWord failed", ex);
+            throw new DaoException("BannedWordDao.updateWord failed", ex);
         }
     }
 

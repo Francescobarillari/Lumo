@@ -1,4 +1,6 @@
-package it.unical.repository;
+package it.unical.dao.impl;
+
+import it.unical.dao.base.DaoException;
 
 import it.unical.model.Event;
 import it.unical.model.User;
@@ -12,10 +14,10 @@ import java.time.LocalTime;
 import java.util.*;
 
 @Repository
-public class EventRepository {
+public class EventDao {
     private final DataSource dataSource;
 
-    public EventRepository(DataSource dataSource) {
+    public EventDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -62,7 +64,7 @@ public class EventRepository {
                 return 0;
             }
         } catch (SQLException ex) {
-            throw new DaoException("EventRepository.countByCreator_IdAndIsApprovedTrue failed", ex);
+            throw new DaoException("EventDao.countByCreator_IdAndIsApprovedTrue failed", ex);
         }
     }
 
@@ -79,7 +81,7 @@ public class EventRepository {
 
     public Event save(Event event) {
         if (event == null) {
-            throw new IllegalArgumentException("EventRepository.save event is null");
+            throw new IllegalArgumentException("EventDao.save event is null");
         }
 
         if (event.getId() == null) {
@@ -97,7 +99,7 @@ public class EventRepository {
             stmt.setLong(1, id);
             stmt.executeUpdate();
         } catch (SQLException ex) {
-            throw new DaoException("EventRepository.deleteById failed", ex);
+            throw new DaoException("EventDao.deleteById failed", ex);
         }
     }
 
@@ -115,7 +117,7 @@ public class EventRepository {
                 }
             }
         } catch (SQLException ex) {
-            throw new DaoException("EventRepository.insertEvent failed", ex);
+            throw new DaoException("EventDao.insertEvent failed", ex);
         }
     }
 
@@ -128,7 +130,7 @@ public class EventRepository {
             bindEvent(stmt, event, true);
             stmt.executeUpdate();
         } catch (SQLException ex) {
-            throw new DaoException("EventRepository.updateEvent failed", ex);
+            throw new DaoException("EventDao.updateEvent failed", ex);
         }
     }
 
@@ -184,7 +186,7 @@ public class EventRepository {
             }
             return events;
         } catch (SQLException ex) {
-            throw new DaoException("EventRepository.fetchEventList failed", ex);
+            throw new DaoException("EventDao.fetchEventList failed", ex);
         }
     }
 

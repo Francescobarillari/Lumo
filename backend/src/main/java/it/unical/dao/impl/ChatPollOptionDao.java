@@ -1,4 +1,6 @@
-package it.unical.repository;
+package it.unical.dao.impl;
+
+import it.unical.dao.base.DaoException;
 
 import it.unical.model.ChatPoll;
 import it.unical.model.ChatPollOption;
@@ -10,10 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class ChatPollOptionRepository {
+public class ChatPollOptionDao {
     private final DataSource dataSource;
 
-    public ChatPollOptionRepository(DataSource dataSource) {
+    public ChatPollOptionDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -30,13 +32,13 @@ public class ChatPollOptionRepository {
             }
             return options;
         } catch (SQLException ex) {
-            throw new DaoException("ChatPollOptionRepository.findByPoll_Id failed", ex);
+            throw new DaoException("ChatPollOptionDao.findByPoll_Id failed", ex);
         }
     }
 
     public ChatPollOption save(ChatPollOption option) {
         if (option == null) {
-            throw new IllegalArgumentException("ChatPollOptionRepository.save option is null");
+            throw new IllegalArgumentException("ChatPollOptionDao.save option is null");
         }
         if (option.getId() == null) {
             insertOption(option);
@@ -59,7 +61,7 @@ public class ChatPollOptionRepository {
                 }
             }
         } catch (SQLException ex) {
-            throw new DaoException("ChatPollOptionRepository.insertOption failed", ex);
+            throw new DaoException("ChatPollOptionDao.insertOption failed", ex);
         }
     }
 
@@ -72,7 +74,7 @@ public class ChatPollOptionRepository {
             stmt.setLong(3, option.getId());
             stmt.executeUpdate();
         } catch (SQLException ex) {
-            throw new DaoException("ChatPollOptionRepository.updateOption failed", ex);
+            throw new DaoException("ChatPollOptionDao.updateOption failed", ex);
         }
     }
 

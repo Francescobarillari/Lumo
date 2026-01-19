@@ -2,9 +2,9 @@ package it.unical.service;
 
 import it.unical.model.Event;
 import it.unical.model.EventChat;
-import it.unical.repository.EventChatRepository;
-import it.unical.repository.EventRepository;
-import it.unical.repository.UserRepository;
+import it.unical.dao.impl.EventChatDao;
+import it.unical.dao.impl.EventDao;
+import it.unical.dao.impl.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -15,16 +15,16 @@ import java.util.Optional;
 public class EventService implements IEventService {
 
     @Autowired
-    private EventRepository eventRepository;
+    private EventDao eventRepository;
 
     @Autowired
     private INotificationService notificationService;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserDao userRepository;
 
     @Autowired
-    private EventChatRepository chatRepository;
+    private EventChatDao chatRepository;
 
     public Event createEvent(Event event, Long userId) {
         event.setCreatedAt(LocalDateTime.now());

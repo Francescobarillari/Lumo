@@ -2,8 +2,8 @@ package it.unical.service;
 
 import it.unical.model.PasswordResetToken;
 import it.unical.model.User;
-import it.unical.repository.PasswordResetTokenRepository;
-import it.unical.repository.UserRepository;
+import it.unical.dao.impl.PasswordResetTokenDao;
+import it.unical.dao.impl.UserDao;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -17,16 +17,16 @@ public class PasswordResetService {
 
     private static final long TOKEN_TTL_HOURS = 2;
 
-    private final PasswordResetTokenRepository resetRepo;
-    private final UserRepository userRepo;
+    private final PasswordResetTokenDao resetRepo;
+    private final UserDao userRepo;
     private final JavaMailSender mailSender;
     private final PasswordEncoder passwordEncoder;
     private final String frontendResetBaseUrl;
     private final String fromAddress;
 
     public PasswordResetService(
-            PasswordResetTokenRepository resetRepo,
-            UserRepository userRepo,
+            PasswordResetTokenDao resetRepo,
+            UserDao userRepo,
             JavaMailSender mailSender,
             PasswordEncoder passwordEncoder,
             org.springframework.core.env.Environment env) {

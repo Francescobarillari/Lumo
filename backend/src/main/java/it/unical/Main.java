@@ -1,7 +1,7 @@
 package it.unical;
 
 import it.unical.model.User;
-import it.unical.repository.UserRepository;
+import it.unical.dao.impl.UserDao;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,7 +15,7 @@ public class Main {
     }
 
     @Bean
-    CommandLineRunner init(UserRepository userRepository) {
+    CommandLineRunner init(UserDao userRepository) {
         return args -> {
             if (userRepository.findByEmail("fra@example.com").isEmpty()) {
                 User user = new User();

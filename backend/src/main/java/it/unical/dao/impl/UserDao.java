@@ -1,4 +1,6 @@
-package it.unical.repository;
+package it.unical.dao.impl;
+
+import it.unical.dao.base.DaoException;
 
 import it.unical.model.Event;
 import it.unical.model.User;
@@ -12,10 +14,10 @@ import java.time.LocalTime;
 import java.util.*;
 
 @Repository
-public class UserRepository {
+public class UserDao {
     private final DataSource dataSource;
 
-    public UserRepository(DataSource dataSource) {
+    public UserDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -28,7 +30,7 @@ public class UserRepository {
                 return rs.next();
             }
         } catch (SQLException ex) {
-            throw new DaoException("UserRepository.existsByEmail failed", ex);
+            throw new DaoException("UserDao.existsByEmail failed", ex);
         }
     }
 
@@ -47,7 +49,7 @@ public class UserRepository {
                 return Optional.of(user);
             }
         } catch (SQLException ex) {
-            throw new DaoException("UserRepository.findByEmail failed", ex);
+            throw new DaoException("UserDao.findByEmail failed", ex);
         }
     }
 
@@ -67,7 +69,7 @@ public class UserRepository {
             }
             return users;
         } catch (SQLException ex) {
-            throw new DaoException("UserRepository.findByNameContainingIgnoreCase failed", ex);
+            throw new DaoException("UserDao.findByNameContainingIgnoreCase failed", ex);
         }
     }
 
@@ -86,7 +88,7 @@ public class UserRepository {
                 return Optional.of(user);
             }
         } catch (SQLException ex) {
-            throw new DaoException("UserRepository.findById failed", ex);
+            throw new DaoException("UserDao.findById failed", ex);
         }
     }
 
@@ -104,13 +106,13 @@ public class UserRepository {
             }
             return users;
         } catch (SQLException ex) {
-            throw new DaoException("UserRepository.findAll failed", ex);
+            throw new DaoException("UserDao.findAll failed", ex);
         }
     }
 
     public User save(User user) {
         if (user == null) {
-            throw new IllegalArgumentException("UserRepository.save user is null");
+            throw new IllegalArgumentException("UserDao.save user is null");
         }
 
         try (Connection conn = dataSource.getConnection()) {
@@ -130,12 +132,12 @@ public class UserRepository {
                 return user;
             } catch (SQLException ex) {
                 conn.rollback();
-                throw new DaoException("UserRepository.save failed", ex);
+                throw new DaoException("UserDao.save failed", ex);
             } finally {
                 conn.setAutoCommit(true);
             }
         } catch (SQLException ex) {
-            throw new DaoException("UserRepository.save failed", ex);
+            throw new DaoException("UserDao.save failed", ex);
         }
     }
 
@@ -151,12 +153,12 @@ public class UserRepository {
                 conn.commit();
             } catch (SQLException ex) {
                 conn.rollback();
-                throw new DaoException("UserRepository.deleteById failed", ex);
+                throw new DaoException("UserDao.deleteById failed", ex);
             } finally {
                 conn.setAutoCommit(true);
             }
         } catch (SQLException ex) {
-            throw new DaoException("UserRepository.deleteById failed", ex);
+            throw new DaoException("UserDao.deleteById failed", ex);
         }
     }
 

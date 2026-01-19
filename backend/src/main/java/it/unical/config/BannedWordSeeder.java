@@ -1,7 +1,7 @@
 package it.unical.config;
 
 import it.unical.model.BannedWord;
-import it.unical.repository.BannedWordRepository;
+import it.unical.dao.impl.BannedWordDao;
 import it.unical.service.ContentFilterService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.ClassPathResource;
@@ -13,10 +13,10 @@ import java.nio.charset.StandardCharsets;
 
 @Component
 public class BannedWordSeeder implements CommandLineRunner {
-    private final BannedWordRepository bannedWordRepository;
+    private final BannedWordDao bannedWordRepository;
     private final ContentFilterService contentFilterService;
 
-    public BannedWordSeeder(BannedWordRepository bannedWordRepository, ContentFilterService contentFilterService) {
+    public BannedWordSeeder(BannedWordDao bannedWordRepository, ContentFilterService contentFilterService) {
         this.bannedWordRepository = bannedWordRepository;
         this.contentFilterService = contentFilterService;
     }

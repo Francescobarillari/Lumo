@@ -1,4 +1,6 @@
-package it.unical.repository;
+package it.unical.dao.impl;
+
+import it.unical.dao.base.DaoException;
 
 import it.unical.model.Report;
 import org.springframework.data.domain.Sort;
@@ -12,10 +14,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class ReportRepository {
+public class ReportDao {
     private final DataSource dataSource;
 
-    public ReportRepository(DataSource dataSource) {
+    public ReportDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -42,13 +44,13 @@ public class ReportRepository {
                 return Optional.empty();
             }
         } catch (SQLException ex) {
-            throw new DaoException("ReportRepository.findById failed", ex);
+            throw new DaoException("ReportDao.findById failed", ex);
         }
     }
 
     public Report save(Report report) {
         if (report == null) {
-            throw new IllegalArgumentException("ReportRepository.save report is null");
+            throw new IllegalArgumentException("ReportDao.save report is null");
         }
         if (report.getId() == null) {
             insertReport(report);
@@ -65,7 +67,7 @@ public class ReportRepository {
             stmt.setLong(1, id);
             stmt.executeUpdate();
         } catch (SQLException ex) {
-            throw new DaoException("ReportRepository.deleteById failed", ex);
+            throw new DaoException("ReportDao.deleteById failed", ex);
         }
     }
 
@@ -79,7 +81,7 @@ public class ReportRepository {
             }
             return reports;
         } catch (SQLException ex) {
-            throw new DaoException("ReportRepository.findAll failed", ex);
+            throw new DaoException("ReportDao.findAll failed", ex);
         }
     }
 
@@ -99,7 +101,7 @@ public class ReportRepository {
             }
             report.setCreatedAt(createdAt);
         } catch (SQLException ex) {
-            throw new DaoException("ReportRepository.insertReport failed", ex);
+            throw new DaoException("ReportDao.insertReport failed", ex);
         }
     }
 
@@ -112,7 +114,7 @@ public class ReportRepository {
             bindReport(stmt, report, report.getCreatedAt(), true);
             stmt.executeUpdate();
         } catch (SQLException ex) {
-            throw new DaoException("ReportRepository.updateReport failed", ex);
+            throw new DaoException("ReportDao.updateReport failed", ex);
         }
     }
 

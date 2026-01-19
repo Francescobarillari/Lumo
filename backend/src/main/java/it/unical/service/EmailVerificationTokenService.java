@@ -2,7 +2,7 @@ package it.unical.service;
 
 import it.unical.model.EmailVerificationToken;
 import it.unical.model.User;
-import it.unical.repository.EmailVerificationTokenRepository;
+import it.unical.dao.impl.EmailVerificationTokenDao;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -11,9 +11,9 @@ import java.util.UUID;
 @Service
 public class EmailVerificationTokenService {
 
-    private final EmailVerificationTokenRepository tokenRepo;
+    private final EmailVerificationTokenDao tokenRepo;
 
-    public EmailVerificationTokenService(EmailVerificationTokenRepository tokenRepo) {
+    public EmailVerificationTokenService(EmailVerificationTokenDao tokenRepo) {
         this.tokenRepo = tokenRepo;
     }
 

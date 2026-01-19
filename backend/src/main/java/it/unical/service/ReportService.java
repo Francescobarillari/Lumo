@@ -4,9 +4,9 @@ import it.unical.api.ReportResponse;
 import it.unical.model.Event;
 import it.unical.model.Report;
 import it.unical.model.User;
-import it.unical.repository.EventRepository;
-import it.unical.repository.ReportRepository;
-import it.unical.repository.UserRepository;
+import it.unical.dao.impl.EventDao;
+import it.unical.dao.impl.ReportDao;
+import it.unical.dao.impl.UserDao;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,11 +21,11 @@ public class ReportService {
     private static final String TARGET_USER = "USER";
     private static final String TARGET_EVENT = "EVENT";
 
-    private final ReportRepository reportRepository;
-    private final UserRepository userRepository;
-    private final EventRepository eventRepository;
+    private final ReportDao reportRepository;
+    private final UserDao userRepository;
+    private final EventDao eventRepository;
 
-    public ReportService(ReportRepository reportRepository, UserRepository userRepository, EventRepository eventRepository) {
+    public ReportService(ReportDao reportRepository, UserDao userRepository, EventDao eventRepository) {
         this.reportRepository = reportRepository;
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;

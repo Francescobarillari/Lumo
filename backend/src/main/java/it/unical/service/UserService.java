@@ -1,22 +1,22 @@
 package it.unical.service;
 
 import it.unical.model.User;
-import it.unical.repository.UserRepository;
+import it.unical.dao.impl.UserDao;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service("realUserService")
 public class UserService implements IUserService {
-    private final UserRepository userRepository;
+    private final UserDao userRepository;
 
-    private final it.unical.repository.EventRepository eventRepository;
+    private final it.unical.dao.impl.EventDao eventRepository;
 
     private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
     private final INotificationService notificationService;
 
-    public UserService(UserRepository userRepository, it.unical.repository.EventRepository eventRepository,
+    public UserService(UserDao userRepository, it.unical.dao.impl.EventDao eventRepository,
                        org.springframework.security.crypto.password.PasswordEncoder passwordEncoder,
                        INotificationService notificationService) {
         this.userRepository = userRepository;

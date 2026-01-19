@@ -1,7 +1,7 @@
 package it.unical.service;
 
 import it.unical.model.BannedWord;
-import it.unical.repository.BannedWordRepository;
+import it.unical.dao.impl.BannedWordDao;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -16,13 +16,13 @@ import java.util.regex.Pattern;
 
 @Service
 public class ContentFilterService {
-    private final BannedWordRepository bannedWordRepository;
+    private final BannedWordDao bannedWordRepository;
     private final List<Pattern> patterns = new ArrayList<>();
     private final List<String> rawExact = new ArrayList<>();
     private final Object lock = new Object();
     private volatile boolean loaded = false;
 
-    public ContentFilterService(BannedWordRepository bannedWordRepository) {
+    public ContentFilterService(BannedWordDao bannedWordRepository) {
         this.bannedWordRepository = bannedWordRepository;
     }
 

@@ -9,7 +9,7 @@ import it.unical.dto.SignInRequest;
 import it.unical.dto.SignUpRequest;
 import it.unical.exception.FieldException;
 import it.unical.model.User;
-import it.unical.repository.UserRepository;
+import it.unical.dao.impl.UserDao;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,7 +26,7 @@ import java.util.Optional;
 @Service
 public class AuthService {
 
-    private final UserRepository userRepo;
+    private final UserDao userRepo;
     private final PasswordEncoder passwordEncoder;
     private final EmailVerificationService emailVerificationService;
     private final GoogleIdTokenVerifier googleIdTokenVerifier;
@@ -34,7 +34,7 @@ public class AuthService {
     private final String googleClientSecret;
     private final String googleRedirectUri;
 
-    public AuthService(UserRepository userRepo,
+    public AuthService(UserDao userRepo,
                        PasswordEncoder passwordEncoder,
                        EmailVerificationService emailVerificationService,
                        GoogleIdTokenVerifier googleIdTokenVerifier,

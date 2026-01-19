@@ -1,4 +1,6 @@
-package it.unical.repository;
+package it.unical.dao.impl;
+
+import it.unical.dao.base.DaoException;
 
 import it.unical.model.Notification;
 import org.springframework.stereotype.Repository;
@@ -11,10 +13,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class NotificationRepository {
+public class NotificationDao {
     private final DataSource dataSource;
 
-    public NotificationRepository(DataSource dataSource) {
+    public NotificationDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -31,7 +33,7 @@ public class NotificationRepository {
             }
             return notifications;
         } catch (SQLException ex) {
-            throw new DaoException("NotificationRepository.findByUserIdOrderByCreatedAtDesc failed", ex);
+            throw new DaoException("NotificationDao.findByUserIdOrderByCreatedAtDesc failed", ex);
         }
     }
 
@@ -42,7 +44,7 @@ public class NotificationRepository {
             stmt.setLong(1, userId);
             stmt.executeUpdate();
         } catch (SQLException ex) {
-            throw new DaoException("NotificationRepository.deleteByUserIdAndIsReadTrue failed", ex);
+            throw new DaoException("NotificationDao.deleteByUserIdAndIsReadTrue failed", ex);
         }
     }
 
@@ -58,7 +60,7 @@ public class NotificationRepository {
             stmt.setString(4, type);
             stmt.executeUpdate();
         } catch (SQLException ex) {
-            throw new DaoException("NotificationRepository.deleteByUserIdAndRelatedEventIdAndRelatedUserIdAndType failed", ex);
+            throw new DaoException("NotificationDao.deleteByUserIdAndRelatedEventIdAndRelatedUserIdAndType failed", ex);
         }
     }
 
@@ -74,7 +76,7 @@ public class NotificationRepository {
                 return Optional.empty();
             }
         } catch (SQLException ex) {
-            throw new DaoException("NotificationRepository.findById failed", ex);
+            throw new DaoException("NotificationDao.findById failed", ex);
         }
     }
 
@@ -89,13 +91,13 @@ public class NotificationRepository {
             }
             return notifications;
         } catch (SQLException ex) {
-            throw new DaoException("NotificationRepository.findAll failed", ex);
+            throw new DaoException("NotificationDao.findAll failed", ex);
         }
     }
 
     public Notification save(Notification notification) {
         if (notification == null) {
-            throw new IllegalArgumentException("NotificationRepository.save notification is null");
+            throw new IllegalArgumentException("NotificationDao.save notification is null");
         }
         if (notification.getId() == null) {
             insertNotification(notification);
@@ -112,7 +114,7 @@ public class NotificationRepository {
             stmt.setLong(1, id);
             stmt.executeUpdate();
         } catch (SQLException ex) {
-            throw new DaoException("NotificationRepository.deleteById failed", ex);
+            throw new DaoException("NotificationDao.deleteById failed", ex);
         }
     }
 
@@ -133,7 +135,7 @@ public class NotificationRepository {
             }
             notification.setCreatedAt(createdAt);
         } catch (SQLException ex) {
-            throw new DaoException("NotificationRepository.insertNotification failed", ex);
+            throw new DaoException("NotificationDao.insertNotification failed", ex);
         }
     }
 
@@ -145,7 +147,7 @@ public class NotificationRepository {
             bindNotification(stmt, notification, notification.getCreatedAt(), true);
             stmt.executeUpdate();
         } catch (SQLException ex) {
-            throw new DaoException("NotificationRepository.updateNotification failed", ex);
+            throw new DaoException("NotificationDao.updateNotification failed", ex);
         }
     }
 

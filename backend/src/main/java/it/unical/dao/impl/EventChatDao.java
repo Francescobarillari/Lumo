@@ -1,4 +1,6 @@
-package it.unical.repository;
+package it.unical.dao.impl;
+
+import it.unical.dao.base.DaoException;
 
 import it.unical.model.Event;
 import it.unical.model.EventChat;
@@ -10,10 +12,10 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Repository
-public class EventChatRepository {
+public class EventChatDao {
     private final DataSource dataSource;
 
-    public EventChatRepository(DataSource dataSource) {
+    public EventChatDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -29,13 +31,13 @@ public class EventChatRepository {
                 return Optional.empty();
             }
         } catch (SQLException ex) {
-            throw new DaoException("EventChatRepository.findByEvent_Id failed", ex);
+            throw new DaoException("EventChatDao.findByEvent_Id failed", ex);
         }
     }
 
     public EventChat save(EventChat chat) {
         if (chat == null) {
-            throw new IllegalArgumentException("EventChatRepository.save chat is null");
+            throw new IllegalArgumentException("EventChatDao.save chat is null");
         }
         if (chat.getId() == null) {
             insertChat(chat);
@@ -59,7 +61,7 @@ public class EventChatRepository {
             stmt.setLong(1, id);
             stmt.executeUpdate();
         } catch (SQLException ex) {
-            throw new DaoException("EventChatRepository.deleteById failed", ex);
+            throw new DaoException("EventChatDao.deleteById failed", ex);
         }
     }
 
@@ -76,7 +78,7 @@ public class EventChatRepository {
                 }
             }
         } catch (SQLException ex) {
-            throw new DaoException("EventChatRepository.insertChat failed", ex);
+            throw new DaoException("EventChatDao.insertChat failed", ex);
         }
     }
 
@@ -89,7 +91,7 @@ public class EventChatRepository {
             stmt.setLong(3, chat.getId());
             stmt.executeUpdate();
         } catch (SQLException ex) {
-            throw new DaoException("EventChatRepository.updateChat failed", ex);
+            throw new DaoException("EventChatDao.updateChat failed", ex);
         }
     }
 

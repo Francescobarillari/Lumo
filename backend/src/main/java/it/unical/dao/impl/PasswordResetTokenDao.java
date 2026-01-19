@@ -1,4 +1,6 @@
-package it.unical.repository;
+package it.unical.dao.impl;
+
+import it.unical.dao.base.DaoException;
 
 import it.unical.model.PasswordResetToken;
 import org.springframework.stereotype.Repository;
@@ -11,10 +13,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class PasswordResetTokenRepository {
+public class PasswordResetTokenDao {
     private final DataSource dataSource;
 
-    public PasswordResetTokenRepository(DataSource dataSource) {
+    public PasswordResetTokenDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -30,7 +32,7 @@ public class PasswordResetTokenRepository {
                 return Optional.empty();
             }
         } catch (SQLException ex) {
-            throw new DaoException("PasswordResetTokenRepository.findByToken failed", ex);
+            throw new DaoException("PasswordResetTokenDao.findByToken failed", ex);
         }
     }
 
@@ -46,7 +48,7 @@ public class PasswordResetTokenRepository {
                 return Optional.empty();
             }
         } catch (SQLException ex) {
-            throw new DaoException("PasswordResetTokenRepository.findByEmailAndUsedFalse failed", ex);
+            throw new DaoException("PasswordResetTokenDao.findByEmailAndUsedFalse failed", ex);
         }
     }
 
@@ -62,7 +64,7 @@ public class PasswordResetTokenRepository {
                 return Optional.empty();
             }
         } catch (SQLException ex) {
-            throw new DaoException("PasswordResetTokenRepository.findById failed", ex);
+            throw new DaoException("PasswordResetTokenDao.findById failed", ex);
         }
     }
 
@@ -77,13 +79,13 @@ public class PasswordResetTokenRepository {
             }
             return tokens;
         } catch (SQLException ex) {
-            throw new DaoException("PasswordResetTokenRepository.findAll failed", ex);
+            throw new DaoException("PasswordResetTokenDao.findAll failed", ex);
         }
     }
 
     public PasswordResetToken save(PasswordResetToken token) {
         if (token == null) {
-            throw new IllegalArgumentException("PasswordResetTokenRepository.save token is null");
+            throw new IllegalArgumentException("PasswordResetTokenDao.save token is null");
         }
         if (token.getId() == null) {
             insertToken(token);
@@ -107,7 +109,7 @@ public class PasswordResetTokenRepository {
             stmt.setLong(1, id);
             stmt.executeUpdate();
         } catch (SQLException ex) {
-            throw new DaoException("PasswordResetTokenRepository.deleteById failed", ex);
+            throw new DaoException("PasswordResetTokenDao.deleteById failed", ex);
         }
     }
 
@@ -123,7 +125,7 @@ public class PasswordResetTokenRepository {
                 }
             }
         } catch (SQLException ex) {
-            throw new DaoException("PasswordResetTokenRepository.insertToken failed", ex);
+            throw new DaoException("PasswordResetTokenDao.insertToken failed", ex);
         }
     }
 
@@ -134,7 +136,7 @@ public class PasswordResetTokenRepository {
             bindToken(stmt, token, true);
             stmt.executeUpdate();
         } catch (SQLException ex) {
-            throw new DaoException("PasswordResetTokenRepository.updateToken failed", ex);
+            throw new DaoException("PasswordResetTokenDao.updateToken failed", ex);
         }
     }
 

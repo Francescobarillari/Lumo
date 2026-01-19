@@ -3,7 +3,7 @@ package it.unical.service;
 import it.unical.dto.chat.*;
 import it.unical.exception.FieldException;
 import it.unical.model.*;
-import it.unical.repository.*;
+import it.unical.dao.impl.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -14,25 +14,25 @@ import java.util.*;
 @Service
 public class ChatService {
     @Autowired
-    private EventRepository eventRepository;
+    private EventDao eventRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserDao userRepository;
 
     @Autowired
-    private EventChatRepository chatRepository;
+    private EventChatDao chatRepository;
 
     @Autowired
-    private ChatMessageRepository messageRepository;
+    private ChatMessageDao messageRepository;
 
     @Autowired
-    private ChatMuteRepository muteRepository;
+    private ChatMuteDao muteRepository;
 
     @Autowired
-    private ChatPollRepository pollRepository;
+    private ChatPollDao pollRepository;
 
     @Autowired
-    private ChatPollVoteRepository voteRepository;
+    private ChatPollVoteDao voteRepository;
 
     @Autowired
     private ChatStreamBroadcaster broadcaster;

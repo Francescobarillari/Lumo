@@ -3,7 +3,7 @@ package it.unical.service;
 import it.unical.model.Event;
 import it.unical.model.Notification;
 import it.unical.model.User;
-import it.unical.repository.NotificationRepository;
+import it.unical.dao.impl.NotificationDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
@@ -13,13 +13,13 @@ import java.util.List;
 public class NotificationService implements INotificationService {
 
     @Autowired
-    private NotificationRepository notificationRepo;
+    private NotificationDao notificationRepo;
 
     @Autowired
-    private it.unical.repository.UserRepository userRepo;
+    private it.unical.dao.impl.UserDao userRepo;
 
     @Autowired
-    private it.unical.repository.EventRepository eventRepo;
+    private it.unical.dao.impl.EventDao eventRepo;
 
     public List<Notification> getUserNotifications(Long userId) {
         checkAndCreateFollowUpNotifications(userId);

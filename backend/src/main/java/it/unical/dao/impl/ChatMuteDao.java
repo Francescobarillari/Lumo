@@ -1,4 +1,6 @@
-package it.unical.repository;
+package it.unical.dao.impl;
+
+import it.unical.dao.base.DaoException;
 
 import it.unical.model.ChatMute;
 import it.unical.model.EventChat;
@@ -13,10 +15,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class ChatMuteRepository {
+public class ChatMuteDao {
     private final DataSource dataSource;
 
-    public ChatMuteRepository(DataSource dataSource) {
+    public ChatMuteDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -38,7 +40,7 @@ public class ChatMuteRepository {
                 return Optional.empty();
             }
         } catch (SQLException ex) {
-            throw new DaoException("ChatMuteRepository.findByChat_IdAndUser_Id failed", ex);
+            throw new DaoException("ChatMuteDao.findByChat_IdAndUser_Id failed", ex);
         }
     }
 
@@ -60,13 +62,13 @@ public class ChatMuteRepository {
             }
             return mutes;
         } catch (SQLException ex) {
-            throw new DaoException("ChatMuteRepository.findByChat_Id failed", ex);
+            throw new DaoException("ChatMuteDao.findByChat_Id failed", ex);
         }
     }
 
     public ChatMute save(ChatMute mute) {
         if (mute == null) {
-            throw new IllegalArgumentException("ChatMuteRepository.save mute is null");
+            throw new IllegalArgumentException("ChatMuteDao.save mute is null");
         }
         if (mute.getId() == null) {
             insertMute(mute);
@@ -90,7 +92,7 @@ public class ChatMuteRepository {
             stmt.setLong(1, id);
             stmt.executeUpdate();
         } catch (SQLException ex) {
-            throw new DaoException("ChatMuteRepository.deleteById failed", ex);
+            throw new DaoException("ChatMuteDao.deleteById failed", ex);
         }
     }
 
@@ -106,7 +108,7 @@ public class ChatMuteRepository {
                 }
             }
         } catch (SQLException ex) {
-            throw new DaoException("ChatMuteRepository.insertMute failed", ex);
+            throw new DaoException("ChatMuteDao.insertMute failed", ex);
         }
     }
 
@@ -118,7 +120,7 @@ public class ChatMuteRepository {
             bindMute(stmt, mute, true);
             stmt.executeUpdate();
         } catch (SQLException ex) {
-            throw new DaoException("ChatMuteRepository.updateMute failed", ex);
+            throw new DaoException("ChatMuteDao.updateMute failed", ex);
         }
     }
 

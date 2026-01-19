@@ -2,7 +2,7 @@ package it.unical.controller;
 
 import it.unical.model.Event;
 import it.unical.model.User;
-import it.unical.repository.UserRepository;
+import it.unical.dao.impl.UserDao;
 import it.unical.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class AdminController {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserDao userRepository;
 
     @Autowired
     private EventService eventService;

@@ -1,4 +1,6 @@
-package it.unical.repository;
+package it.unical.dao.impl;
+
+import it.unical.dao.base.DaoException;
 
 import it.unical.model.ChatPoll;
 import it.unical.model.ChatPollOption;
@@ -13,10 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class ChatPollVoteRepository {
+public class ChatPollVoteDao {
     private final DataSource dataSource;
 
-    public ChatPollVoteRepository(DataSource dataSource) {
+    public ChatPollVoteDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -37,7 +39,7 @@ public class ChatPollVoteRepository {
             }
             return votes;
         } catch (SQLException ex) {
-            throw new DaoException("ChatPollVoteRepository.findByPoll_Id failed", ex);
+            throw new DaoException("ChatPollVoteDao.findByPoll_Id failed", ex);
         }
     }
 
@@ -49,13 +51,13 @@ public class ChatPollVoteRepository {
             stmt.setLong(2, userId);
             stmt.executeUpdate();
         } catch (SQLException ex) {
-            throw new DaoException("ChatPollVoteRepository.deleteByPoll_IdAndUser_Id failed", ex);
+            throw new DaoException("ChatPollVoteDao.deleteByPoll_IdAndUser_Id failed", ex);
         }
     }
 
     public ChatPollVote save(ChatPollVote vote) {
         if (vote == null) {
-            throw new IllegalArgumentException("ChatPollVoteRepository.save vote is null");
+            throw new IllegalArgumentException("ChatPollVoteDao.save vote is null");
         }
         if (vote.getId() == null) {
             insertVote(vote);
@@ -80,7 +82,7 @@ public class ChatPollVoteRepository {
                 }
             }
         } catch (SQLException ex) {
-            throw new DaoException("ChatPollVoteRepository.insertVote failed", ex);
+            throw new DaoException("ChatPollVoteDao.insertVote failed", ex);
         }
     }
 
@@ -95,7 +97,7 @@ public class ChatPollVoteRepository {
             stmt.setLong(5, vote.getId());
             stmt.executeUpdate();
         } catch (SQLException ex) {
-            throw new DaoException("ChatPollVoteRepository.updateVote failed", ex);
+            throw new DaoException("ChatPollVoteDao.updateVote failed", ex);
         }
     }
 

@@ -1,4 +1,6 @@
-package it.unical.repository;
+package it.unical.dao.impl;
+
+import it.unical.dao.base.DaoException;
 
 import it.unical.model.ChatPoll;
 import it.unical.model.ChatPollOption;
@@ -15,10 +17,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class ChatPollRepository {
+public class ChatPollDao {
     private final DataSource dataSource;
 
-    public ChatPollRepository(DataSource dataSource) {
+    public ChatPollDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -39,7 +41,7 @@ public class ChatPollRepository {
             }
             return polls;
         } catch (SQLException ex) {
-            throw new DaoException("ChatPollRepository.findByChat_IdOrderByCreatedAtDesc failed", ex);
+            throw new DaoException("ChatPollDao.findByChat_IdOrderByCreatedAtDesc failed", ex);
         }
     }
 
@@ -60,13 +62,13 @@ public class ChatPollRepository {
                 return Optional.empty();
             }
         } catch (SQLException ex) {
-            throw new DaoException("ChatPollRepository.findByIdAndChat_Id failed", ex);
+            throw new DaoException("ChatPollDao.findByIdAndChat_Id failed", ex);
         }
     }
 
     public ChatPoll save(ChatPoll poll) {
         if (poll == null) {
-            throw new IllegalArgumentException("ChatPollRepository.save poll is null");
+            throw new IllegalArgumentException("ChatPollDao.save poll is null");
         }
 
         try (Connection conn = dataSource.getConnection()) {
@@ -98,12 +100,12 @@ public class ChatPollRepository {
                 return poll;
             } catch (SQLException ex) {
                 conn.rollback();
-                throw new DaoException("ChatPollRepository.save failed", ex);
+                throw new DaoException("ChatPollDao.save failed", ex);
             } finally {
                 conn.setAutoCommit(true);
             }
         } catch (SQLException ex) {
-            throw new DaoException("ChatPollRepository.save failed", ex);
+            throw new DaoException("ChatPollDao.save failed", ex);
         }
     }
 

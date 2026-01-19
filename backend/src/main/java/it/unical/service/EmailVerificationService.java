@@ -3,8 +3,8 @@ package it.unical.service;
 import it.unical.exception.FieldException;
 import it.unical.model.EmailVerification;
 import it.unical.model.User;
-import it.unical.repository.EmailVerificationRepository;
-import it.unical.repository.UserRepository;
+import it.unical.dao.impl.EmailVerificationDao;
+import it.unical.dao.impl.UserDao;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -18,8 +18,8 @@ import java.util.UUID;
 @Service
 public class EmailVerificationService {
 
-    private final EmailVerificationRepository verificationRepo;
-    private final UserRepository userRepo;
+    private final EmailVerificationDao verificationRepo;
+    private final UserDao userRepo;
     private final JavaMailSender mailSender;
     private final PasswordEncoder passwordEncoder;
     private static final long TOKEN_TTL_HOURS = 24;
@@ -27,8 +27,8 @@ public class EmailVerificationService {
     private final String fromAddress;
 
     public EmailVerificationService(
-            EmailVerificationRepository verificationRepo,
-            UserRepository userRepo,
+            EmailVerificationDao verificationRepo,
+            UserDao userRepo,
             JavaMailSender mailSender,
             PasswordEncoder passwordEncoder,
             org.springframework.core.env.Environment env) {
