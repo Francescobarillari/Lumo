@@ -1,5 +1,7 @@
 package it.unical.proxy;
 
+import it.unical.dao.impl.ChatPollOptionDao;
+import it.unical.dao.impl.ChatPollVoteDao;
 import it.unical.model.ChatPoll;
 import it.unical.model.ChatPollOption;
 import it.unical.model.ChatPollVote;
@@ -12,15 +14,32 @@ import java.util.Map;
 import java.util.Set;
 
 public class ChatPollProxy extends ChatPoll {
+    private transient javax.sql.DataSource dataSource;
+    private boolean optionsLoaded;
+    private boolean votesLoaded;
+
     public ChatPollProxy() {
     }
 
-    public ChatPollProxy(javax.sql.DataSource ignored) {
-        // Kept for backward compatibility with existing constructors in DAOs/proxies.
+    public ChatPollProxy(javax.sql.DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    @Override
+    public List<ChatPollOption> getOptions() {
+        ensureOptionsLoaded();
+        return super.getOptions();
+    }
+
+    @Override
+    public List<ChatPollVote> getVotes() {
+        ensureVotesLoaded();
+        return super.getVotes();
     }
 
     @Override
     public void setOptions(List<ChatPollOption> options) {
+        optionsLoaded = true;
         List<ChatPollOption> sanitized = new ArrayList<>();
         Map<Long, ChatPollOption> byId = new LinkedHashMap<>();
         Set<String> textKeys = new LinkedHashSet<>();
@@ -51,6 +70,7 @@ public class ChatPollProxy extends ChatPoll {
 
     @Override
     public void setVotes(List<ChatPollVote> votes) {
+        votesLoaded = true;
         List<ChatPollVote> sanitized = new ArrayList<>();
         Set<String> seenKeys = new LinkedHashSet<>();
         if (votes != null) {
@@ -75,6 +95,40 @@ public class ChatPollProxy extends ChatPoll {
             }
         }
         super.setVotes(sanitized);
+    }
+
+    private void ensureOptionsLoaded() {
+        if (optionsLoaded) {
+            return;
+        }
+        optionsLoaded = true;
+        if (!canLazyLoad()) {
+            if (super.getOptions() == null) {
+                super.setOptions(new ArrayList<>());
+            }
+            return;
+        }
+        List<ChatPollOption> options = new ChatPollOptionDao(dataSource).findByPoll_Id(getId());
+        setOptions(options);
+    }
+
+    private void ensureVotesLoaded() {
+        if (votesLoaded) {
+            return;
+        }
+        votesLoaded = true;
+        if (!canLazyLoad()) {
+            if (super.getVotes() == null) {
+                super.setVotes(new ArrayList<>());
+            }
+            return;
+        }
+        List<ChatPollVote> votes = new ChatPollVoteDao(dataSource).findByPoll_Id(getId());
+        setVotes(votes);
+    }
+
+    private boolean canLazyLoad() {
+        return dataSource != null && getId() != null;
     }
 
     private boolean sameEntity(Long leftId, Long rightId) {

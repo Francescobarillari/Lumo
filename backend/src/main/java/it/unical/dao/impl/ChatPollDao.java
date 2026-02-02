@@ -41,7 +41,6 @@ public class ChatPollDao {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     ChatPoll poll = mapPoll(rs);
-                    hydratePoll(poll);
                     polls.add(poll);
                 }
             }
@@ -61,7 +60,6 @@ public class ChatPollDao {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     ChatPoll poll = mapPoll(rs);
-                    hydratePoll(poll);
                     return Optional.of(poll);
                 }
                 return Optional.empty();

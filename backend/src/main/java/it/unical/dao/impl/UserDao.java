@@ -45,7 +45,6 @@ public class UserDao {
                     return Optional.empty();
                 }
                 User user = mapUserBase(rs, "");
-                hydrateUserRelations(user);
                 return Optional.of(user);
             }
         } catch (SQLException ex) {
@@ -63,7 +62,6 @@ public class UserDao {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     User user = mapUserBase(rs, "");
-                    hydrateUserRelations(user);
                     users.add(user);
                 }
             }
@@ -84,7 +82,6 @@ public class UserDao {
                     return Optional.empty();
                 }
                 User user = mapUserBase(rs, "");
-                hydrateUserRelations(user);
                 return Optional.of(user);
             }
         } catch (SQLException ex) {
@@ -101,7 +98,6 @@ public class UserDao {
              ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 User user = mapUserBase(rs, "");
-                hydrateUserRelations(user);
                 users.add(user);
             }
             return users;

@@ -1,5 +1,10 @@
 package it.unical.proxy;
 
+import it.unical.dao.impl.ChatMessageDao;
+import it.unical.dao.impl.ChatMuteDao;
+import it.unical.dao.impl.ChatPollDao;
+import it.unical.dao.impl.ChatPollOptionDao;
+import it.unical.dao.impl.ChatPollVoteDao;
 import it.unical.model.ChatMessage;
 import it.unical.model.ChatMute;
 import it.unical.model.ChatPoll;
@@ -11,15 +16,39 @@ import java.util.List;
 import java.util.Map;
 
 public class EventChatProxy extends EventChat {
+    private transient javax.sql.DataSource dataSource;
+    private boolean messagesLoaded;
+    private boolean mutesLoaded;
+    private boolean pollsLoaded;
+
     public EventChatProxy() {
     }
 
-    public EventChatProxy(javax.sql.DataSource ignored) {
-        // Kept for backward compatibility with existing constructors in DAOs/proxies.
+    public EventChatProxy(javax.sql.DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    @Override
+    public List<ChatMessage> getMessages() {
+        ensureMessagesLoaded();
+        return super.getMessages();
+    }
+
+    @Override
+    public List<ChatMute> getMutes() {
+        ensureMutesLoaded();
+        return super.getMutes();
+    }
+
+    @Override
+    public List<ChatPoll> getPolls() {
+        ensurePollsLoaded();
+        return super.getPolls();
     }
 
     @Override
     public void setMessages(List<ChatMessage> messages) {
+        messagesLoaded = true;
         List<ChatMessage> sanitized = new ArrayList<>();
         Map<Long, ChatMessage> byId = new LinkedHashMap<>();
         if (messages != null) {
@@ -44,6 +73,7 @@ public class EventChatProxy extends EventChat {
 
     @Override
     public void setMutes(List<ChatMute> mutes) {
+        mutesLoaded = true;
         List<ChatMute> sanitized = new ArrayList<>();
         Map<Long, ChatMute> byId = new LinkedHashMap<>();
         if (mutes != null) {
@@ -68,6 +98,7 @@ public class EventChatProxy extends EventChat {
 
     @Override
     public void setPolls(List<ChatPoll> polls) {
+        pollsLoaded = true;
         List<ChatPoll> sanitized = new ArrayList<>();
         Map<Long, ChatPoll> byId = new LinkedHashMap<>();
         if (polls != null) {
@@ -88,6 +119,59 @@ public class EventChatProxy extends EventChat {
         }
         sanitized.addAll(byId.values());
         super.setPolls(sanitized);
+    }
+
+    private void ensureMessagesLoaded() {
+        if (messagesLoaded) {
+            return;
+        }
+        messagesLoaded = true;
+        if (!canLazyLoad()) {
+            if (super.getMessages() == null) {
+                super.setMessages(new ArrayList<>());
+            }
+            return;
+        }
+        List<ChatMessage> messages = new ChatMessageDao(dataSource)
+                .findByChat_IdOrderByCreatedAtAsc(getId());
+        setMessages(messages);
+    }
+
+    private void ensureMutesLoaded() {
+        if (mutesLoaded) {
+            return;
+        }
+        mutesLoaded = true;
+        if (!canLazyLoad()) {
+            if (super.getMutes() == null) {
+                super.setMutes(new ArrayList<>());
+            }
+            return;
+        }
+        List<ChatMute> mutes = new ChatMuteDao(dataSource).findByChat_Id(getId());
+        setMutes(mutes);
+    }
+
+    private void ensurePollsLoaded() {
+        if (pollsLoaded) {
+            return;
+        }
+        pollsLoaded = true;
+        if (!canLazyLoad()) {
+            if (super.getPolls() == null) {
+                super.setPolls(new ArrayList<>());
+            }
+            return;
+        }
+        ChatPollOptionDao optionDao = new ChatPollOptionDao(dataSource);
+        ChatPollVoteDao voteDao = new ChatPollVoteDao(dataSource);
+        List<ChatPoll> polls = new ChatPollDao(dataSource, optionDao, voteDao)
+                .findByChat_IdOrderByCreatedAtDesc(getId());
+        setPolls(polls);
+    }
+
+    private boolean canLazyLoad() {
+        return dataSource != null && getId() != null;
     }
 
     private boolean sameEntity(Long leftId, Long rightId) {

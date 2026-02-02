@@ -182,7 +182,6 @@ public class EventDao {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     Event event = mapEvent(rs);
-                    hydrateEventRelations(event);
                     events.add(event);
                 }
             }
