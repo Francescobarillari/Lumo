@@ -1,6 +1,7 @@
-package it.unical.service;
+package it.unical.proxy;
 
 import it.unical.model.Event;
+import it.unical.service.IEventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
@@ -82,7 +83,6 @@ public class EventServiceProxy implements IEventService {
     @Override
     public void deleteEvent(long id) {
         System.out.println("[Proxy] SECURITY CHECK: Deleting event ID: " + id);
-        // Punto per aggiungere controlli di autorizzazione.
         realService.deleteEvent(id);
     }
 

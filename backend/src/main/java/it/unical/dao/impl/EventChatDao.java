@@ -68,15 +68,34 @@ public class EventChatDao {
     }
 
     private void insertChat(EventChat chat) {
+        Long eventId = chat.getEvent() != null ? chat.getEvent().getId() : null;
+        if (eventId == null) {
+            throw new IllegalArgumentException("EventChatDao.insertChat event id is null");
+        }
+
+        // Enforce 1:1 cardinality between event and chat at DAO level.
+        String checkSql = "SELECT id FROM event_chat WHERE event_id = ?";
         String sql = "INSERT INTO event_chat (event_id, created_at) VALUES (?, ?)";
-        try (Connection conn = dataSource.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            stmt.setObject(1, chat.getEvent() != null ? chat.getEvent().getId() : null);
-            stmt.setObject(2, chat.getCreatedAt());
-            stmt.executeUpdate();
-            try (ResultSet keys = stmt.getGeneratedKeys()) {
-                if (keys.next()) {
-                    chat.setId(keys.getLong(1));
+        try (Connection conn = dataSource.getConnection()) {
+            try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
+                checkStmt.setLong(1, eventId);
+                try (ResultSet rs = checkStmt.executeQuery()) {
+                    if (rs.next()) {
+                        throw new DaoException(
+                                "EventChatDao.insertChat failed: event already has a chat",
+                                new IllegalStateException("1:1 cardinality violation for event_chat.event_id"));
+                    }
+                }
+            }
+
+            try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                stmt.setLong(1, eventId);
+                stmt.setObject(2, chat.getCreatedAt());
+                stmt.executeUpdate();
+                try (ResultSet keys = stmt.getGeneratedKeys()) {
+                    if (keys.next()) {
+                        chat.setId(keys.getLong(1));
+                    }
                 }
             }
         } catch (SQLException ex) {
@@ -85,13 +104,32 @@ public class EventChatDao {
     }
 
     private void updateChat(EventChat chat) {
+        Long eventId = chat.getEvent() != null ? chat.getEvent().getId() : null;
+        if (eventId == null) {
+            throw new IllegalArgumentException("EventChatDao.updateChat event id is null");
+        }
+
+        String checkSql = "SELECT id FROM event_chat WHERE event_id = ? AND id <> ?";
         String sql = "UPDATE event_chat SET event_id = ?, created_at = ? WHERE id = ?";
-        try (Connection conn = dataSource.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setObject(1, chat.getEvent() != null ? chat.getEvent().getId() : null);
-            stmt.setObject(2, chat.getCreatedAt());
-            stmt.setLong(3, chat.getId());
-            stmt.executeUpdate();
+        try (Connection conn = dataSource.getConnection()) {
+            try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
+                checkStmt.setLong(1, eventId);
+                checkStmt.setLong(2, chat.getId());
+                try (ResultSet rs = checkStmt.executeQuery()) {
+                    if (rs.next()) {
+                        throw new DaoException(
+                                "EventChatDao.updateChat failed: event already linked to another chat",
+                                new IllegalStateException("1:1 cardinality violation for event_chat.event_id"));
+                    }
+                }
+            }
+
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setLong(1, eventId);
+                stmt.setObject(2, chat.getCreatedAt());
+                stmt.setLong(3, chat.getId());
+                stmt.executeUpdate();
+            }
         } catch (SQLException ex) {
             throw new DaoException("EventChatDao.updateChat failed", ex);
         }

@@ -1,6 +1,7 @@
-package it.unical.service;
+package it.unical.proxy;
 
 import it.unical.model.User;
+import it.unical.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
@@ -94,7 +95,8 @@ public class UserServiceProxy implements IUserService {
 
     @Override
     public void setFollowNotifications(Long followerId, Long followedId, boolean enabled) {
-        System.out.println("[UserServiceProxy] User " + followerId + " set notifications (" + enabled + ") for user " + followedId);
+        System.out.println("[UserServiceProxy] User " + followerId + " set notifications (" + enabled + ") for user "
+                + followedId);
         realService.setFollowNotifications(followerId, followedId, enabled);
     }
 

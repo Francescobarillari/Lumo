@@ -242,7 +242,9 @@ public class ChatService {
             throw new RuntimeException("Poll is closed.");
         }
 
-        List<Long> selectedIds = optionIds == null ? new ArrayList<>() : optionIds;
+        List<Long> selectedIds = optionIds == null
+                ? new ArrayList<>()
+                : new ArrayList<>(new LinkedHashSet<>(optionIds));
         List<ChatPollOption> pollOptions = poll.getOptions() != null ? poll.getOptions() : new ArrayList<>();
         Map<Long, ChatPollOption> optionMap = new HashMap<>();
         for (ChatPollOption option : pollOptions) {
@@ -415,4 +417,3 @@ public class ChatService {
         }
     }
 }
-

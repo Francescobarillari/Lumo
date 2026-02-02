@@ -291,6 +291,7 @@ public class EventService implements IEventService {
             }
 
             if (creator != null) {
+                creator = userRepository.findById(creator.getId()).orElse(creator);
                 notifyFollowersAboutEvent(creator,
                         event,
                         "Event cancelled",
@@ -471,4 +472,3 @@ public class EventService implements IEventService {
         });
     }
 }
-

@@ -182,6 +182,7 @@ public class EventDao {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     Event event = mapEvent(rs);
+                    hydrateEventRelations(event);
                     events.add(event);
                 }
             }
@@ -224,6 +225,49 @@ public class EventDao {
         }
 
         return event;
+    }
+
+    private void hydrateEventRelations(Event event) {
+        if (event == null || event.getId() == null) {
+            return;
+        }
+        Long eventId = event.getId();
+        event.setParticipants(loadEventUsers(eventId, "user_participations"));
+        event.setPendingParticipants(loadEventUsers(eventId, "user_pending_participations"));
+        event.setUsersWhoSaved(loadEventUsers(eventId, "user_saved"));
+    }
+
+    private Set<User> loadEventUsers(Long eventId, String joinTable) {
+        Set<User> users = new LinkedHashSet<>();
+        String sql = "SELECT u.id, u.name, u.email, u.password_hash, u.birthdate, u.profile_image, "
+                + "u.profile_image_data, u.description, u.is_admin FROM users u "
+                + "JOIN " + joinTable + " j ON j.user_id = u.id WHERE j.event_id = ?";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setLong(1, eventId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    users.add(mapUserShallow(rs));
+                }
+            }
+            return users;
+        } catch (SQLException ex) {
+            throw new DaoException("EventDao.loadEventUsers failed", ex);
+        }
+    }
+
+    private User mapUserShallow(ResultSet rs) throws SQLException {
+        User user = new UserProxy(dataSource);
+        user.setId(rs.getLong("id"));
+        user.setName(rs.getString("name"));
+        user.setEmail(rs.getString("email"));
+        user.setPasswordHash(rs.getString("password_hash"));
+        user.setBirthdate(rs.getString("birthdate"));
+        user.setProfileImage(rs.getString("profile_image"));
+        user.setProfileImageData(rs.getBytes("profile_image_data"));
+        user.setDescription(rs.getString("description"));
+        user.setIsAdmin(rs.getBoolean("is_admin"));
+        return user;
     }
 
     private LocalDate parseLocalDate(String value) {

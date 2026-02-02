@@ -22,9 +22,13 @@ import java.util.Optional;
 @Repository
 public class ChatPollDao {
     private final DataSource dataSource;
+    private final ChatPollOptionDao optionDao;
+    private final ChatPollVoteDao voteDao;
 
-    public ChatPollDao(DataSource dataSource) {
+    public ChatPollDao(DataSource dataSource, ChatPollOptionDao optionDao, ChatPollVoteDao voteDao) {
         this.dataSource = dataSource;
+        this.optionDao = optionDao;
+        this.voteDao = voteDao;
     }
 
     public List<ChatPoll> findByChat_IdOrderByCreatedAtDesc(Long chatId) {
@@ -37,6 +41,7 @@ public class ChatPollDao {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     ChatPoll poll = mapPoll(rs);
+                    hydratePoll(poll);
                     polls.add(poll);
                 }
             }
@@ -56,6 +61,7 @@ public class ChatPollDao {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     ChatPoll poll = mapPoll(rs);
+                    hydratePoll(poll);
                     return Optional.of(poll);
                 }
                 return Optional.empty();
@@ -192,5 +198,13 @@ public class ChatPollDao {
             poll.setCreatedBy(creator);
         }
         return poll;
+    }
+
+    private void hydratePoll(ChatPoll poll) {
+        if (poll == null || poll.getId() == null) {
+            return;
+        }
+        poll.setOptions(new ArrayList<>(optionDao.findByPoll_Id(poll.getId())));
+        poll.setVotes(new ArrayList<>(voteDao.findByPoll_Id(poll.getId())));
     }
 }
