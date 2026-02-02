@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 public class EventChatProxy extends EventChat {
+    // Proxy che carica in modo lazy messaggi, mute e sondaggi della chat al primo accesso.
     private transient javax.sql.DataSource dataSource;
     private boolean messagesLoaded;
     private boolean mutesLoaded;

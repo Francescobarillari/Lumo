@@ -12,6 +12,7 @@ import java.util.List;
 @Service
 @Primary
 public class NotificationServiceProxy implements INotificationService {
+    // Proxy di servizio che logga e delega al servizio reale.
 
     private final INotificationService realService;
 

@@ -84,6 +84,7 @@ public class ChatPollOptionDao {
         option.setText(rs.getString("text"));
         Long pollId = (Long) rs.getObject("poll_id");
         if (pollId != null) {
+            // Usa il proxy per caricare lazy opzioni/voti del sondaggio al bisogno.
             ChatPollProxy poll = new ChatPollProxy(dataSource);
             poll.setId(pollId);
             option.setPoll(poll);

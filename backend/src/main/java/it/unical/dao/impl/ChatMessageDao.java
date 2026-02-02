@@ -157,6 +157,7 @@ public class ChatMessageDao {
 
         Long chatId = (Long) rs.getObject("chat_id");
         if (chatId != null) {
+            // Usa il proxy per caricare lazy messaggi/mute/sondaggi della chat al bisogno.
             EventChat chat = new EventChatProxy(dataSource);
             chat.setId(chatId);
             message.setChat(chat);
@@ -164,6 +165,7 @@ public class ChatMessageDao {
 
         Long senderId = (Long) rs.getObject("sender_id");
         if (senderId != null) {
+            // Usa il proxy per caricare lazy le relazioni del mittente al bisogno.
             User sender = new UserProxy(dataSource);
             sender.setId(senderId);
             sender.setName(rs.getString("name"));

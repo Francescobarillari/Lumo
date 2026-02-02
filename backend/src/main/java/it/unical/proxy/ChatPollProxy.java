@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class ChatPollProxy extends ChatPoll {
+    // Proxy che carica in modo lazy opzioni e voti del sondaggio al primo accesso.
     private transient javax.sql.DataSource dataSource;
     private boolean optionsLoaded;
     private boolean votesLoaded;

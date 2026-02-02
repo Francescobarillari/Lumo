@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class UserProxy extends User {
+    // Proxy che carica in modo lazy le relazioni dell'utente al primo accesso, mantenendo i set coerenti.
     private transient javax.sql.DataSource dataSource;
     private boolean participatingEventsLoaded;
     private boolean savedEventsLoaded;

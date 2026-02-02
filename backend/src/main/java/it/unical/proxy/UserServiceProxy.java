@@ -12,6 +12,7 @@ import java.util.List;
 @Service
 @Primary
 public class UserServiceProxy implements IUserService {
+    // Proxy di servizio che logga e delega al servizio reale.
 
     private final IUserService realService;
 

@@ -177,10 +177,12 @@ public class ChatPollDao {
     }
 
     private ChatPoll mapPoll(ResultSet rs) throws SQLException {
+        // Usa il proxy per caricare lazy opzioni/voti del sondaggio al bisogno.
         ChatPoll poll = new ChatPollProxy(dataSource);
         poll.setId(rs.getLong("id"));
         Long chatId = (Long) rs.getObject("chat_id");
         if (chatId != null) {
+            // Usa il proxy per caricare lazy messaggi/mute/sondaggi della chat al bisogno.
             EventChat chat = new EventChatProxy(dataSource);
             chat.setId(chatId);
             poll.setChat(chat);
@@ -191,6 +193,7 @@ public class ChatPollDao {
         poll.setIsClosed(rs.getBoolean("is_closed"));
         Long creatorId = (Long) rs.getObject("created_by");
         if (creatorId != null) {
+            // Usa il proxy per caricare lazy le relazioni del creatore al bisogno.
             User creator = new UserProxy(dataSource);
             creator.setId(creatorId);
             poll.setCreatedBy(creator);

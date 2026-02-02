@@ -148,6 +148,7 @@ public class EmailVerificationTokenDao {
 
         Long userId = (Long) rs.getObject("user_id");
         if (userId != null) {
+            // Usa il proxy per caricare lazy le relazioni dell'utente al bisogno.
             User user = new UserProxy(dataSource);
             user.setId(userId);
             user.setName(rs.getString("name"));

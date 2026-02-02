@@ -394,6 +394,7 @@ public class UserDao {
     }
 
     private User mapUserBase(ResultSet rs, String prefix) throws SQLException {
+        // Usa il proxy per caricare lazy le relazioni dell'utente al bisogno.
         User user = new UserProxy(dataSource);
         user.setId(rs.getLong(prefix + "id"));
         user.setName(rs.getString(prefix + "name"));
@@ -408,6 +409,7 @@ public class UserDao {
     }
 
     private Event mapEventShallow(ResultSet rs) throws SQLException {
+        // Usa il proxy per caricare lazy le relazioni dell'evento al bisogno.
         Event event = new EventProxy(dataSource);
         event.setId(rs.getLong("e_id"));
         event.setTitle(rs.getString("e_title"));
@@ -426,6 +428,7 @@ public class UserDao {
 
         Long creatorId = (Long) rs.getObject("c_id");
         if (creatorId != null) {
+            // Usa il proxy per caricare lazy le relazioni del creatore al bisogno.
             User creator = new UserProxy(dataSource);
             creator.setId(creatorId);
             creator.setName(rs.getString("c_name"));

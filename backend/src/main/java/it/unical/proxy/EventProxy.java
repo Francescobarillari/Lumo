@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class EventProxy extends Event {
+    // Proxy che carica in modo lazy partecipanti e salvati al primo accesso, mantenendo i set coerenti.
     private transient javax.sql.DataSource dataSource;
     private boolean participantsLoaded;
     private boolean pendingParticipantsLoaded;

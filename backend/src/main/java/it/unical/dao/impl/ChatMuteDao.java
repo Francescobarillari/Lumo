@@ -143,6 +143,7 @@ public class ChatMuteDao {
 
         Long chatId = (Long) rs.getObject("chat_id");
         if (chatId != null) {
+            // Usa il proxy per caricare lazy messaggi/mute/sondaggi della chat al bisogno.
             EventChat chat = new EventChatProxy(dataSource);
             chat.setId(chatId);
             mute.setChat(chat);
@@ -150,6 +151,7 @@ public class ChatMuteDao {
 
         Long userId = (Long) rs.getObject("user_id");
         if (userId != null) {
+            // Usa il proxy per caricare lazy le relazioni dell'utente al bisogno.
             User user = new UserProxy(dataSource);
             user.setId(userId);
             user.setName(rs.getString("user_name"));
@@ -158,6 +160,7 @@ public class ChatMuteDao {
 
         Long mutedById = (Long) rs.getObject("muted_by");
         if (mutedById != null) {
+            // Usa il proxy per caricare lazy le relazioni dell'utente al bisogno.
             User mutedBy = new UserProxy(dataSource);
             mutedBy.setId(mutedById);
             mutedBy.setName(rs.getString("muted_by_name"));

@@ -13,6 +13,7 @@ import java.util.Optional;
 @Service
 @Primary
 public class EventServiceProxy implements IEventService {
+    // Proxy di servizio che logga e delega al servizio reale.
 
     private final IEventService realService;
 

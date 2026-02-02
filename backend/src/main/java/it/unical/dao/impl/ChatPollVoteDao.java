@@ -109,6 +109,7 @@ public class ChatPollVoteDao {
 
         Long pollId = (Long) rs.getObject("poll_id");
         if (pollId != null) {
+            // Usa il proxy per caricare lazy opzioni/voti del sondaggio al bisogno.
             ChatPoll poll = new ChatPollProxy(dataSource);
             poll.setId(pollId);
             vote.setPoll(poll);
@@ -123,6 +124,7 @@ public class ChatPollVoteDao {
 
         Long userId = (Long) rs.getObject("user_id");
         if (userId != null) {
+            // Usa il proxy per caricare lazy le relazioni dell'utente al bisogno.
             User user = new UserProxy(dataSource);
             user.setId(userId);
             user.setName(rs.getString("name"));
