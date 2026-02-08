@@ -31,6 +31,7 @@ public class EventProxy extends Event {
 
     @Override
     public User getCreator() {
+        // Getter "intercettato": se serve, il proxy carica il creator qui.
         ensureCreatorLoaded();
         return super.getCreator();
     }
@@ -63,12 +64,14 @@ public class EventProxy extends Event {
 
     @Override
     public String getOrganizerName() {
+        // Anche i campi derivati forzano il lazy load del creator.
         ensureCreatorLoaded();
         return super.getOrganizerName();
     }
 
     @Override
     public String getOrganizerImage() {
+        // Evita dati parziali: carica il creator solo quando serve.
         ensureCreatorLoaded();
         return super.getOrganizerImage();
     }
@@ -137,6 +140,7 @@ public class EventProxy extends Event {
             id = super.getCreator().getId();
         }
         if (dataSource == null || id == null) {
+            // Nessun contesto per il lazy load: esce senza fare query.
             return;
         }
         User creator = loadCreator(id);

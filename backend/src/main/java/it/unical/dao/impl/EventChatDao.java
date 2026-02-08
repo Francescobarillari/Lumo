@@ -135,12 +135,12 @@ public class EventChatDao {
     }
 
     private EventChat mapChat(ResultSet rs) throws SQLException {
-        // Usa il proxy per caricare lazy messaggi/mute/sondaggi della chat al bisogno.
+        // DAO ritorna un proxy: i contenuti della chat si caricano solo su richiesta.
         EventChat chat = new EventChatProxy(dataSource);
         chat.setId(rs.getLong("id"));
         Long eventId = (Long) rs.getObject("event_id");
         if (eventId != null) {
-            // Usa il proxy per caricare lazy le relazioni dell'evento al bisogno.
+            // L'evento collegato viene passato come proxy "vuoto" (solo id).
             Event event = new EventProxy(dataSource);
             event.setId(eventId);
             chat.setEvent(event);

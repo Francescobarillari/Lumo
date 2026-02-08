@@ -31,18 +31,21 @@ public class EventChatProxy extends EventChat {
 
     @Override
     public List<ChatMessage> getMessages() {
+        // Getter "intercettato": se serve, carica i messaggi qui.
         ensureMessagesLoaded();
         return super.getMessages();
     }
 
     @Override
     public List<ChatMute> getMutes() {
+        // Lazy load delle mute solo al primo accesso.
         ensureMutesLoaded();
         return super.getMutes();
     }
 
     @Override
     public List<ChatPoll> getPolls() {
+        // Lazy load dei sondaggi solo quando richiesti.
         ensurePollsLoaded();
         return super.getPolls();
     }

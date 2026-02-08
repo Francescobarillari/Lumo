@@ -157,6 +157,7 @@ public class EventDao {
     }
 
     private String baseSelect() {
+        // DAO: carica solo i campi base + creator_id (nessun JOIN su users).
         return "SELECT "
                 + "e.id as e_id, e.title as e_title, e.description as e_description, e.n_partecipants as e_n_partecipants, "
                 + "e.city as e_city, e.date as e_date, e.end_date as e_end_date, e.start_time as e_start_time, "
@@ -188,7 +189,7 @@ public class EventDao {
     }
 
     private Event mapEvent(ResultSet rs) throws SQLException {
-        // Usa il proxy per caricare lazy relazioni e creator al primo accesso.
+        // DAO ritorna un proxy "non completo": relazioni e creator verranno caricati al bisogno.
         Event event = new EventProxy(dataSource);
         event.setId(rs.getLong("e_id"));
         event.setTitle(rs.getString("e_title"));
@@ -207,7 +208,7 @@ public class EventDao {
 
         Long creatorId = (Long) rs.getObject("e_creator_id");
         if (creatorId != null) {
-            // Memorizza l'id del creator: i dettagli verranno caricati dal proxy al primo accesso.
+            // Memorizza solo l'id: il proxy farà la query quando serve (lazy load).
             ((EventProxy) event).setCreatorId(creatorId);
         }
 
