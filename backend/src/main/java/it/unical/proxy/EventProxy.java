@@ -14,8 +14,10 @@ import java.util.Map;
 import java.util.Set;
 
 public class EventProxy extends Event {
-    // Proxy che carica in modo lazy partecipanti e salvati al primo accesso, mantenendo i set coerenti.
+    // Proxy che carica in modo lazy partecipanti/salvati e creator al primo accesso.
     private transient javax.sql.DataSource dataSource;
+    private Long creatorId;
+    private boolean creatorLoaded;
     private boolean participantsLoaded;
     private boolean pendingParticipantsLoaded;
     private boolean usersWhoSavedLoaded;
@@ -25,6 +27,50 @@ public class EventProxy extends Event {
 
     public EventProxy(javax.sql.DataSource dataSource) {
         this.dataSource = dataSource;
+    }
+
+    @Override
+    public User getCreator() {
+        ensureCreatorLoaded();
+        return super.getCreator();
+    }
+
+    @Override
+    public void setCreator(User creator) {
+        super.setCreator(creator);
+        creatorId = creator != null ? creator.getId() : null;
+        // Se abbiamo almeno il nome/email, consideriamo il creator caricato.
+        creatorLoaded = creator == null
+                || creator.getName() != null
+                || creator.getEmail() != null
+                || creator.getProfileImage() != null;
+    }
+
+    @Override
+    public Long getCreatorId() {
+        if (super.getCreator() != null && super.getCreator().getId() != null) {
+            return super.getCreator().getId();
+        }
+        return creatorId;
+    }
+
+    public void setCreatorId(Long creatorId) {
+        this.creatorId = creatorId;
+        if (creatorId == null) {
+            creatorLoaded = true;
+        }
+    }
+
+    @Override
+    public String getOrganizerName() {
+        ensureCreatorLoaded();
+        return super.getOrganizerName();
+    }
+
+    @Override
+    public String getOrganizerImage() {
+        ensureCreatorLoaded();
+        return super.getOrganizerImage();
     }
 
     @Override
@@ -79,6 +125,52 @@ public class EventProxy extends Event {
             return;
         }
         setParticipants(loadEventUsers(getId(), "user_participations"));
+    }
+
+    private void ensureCreatorLoaded() {
+        if (creatorLoaded) {
+            return;
+        }
+        creatorLoaded = true;
+        Long id = creatorId;
+        if (id == null && super.getCreator() != null) {
+            id = super.getCreator().getId();
+        }
+        if (dataSource == null || id == null) {
+            return;
+        }
+        User creator = loadCreator(id);
+        if (creator != null) {
+            super.setCreator(creator);
+            creatorId = id;
+        }
+    }
+
+    private User loadCreator(Long id) {
+        String sql = "SELECT id, name, email, password_hash, birthdate, profile_image, profile_image_data, "
+                + "description, is_admin FROM users WHERE id = ?";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setLong(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (!rs.next()) {
+                    return null;
+                }
+                User creator = new UserProxy(dataSource);
+                creator.setId(rs.getLong("id"));
+                creator.setName(rs.getString("name"));
+                creator.setEmail(rs.getString("email"));
+                creator.setPasswordHash(rs.getString("password_hash"));
+                creator.setBirthdate(rs.getString("birthdate"));
+                creator.setProfileImage(rs.getString("profile_image"));
+                creator.setProfileImageData(rs.getBytes("profile_image_data"));
+                creator.setDescription(rs.getString("description"));
+                creator.setIsAdmin(rs.getBoolean("is_admin"));
+                return creator;
+            }
+        } catch (SQLException ex) {
+            throw new DaoException("EventProxy.loadCreator failed", ex);
+        }
     }
 
     private void ensurePendingParticipantsLoaded() {

@@ -224,11 +224,8 @@ public class UserProxy extends User {
                 + "e.city as e_city, e.date as e_date, e.end_date as e_end_date, e.start_time as e_start_time, "
                 + "e.end_time as e_end_time, e.created_at as e_created_at, e.latitude as e_latitude, "
                 + "e.longitude as e_longitude, e.cost_per_person as e_cost_per_person, e.is_approved as e_is_approved, "
-                + "u.id as c_id, u.name as c_name, u.email as c_email, u.password_hash as c_password_hash, "
-                + "u.birthdate as c_birthdate, u.profile_image as c_profile_image, "
-                + "u.profile_image_data as c_profile_image_data, u.description as c_description, u.is_admin as c_is_admin "
+                + "e.creator_id as e_creator_id "
                 + "FROM \"event\" e "
-                + "LEFT JOIN users u ON e.creator_id = u.id "
                 + "JOIN " + joinTable + " j ON j.event_id = e.id "
                 + "WHERE j.user_id = ?";
         try (Connection conn = dataSource.getConnection();
@@ -266,7 +263,7 @@ public class UserProxy extends User {
     }
 
     private Event mapEventShallow(ResultSet rs) throws SQLException {
-        Event event = new EventProxy(dataSource);
+        EventProxy event = new EventProxy(dataSource);
         event.setId(rs.getLong("e_id"));
         event.setTitle(rs.getString("e_title"));
         event.setDescription(rs.getString("e_description"));
@@ -282,19 +279,9 @@ public class UserProxy extends User {
         event.setCostPerPerson((Double) rs.getObject("e_cost_per_person"));
         event.setIsApproved(rs.getBoolean("e_is_approved"));
 
-        Long creatorId = (Long) rs.getObject("c_id");
+        Long creatorId = (Long) rs.getObject("e_creator_id");
         if (creatorId != null) {
-            User creator = new UserProxy(dataSource);
-            creator.setId(creatorId);
-            creator.setName(rs.getString("c_name"));
-            creator.setEmail(rs.getString("c_email"));
-            creator.setPasswordHash(rs.getString("c_password_hash"));
-            creator.setBirthdate(rs.getString("c_birthdate"));
-            creator.setProfileImage(rs.getString("c_profile_image"));
-            creator.setProfileImageData(rs.getBytes("c_profile_image_data"));
-            creator.setDescription(rs.getString("c_description"));
-            creator.setIsAdmin(rs.getBoolean("c_is_admin"));
-            event.setCreator(creator);
+            event.setCreatorId(creatorId);
         }
         return event;
     }

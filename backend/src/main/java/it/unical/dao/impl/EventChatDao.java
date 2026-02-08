@@ -73,7 +73,6 @@ public class EventChatDao {
             throw new IllegalArgumentException("EventChatDao.insertChat event id is null");
         }
 
-        // Enforce 1:1 cardinality between event and chat at DAO level.
         String checkSql = "SELECT id FROM event_chat WHERE event_id = ?";
         String sql = "INSERT INTO event_chat (event_id, created_at) VALUES (?, ?)";
         try (Connection conn = dataSource.getConnection()) {
